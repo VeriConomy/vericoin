@@ -532,16 +532,15 @@ void StakeMiner(CWallet *pwallet)
 
         while (pwallet->IsLocked())
         {
-            Sleep(1000);
+            MilliSleep(1000);
             if (fShutdown)
                 return;
         }
 
         while (vNodes.empty() || IsInitialBlockDownload())
         {
-
             fTryToSync = true;
-            Sleep(1000);
+            MilliSleep(1000);
             if (fShutdown)
                 return;
         }
@@ -551,7 +550,7 @@ void StakeMiner(CWallet *pwallet)
             fTryToSync = false;
             if (vNodes.size() < 3 || nBestHeight < GetNumBlocksOfPeers())
             {
-                Sleep(60000);
+                MilliSleep(60000);
                 continue;
             }
         }
@@ -570,10 +569,10 @@ void StakeMiner(CWallet *pwallet)
             SetThreadPriority(THREAD_PRIORITY_NORMAL);
             CheckStake(pblock.get(), *pwallet);
             SetThreadPriority(THREAD_PRIORITY_LOWEST);
-            Sleep(500);
+            MilliSleep(500);
         }
         else
-            Sleep(nMinerSleep);
+            MilliSleep(nMinerSleep);
 
         continue;
     }
