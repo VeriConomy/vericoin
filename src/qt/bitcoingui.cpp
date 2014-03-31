@@ -64,7 +64,7 @@
 #include <iostream>
 
 extern CWallet* pwalletMain;
-extern int64 nLastCoinStakeSearchInterval;
+extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
 double GetPoSKernelPS();
 bool blocksIcon = true;
@@ -1045,14 +1045,14 @@ void BitcoinGUI::updateStakingIcon()
     {
         return;
     }
-    uint64 nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
+    uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
     progressBarLabel->setVisible(false);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
     if (nLastCoinStakeSearchInterval && nWeight)
     {
-        uint64 nNetworkWeight = GetPoSKernelPS();
+        uint64_t nNetworkWeight = GetPoSKernelPS();
         unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
 
         QString text;
