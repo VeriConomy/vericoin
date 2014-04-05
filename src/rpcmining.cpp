@@ -44,7 +44,7 @@ Value getmininginfo(const Array& params, bool fHelp)
 
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-    uint64 nNetworkWeight_ = GetPoSKernelPS();
+    uint64_t nNetworkWeight_ = GetPoSKernelPS();
 
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
@@ -78,44 +78,6 @@ Value getmininginfo(const Array& params, bool fHelp)
     return obj;
 }
 
-<<<<<<< HEAD
-=======
-Value getstakinginfo(const Array& params, bool fHelp)
-{
-    if (fHelp || params.size() != 0)
-        throw runtime_error(
-            "getstakinginfo\n"
-            "Returns an object containing staking-related information.");
-
-    uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
-    pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-
-    uint64_t nNetworkWeight = GetPoSKernelPS();
-    bool staking = nLastCoinStakeSearchInterval && nWeight;
-    int nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : -1;
-
-    Object obj;
-
-    obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
-    obj.push_back(Pair("staking", staking));
-    obj.push_back(Pair("errors", GetWarnings("statusbar")));
-
-    obj.push_back(Pair("currentblocksize", (uint64_t)nLastBlockSize));
-    obj.push_back(Pair("currentblocktx", (uint64_t)nLastBlockTx));
-    obj.push_back(Pair("pooledtx", (uint64_t)mempool.size()));
-
-    obj.push_back(Pair("difficulty", GetDifficulty(GetLastBlockIndex(pindexBest, true))));
-    obj.push_back(Pair("search-interval", (int)nLastCoinStakeSearchInterval));
-
-    obj.push_back(Pair("weight", (uint64_t)nWeight));
-    obj.push_back(Pair("netstakeweight", (uint64_t)nNetworkWeight));
-
-    obj.push_back(Pair("expectedtime", nExpectedTime));
-
-    return obj;
-}
-
->>>>>>> e7a3b10... use standard int64_t
 Value getworkex(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 2)

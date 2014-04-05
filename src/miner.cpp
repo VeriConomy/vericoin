@@ -523,6 +523,8 @@ void StakeMiner(CWallet *pwallet)
     // Make this thread recognisable as the mining thread
     RenameThread("vericoin-miner");
 
+    bool fTryToSync = true;
+
     while (true)
     {
         if (fShutdown)
@@ -537,9 +539,21 @@ void StakeMiner(CWallet *pwallet)
 
         while (vNodes.empty() || IsInitialBlockDownload())
         {
+
+            fTryToSync = true;
             Sleep(1000);
             if (fShutdown)
                 return;
+        }
+
+        if (fTryToSync)
+        {
+            fTryToSync = false;
+            if (vNodes.size() < 3 || nBestHeight < GetNumBlocksOfPeers())
+            {
+                Sleep(60000);
+                continue;
+            }
         }
 
         //

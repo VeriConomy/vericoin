@@ -656,14 +656,9 @@ Value sendfrom(const Array& params, bool fHelp)
     string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
-<<<<<<< HEAD
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VeriCoin address");
-    int64 nAmount = AmountFromValue(params[2]);
-=======
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid BlackCoin address");
-    int64_t nAmount = AmountFromValue(params[2]);
->>>>>>> e7a3b10... use standard int64_t
 
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VeriCoin address");
+    int64_t nAmount = AmountFromValue(params[2]);
     int nMinDepth = 1;
     if (params.size() > 3)
         nMinDepth = params[3].get_int();
