@@ -1,13 +1,16 @@
 TEMPLATE = app
-TARGET = blackcoin-qt
-VERSION = 1.0.5
+TARGET = vericoin-qt
+VERSION = 1.4.1
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-
+!win32{
+CONFIG += static
+}
+QT += network webkit
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
+    QT += webkitwidgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
 
@@ -20,6 +23,22 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # Dependency library locations can be customized with:
 #    BOOST_INCLUDE_PATH, BOOST_LIB_PATH, BDB_INCLUDE_PATH,
 #    BDB_LIB_PATH, OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
+
+
+# winbuild dependencies
+win32 {
+BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
+BOOST_INCLUDE_PATH=C:/deps/boost_1_55_0
+BOOST_LIB_PATH=C:/deps/boost_1_55_0/stage/lib
+BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
+BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
+OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1h/include
+OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1h
+MINIUPNPC_INCLUDE_PATH=C:/deps/
+MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
+QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.3
+QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.3/.libs
+}
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -44,8 +63,8 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
-win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
-win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
+win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware
+#win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
@@ -108,7 +127,7 @@ SOURCES += src/txdb-leveldb.cpp
         QMAKE_RANLIB = $$replace(QMAKE_STRIP, strip, ranlib)
     }
     LIBS += -lshlwapi
-    genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
+    #genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
 }
 genleveldb.target = $$PWD/src/leveldb/libleveldb.a
 genleveldb.depends = FORCE
@@ -153,6 +172,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/coincontroldialog.h \
     src/qt/coincontroltreewidget.h \
     src/qt/sendcoinsdialog.h \
+    src/qt/sendbitcoinsdialog.h \
     src/qt/addressbookpage.h \
     src/qt/signverifymessagedialog.h \
     src/qt/aboutdialog.h \
@@ -213,6 +233,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactiondesc.h \
     src/qt/transactiondescdialog.h \
     src/qt/bitcoinamountfield.h \
+    src/qt/veribitcoinamountfield.h \
     src/wallet.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \
@@ -223,8 +244,10 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/csvmodelwriter.h \
     src/crypter.h \
     src/qt/sendcoinsentry.h \
+    src/qt/sendbitcoinsentry.h \
     src/qt/qvalidatedlineedit.h \
     src/qt/bitcoinunits.h \
+    src/qt/veribitcoinunits.h \
     src/qt/qvaluecombobox.h \
     src/qt/askpassphrasedialog.h \
     src/protocol.h \
@@ -242,6 +265,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/addresstablemodel.cpp \
     src/qt/optionsdialog.cpp \
     src/qt/sendcoinsdialog.cpp \
+    src/qt/sendbitcoinsdialog.cpp \
     src/qt/coincontroldialog.cpp \
     src/qt/coincontroltreewidget.cpp \
     src/qt/addressbookpage.cpp \
@@ -274,6 +298,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiondescdialog.cpp \
     src/qt/bitcoinstrings.cpp \
     src/qt/bitcoinamountfield.cpp \
+    src/qt/veribitcoinamountfield.cpp \
     src/wallet.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
@@ -290,8 +315,10 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/csvmodelwriter.cpp \
     src/crypter.cpp \
     src/qt/sendcoinsentry.cpp \
+    src/qt/sendbitcoinsentry.cpp \
     src/qt/qvalidatedlineedit.cpp \
     src/qt/bitcoinunits.cpp \
+    src/qt/veribitcoinunits.cpp \
     src/qt/qvaluecombobox.cpp \
     src/qt/askpassphrasedialog.cpp \
     src/protocol.cpp \
@@ -322,6 +349,8 @@ RESOURCES += \
 FORMS += \
     src/qt/forms/coincontroldialog.ui \
     src/qt/forms/sendcoinsdialog.ui \
+    src/qt/forms/sendbitcoinsdialog.ui \
+    src/qt/forms/fiatpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
     src/qt/forms/aboutdialog.ui \
@@ -329,6 +358,7 @@ FORMS += \
     src/qt/forms/transactiondescdialog.ui \
     src/qt/forms/overviewpage.ui \
     src/qt/forms/sendcoinsentry.ui \
+    src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \
     src/qt/forms/rpcconsole.ui \
     src/qt/forms/optionsdialog.ui
@@ -369,7 +399,7 @@ isEmpty(BOOST_LIB_SUFFIX) {
 }
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
-    win32:BOOST_THREAD_LIB_SUFFIX = _win32$$BOOST_LIB_SUFFIX
+    win32:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
     else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 
@@ -416,8 +446,8 @@ macx:HEADERS += src/qt/macdockiconhandler.h
 macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "BlackCoin-Qt"
+macx:ICON = src/qt/res/icons/vericoin.icns
+macx:TARGET = "VeriCoin-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread
@@ -430,6 +460,7 @@ LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
 windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
 LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
+macx:QMAKE_INFO_PLIST = share/qt/Info.plist
 
 contains(RELEASE, 1) {
     !windows:!macx {

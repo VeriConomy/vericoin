@@ -22,6 +22,12 @@
     <height>0</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Lato</family>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Passphrase Dialog</string>
   </property>
@@ -43,6 +49,11 @@
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="passLabel1">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Enter passphrase</string>
        </property>
@@ -50,6 +61,11 @@
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="passEdit1">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
@@ -57,6 +73,11 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="passLabel2">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>New passphrase</string>
        </property>
@@ -64,6 +85,11 @@
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="passEdit2">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
@@ -71,6 +97,11 @@
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="passLabel3">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Repeat new passphrase</string>
        </property>
@@ -78,6 +109,11 @@
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="passEdit3">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>

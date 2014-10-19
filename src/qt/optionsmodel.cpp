@@ -41,7 +41,7 @@ void OptionsModel::Init()
     QSettings settings;
 
     // These are Qt-only settings:
-    nDisplayUnit = settings.value("nDisplayUnit", BitcoinUnits::BTC).toInt();
+    nDisplayUnit = settings.value("nDisplayUnit", BitcoinUnits::VRC).toInt();
     bDisplayAddresses = settings.value("bDisplayAddresses", false).toBool();
     fMinimizeToTray = settings.value("fMinimizeToTray", false).toBool();
     fMinimizeOnClose = settings.value("fMinimizeOnClose", false).toBool();
@@ -74,6 +74,7 @@ bool OptionsModel::Upgrade()
     settings.setValue("bImportFinished", true);
 
     // Move settings from old wallet.dat (if any):
+    assert(!strWalletFileName.empty());
     CWalletDB walletdb(strWalletFileName);
 
     QList<QString> intOptions;

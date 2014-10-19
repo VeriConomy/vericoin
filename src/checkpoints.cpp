@@ -25,12 +25,27 @@ namespace Checkpoints
     static MapCheckpoints mapCheckpoints =
         boost::assign::map_list_of
         ( 0,      hashGenesisBlock )
-        ( 1500,   uint256("0x000000000079987db951032e017b8e337016296bffdb83ae87dd7fc79c26668d") )
-        ( 5001,   uint256("0x2fac9021be0c311e7b6dc0933a72047c70f817e2eb1e01bede011193ad1b28bc") )
-        ( 5500,   uint256("0x00000000001636e6cb9747abc92354385f43d6580ecf7326269aa92bd5b2beac") )
-        ( 14000,  uint256("0xa82c673016dcb5ebf6dad3e772a22848454e4a32568b02a994a60612ba68a3b1") )
-        ( 37000,  uint256("0xa36f0013842adeb27aa70d20541925364879fdec25e84d6b4c4b256b71e48791") )
-        ( 38424,  uint256("0x8d82bf5332ea5540ae7aae53b77c4bde6ce96f00a30358b755ba3f15ee01096f") )
+        ( 2700,   uint256("0x52f0119bd2252422ea4aebb25273a98155972cf25a6ef267a7ef35103b5466c3") )
+        ( 5700,   uint256("0x000000001c3865f29140f49217c99ad985e80e89ca4d1e6a518a47f6961d6f16") )
+        ( 10080,  uint256("0x00000000023212158c4a50727711ffc9ddbcb246e7c34e8a6668c49aad3b5390") )
+        ( 16346,  uint256("0x0000000002963467ff7c61f53f2a141819e8dcd04b5320e1e78f50d52e4d312e") )
+        ( 24533,  uint256("0xccec1c9940fcc78e95ecb75213469a8220280e23bab4976d2132e0b5513798cb") )
+        ( 26196,  uint256("0x84d6eac78587fad5c11a0475ee6085bbff505e3d3be78734c6be2908c5154849") )
+        ( 27159,  uint256("0x9bad4fb0cdc3a774981d53eef6fda7fb3fe720b2f847dbb9b6eafba72f535571") )
+        ( 107670, uint256("0xcbe5acc625d669c603943daa26e7bac3fcacb8f95d4a8fa2b00092ad22407a1a") )
+        ( 107671, uint256("0x61d59bbc7cbced427d0c4c6d779c1a7ad327bf788890b2cf4d3e2abdf11979e6") )
+        ( 107672, uint256("0x704197d86f68ec75a3a15e32ad6dc1a956400671a88eb2926e9bb78136cc8e0b") )
+        ( 107699, uint256("0xd4f67d88408ce3c268dc35478b10821f0bb787a7d131bdb57e94bd5c1b02078d") )
+        ( 107700, uint256("0x426cf03d395d0578d943a16e2dade3ae791d3d8759395fea99a98db62a778037") )
+        ( 107720, uint256("0x32d622ffeac54b872a04fb18df90807cb11e28452597acd410237ee05c89fb45") )
+        ( 107738, uint256("0xf0d742fd0a1aeaadf432f8af19276d5ecbb07a0706284d6cc0a70fb270a3d697") )
+        ( 130932, uint256("0xdced5f5ee627cb8af12c3439eb7e7f049f83235459377bf5981e8b906e1a945f") )
+        ( 137725, uint256("0xce241207536b7eada68b247edcfc1240e46dbf216385f102ade02645be07f6ef") )
+        ( 239355, uint256("0xe662449e6b86f473777749add48c2b6d33900227d4c283a9366d845a4dd92a71") )
+        ( 239526, uint256("0x4d07e6a7b3b1fda725d1e113eb2f04b188286a053b04833431ee81373de1ff58") )
+        ( 241527, uint256("0x80afc89cbee28cfc516b9c88c9d74446caa9a284bdcbe4e1655abd911044ac71") )
+        ( 242108, uint256("0x5fd020de15dff256b9136b9c874d11e2db25d960a546606c8d936afcefd2516a") )
+
     ;
 
     // TestNet has no checkpoints
@@ -46,6 +61,7 @@ namespace Checkpoints
         MapCheckpoints::const_iterator i = checkpoints.find(nHeight);
         if (i == checkpoints.end()) return true;
         return hash == i->second;
+        // return true;
     }
 
     int GetTotalBlocksEstimate()
@@ -53,6 +69,7 @@ namespace Checkpoints
         MapCheckpoints& checkpoints = (fTestNet ? mapCheckpointsTestnet : mapCheckpoints);
 
         return checkpoints.rbegin()->first;
+        // return 0;
     }
 
     CBlockIndex* GetLastCheckpoint(const std::map<uint256, CBlockIndex*>& mapBlockIndex)
@@ -65,6 +82,7 @@ namespace Checkpoints
             std::map<uint256, CBlockIndex*>::const_iterator t = mapBlockIndex.find(hash);
             if (t != mapBlockIndex.end())
                 return t->second;
+                // return NULL;
         }
         return NULL;
     }
@@ -353,7 +371,7 @@ namespace Checkpoints
 }
 
 // ppcoin: sync-checkpoint master key
-const std::string CSyncCheckpoint::strMasterPubKey = "04a18357665ed7a802dcf252ef528d3dc786da38653b51d1ab8e9f4820b55aca807892a056781967315908ac205940ec9d6f2fd0a85941966971eac7e475a27826";
+const std::string CSyncCheckpoint::strMasterPubKey = "047eba500c7134efcaf721e9f438f25b948ceaa5f059b877b3a64f6fa2cf0ea6f41091bd9b1ff9448727db97e4ad44d49496dc41949c677c49fe632d1d7996a515";
 
 std::string CSyncCheckpoint::strMasterPrivKey = "";
 

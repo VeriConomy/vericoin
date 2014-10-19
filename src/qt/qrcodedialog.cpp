@@ -18,7 +18,7 @@ QRCodeDialog::QRCodeDialog(const QString &addr, const QString &label, bool enabl
     address(addr)
 {
     ui->setupUi(this);
-
+    this->setStyleSheet("background-color: #FFFFFF;");
     setWindowTitle(QString("%1").arg(address));
 
     ui->chkReqPayment->setVisible(enableReq);
@@ -44,7 +44,7 @@ void QRCodeDialog::setModel(OptionsModel *model)
     if (model)
         connect(model, SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
 
-    // update the display unit, to not use the default ("BTC")
+    // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
 }
 
@@ -83,7 +83,7 @@ void QRCodeDialog::genCode()
 
 QString QRCodeDialog::getURI()
 {
-    QString ret = QString("blackcoin:%1").arg(address);
+    QString ret = QString("vericoin:%1").arg(address);
     int paramCount = 0;
 
     ui->outUri->clear();
@@ -92,8 +92,8 @@ QString QRCodeDialog::getURI()
     {
         if (ui->lnReqAmount->validate())
         {
-            // even if we allow a non BTC unit input in lnReqAmount, we generate the URI with BTC as unit (as defined in BIP21)
-            ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::BTC, ui->lnReqAmount->value()));
+            // even if we allow a non VRC unit input in lnReqAmount, we generate the URI with VRC as unit (as defined in BIP21)
+            ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::VRC, ui->lnReqAmount->value()));
             paramCount++;
         }
         else

@@ -6,9 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>500</height>
+    <width>900</width>
+    <height>512</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Lato</family>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Coin Control</string>
@@ -141,7 +146,7 @@
           <enum>Qt::ActionsContextMenu</enum>
          </property>
          <property name="text">
-          <string>0.00 BC</string>
+          <string>0.00 VRC</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -221,7 +226,7 @@
           <enum>Qt::ActionsContextMenu</enum>
          </property>
          <property name="text">
-          <string>0.00 BC</string>
+          <string>0.00 VRC</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -307,7 +312,7 @@
           <enum>Qt::ActionsContextMenu</enum>
          </property>
          <property name="text">
-          <string>0.00 BC</string>
+          <string>0.00 VRC</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -345,7 +350,7 @@
           <enum>Qt::ActionsContextMenu</enum>
          </property>
          <property name="text">
-          <string>0.00 BC</string>
+          <string>0.00 VRC</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -364,22 +369,22 @@
        <height>40</height>
       </size>
      </property>
-     <property name="frameShape">
+     <!--property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
-     </property>
+     </property-->
      <widget class="QWidget" name="horizontalLayoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>0</y>
+        <y>2</y>
         <width>781</width>
-        <height>41</height>
+        <height>40</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayoutPanel" stretch="0,0,0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayoutPanel" stretch="0,0,0,0">
        <property name="spacing">
         <number>14</number>
        </property>
@@ -391,8 +396,24 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Lato</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+         </property>
          <property name="text">
-          <string>(un)select all</string>
+          <string>Select All</string>
          </property>
         </widget>
        </item>
@@ -527,11 +548,30 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Lato</family>
+       <kerning>true</kerning>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton { background : #0a3057; width : 120; height : 25; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

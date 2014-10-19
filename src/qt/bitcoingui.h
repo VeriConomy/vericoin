@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include <QWebFrame>
 
 class TransactionTableModel;
 class ClientModel;
@@ -11,6 +12,7 @@ class TransactionView;
 class OverviewPage;
 class AddressBookPage;
 class SendCoinsDialog;
+class SendBitCoinsDialog;
 class SignVerifyMessageDialog;
 class Notificator;
 class RPCConsole;
@@ -64,7 +66,10 @@ private:
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
+    SendBitCoinsDialog *sendBitCoinsPage;
     SignVerifyMessageDialog *signVerifyMessageDialog;
+    QWidget *fiatPage;
+    //QWidget *statsBox;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelStakingIcon;
@@ -78,6 +83,8 @@ private:
     QAction *historyAction;
     QAction *quitAction;
     QAction *sendCoinsAction;
+    QAction *sendBitCoinsAction;
+    QAction *fiatAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -99,6 +106,10 @@ private:
     RPCConsole *rpcConsole;
 
     QMovie *syncIconMovie;
+
+    bool fiatInit;
+
+    QWebFrame * fiatFrame;
 
     /** Create the main UI actions. */
     void createActions();
@@ -144,6 +155,13 @@ private slots:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage();
+    /** Switch to send coins page */
+    void gotoSendBitCoinsPage();
+    /** Switch to fiat page */
+    void gotoFiatPage();
+    void resizeGUI();
+
+
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

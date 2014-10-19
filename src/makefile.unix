@@ -2,7 +2,7 @@
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-USE_UPNP:=0
+USE_UPNP:=1
 USE_IPV6:=1
 
 LINK:=$(CXX)
@@ -149,7 +149,7 @@ OBJS= \
     obj/zerocoin/SpendMetaData.o \
     obj/zerocoin/ZeroTest.o
 
-all: blackcoind
+all: vericoind
 
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
@@ -190,15 +190,16 @@ obj/zerocoin/%.o: zerocoin/%.cpp
 	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
 	  rm -f $(@:%.o=%.d)
 
-blackcoind: $(OBJS:obj/%=obj/%)
+vericoind: $(OBJS:obj/%=obj/%)
 	$(LINK) $(xCXXFLAGS) -o $@ $^ $(xLDFLAGS) $(LIBS)
 
 clean:
-	-rm -f blackcoind
+	-rm -f vericoind
 	-rm -f obj/*.o
 	-rm -f obj/zerocoin/*.o
 	-rm -f obj/*.P
 	-rm -f obj/zerocoin/*.P
 	-rm -f obj/build.h
+	cd leveldb; make clean; cd ..;
 
 FORCE:

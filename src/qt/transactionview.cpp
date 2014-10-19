@@ -11,6 +11,8 @@
 #include "editaddressdialog.h"
 #include "optionsmodel.h"
 #include "guiutil.h"
+#include "guiconstants.h"
+#include "tooltip.h"
 
 #include <QScrollBar>
 #include <QComboBox>
@@ -34,8 +36,11 @@ TransactionView::TransactionView(QWidget *parent) :
     transactionView(0)
 {
     // Build filter row
-    setContentsMargins(0,0,0,0);
+    this->setStyleSheet("background-color: #FFFFFF;");
 
+    _TOOLTIP_INIT_THIS
+
+    setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0,0,0,0);
 #ifdef Q_OS_MAC
@@ -45,6 +50,24 @@ TransactionView::TransactionView(QWidget *parent) :
     hlayout->setSpacing(0);
     hlayout->addSpacing(23);
 #endif
+
+    typeWidget = new QComboBox(this);
+#ifdef Q_OS_MAC
+    typeWidget->setFixedWidth(121);
+#else
+    typeWidget->setFixedWidth(120);
+#endif
+
+    typeWidget->addItem(tr("All"), TransactionFilterProxy::ALL_TYPES);
+    typeWidget->addItem(tr("Received with"), TransactionFilterProxy::TYPE(TransactionRecord::RecvWithAddress) |
+                                        TransactionFilterProxy::TYPE(TransactionRecord::RecvFromOther));
+    typeWidget->addItem(tr("Sent to"), TransactionFilterProxy::TYPE(TransactionRecord::SendToAddress) |
+                                  TransactionFilterProxy::TYPE(TransactionRecord::SendToOther));
+    typeWidget->addItem(tr("To yourself"), TransactionFilterProxy::TYPE(TransactionRecord::SendToSelf));
+    typeWidget->addItem(tr("Interest"), TransactionFilterProxy::TYPE(TransactionRecord::Generated));
+    typeWidget->addItem(tr("Other"), TransactionFilterProxy::TYPE(TransactionRecord::Other));
+
+    hlayout->addWidget(typeWidget);
 
     dateWidget = new QComboBox(this);
 #ifdef Q_OS_MAC
@@ -60,24 +83,6 @@ TransactionView::TransactionView(QWidget *parent) :
     dateWidget->addItem(tr("This year"), ThisYear);
     dateWidget->addItem(tr("Range..."), Range);
     hlayout->addWidget(dateWidget);
-
-    typeWidget = new QComboBox(this);
-#ifdef Q_OS_MAC
-    typeWidget->setFixedWidth(121);
-#else
-    typeWidget->setFixedWidth(120);
-#endif
-
-    typeWidget->addItem(tr("All"), TransactionFilterProxy::ALL_TYPES);
-    typeWidget->addItem(tr("Received with"), TransactionFilterProxy::TYPE(TransactionRecord::RecvWithAddress) |
-                                        TransactionFilterProxy::TYPE(TransactionRecord::RecvFromOther));
-    typeWidget->addItem(tr("Sent to"), TransactionFilterProxy::TYPE(TransactionRecord::SendToAddress) |
-                                  TransactionFilterProxy::TYPE(TransactionRecord::SendToOther));
-    typeWidget->addItem(tr("To yourself"), TransactionFilterProxy::TYPE(TransactionRecord::SendToSelf));
-    typeWidget->addItem(tr("Mined"), TransactionFilterProxy::TYPE(TransactionRecord::Generated));
-    typeWidget->addItem(tr("Other"), TransactionFilterProxy::TYPE(TransactionRecord::Other));
-
-    hlayout->addWidget(typeWidget);
 
     addressWidget = new QLineEdit(this);
 #if QT_VERSION >= 0x040700
@@ -173,7 +178,7 @@ void TransactionView::setModel(WalletModel *model)
         transactionView->setSelectionBehavior(QAbstractItemView::SelectRows);
         transactionView->setSelectionMode(QAbstractItemView::ExtendedSelection);
         transactionView->setSortingEnabled(true);
-        transactionView->sortByColumn(TransactionTableModel::Status, Qt::DescendingOrder);
+        transactionView->sortByColumn(TransactionTableModel::Status, Qt::AscendingOrder);
         transactionView->verticalHeader()->hide();
 
         transactionView->horizontalHeader()->resizeSection(

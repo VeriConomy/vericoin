@@ -7,8 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>530</height>
+    <height>556</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Lato</family>
+   </font>
   </property>
   <property name="windowTitle">
    <string>QR Code Dialog</string>
@@ -63,6 +68,11 @@
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QCheckBox" name="chkReqPayment">
@@ -171,6 +181,22 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnSaveAs">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Lato</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+          </property>
           <property name="text">
            <string>&amp;Save As...</string>
           </property>
@@ -186,8 +212,9 @@
  <customwidgets>
   <customwidget>
    <class>BitcoinAmountField</class>
-   <extends>QSpinBox</extends>
+   <extends>QLineEdit</extends>
    <header>bitcoinamountfield.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

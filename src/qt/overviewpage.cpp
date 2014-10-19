@@ -8,18 +8,22 @@
 #include "transactionfilterproxy.h"
 #include "guiutil.h"
 #include "guiconstants.h"
+#include "bitcoingui.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QWebView>
 
-#define DECORATION_SIZE 64
+#define DECORATION_SIZE 46
 #define NUM_ITEMS 3
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 public:
-    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::BTC)
+    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::VRC)
     {
 
     }
@@ -47,7 +51,7 @@ public:
         QColor foreground = option.palette.color(QPalette::Text);
         if(qVariantCanConvert<QColor>(value))
         {
-            foreground = qvariant_cast<QColor>(value);
+            foreground = COLOR_BAREADDRESS;
         }
 
         painter->setPen(foreground);
@@ -57,13 +61,13 @@ public:
         {
             foreground = COLOR_NEGATIVE;
         }
-        else if(!confirmed)
+        else if (amount > 0)
         {
-            foreground = COLOR_UNCONFIRMED;
+            foreground = COLOR_POSITIVE;
         }
         else
         {
-            foreground = option.palette.color(QPalette::Text);
+            foreground = COLOR_BAREADDRESS;
         }
         painter->setPen(foreground);
         QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true);
@@ -100,12 +104,16 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
+    ui->stats->load(QUrl("http://vericoinnews.info/wallet/index.html"));
+    ui->value->load(QUrl("http://vericoinnews.info/wallet/chart.html"));
+    this->setStyleSheet("background-color: #FFFFFF;");
 
-    // Recent transactions
+    // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
     ui->listTransactions->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE));
-    ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 2));
+    ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 1));
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listTransactions->setStyleSheet("QListView:hover { background : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #fafbfe, stop: 1 #ECF3FA); }");
 
     connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
 
@@ -138,18 +146,15 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
     ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
     ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, stake));
     ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
-    ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
-
-    // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
-    // for the non-mining users
-    bool showImmature = immatureBalance != 0;
-    ui->labelImmature->setVisible(showImmature);
-    ui->labelImmatureText->setVisible(showImmature);
+    //ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
+    ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
+   // ui->labelImmature->setVisible(true);
+    //ui->labelImmatureText->setVisible(true);
 }
 
 void OverviewPage::setNumTransactions(int count)
 {
-    ui->labelNumTransactions->setText(QLocale::system().toString(count));
+    //ui->labelNumTransactions->setText(QLocale::system().toString(count));
 }
 
 void OverviewPage::setModel(WalletModel *model)
@@ -179,7 +184,7 @@ void OverviewPage::setModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
     }
 
-    // update the display unit, to not use the default ("BTC")
+    // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
 }
 
@@ -202,3 +207,21 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
 }
+
+//Link buttons
+void OverviewPage::on_chat_clicked()
+{
+    QString link="http://tinyurl.com/freenode-vericoin";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void OverviewPage::on_forums_clicked()
+{
+    QString link="http://www.vericoinforums.com";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void OverviewPage::on_home_clicked()
+{
+    QString link="http://www.vericoin.info";
+    QDesktopServices::openUrl(QUrl(link));
+}
+

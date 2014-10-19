@@ -1,2 +1,2 @@
-debian/bin/novacoind usr/bin
-src/novacoind usr/lib/novacoin
+debian/bin/vericoind usr/bin
+src/vericoind usr/lib/vericoin

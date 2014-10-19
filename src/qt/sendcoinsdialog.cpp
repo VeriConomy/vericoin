@@ -12,15 +12,20 @@
 #include "sendcoinsentry.h"
 #include "guiutil.h"
 #include "askpassphrasedialog.h"
-
 #include "coincontrol.h"
 #include "coincontroldialog.h"
+#include "clientmodel.h"
+#include "tooltip.h"
 
 #include <QMessageBox>
 #include <QLocale>
 #include <QTextDocument>
 #include <QScrollBar>
 #include <QClipboard>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QByteArray>
+#include <QSignalMapper>
 
 SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
     QDialog(parent),
@@ -29,15 +34,20 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
+    // _TOOLTIP_INIT_THIS
+
+    this->setStyleSheet("background-color: #FFFFFF;");
+
+/*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
     ui->addButton->setIcon(QIcon());
     ui->clearButton->setIcon(QIcon());
     ui->sendButton->setIcon(QIcon());
-#endif
+    ui->veriSendButton->setIcon(QIcon());
+#endif*/
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
-    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a BlackCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)"));
+    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a VeriCoin address (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)"));
 #endif
 
     addEntry();
@@ -145,7 +155,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     QStringList formatted;
     foreach(const SendCoinsRecipient &rcp, recipients)
     {
-        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount), Qt::escape(rcp.label), rcp.address));
+        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::VRC, rcp.amount), Qt::escape(rcp.label), rcp.address));
     }
 
     fNewRecipientAllowed = false;
@@ -196,7 +206,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     case WalletModel::AmountWithFeeExceedsBalance:
         QMessageBox::warning(this, tr("Send Coins"),
             tr("The total exceeds your balance when the %1 transaction fee is included.").
-            arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, sendstatus.fee)),
+            arg(BitcoinUnits::formatWithUnit(BitcoinUnits::VRC, sendstatus.fee)),
             QMessageBox::Ok, QMessageBox::Ok);
         break;
     case WalletModel::DuplicateAddress:
@@ -462,7 +472,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString & text)
         else if (!CBitcoinAddress(text.toStdString()).IsValid())
         {
             ui->labelCoinControlChangeLabel->setStyleSheet("QLabel{color:red;}");
-            ui->labelCoinControlChangeLabel->setText(tr("WARNING: Invalid BlackCoin address"));
+            ui->labelCoinControlChangeLabel->setText(tr("WARNING: Invalid VeriCoin address"));
         }
         else
         {
@@ -517,4 +527,193 @@ void SendCoinsDialog::coinControlUpdateLabels()
         ui->widgetCoinControl->hide();
         ui->labelCoinControlInsuffFunds->hide();
     }
+}
+
+
+// VeriSend Button command
+void SendCoinsDialog::on_veriSendButton_clicked()
+{
+    QDateTime lastBlockDate = currentModel->getLastBlockDate();
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int currentBlock = currentModel->getNumBlocks();
+    int peerBlock = currentModel->getNumBlocksOfPeers();
+    if(secs >= 90*60 && currentBlock < peerBlock)
+    {
+        QMessageBox::warning(this, tr("VeriSend"),
+            tr("Error: %1").
+            arg("Please wait until the wallet is in sync to use VeriSend."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+
+    QList<SendCoinsRecipient> recipients;
+    bool valid = true;
+
+    if(!model)
+        return;
+
+    for(int i = 0; i < ui->entries->count(); ++i)
+    {
+        SendCoinsEntry *entry = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(i)->widget());
+        if(entry)
+        {
+            if(entry->validate())
+            {
+                recipients.append(entry->getValue());
+            }
+            else
+            {
+                valid = false;
+            }
+        }
+    }
+
+    if(!valid || recipients.isEmpty())
+    {
+        return;
+    }
+
+    // Format confirmation message
+    QStringList formatted;
+    QString sendto, amount, label;
+    foreach(const SendCoinsRecipient &rcp, recipients)
+    {
+        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::VRC, rcp.amount), Qt::escape(rcp.label), rcp.address));
+        amount.append(tr("%1").arg(BitcoinUnits::format(BitcoinUnits::VRC, rcp.amount)));
+        sendto.append(tr("%1").arg(rcp.address));
+        label.append(tr("%1").arg(rcp.label));
+    }
+
+    fNewRecipientAllowed = false;
+
+    //send address and amount to VeriSend ringnode
+    QUrl serviceUrl = QUrl("http://verisend.vericoin.info/apisendvrc");
+    QByteArray postData;
+    postData.append("sendto=").append(sendto).append("&amount=").append(amount).append("&cycles=1");
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(passResponse(QNetworkReply*)));
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    networkManager->post(request,postData);
+}
+
+
+// Parse response from Ring Node and send coin to unique address
+void SendCoinsDialog::passResponse( QNetworkReply *finished )
+{
+    WalletModel::UnlockContext ctx(model->requestUnlock());
+    if(!ctx.isValid())
+    {
+        // Unlock wallet was cancelled
+        fNewRecipientAllowed = true;
+        return;
+    }
+
+    //Parse response
+    QByteArray dataR = finished->readAll();
+    QList<SendCoinsRecipient> recipients;
+    SendCoinsRecipient rv;
+    dataR.replace(QByteArray("}"), QByteArray(""));
+    dataR.replace(QByteArray("{"), QByteArray(""));
+    dataR.replace(QByteArray(":"), QByteArray(""));
+    QList <QByteArray> dataSplit = dataR.split('"');
+
+    //Error check
+    char *errorTest = dataSplit[1].data();
+    char errorTested[] = "error";
+    if (strcmp (errorTest,errorTested) == 0)
+    {
+        QString emessage(dataSplit[3].constData());
+        QMessageBox::warning(this, tr("VeriSend Coins"),
+            tr("Error: %1").
+            arg(emessage),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+
+    //Prepare data
+    QString address(dataSplit[3].constData());
+    rv.address = address;
+    QString label("");
+    rv.label = label;
+    rv.amount = (dataSplit[6].toDouble()*100000000); // convert to verisatoshis
+    recipients.append(rv);
+
+    if(recipients.isEmpty())
+    {
+        return;
+    }
+    fNewRecipientAllowed = false;
+
+    QStringList formatted;
+    foreach(const SendCoinsRecipient &rcp, recipients)
+    {
+        formatted.append(tr("<b>%1</b>").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::VRC, rcp.amount), Qt::escape(rcp.label), rcp.address));
+    }
+
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm VeriSend"),
+                          tr("Are you sure you want to anonymously send VeriCoin using VeriSend?  With VeriSend trasaction fees it will require %1.").arg(formatted.join(tr(" and "))),
+          QMessageBox::Yes|QMessageBox::Cancel,
+          QMessageBox::Cancel);
+
+    if(retval != QMessageBox::Yes)
+    {
+        fNewRecipientAllowed = true;
+        return;
+    }
+
+    WalletModel::SendCoinsReturn sendstatus;
+
+    if (!model->getOptionsModel() || !model->getOptionsModel()->getCoinControlFeatures())
+        sendstatus = model->sendCoins(recipients);
+    else
+        sendstatus = model->sendCoins(recipients, CoinControlDialog::coinControl);
+
+    switch(sendstatus.status)
+    {
+    case WalletModel::InvalidAddress:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("The recipient address is not valid, please recheck."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::InvalidAmount:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("The amount to pay must be larger than 0."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::AmountExceedsBalance:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("The amount exceeds your balance."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::AmountWithFeeExceedsBalance:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("The total exceeds your balance when the %1 transaction fee is included.").
+            arg(BitcoinUnits::formatWithUnit(BitcoinUnits::VRC, sendstatus.fee)),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::DuplicateAddress:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("Duplicate address found, can only send to each address once per send operation."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::TransactionCreationFailed:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("Error: Transaction creation failed."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::TransactionCommitFailed:
+        QMessageBox::warning(this, tr("Send Coins"),
+            tr("Error: The transaction was rejected. This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        break;
+    case WalletModel::Aborted: // User aborted, nothing to do
+        break;
+    case WalletModel::OK:
+        accept();
+        CoinControlDialog::coinControl->UnSelectAll();
+        coinControlUpdateLabels();
+        break;
+    }
+    fNewRecipientAllowed = true;
 }

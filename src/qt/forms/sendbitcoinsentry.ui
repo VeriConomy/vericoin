@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SendBitCoinsEntry</class>
+ <widget class="QFrame" name="SendBitCoinsEntry">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>615</width>
+    <height>136</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Lato</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::NoFrame</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Sunken</enum>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="payToLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QValidatedLineEdit" name="payTo">
+       <property name="toolTip">
+        <string>The address to send the payment to  (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)</string>
+       </property>
+       <property name="maxLength">
+        <number>34</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="addressBookButton">
+       <property name="minimumSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Choose address from address book</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
+QToolButton:pressed { background :#418BCA ; }
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../bitcoin.qrc">
+         <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Alt+A</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="pasteButton">
+       <property name="minimumSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Paste address from clipboard</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
+QToolButton:pressed { background :#418BCA ; }
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../bitcoin.qrc">
+         <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Alt+P</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="deleteButton">
+       <property name="minimumSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Remove this recipient</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
+QToolButton:pressed { background :#418BCA ; }
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../bitcoin.qrc">
+         <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="font">
+      <font>
+       <family>Lato</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>&amp;Label:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>addAsLabel</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="font">
+      <font>
+       <family>Lato</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>Pay &amp;To:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>payTo</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <family>Lato</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>A&amp;mount:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>payAmount</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QValidatedLineEdit" name="addAsLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Enter a label for this address to add it to your address book</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="1">
+    <widget class="veriBitcoinAmountField" name="payAmount"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QValidatedLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qvalidatedlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>veriBitcoinAmountField</class>
+   <extends>QLineEdit</extends>
+   <header>veribitcoinamountfield.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../bitcoin.qrc"/>
+ </resources>
+ <connections/>
+</ui>

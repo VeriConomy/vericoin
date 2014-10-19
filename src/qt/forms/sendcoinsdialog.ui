@@ -32,14 +32,14 @@
       </size>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayoutCoinControl2">
       <property name="spacing">
-       <number>-1</number>
+       <number>6</number>
       </property>
       <property name="leftMargin">
        <number>0</number>
@@ -103,8 +103,16 @@
           </property>
           <item>
            <widget class="QPushButton" name="pushButtonCoinControl">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>25</height>
+             </size>
+            </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }
+</string>
             </property>
             <property name="text">
              <string>Inputs...</string>
@@ -169,11 +177,17 @@
             <height>0</height>
            </size>
           </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
           <layout class="QHBoxLayout" name="horizontalLayoutCoinControl5">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -321,7 +335,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string>0.00 BC</string>
+                  <string>0.00 VRC</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -407,7 +421,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string>0.00 BC</string>
+                  <string>0.00 VRC</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -493,7 +507,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string>0.00 BC</string>
+                  <string>0.00 VRC</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -525,7 +539,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string>0.00 BC</string>
+                  <string>0.00 VRC</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -617,6 +631,9 @@
    </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -625,12 +642,21 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>830</width>
-        <height>165</height>
+        <width>832</width>
+        <height>158</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -661,8 +687,24 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="addButton">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="toolTip">
         <string>Send to multiple recipients at once</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
        </property>
        <property name="text">
         <string>Add &amp;Recipient</string>
@@ -670,6 +712,12 @@
        <property name="icon">
         <iconset resource="../bitcoin.qrc">
          <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -684,8 +732,24 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="toolTip">
         <string>Remove all transaction fields</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
        </property>
        <property name="text">
         <string>Clear &amp;All</string>
@@ -693,6 +757,12 @@
        <property name="icon">
         <iconset resource="../bitcoin.qrc">
          <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
        </property>
        <property name="autoRepeatDelay">
         <number>300</number>
@@ -715,6 +785,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Lato</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Balance:</string>
          </property>
@@ -728,11 +804,17 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Lato</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
-          <string>123.456 BC</string>
+          <string>123.456 VRC</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -755,25 +837,89 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="sendButton">
+      <widget class="QPushButton" name="veriSendButton">
        <property name="minimumSize">
         <size>
-         <width>150</width>
-         <height>0</height>
+         <width>120</width>
+         <height>25</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
        </property>
        <property name="toolTip">
         <string>Confirm the send action</string>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
-        <string>S&amp;end</string>
+        <string>VeriSend</string>
        </property>
        <property name="icon">
         <iconset resource="../bitcoin.qrc">
-         <normaloff>:/icons/send</normaloff>:/icons/send</iconset>
+         <normaloff>:/icons/veriSend</normaloff>:/icons/veriSend</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
        <property name="default">
-        <bool>true</bool>
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="sendButton">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Confirm the send action</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
+       <property name="text">
+        <string>Send</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../bitcoin.qrc">
+         <normaloff>:/icons/sendButton</normaloff>:/icons/sendButton</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

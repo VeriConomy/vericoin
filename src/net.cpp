@@ -25,7 +25,7 @@
 using namespace std;
 using namespace boost;
 
-static const int MAX_OUTBOUND_CONNECTIONS = 16;
+static const int MAX_OUTBOUND_CONNECTIONS = 100;
 
 void ThreadMessageHandler2(void* parg);
 void ThreadSocketHandler2(void* parg);
@@ -373,7 +373,7 @@ bool GetMyExternalIP(CNetAddr& ipRet)
 
             pszGet = "GET / HTTP/1.1\r\n"
                      "Host: checkip.dyndns.org\r\n"
-                     "User-Agent: BlackCoin\r\n"
+                     "User-Agent: VeriCoin\r\n"
                      "Connection: close\r\n"
                      "\r\n";
 
@@ -392,7 +392,7 @@ bool GetMyExternalIP(CNetAddr& ipRet)
 
             pszGet = "GET /simple/ HTTP/1.1\r\n"
                      "Host: www.showmyip.com\r\n"
-                     "User-Agent: BlackCoin\r\n"
+                     "User-Agent: VeriCoin\r\n"
                      "Connection: close\r\n"
                      "\r\n";
 
@@ -409,7 +409,7 @@ bool GetMyExternalIP(CNetAddr& ipRet)
 void ThreadGetMyExternalIP(void* parg)
 {
     // Make this thread recognisable as the external IP detection thread
-    RenameThread("blackcoin-ext-ip");
+    RenameThread("vericoin-ext-ip");
 
     CNetAddr addrLocalHost;
     if (GetMyExternalIP(addrLocalHost))
@@ -597,7 +597,7 @@ bool CNode::Misbehaving(int howmuch)
     nMisbehavior += howmuch;
     if (nMisbehavior >= GetArg("-banscore", 100))
     {
-        int64 banTime = GetTime()+GetArg("-bantime", 60*60*24);  // Default 24-hour ban
+        int64 banTime = GetTime()+GetArg("-bantime", 60*60);  // Default 24-hour ban (temp 60 minutes)
         printf("Misbehaving: %s (%d -> %d) DISCONNECTING\n", addr.ToString().c_str(), nMisbehavior-howmuch, nMisbehavior);
         {
             LOCK(cs_setBanned);
@@ -641,7 +641,7 @@ void CNode::copyStats(CNodeStats &stats)
 void ThreadSocketHandler(void* parg)
 {
     // Make this thread recognisable as the networking thread
-    RenameThread("blackcoin-net");
+    RenameThread("vericoin-net");
 
     try
     {
@@ -1000,7 +1000,7 @@ void ThreadSocketHandler2(void* parg)
 void ThreadMapPort(void* parg)
 {
     // Make this thread recognisable as the UPnP thread
-    RenameThread("blackcoin-UPnP");
+    RenameThread("vericoin-UPnP");
 
     try
     {
@@ -1061,7 +1061,7 @@ void ThreadMapPort2(void* parg)
             }
         }
 
-        string strDesc = "BlackCoin " + FormatFullVersion();
+        string strDesc = "VeriCoin " + FormatFullVersion();
 #ifndef UPNPDISCOVER_SUCCESS
         /* miniupnpc 1.5 */
         r = UPNP_AddPortMapping(urls.controlURL, data.first.servicetype,
@@ -1151,12 +1151,18 @@ void MapPort()
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strDNSSeed[][2] = {
+    {"dnsseed1", "dnsseed.vericoin.info"},
+    {"dnsseed2", "dnsseed2.vericoin.info"},
+    {"dnsseed3", "dnsseed3.vericoin.info"},
+    {"dnsseed-pnosker", "dnsseed.pnosker.com"},
+    {"dnsseed-pcmerc", "dnsseed.kryptochaos.com"},
+    {"dnsseed-pcmerc3", "seed.kryptochaos.com"},
 };
 
 void ThreadDNSAddressSeed(void* parg)
 {
     // Make this thread recognisable as the DNS seeding thread
-    RenameThread("blackcoin-dnsseed");
+    RenameThread("vericoin-dnsseed");
 
     try
     {
@@ -1221,7 +1227,7 @@ void ThreadDNSAddressSeed2(void* parg)
 
 unsigned int pnSeed[] =
 {
-    0x4BC834C6
+    0xD28CAA6B, 0xBF63AA6B, 0x887858A7, 0x40DFE2BC, 0xABC2C780
 };
 
 void DumpAddresses()
@@ -1251,7 +1257,7 @@ void ThreadDumpAddress2(void* parg)
 void ThreadDumpAddress(void* parg)
 {
     // Make this thread recognisable as the address dumping thread
-    RenameThread("blackcoin-adrdump");
+    RenameThread("vericoin-adrdump");
 
     try
     {
@@ -1266,7 +1272,7 @@ void ThreadDumpAddress(void* parg)
 void ThreadOpenConnections(void* parg)
 {
     // Make this thread recognisable as the connection opening thread
-    RenameThread("blackcoin-opencon");
+    RenameThread("vericoin-opencon");
 
     try
     {
@@ -1448,7 +1454,7 @@ void ThreadOpenConnections2(void* parg)
 void ThreadOpenAddedConnections(void* parg)
 {
     // Make this thread recognisable as the connection opening thread
-    RenameThread("blackcoin-opencon");
+    RenameThread("vericoin-opencon");
 
     try
     {
@@ -1579,7 +1585,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
 void ThreadMessageHandler(void* parg)
 {
     // Make this thread recognisable as the message handling thread
-    RenameThread("blackcoin-msghand");
+    RenameThread("vericoin-msghand");
 
     try
     {
@@ -1747,7 +1753,7 @@ bool BindListenPort(const CService &addrBind, string& strError)
     {
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
-            strError = strprintf(_("Unable to bind to %s on this computer. BlackCoin is probably already running."), addrBind.ToString().c_str());
+            strError = strprintf(_("Unable to bind to %s on this computer. VeriCoin is probably already running."), addrBind.ToString().c_str());
         else
             strError = strprintf(_("Unable to bind to %s on this computer (bind returned error %d, %s)"), addrBind.ToString().c_str(), nErr, strerror(nErr));
         printf("%s\n", strError.c_str());
@@ -1830,7 +1836,7 @@ void static Discover()
 void StartNode(void* parg)
 {
     // Make this thread recognisable as the startup thread
-    RenameThread("blackcoin-start");
+    RenameThread("vericoin-start");
 
     if (semOutbound == NULL) {
         // initialize semaphore

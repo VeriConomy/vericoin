@@ -191,11 +191,12 @@ RPCConsole::RPCConsole(QWidget *parent) :
     historyPtr(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background-color: #FFFFFF;");
 
-#ifndef Q_OS_MAC
+/*#ifndef Q_OS_MAC
     ui->openDebugLogfileButton->setIcon(QIcon(":/icons/export"));
     ui->showCLOptionsButton->setIcon(QIcon(":/icons/options"));
-#endif
+#endif*/
 
     // Install event filter for up and down arrow
     ui->lineEdit->installEventFilter(this);
@@ -312,7 +313,7 @@ void RPCConsole::clear()
                 "b { color: #006060; } "
                 );
 
-    message(CMD_REPLY, (tr("Welcome to the BlackCoin RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the VeriCoin RPC console.") + "<br>" +
                         tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                         tr("Type <b>help</b> for an overview of available commands.")), true);
 }

@@ -16,6 +16,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
     fCapsLock(false)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background-color: #FFFFFF;");
     ui->passEdit1->setMaxLength(MAX_PASSPHRASE_SIZE);
     ui->passEdit2->setMaxLength(MAX_PASSPHRASE_SIZE);
     ui->passEdit3->setMaxLength(MAX_PASSPHRASE_SIZE);
@@ -109,7 +110,7 @@ void AskPassphraseDialog::accept()
                 {
                     QMessageBox::warning(this, tr("Wallet encrypted"),
                                          "<qt>" + 
-                                         tr("BlackCoin will close now to finish the encryption process. "
+                                         tr("VeriCoin will close now to finish the encryption process. "
                                          "Remember that encrypting your wallet cannot fully protect "
                                          "your coins from being stolen by malware infecting your computer.") + 
                                          "<br><br><b>" + 

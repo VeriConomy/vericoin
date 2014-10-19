@@ -10,6 +10,11 @@
     <height>380</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Lato</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Options</string>
   </property>
@@ -18,12 +23,17 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="veriSendOptions">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabMain">
       <attribute name="title">
@@ -32,6 +42,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_Main">
        <item>
         <widget class="QLabel" name="transactionFeeInfoLabel">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB. Fee 0.01 recommended.</string>
          </property>
@@ -125,10 +140,10 @@
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
          <property name="toolTip">
-          <string>Automatically start BlackCoin after logging in to the system.</string>
+          <string>Automatically start VeriCoin after logging in to the system.</string>
          </property>
          <property name="text">
-          <string>&amp;Start BlackCoin on system login</string>
+          <string>&amp;Start VeriCoin on system login</string>
          </property>
         </widget>
        </item>
@@ -165,7 +180,7 @@
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
          <property name="toolTip">
-          <string>Automatically open the BlackCoin client port on the router. This only works when your router supports UPnP and it is enabled.</string>
+          <string>Automatically open the VeriCoin client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
          <property name="text">
           <string>Map port using &amp;UPnP</string>
@@ -175,7 +190,7 @@
        <item>
         <widget class="QCheckBox" name="connectSocks">
          <property name="toolTip">
-          <string>Connect to the BlackCoin network through a SOCKS proxy (e.g. when connecting through Tor).</string>
+          <string>Connect to the VeriCoin network through a SOCKS proxy (e.g. when connecting through Tor).</string>
          </property>
          <property name="text">
           <string>&amp;Connect through SOCKS proxy:</string>
@@ -349,7 +364,7 @@
          <item>
           <widget class="QValueComboBox" name="lang">
            <property name="toolTip">
-            <string>The user interface language can be set here. This setting will take effect after restarting BlackCoin.</string>
+            <string>The user interface language can be set here. This setting will take effect after restarting VeriCoin.</string>
            </property>
           </widget>
          </item>
@@ -382,7 +397,7 @@
        <item>
         <widget class="QCheckBox" name="displayAddresses">
          <property name="toolTip">
-          <string>Whether to show BlackCoin addresses in the transaction list or not.</string>
+          <string>Whether to show VeriCoin addresses in the transaction list or not.</string>
          </property>
          <property name="text">
           <string>&amp;Display addresses in transaction list</string>
@@ -413,6 +428,60 @@
         </spacer>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>&amp;VeriSend</string>
+      </attribute>
+      <widget class="QSpinBox" name="veriSendMixNumber">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>48</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>15</number>
+       </property>
+      </widget>
+      <widget class="QLabel" name="veriSendMixLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>141</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>VeriSend Mix Cycles:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="veriSendIPLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>471</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>VeriSend Entry Ring Node IP address (VeriCoin Ring Node is Default):</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="veriSendIP">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>251</width>
+         <height>27</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>
@@ -465,6 +534,22 @@
      </item>
      <item>
       <widget class="QPushButton" name="okButton">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
         <string>&amp;OK</string>
        </property>
@@ -472,6 +557,22 @@
      </item>
      <item>
       <widget class="QPushButton" name="cancelButton">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
         <string>&amp;Cancel</string>
        </property>
@@ -482,6 +583,22 @@
      </item>
      <item>
       <widget class="QPushButton" name="applyButton">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
         <string>&amp;Apply</string>
        </property>
@@ -496,19 +613,20 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QValidatedLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qvalidatedlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>BitcoinAmountField</class>
-   <extends>QSpinBox</extends>
+   <extends>QLineEdit</extends>
    <header>bitcoinamountfield.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QValueComboBox</class>
    <extends>QComboBox</extends>
    <header>qvaluecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QValidatedLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qvalidatedlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

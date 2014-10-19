@@ -10,6 +10,12 @@
     <height>380</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Lato</family>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Signatures - Sign / Verify a Message</string>
   </property>
@@ -19,8 +25,13 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Lato</family>
+      </font>
+     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSignMessage">
       <attribute name="title">
@@ -29,6 +40,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_SM">
        <item>
         <widget class="QLabel" name="infoLabel_SM">
+         <property name="font">
+          <font>
+           <family>Lato</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>You can sign messages with your addresses to prove you own them. Be careful not to sign anything vague, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</string>
          </property>
@@ -47,8 +64,13 @@
          </property>
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_SM">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
-            <string>The address to sign the message with (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</string>
+            <string>The address to sign the message with (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)</string>
            </property>
            <property name="maxLength">
             <number>34</number>
@@ -57,8 +79,24 @@
          </item>
          <item>
           <widget class="QPushButton" name="addressBookButton_SM">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Lato</family>
+             <pointsize>6</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Choose an address from the address book</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -66,6 +104,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>18</width>
+             <height>18</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Alt+A</string>
@@ -77,8 +121,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="pasteButton_SM">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Paste address from clipboard</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -86,6 +140,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Alt+P</string>
@@ -113,6 +173,7 @@
           <widget class="QLineEdit" name="signatureOut_SM">
            <property name="font">
             <font>
+             <pointsize>12</pointsize>
              <italic>true</italic>
             </font>
            </property>
@@ -123,8 +184,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="copySignatureButton_SM">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Copy the current signature to the system clipboard</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -132,6 +203,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/editcopy</normaloff>:/icons/editcopy</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -144,15 +221,36 @@
         <layout class="QHBoxLayout" name="horizontalLayout_3_SM">
          <item>
           <widget class="QPushButton" name="signMessageButton_SM">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
-            <string>Sign the message to prove you own this BlackCoin address</string>
+            <string>Sign the message to prove you own this VeriCoin address</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>&amp;Sign Message</string>
            </property>
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
-             <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
+             <normaloff>:/icons/editButton</normaloff>:/icons/editButton</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -161,8 +259,23 @@
          </item>
          <item>
           <widget class="QPushButton" name="clearButton_SM">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Reset all sign message fields</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
@@ -170,6 +283,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -229,6 +348,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_VM">
        <item>
         <widget class="QLabel" name="infoLabel_VM">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Enter the signing address, message (ensure you copy line breaks, spaces, tabs, etc. exactly) and signature below to verify the message. Be careful not to read more into the signature than what is in the signed message itself, to avoid being tricked by a man-in-the-middle attack.</string>
          </property>
@@ -250,8 +374,13 @@
          </property>
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_VM">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
-            <string>The address the message was signed with (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</string>
+            <string>The address the message was signed with (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)</string>
            </property>
            <property name="maxLength">
             <number>34</number>
@@ -260,8 +389,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="addressBookButton_VM">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Choose an address from the address book</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -284,21 +423,52 @@
         <widget class="QPlainTextEdit" name="messageIn_VM"/>
        </item>
        <item>
-        <widget class="QValidatedLineEdit" name="signatureIn_VM"/>
+        <widget class="QValidatedLineEdit" name="signatureIn_VM">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2_VM">
          <item>
           <widget class="QPushButton" name="verifyMessageButton_VM">
+           <property name="minimumSize">
+            <size>
+             <width>125</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Lato</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
-            <string>Verify the message to ensure it was signed with the specified BlackCoin address</string>
+            <string>Verify the message to ensure it was signed with the specified VeriCoin address</string>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>&amp;Verify Message</string>
            </property>
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
-             <normaloff>:/icons/transaction_0</normaloff>:/icons/transaction_0</iconset>
+             <normaloff>:/icons/verifyButton</normaloff>:/icons/verifyButton</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -307,8 +477,24 @@
          </item>
          <item>
           <widget class="QPushButton" name="clearButton_VM">
+           <property name="minimumSize">
+            <size>
+             <width>125</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Lato</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Reset all verify message fields</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
@@ -316,6 +502,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="autoDefault">
             <bool>false</bool>

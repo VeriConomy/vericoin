@@ -21,14 +21,15 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background-color: #FFFFFF;");
 
 #if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
-    ui->addressIn_SM->setPlaceholderText(tr("Enter a BlackCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)"));
+    ui->addressIn_SM->setPlaceholderText(tr("Enter a VeriCoin address (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)"));
     ui->signatureOut_SM->setPlaceholderText(tr("Click \"Sign Message\" to generate signature"));
 
-    ui->addressIn_VM->setPlaceholderText(tr("Enter a BlackCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)"));
-    ui->signatureIn_VM->setPlaceholderText(tr("Enter BlackCoin signature"));
+    ui->addressIn_VM->setPlaceholderText(tr("Enter a VeriCoin address (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)"));
+    ui->signatureIn_VM->setPlaceholderText(tr("Enter VeriCoin signature"));
 #endif
 
     GUIUtil::setupAddressWidget(ui->addressIn_SM, this);

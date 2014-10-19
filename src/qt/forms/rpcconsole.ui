@@ -7,17 +7,23 @@
     <x>0</x>
     <y>0</y>
     <width>740</width>
-    <height>450</height>
+    <height>517</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>BlackCoin - Debug window</string>
+   <string>VeriCoin - Debug window</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Lato</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_info">
       <attribute name="title">
@@ -36,7 +42,7 @@
           </font>
          </property>
          <property name="text">
-          <string>BlackCoin Core</string>
+          <string>VeriCoin Core</string>
          </property>
         </widget>
        </item>
@@ -321,8 +327,24 @@
        </item>
        <item row="15" column="0">
         <widget class="QPushButton" name="openDebugLogfileButton">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Lato</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
-          <string>Open the BlackCoin debug log file from the current data directory. This can take a few seconds for large log files.</string>
+          <string>Open the VeriCoin debug log file from the current data directory. This can take a few seconds for large log files.</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
          </property>
          <property name="text">
           <string>&amp;Open</string>
@@ -347,8 +369,24 @@
        </item>
        <item row="17" column="0">
         <widget class="QPushButton" name="showCLOptionsButton">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Lato</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
-          <string>Show the BlackCoin-Qt help message to get a list with possible BlackCoin command-line options.</string>
+          <string>Show the VeriCoin-Qt help message to get a list with possible VeriCoin command-line options.</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
          </property>
          <property name="text">
           <string>&amp;Show</string>
@@ -413,10 +451,22 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="lineEdit">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="clearButton">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>24</width>
@@ -426,12 +476,22 @@
            <property name="toolTip">
             <string>Clear console</string>
            </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+           </property>
            <property name="text">
             <string/>
            </property>
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="shortcut">
             <string notr="true">Ctrl+L</string>

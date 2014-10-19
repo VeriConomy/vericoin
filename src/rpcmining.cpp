@@ -44,6 +44,7 @@ Value getmininginfo(const Array& params, bool fHelp)
 
     uint64 nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
+    uint64 nNetworkWeight_ = GetPoSKernelPS();
 
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
@@ -65,8 +66,14 @@ Value getmininginfo(const Array& params, bool fHelp)
     weight.push_back(Pair("maximum",    (uint64_t)nMaxWeight));
     weight.push_back(Pair("combined",  (uint64_t)nWeight));
     obj.push_back(Pair("stakeweight", weight));
-
-    obj.push_back(Pair("stakeinterest",    (uint64_t)COIN_YEAR_REWARD));
+    if (nNetworkWeight_ == 0)
+    {
+        obj.push_back(Pair("stakeinterest",    (uint64_t)(0)));
+    }
+    else
+    {
+        obj.push_back(Pair("stakeinterest",    (double)(0.17*(log(nNetworkWeight_/20)))));
+    }
     obj.push_back(Pair("testnet",       fTestNet));
     return obj;
 }
@@ -80,10 +87,10 @@ Value getworkex(const Array& params, bool fHelp)
         );
 
     if (vNodes.empty())
-        throw JSONRPCError(-9, "BlackCoin is not connected!");
+        throw JSONRPCError(-9, "VeriCoin is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(-10, "BlackCoin is downloading blocks...");
+        throw JSONRPCError(-10, "VeriCoin is downloading blocks...");
 
     if (pindexBest->nHeight >= LAST_POW_BLOCK)
         throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
@@ -214,10 +221,10 @@ Value getwork(const Array& params, bool fHelp)
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "BlackCoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "VeriCoin is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "BlackCoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "VeriCoin is downloading blocks...");
 
     if (pindexBest->nHeight >= LAST_POW_BLOCK)
         throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
@@ -358,10 +365,10 @@ Value getblocktemplate(const Array& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "BlackCoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "VeriCoin is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "BlackCoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "VeriCoin is downloading blocks...");
 
     if (pindexBest->nHeight >= LAST_POW_BLOCK)
         throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");

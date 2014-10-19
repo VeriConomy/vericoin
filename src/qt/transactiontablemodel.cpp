@@ -358,7 +358,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord *wtx) const
     case TransactionRecord::SendToSelf:
         return tr("Payment to yourself");
     case TransactionRecord::Generated:
-        return tr("Mined");
+        return tr("Interest");
     default:
         return QString();
     }
@@ -532,14 +532,13 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const
     case Qt::TextAlignmentRole:
         return column_alignments[index.column()];
     case Qt::ForegroundRole:
-        // Non-confirmed (but not immature) as transactions are grey
-        if(!rec->status.countsForBalance && rec->status.status != TransactionStatus::Immature)
-        {
-            return COLOR_UNCONFIRMED;
-        }
         if(index.column() == Amount && (rec->credit+rec->debit) < 0)
         {
             return COLOR_NEGATIVE;
+        }
+        if(index.column() == Amount && (rec->credit+rec->debit) > 0)
+        {
+            return COLOR_POSITIVE;
         }
         if(index.column() == ToAddress)
         {

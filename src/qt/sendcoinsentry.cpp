@@ -16,6 +16,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background-color: #FFFFFF;");
 
 #ifdef Q_OS_MAC
     ui->payToLayout->setSpacing(4);
@@ -23,7 +24,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
-    ui->payTo->setPlaceholderText(tr("Enter a BlackCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)"));
+    ui->payTo->setPlaceholderText(tr("Enter a VeriCoin address (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)"));
 #endif
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->payTo);
@@ -88,7 +89,7 @@ void SendCoinsEntry::clear()
     ui->addAsLabel->clear();
     ui->payAmount->clear();
     ui->payTo->setFocus();
-    // update the display unit, to not use the default ("BTC")
+    // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
 }
 
@@ -136,6 +137,8 @@ SendCoinsRecipient SendCoinsEntry::getValue()
 
     return rv;
 }
+
+
 
 QWidget *SendCoinsEntry::setupTabChain(QWidget *prev)
 {

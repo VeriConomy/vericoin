@@ -11,6 +11,7 @@ EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
     ui(new Ui::EditAddressDialog), mapper(0), mode(mode), model(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background-color: #FFFFFF;");
 
     GUIUtil::setupAddressWidget(ui->addressEdit, this);
 
@@ -99,7 +100,7 @@ void EditAddressDialog::accept()
             break;
         case AddressTableModel::INVALID_ADDRESS:
             QMessageBox::warning(this, windowTitle(),
-                tr("The entered address \"%1\" is not a valid BlackCoin address.").arg(ui->addressEdit->text()),
+                tr("The entered address \"%1\" is not a valid VeriCoin address.").arg(ui->addressEdit->text()),
                 QMessageBox::Ok, QMessageBox::Ok);
             break;
         case AddressTableModel::DUPLICATE_ADDRESS:

@@ -3,6 +3,7 @@
 #include "bitcoinunits.h"
 
 #include "guiconstants.h"
+#include "tooltip.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -17,11 +18,14 @@
 BitcoinAmountField::BitcoinAmountField(QWidget *parent):
         QWidget(parent), amount(0), currentUnit(-1)
 {
+    // _TOOLTIP_INIT_THIS
+
     amount = new QDoubleSpinBox(this);
     amount->setLocale(QLocale::c());
     amount->setDecimals(8);
     amount->installEventFilter(this);
     amount->setMaximumWidth(170);
+    amount->setMinimumWidth(170);
     amount->setSingleStep(0.001);
 
     QHBoxLayout *layout = new QHBoxLayout(this);

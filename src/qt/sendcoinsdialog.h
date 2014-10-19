@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <QtNetwork/QtNetwork>
 
 namespace Ui {
     class SendCoinsDialog;
@@ -10,6 +11,7 @@ namespace Ui {
 class WalletModel;
 class SendCoinsEntry;
 class SendCoinsRecipient;
+class ClientModel;
 
 QT_BEGIN_NAMESPACE
 class QUrl;
@@ -40,10 +42,15 @@ public slots:
     SendCoinsEntry *addEntry();
     void updateRemoveEnabled();
     void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance);
+    void passResponse(QNetworkReply *finished);
+
+signals:
+    void dataready( QByteArray &dataR );
 
 private:
     Ui::SendCoinsDialog *ui;
     WalletModel *model;
+    ClientModel *currentModel;
     bool fNewRecipientAllowed;
 
 private slots:
@@ -63,6 +70,7 @@ private slots:
     void coinControlClipboardPriority();
     void coinControlClipboardLowOutput();
     void coinControlClipboardChange();
+    void on_veriSendButton_clicked();
 };
 
 #endif // SENDCOINSDIALOG_H
