@@ -42,9 +42,9 @@ Value getmininginfo(const Array& params, bool fHelp)
             "getmininginfo\n"
             "Returns an object containing mining-related information.");
 
-    uint64 nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
+    uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-    uint64 nNetworkWeight_ = GetPoSKernelPS();
+    uint64_t nNetworkWeight_ = GetPoSKernelPS();
 
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
@@ -105,7 +105,7 @@ Value getworkex(const Array& params, bool fHelp)
         // Update block
         static unsigned int nTransactionsUpdatedLast;
         static CBlockIndex* pindexPrev;
-        static int64 nStart;
+        static int64_t nStart;
         static CBlock* pblock;
         if (pindexPrev != pindexBest ||
             (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60))
@@ -239,7 +239,7 @@ Value getwork(const Array& params, bool fHelp)
         // Update block
         static unsigned int nTransactionsUpdatedLast;
         static CBlockIndex* pindexPrev;
-        static int64 nStart;
+        static int64_t nStart;
         static CBlock* pblock;
         if (pindexPrev != pindexBest ||
             (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60))
@@ -378,7 +378,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
     // Update block
     static unsigned int nTransactionsUpdatedLast;
     static CBlockIndex* pindexPrev;
-    static int64 nStart;
+    static int64_t nStart;
     static CBlock* pblock;
     if (pindexPrev != pindexBest ||
         (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 5))

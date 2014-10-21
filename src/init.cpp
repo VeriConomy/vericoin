@@ -45,7 +45,7 @@ enum Checkpoints::CPMode CheckpointsMode;
 void ExitTimeout(void* parg)
 {
 #ifdef WIN32
-    Sleep(5000);
+    MilliSleep(5000);
     ExitProcess(0);
 #endif
 }
@@ -91,7 +91,8 @@ void Shutdown(void* parg)
         UnregisterWallet(pwalletMain);
         delete pwalletMain;
         NewThread(ExitTimeout, NULL);
-        Sleep(50);
+
+        MilliSleep(50);
         printf("VeriCoin exited\n\n");
         fExit = true;
 #ifndef QT_GUI
@@ -102,8 +103,8 @@ void Shutdown(void* parg)
     else
     {
         while (!fExit)
-            Sleep(500);
-        Sleep(100);
+            MilliSleep(500);
+        MilliSleep(100);
         ExitThread(0);
     }
 }
@@ -528,7 +529,7 @@ bool AppInit2()
     if (fDaemon)
         fprintf(stdout, "VeriCoin server starting\n");
 
-    int64 nStart;
+    int64_t nStart;
 
     // ********************************************************* Step 5: verify database integrity
 
@@ -718,7 +719,7 @@ bool AppInit2()
         printf("Shutdown requested. Exiting.\n");
         return false;
     }
-    printf(" block index %15"PRI64d"ms\n", GetTimeMillis() - nStart);
+    printf(" block index %15"PRId64"ms\n", GetTimeMillis() - nStart);
 
     if (GetBoolArg("-printblockindex") || GetBoolArg("-printblocktree"))
     {
@@ -811,15 +812,15 @@ bool AppInit2()
         RandAddSeedPerfmon();
 
         CPubKey newDefaultKey;
-        if (!pwalletMain->GetKeyFromPool(newDefaultKey, false))
-            strErrors << _("Cannot initialize keypool") << "\n";
-        pwalletMain->SetDefaultKey(newDefaultKey);
-        if (!pwalletMain->SetAddressBookName(pwalletMain->vchDefaultKey.GetID(), ""))
-            strErrors << _("Cannot write default address") << "\n";
+        if (pwalletMain->GetKeyFromPool(newDefaultKey, false)) {
+            pwalletMain->SetDefaultKey(newDefaultKey);
+            if (!pwalletMain->SetAddressBookName(pwalletMain->vchDefaultKey.GetID(), ""))
+                strErrors << _("Cannot write default address") << "\n";
+        }
     }
 
     printf("%s", strErrors.str().c_str());
-    printf(" wallet      %15"PRI64d"ms\n", GetTimeMillis() - nStart);
+    printf(" wallet      %15"PRId64"ms\n", GetTimeMillis() - nStart);
 
     RegisterWallet(pwalletMain);
 
@@ -839,7 +840,7 @@ bool AppInit2()
         printf("Rescanning last %i blocks (from block %i)...\n", pindexBest->nHeight - pindexRescan->nHeight, pindexRescan->nHeight);
         nStart = GetTimeMillis();
         pwalletMain->ScanForWalletTransactions(pindexRescan, true);
-        printf(" rescan      %15"PRI64d"ms\n", GetTimeMillis() - nStart);
+        printf(" rescan      %15"PRId64"ms\n", GetTimeMillis() - nStart);
     }
 
     // ********************************************************* Step 9: import blocks
@@ -881,7 +882,7 @@ bool AppInit2()
             printf("Invalid or missing peers.dat; recreating\n");
     }
 
-    printf("Loaded %i addresses from peers.dat  %"PRI64d"ms\n",
+    printf("Loaded %i addresses from peers.dat  %"PRId64"ms\n",
            addrman.size(), GetTimeMillis() - nStart);
 
     // ********************************************************* Step 11: start node
@@ -919,7 +920,7 @@ bool AppInit2()
     // Loop until process is exit()ed from shutdown() function,
     // called from ThreadRPCServer thread when a "stop" command is received.
     while (1)
-        Sleep(5000);
+        MilliSleep(5000);
 #endif
 
     return true;

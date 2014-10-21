@@ -35,7 +35,7 @@ bool GetMyExternalIP(CNetAddr& ipRet);
 void AddressCurrentlyConnected(const CService& addr);
 CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CService& ip);
-CNode* ConnectNode(CAddress addrConnect, const char *strDest = NULL, int64 nTimeout=0);
+CNode* ConnectNode(CAddress addrConnect, const char *strDest = NULL);
 void MapPort();
 unsigned short GetListenPort();
 bool BindListenPort(const CService &bindAddr, std::string& strError=REF(std::string()));
@@ -105,7 +105,7 @@ enum threadId
     THREAD_ADDEDCONNECTIONS,
     THREAD_DUMPADDRESS,
     THREAD_RPCHANDLER,
-    THREAD_MINTER,
+    THREAD_STAKE_MINER,
 
     THREAD_MAX
 };
@@ -113,8 +113,8 @@ enum threadId
 extern bool fClient;
 extern bool fDiscover;
 extern bool fUseUPnP;
-extern uint64 nLocalServices;
-extern uint64 nLocalHostNonce;
+extern uint64_t nLocalServices;
+extern uint64_t nLocalHostNonce;
 extern CAddress addrSeenByPeer;
 extern boost::array<int, THREAD_MAX> vnThreadsRunning;
 extern CAddrMan addrman;
@@ -122,9 +122,9 @@ extern CAddrMan addrman;
 extern std::vector<CNode*> vNodes;
 extern CCriticalSection cs_vNodes;
 extern std::map<CInv, CDataStream> mapRelay;
-extern std::deque<std::pair<int64, CInv> > vRelayExpiration;
+extern std::deque<std::pair<int64_t, CInv> > vRelayExpiration;
 extern CCriticalSection cs_mapRelay;
-extern std::map<CInv, int64> mapAlreadyAskedFor;
+extern std::map<CInv, int64_t> mapAlreadyAskedFor;
 
 
 
@@ -132,15 +132,14 @@ extern std::map<CInv, int64> mapAlreadyAskedFor;
 class CNodeStats
 {
 public:
-    uint64 nServices;
-    int64 nLastSend;
-    int64 nLastRecv;
-    int64 nTimeConnected;
+    uint64_t nServices;
+    int64_t nLastSend;
+    int64_t nLastRecv;
+    int64_t nTimeConnected;
     std::string addrName;
     int nVersion;
     std::string strSubVer;
     bool fInbound;
-    int64 nReleaseTime;
     int nStartingHeight;
     int nMisbehavior;
 };
@@ -154,16 +153,16 @@ class CNode
 {
 public:
     // socket
-    uint64 nServices;
+    uint64_t nServices;
     SOCKET hSocket;
     CDataStream vSend;
     CDataStream vRecv;
     CCriticalSection cs_vSend;
     CCriticalSection cs_vRecv;
-    int64 nLastSend;
-    int64 nLastRecv;
-    int64 nLastSendEmpty;
-    int64 nTimeConnected;
+    int64_t nLastSend;
+    int64_t nLastRecv;
+    int64_t nLastSendEmpty;
+    int64_t nTimeConnected;
     int nHeaderStart;
     unsigned int nMessageStart;
     CAddress addr;
@@ -178,17 +177,16 @@ public:
     bool fSuccessfullyConnected;
     bool fDisconnect;
     CSemaphoreGrant grantOutbound;
-protected:
     int nRefCount;
+protected:
 
     // Denial-of-service detection/prevention
     // Key is IP address, value is banned-until-time
-    static std::map<CNetAddr, int64> setBanned;
+    static std::map<CNetAddr, int64_t> setBanned;
     static CCriticalSection cs_setBanned;
     int nMisbehavior;
 
 public:
-    int64 nReleaseTime;
     std::map<uint256, CRequestTracker> mapRequests;
     CCriticalSection cs_mapRequests;
     uint256 hashContinue;
@@ -207,7 +205,7 @@ public:
     mruset<CInv> setInventoryKnown;
     std::vector<CInv> vInventoryToSend;
     CCriticalSection cs_inventory;
-    std::multimap<int64, CInv> mapAskFor;
+    std::multimap<int64_t, CInv> mapAskFor;
 
     CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false) : vSend(SER_NETWORK, MIN_PROTO_VERSION), vRecv(SER_NETWORK, MIN_PROTO_VERSION)
     {
@@ -230,7 +228,6 @@ public:
         fSuccessfullyConnected = false;
         fDisconnect = false;
         nRefCount = 0;
-        nReleaseTime = 0;
         hashContinue = 0;
         pindexLastGetBlocksBegin = 0;
         hashLastGetBlocksEnd = 0;
@@ -262,15 +259,13 @@ public:
 
     int GetRefCount()
     {
-        return std::max(nRefCount, 0) + (GetTime() < nReleaseTime ? 1 : 0);
+        assert(nRefCount >= 0);
+        return nRefCount;
     }
 
-    CNode* AddRef(int64 nTimeout=0)
+    CNode* AddRef()
     {
-        if (nTimeout != 0)
-            nReleaseTime = std::max(nReleaseTime, GetTime() + nTimeout);
-        else
-            nRefCount++;
+        nRefCount++;
         return this;
     }
 
@@ -317,13 +312,13 @@ public:
     {
         // We're using mapAskFor as a priority queue,
         // the key is the earliest time the request can be sent
-        int64& nRequestTime = mapAlreadyAskedFor[inv];
+        int64_t& nRequestTime = mapAlreadyAskedFor[inv];
         if (fDebugNet)
-            printf("askfor %s   %"PRI64d" (%s)\n", inv.ToString().c_str(), nRequestTime, DateTimeStrFormat("%H:%M:%S", nRequestTime/1000000).c_str());
+            printf("askfor %s   %"PRId64" (%s)\n", inv.ToString().c_str(), nRequestTime, DateTimeStrFormat("%H:%M:%S", nRequestTime/1000000).c_str());
 
         // Make sure not to reuse time indexes to keep things in the same order
-        int64 nNow = (GetTime() - 1) * 1000000;
-        static int64 nLastTime;
+        int64_t nNow = (GetTime() - 1) * 1000000;
+        static int64_t nLastTime;
         ++nLastTime;
         nNow = std::max(nNow, nLastTime);
         nLastTime = nNow;
