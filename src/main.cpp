@@ -46,7 +46,6 @@ unsigned int nTargetSpacing = 1 * 60; // 1 minute
 unsigned int nStakeMinAge = 8 * 60 * 60; // 8 hours
 unsigned int nStakeMaxAge = -1; // unlimited
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed
-double nNetworkDriftBuffer;
 
 int nCoinbaseMaturity = 500;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -991,7 +990,8 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
     }
     else
     {
-        nSubsidy = (int64_t)(nCoinAge * ((0.17*(log(nNetworkWeight_/20)))*CENT) * 33 / (365 * 33 + 8));
+        int nInterestRate = (17*(log(nNetworkWeight_/20)))*100;
+        nSubsidy = (int64_t)(nCoinAge * (nInterestRate*100) * 33 / (365 * 33 + 8));
 
         //cout << nNetworkWeight_ << " " << nSubsidy;
     }
@@ -1590,10 +1590,15 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
-            if (tx.IsCoinStake())
+            int64_t currentHeight = pindex->pprev->nHeight+1;
+            if (tx.IsCoinStake() && currentHeight < 295000)
             {
-                nNetworkDriftBuffer = nTxValueOut*.02;
+                double nNetworkDriftBuffer = nTxValueOut*.02;
                 nTxValueOut = nTxValueOut-nNetworkDriftBuffer;
+                nStakeReward = nTxValueOut - nTxValueIn;
+            }
+            if (tx.IsCoinStake() && currentHeight >= 295000)
+            {
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
             nValueIn += nTxValueIn;
@@ -2553,7 +2558,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
 #if 0
     // Set up the Zerocoin Params object
-    ZCParams = new libzerocoin::Params(bnTrustedModulus);
+    ZCParams = new libzerocoin::Params(bnTrustedModulus);nNetwork
 #endif
 
     //
