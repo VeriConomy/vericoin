@@ -120,13 +120,13 @@ void AccessNxtInsideDialog::on_accessNxtInsideButton_AN_clicked()
         return;
     }
 
-	std::string btcd = ui->addressIn_AN->text().toStdString();
+	std::string vrc = ui->addressIn_AN->text().toStdString();
 	std::string rpcUser = mapArgs["-rpcuser"];
 	std::string rpcPassword = mapArgs["-rpcpassword"];
 	std::string rpcPort = mapArgs["-rpcport"];
 
 	QUrl url = QUrl("http://localhost:7876");
-	url.addQueryItem(QString("btcd"), QString::fromStdString(btcd)); 
+	url.addQueryItem(QString("vrc"), QString::fromStdString(vrc)); 
 	url.addQueryItem(QString("rpcuser"), QString::fromStdString(rpcUser));
 	url.addQueryItem(QString("rpcpassword"), QString::fromStdString(rpcPassword));
 	url.addQueryItem(QString("rpcport"), QString::fromStdString(rpcPort));
