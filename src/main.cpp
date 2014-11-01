@@ -2558,7 +2558,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
 #if 0
     // Set up the Zerocoin Params object
-    ZCParams = new libzerocoin::Params(bnTrustedModulus);nNetwork
+    ZCParams = new libzerocoin::Params(bnTrustedModulus);
 #endif
 
     //
