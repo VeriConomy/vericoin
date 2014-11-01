@@ -66,7 +66,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     weight.push_back(Pair("maximum",    (uint64_t)nMaxWeight));
     weight.push_back(Pair("combined",  (uint64_t)nWeight));
     obj.push_back(Pair("stakeweight", weight));
-    if (nNetworkWeight_ == 0)
+    if (nNetworkWeight_ < 21)
     {
         obj.push_back(Pair("stakeinterest",    (uint64_t)(0)));
     }
