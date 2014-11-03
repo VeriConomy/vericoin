@@ -980,19 +980,19 @@ int64_t GetProofOfWorkReward(int64_t nFees)
 }
 
 // miner's coin stake reward based on coin age spent (coin-days)
-int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int64_t nHeight)
+int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 {
     int64_t nSubsidy;
-    int64_t prevHeight;
-    if (nHeight == 0)
+    uint256 prevBlockHash = pindexBest->pprev->GetBlockHash();
+    if (pindexBest->GetBlockHash() == hashGenesisBlock)
     {
-        prevHeight = nHeight;
+        prevBlockHash = hashGenesisBlock;
     }
     else
     {
-        prevHeight = nHeight-1;
+        prevBlockHash = pindexBest->pprev->GetBlockHash();
     }
-    double nNetworkWeight_ = GetPoSKernelPS(prevHeight);
+    double nNetworkWeight_ = GetPoSKernelPS(prevBlockHash);
     if(nNetworkWeight_ < 21)
     {
         nSubsidy = 0;
@@ -1638,7 +1638,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         if (!vtx[1].GetCoinAge(txdb, nCoinAge))
             return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
 
-        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->nHeight);
+        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees);
 
         if (nStakeReward > nCalculatedStakeReward)
             return DoS(100, error("ConnectBlock() : coinstake pays too much(actual=%"PRId64" vs calculated=%"PRId64")", nStakeReward, nCalculatedStakeReward));
@@ -2394,7 +2394,7 @@ bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
     if (nSearchTime > nLastCoinStakeSearchTime)
     {
-        if (wallet.CreateCoinStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key, nHeight))
+        if (wallet.CreateCoinStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key))
         {
             if (txCoinStake.nTime >= max(pindexBest->GetMedianTimePast()+1, PastDrift(pindexBest->GetBlockTime())))
             {

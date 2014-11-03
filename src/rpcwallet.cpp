@@ -101,7 +101,7 @@ Value getinfo(const Array& params, bool fHelp)
 
 Value getinterestrate(const Array& params, bool fHelp)
 {
-    return (0.17*(log(GetPoSKernelPS(nBestHeight)/20)));
+    return (0.17*(log(GetPoSKernelPS()/20)));
 }
 
 Value getnewpubkey(const Array& params, bool fHelp)

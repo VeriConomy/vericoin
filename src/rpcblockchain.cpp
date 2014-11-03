@@ -70,7 +70,7 @@ double GetPoWMHashPS()
     return GetDifficulty() * 4294.967296 / nTargetSpacingWork;
 }
 
-double GetPoSKernelPS(int64_t nHeight)
+double GetPoSKernelPS()
 {
     int nPoSInterval = 72;
     double dStakeKernelsTriedAvg = 0;
@@ -79,7 +79,32 @@ double GetPoSKernelPS(int64_t nHeight)
     CBlockIndex* pindex = pindexBest;;
     CBlockIndex* pindexPrevStake = NULL;
 
-    while (nHeight > 0 && (pindex->nHeight >= nHeight) && pindex->pprev)
+    while (pindex && nStakesHandled < nPoSInterval)
+    {
+        if (pindex->IsProofOfStake())
+        {
+            dStakeKernelsTriedAvg += GetDifficulty(pindex) * 4294967296.0;
+            nStakesTime += pindexPrevStake ? (pindexPrevStake->nTime - pindex->nTime) : 0;
+            pindexPrevStake = pindex;
+            nStakesHandled++;
+        }
+
+        pindex = pindex->pprev;
+    }
+
+    return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
+}
+
+double GetPoSKernelPS(uint256 hashBlock)
+{
+    int nPoSInterval = 72;
+    double dStakeKernelsTriedAvg = 0;
+    int nStakesHandled = 0, nStakesTime = 0;
+
+    CBlockIndex* pindex = pindexBest;
+    CBlockIndex* pindexPrevStake = NULL;
+
+    while (hashBlock != hashGenesisBlock && hashBlock != (pindex->pprev->GetBlockHash()))
     {
         pindex = pindex->pprev;
     }
