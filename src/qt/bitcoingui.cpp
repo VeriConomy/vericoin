@@ -66,7 +66,7 @@
 extern CWallet* pwalletMain;
 extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
-double GetPoSKernelPS();
+double GetPoSKernelPS(int64_t nHeight);
 bool blocksIcon = true;
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
@@ -1039,7 +1039,7 @@ void BitcoinGUI::updateStakingIcon()
 {
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    int currentBlock = clientModel->getNumBlocks();
+    int64_t currentBlock = clientModel->getNumBlocks();
     int peerBlock = clientModel->getNumBlocksOfPeers();
     if((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
     {
@@ -1052,7 +1052,7 @@ void BitcoinGUI::updateStakingIcon()
     overviewPage->showOutOfSyncWarning(false);
     if (nLastCoinStakeSearchInterval && nWeight)
     {
-        uint64_t nNetworkWeight = GetPoSKernelPS();
+        uint64_t nNetworkWeight = GetPoSKernelPS(currentBlock);
         unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
 
         QString text;

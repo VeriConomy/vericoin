@@ -44,7 +44,7 @@ Value getmininginfo(const Array& params, bool fHelp)
 
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-    uint64_t nNetworkWeight_ = GetPoSKernelPS();
+    uint64_t nNetworkWeight_ = GetPoSKernelPS(nBestHeight);
 
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
@@ -58,7 +58,7 @@ Value getmininginfo(const Array& params, bool fHelp)
 
     obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(0)));
     obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
-    obj.push_back(Pair("netstakeweight", GetPoSKernelPS()));
+    obj.push_back(Pair("netstakeweight", GetPoSKernelPS(nBestHeight)));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
 

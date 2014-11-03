@@ -70,7 +70,7 @@ double GetPoWMHashPS()
     return GetDifficulty() * 4294.967296 / nTargetSpacingWork;
 }
 
-double GetPoSKernelPS()
+double GetPoSKernelPS(int64_t nHeight)
 {
     int nPoSInterval = 72;
     double dStakeKernelsTriedAvg = 0;
@@ -78,6 +78,11 @@ double GetPoSKernelPS()
 
     CBlockIndex* pindex = pindexBest;;
     CBlockIndex* pindexPrevStake = NULL;
+
+    while (nHeight > 0 && (pindex->nHeight >= nHeight) && pindex->pprev)
+    {
+        pindex = pindex->pprev;
+    }
 
     while (pindex && nStakesHandled < nPoSInterval)
     {
@@ -92,7 +97,7 @@ double GetPoSKernelPS()
         pindex = pindex->pprev;
     }
 
-    return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
+   return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
 }
 
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPrintTransactionDetail)
