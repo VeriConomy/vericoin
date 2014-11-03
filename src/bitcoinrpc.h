@@ -130,7 +130,7 @@ extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
 
 extern double GetPoWMHashPS();
 extern double GetPoSKernelPS();
-extern double GetPoSKernelPS(uint256 hashBlock);
+extern double GetPoSKernelPS(CBlockIndex* pindexPrev);
 
 extern std::string HexBits(unsigned int nBits);
 extern std::string HelpRequiringPassphrase();

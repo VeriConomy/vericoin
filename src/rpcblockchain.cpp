@@ -95,31 +95,25 @@ double GetPoSKernelPS()
     return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
 }
 
-double GetPoSKernelPS(uint256 hashBlock)
+double GetPoSKernelPS(CBlockIndex* pindexPrev)
 {
     int nPoSInterval = 72;
     double dStakeKernelsTriedAvg = 0;
     int nStakesHandled = 0, nStakesTime = 0;
 
-    CBlockIndex* pindex = pindexBest;
     CBlockIndex* pindexPrevStake = NULL;
 
-    while (hashBlock != hashGenesisBlock && hashBlock != (pindex->pprev->GetBlockHash()))
+    while (pindexPrev && nStakesHandled < nPoSInterval)
     {
-        pindex = pindex->pprev;
-    }
-
-    while (pindex && nStakesHandled < nPoSInterval)
-    {
-        if (pindex->IsProofOfStake())
+        if (pindexPrev->IsProofOfStake())
         {
-            dStakeKernelsTriedAvg += GetDifficulty(pindex) * 4294967296.0;
-            nStakesTime += pindexPrevStake ? (pindexPrevStake->nTime - pindex->nTime) : 0;
-            pindexPrevStake = pindex;
+            dStakeKernelsTriedAvg += GetDifficulty(pindexPrev) * 4294967296.0;
+            nStakesTime += pindexPrevStake ? (pindexPrevStake->nTime - pindexPrev->nTime) : 0;
+            pindexPrevStake = pindexPrev;
             nStakesHandled++;
         }
 
-        pindex = pindex->pprev;
+        pindexPrev = pindexPrev->pprev;
     }
 
    return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
