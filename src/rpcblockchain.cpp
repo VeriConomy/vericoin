@@ -95,6 +95,30 @@ double GetPoSKernelPS()
     return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
 }
 
+double GetPoSKernelPS(CBlockIndex* pindexPrev)
+{
+    int nPoSInterval = 72;
+    double dStakeKernelsTriedAvg = 0;
+    int nStakesHandled = 0, nStakesTime = 0;
+
+    CBlockIndex* pindexPrevStake = NULL;
+
+    while (pindexPrev && nStakesHandled < nPoSInterval)
+    {
+        if (pindexPrev->IsProofOfStake())
+        {
+            dStakeKernelsTriedAvg += GetDifficulty(pindexPrev) * 4294967296.0;
+            nStakesTime += pindexPrevStake ? (pindexPrevStake->nTime - pindexPrev->nTime) : 0;
+            pindexPrevStake = pindexPrev;
+            nStakesHandled++;
+        }
+
+        pindexPrev = pindexPrev->pprev;
+    }
+
+   return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
+}
+
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPrintTransactionDetail)
 {
     Object result;
