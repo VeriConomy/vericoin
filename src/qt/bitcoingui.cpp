@@ -1039,7 +1039,7 @@ void BitcoinGUI::updateStakingIcon()
 {
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    int currentBlock = clientModel->getNumBlocks();
+    int64_t currentBlock = clientModel->getNumBlocks();
     int peerBlock = clientModel->getNumBlocksOfPeers();
     if((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
     {

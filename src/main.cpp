@@ -980,20 +980,18 @@ int64_t GetProofOfWorkReward(int64_t nFees)
 }
 
 // miner's coin stake reward based on coin age spent (coin-days)
-int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
+int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
 {
     int64_t nSubsidy;
-    int64_t nNetworkWeight_ = GetPoSKernelPS();
+    double nNetworkWeight_ = GetPoSKernelPS(pindexPrev);
     if(nNetworkWeight_ < 21)
     {
         nSubsidy = 0;
     }
     else
     {
-        int nInterestRate = (17*(log(nNetworkWeight_/20)))*100;
-        nSubsidy = (int64_t)(nCoinAge * (nInterestRate*100) * 33 / (365 * 33 + 8));
-
-        //cout << nNetworkWeight_ << " " << nSubsidy;
+        int64_t nInterestRate = (17*(log(nNetworkWeight_/20)))*10000;
+        nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
     }
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
@@ -1591,13 +1589,13 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
             int64_t currentHeight = pindex->pprev->nHeight+1;
-            if (tx.IsCoinStake() && currentHeight < 295000)
+            if (tx.IsCoinStake() && currentHeight < 299000)
             {
                 double nNetworkDriftBuffer = nTxValueOut*.02;
                 nTxValueOut = nTxValueOut-nNetworkDriftBuffer;
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
-            if (tx.IsCoinStake() && currentHeight >= 295000)
+            if (tx.IsCoinStake() && currentHeight >= 299000)
             {
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
@@ -1631,7 +1629,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         if (!vtx[1].GetCoinAge(txdb, nCoinAge))
             return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
 
-        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees);
+        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->pprev);
 
         if (nStakeReward > nCalculatedStakeReward)
             return DoS(100, error("ConnectBlock() : coinstake pays too much(actual=%"PRId64" vs calculated=%"PRId64")", nStakeReward, nCalculatedStakeReward));
@@ -2366,7 +2364,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 }
 
 // vericoin: attempt to generate suitable proof-of-stake
-bool CBlock::SignBlock(CWallet& wallet, int64_t nFees)
+bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
 {
     // if we are trying to sign
