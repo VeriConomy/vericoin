@@ -535,7 +535,6 @@ void StakeMiner(CWallet *pwallet)
 
         while (pwallet->IsLocked())
         {
-            nLastCoinStakeSearchInterval = 0;
             MilliSleep(1000);
             if (fShutdown)
                 return;
