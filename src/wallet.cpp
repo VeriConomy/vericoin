@@ -111,7 +111,7 @@ bool CWallet::AddCScript(const CScript& redeemScript)
 }
 
 // optional setting to unlock wallet for staking only
-bool fWalletUnlockStakingOnly = true;
+bool fWalletUnlockStakingOnly = false;
 
 bool CWallet::Unlock(const SecureString& strWalletPassphrase)
 {
