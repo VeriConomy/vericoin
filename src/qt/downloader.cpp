@@ -18,16 +18,6 @@ Downloader::Downloader(QWidget *parent) :
     downloaderQuit = false;
     downloaderContinue = false;
 
-    if (QFile::exists(fileDest))
-    {
-        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest));
-        ui->continueButton->setEnabled(true);
-    }
-    else
-    {
-        ui->continueButton->setEnabled(false);
-    }
-
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
     connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
@@ -68,7 +58,10 @@ void Downloader::on_downloadButton_clicked()
                 "the current directory. Overwrite?").arg(fileName),
                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No)
                 == QMessageBox::No)
-                return;
+        {
+            ui->continueButton->setEnabled(true);
+            return;
+        }
         QFile::remove(fileName);
     }
 
@@ -92,7 +85,7 @@ void Downloader::on_downloadButton_clicked()
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
-    ui->continueButton->setEnabled(true);
+    ui->continueButton->setEnabled(false);
 
     startRequest(url);
 }
@@ -204,6 +197,7 @@ void Downloader::downloaderFinished()
             QString fileName = QFileInfo(QUrl(ui->urlEdit->text()).path()).fileName();
             ui->statusLabel->setText(tr("Downloaded %1 to %2.").arg(fileName).arg(fileDest));
             ui->downloadButton->setEnabled(false);
+            ui->continueButton->setEnabled(true);
         }
     }
 
@@ -250,4 +244,14 @@ void Downloader::setUrl(QUrl url)
 void Downloader::setDest(QString dest)
 {
     fileDest = dest;
+
+    if (QFile::exists(fileDest))
+    {
+        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest));
+        ui->continueButton->setEnabled(true);
+    }
+    else
+    {
+        ui->continueButton->setEnabled(false);
+    }
 }
