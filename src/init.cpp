@@ -496,7 +496,7 @@ bool AppInit2()
     while (GetBoolArg("-restart", true) && n++ < 10) {
         if (lock.try_lock())
             SoftSetBoolArg("-restart", false);
-        Sleep(3000);
+        MilliSleep(3000);
     }
     if (!lock.try_lock())
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s.  VeriCoin is probably already running."), strDataDir.c_str()));

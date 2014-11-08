@@ -196,7 +196,7 @@ void RestartWallet(const char *parms, const bool fOldParms)
     }
 
     // SDW TODO: Spawn a new instance.
-    Sleep(1000);
+    MilliSleep(3000);
 
     // Shutdown the core and its threads, but don't exit Bitcoin-Qt yet.
     StartShutdown();
