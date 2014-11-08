@@ -198,6 +198,7 @@ void Downloader::downloaderFinished()
             ui->statusLabel->setText(tr("Downloaded %1 to %2.").arg(fileName).arg(fileDest));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
+            ui->continueButton->setDefault(true);
         }
     }
 
@@ -249,6 +250,7 @@ void Downloader::setDest(QString dest)
     {
         ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest));
         ui->continueButton->setEnabled(true);
+        ui->continueButton->setDefault(true);
     }
     else
     {
