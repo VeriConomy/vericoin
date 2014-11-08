@@ -25,6 +25,8 @@ vericoin-qt.pro.user
 #compilation and Qt preprocessor part
 *.qm
 Makefile
+Makefile.Release
+Makefile.Debug
 #resources cpp
 qrc_*.cpp
 #qt creator
@@ -33,3 +35,4 @@ qrc_*.cpp
 .DS_Store
 
 !src/leveldb/Makefile
+!src/quazip/Makefile
