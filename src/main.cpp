@@ -184,6 +184,27 @@ void ResendWalletTransactions()
         pwallet->ResendWalletTransactions();
 }
 
+// Shutdown and restart wallet
+void RestartWallet(const char *parms, const bool fOldParms)
+{
+    const char *newParms = parms;
+
+    fShutdown = true;
+
+    if (fOldParms)
+    {
+        // SDW TODO: Add existing parameteres
+    }
+
+    // SDW TODO: Spawn a new instance.
+    Sleep(1000);
+
+    // Shutdown the core and its threads, but don't exit Bitcoin-Qt yet.
+    StartShutdown();
+
+    return;
+}
+
 
 
 

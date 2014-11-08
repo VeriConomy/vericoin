@@ -1,5 +1,5 @@
 /*
- * Qt4 bitcoin GUI.
+ * Qt5 bitcoin GUI.
  *
  * W.J. van der Laan 2011-2012
  * The Bitcoin Developers 2011-2012
@@ -60,6 +60,7 @@
 #include <QUrl>
 #include <QStyle>
 #include <QFontDatabase>
+#include <QInputDialog>
 
 #include <iostream>
 
@@ -338,6 +339,8 @@ void BitcoinGUI::createActions()
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
+    reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
+    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap"));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -355,6 +358,7 @@ void BitcoinGUI::createActions()
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
+    connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -373,6 +377,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(exportAction);
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
+    file->addAction(reloadBlockchainAction);
     file->addSeparator();
     file->addAction(quitAction);
 
@@ -710,6 +715,14 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
+void BitcoinGUI::confirm(QString strMessage, bool *confirm)
+{
+    QMessageBox::StandardButton retval = QMessageBox::question(
+          this, tr("Confirm"), strMessage,
+          QMessageBox::Yes|QMessageBox::Cancel, QMessageBox::Yes);
+    *confirm = (retval == QMessageBox::Yes);
+}
+
 void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
 {
     QString strMessage =
@@ -979,7 +992,8 @@ void BitcoinGUI::encryptWallet(bool status)
 
 void BitcoinGUI::backupWallet()
 {
-    QString saveDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    //QString saveDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    QString saveDir = GetDataDir().string().c_str();
     QString filename = QFileDialog::getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (*.dat)"));
     if(!filename.isEmpty()) {
         if(!walletModel->backupWallet(filename)) {
@@ -1088,5 +1102,34 @@ void BitcoinGUI::updateStakingIcon()
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because wallet is offline"));
         else
             labelStakingIcon->setToolTip(tr("In sync at block %1 <br> Not staking because you don't have mature coins").arg(currentBlock));
+    }
+}
+
+void BitcoinGUI::reloadBlockchain()
+{
+    bool turbo = true;
+    bool confirm = false;
+    QStringList options;
+
+    options << tr("Turbo") << tr("Classic");
+
+    QString method = QInputDialog::getItem(this, tr("Reload Blockchain"),
+                                           tr("Reload Method:"), options,
+                                           0, false, &confirm);
+
+    //QMetaObject::invokeMethod(this, "confirm",
+    //                           Q_ARG(QString, tr("Please confirm reloading the blockchain using the %s method.").arg(method)),
+    //                           Q_ARG(bool*, &confirm));
+
+    if (!confirm)
+    {
+        return;
+    }
+
+    turbo = ((method == "Turbo") ? true : false);
+
+    if (!walletModel->reloadBlockchain(this, turbo))
+    {
+        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
     }
 }

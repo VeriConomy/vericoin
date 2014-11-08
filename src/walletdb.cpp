@@ -7,10 +7,10 @@
 #include "wallet.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
+#include <quazip/JlCompress.h>
 
 using namespace std;
 using namespace boost;
-
 
 static uint64 nAccountingEntryNumber = 0;
 extern bool fWalletUnlockMintOnly;
@@ -629,6 +629,116 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
         }
         Sleep(100);
     }
+    return false;
+}
+
+bool ReloadBlockchain(const void *parent, const CWallet& wallet, const bool& turbo)
+{
+    filesystem::path pathBootstrap;
+    QUrl url;
+    QString dest;
+
+    if (turbo)
+    {
+        pathBootstrap = GetDataDir() / "/bootstrap.zip";
+        url.setUrl("http://www.vericoin.info/downloads/bootstrap.zip");
+    }
+    else
+    {
+        pathBootstrap = GetDataDir() / "/bootstrap.dat";
+        url.setUrl("http://www.vericoin.info/downloads/bootstrap.dat");
+    }
+
+    if (!fShutdown)
+    {
+        LOCK(bitdb.cs_db);
+        if (!bitdb.mapFileUseCount.count(wallet.strWalletFile) || bitdb.mapFileUseCount[wallet.strWalletFile] == 0)
+        {
+            printf("Downloading blockchain data...\n");
+            dest = pathBootstrap.c_str();
+            Downloader * bs = new Downloader((QWidget*)parent);
+            bs->setWindowTitle("Bootstrap Download");
+            bs->setUrl(url);
+            bs->setDest(dest);
+            bs->exec();
+            if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
+            {
+                delete bs;
+                return true;
+            }
+            delete bs;
+
+            if (filesystem::exists(pathBootstrap) && filesystem::file_size(pathBootstrap) != 0)
+            {
+                // SDW TODO: Set wallet in busy state.
+                printf("Preparing for Blockchain Reload...\n");
+
+                // Flush log data to the dat file
+                bitdb.CloseDb(wallet.strWalletFile);
+                bitdb.CheckpointLSN(wallet.strWalletFile);
+                bitdb.mapFileUseCount.erase(wallet.strWalletFile);
+
+                if (turbo)
+                {
+                    // Leveldb instance destruction
+                    // SDW TODO: txdb.Close();
+                    filesystem::path directory = GetDataDir() / "txleveldb";
+
+                    filesystem::remove_all(directory); // remove directory
+                    unsigned int nFile = 1;
+
+                    // Remove block index files.
+                    while (true)
+                    {
+                        filesystem::path strBlockFile = GetDataDir() / strprintf("blk%04u.dat", nFile);
+                        // Break if no such file
+                        if( !filesystem::exists( strBlockFile ) )
+                            break;
+                        filesystem::remove(strBlockFile);
+                        nFile++;
+                    }
+
+                    // Extract bootstrap.zip
+                    if (!JlCompress::extractDir(pathBootstrap.c_str(), GetDataDir().c_str()).isEmpty())
+                    {
+                        filesystem::rename(GetDataDir() / "bootstrap/blk0001.dat", GetDataDir() / "blk0001.dat");
+                        filesystem::rename(GetDataDir() / "bootstrap/txleveldb", GetDataDir() / "txleveldb");
+                        filesystem::remove(GetDataDir() / "bootstrap");
+                    }
+                }
+                else
+                {
+                    // Load bootstrap.dat
+                    /*** No need to do anything, just restart. ***
+                    FILE *file = fopen(pathBootstrap.string().c_str(), "rb");
+                    if (file) {
+                        filesystem::path pathBootstrapOld = GetDataDir() / "bootstrap.dat.old";
+                        LoadExternalBlockFile(file);
+                        RenameOver(pathBootstrap, pathBootstrapOld);
+                        printf("Reload of blockchain complete.\n");
+                        return true;
+                    }
+                    else
+                    {
+                        printf("Open blockchain.dat failed.\n");
+                        return false;
+                    }
+                    */
+                }
+
+                // Restart wallet with -rescan and include any other parameters
+                printf("Shutting down and restarting wallet with: -rescan\n");
+                RestartWallet("-rescan", true);
+
+                // bye-bye
+            }
+            else
+            {
+                printf("Download failed!\n");
+            }
+        }
+    }
+
     return false;
 }
 

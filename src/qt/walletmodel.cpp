@@ -311,6 +311,11 @@ bool WalletModel::backupWallet(const QString &filename)
     return BackupWallet(*wallet, filename.toLocal8Bit().data());
 }
 
+bool WalletModel::reloadBlockchain(const void *parent, const bool &turbo)
+{
+    return ReloadBlockchain(parent, *wallet, turbo);
+}
+
 // Handlers for core signals
 static void NotifyKeyStoreStatusChanged(WalletModel *walletmodel, CCryptoKeyStore *wallet)
 {

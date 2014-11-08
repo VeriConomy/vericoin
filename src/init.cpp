@@ -489,6 +489,14 @@ bool AppInit2()
     FILE* file = fopen(pathLockFile.string().c_str(), "a"); // empty lock file; created if it doesn't exist.
     if (file) fclose(file);
     static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
+
+    // Do not restart if the old instance is still running
+    int n = 0;
+    while (GetBoolArg("-restart", true) && n++ < 10) {
+        if (lock.try_lock())
+            SoftSetBoolArg("-restart", false);
+        Sleep(3000);
+    }
     if (!lock.try_lock())
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s.  VeriCoin is probably already running."), strDataDir.c_str()));
 

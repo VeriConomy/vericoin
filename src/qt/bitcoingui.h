@@ -99,6 +99,7 @@ private:
     QAction *unlockWalletAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
+    QAction *reloadBlockchainAction;
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
@@ -143,6 +144,7 @@ public slots:
     */
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
+    void confirm(QString strMessage, bool *confirm);
 
 private slots:
     /** Switch to overview (home) page */
@@ -189,6 +191,8 @@ private slots:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
+    /** Reload the blockchain from bootstrap turbo or classic */
+    void reloadBlockchain();
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
     void showNormalIfMinimized(bool fToggleHidden = false);
