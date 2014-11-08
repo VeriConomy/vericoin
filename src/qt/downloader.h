@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QMessageBox>
+#include <QTimer>
 
 namespace Ui {
 class Downloader;
@@ -49,6 +50,7 @@ private slots:
 
     // slot for downloadProgress()
     void updateDownloadProgress(qint64, qint64);
+    void timerCheckDownloadSize();
 
     void enableDownloadButton();
     void cancelDownload();
@@ -61,7 +63,10 @@ private:
     QNetworkReply *reply;
     QProgressDialog *progressDialog;
     QFile *file;
+    bool downloadFinished;
+    qint64 downloadSize;
     qint64 fileSize;
+    QTimer *downloadTimer;
 
 };
 

@@ -145,6 +145,8 @@ void Downloader::cancelDownload()
 // When download finished or canceled, this will be called
 void Downloader::downloaderFinished()
 {
+    downloadFinished = true;
+
     // when canceled
     if (httpRequestAborted)
     {
@@ -199,6 +201,7 @@ void Downloader::downloaderFinished()
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
+            ui->quitButton->setAutoDefault(false);
         }
     }
 
@@ -212,6 +215,14 @@ void Downloader::downloaderFinished()
 // This will be called when download button is clicked
 void Downloader::startRequest(QUrl url)
 {
+    downloadSize = 0;
+    downloadFinished = false;
+
+    // Create a timer to handle hung download requests
+    downloadTimer = new QTimer(this);
+    connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadSize()));
+    downloadTimer->start(30000);
+
     // get() method posts a request
     // to obtain the contents of the target request
     // and returns a new QNetworkReply object
@@ -238,9 +249,31 @@ void Downloader::startRequest(QUrl url)
 }
 
 // This is called when the URL is already pre-defined and you want to bypass the dialog window
+void Downloader::timerCheckDownloadSize()
+{
+    if (progressDialog->value() > downloadSize)
+    {
+        downloadSize = progressDialog->value();
+        return;
+    }
+    else
+    {
+        if (!downloadFinished)
+        {
+            // We appear to be hung.
+            cancelDownload();
+        }
+        // Finished with timer
+        if (downloadTimer->isActive())
+            downloadTimer->stop();
+    }
+}
+
+// This is called when the URL is already pre-defined and you want to bypass the dialog window
 void Downloader::setUrl(QUrl url)
 {
     ui->urlEdit->setText(url.url());
+    ui->urlEdit->setEnabled(false);
 }
 
 // This is called when the Destination is already pre-defined and you want to bypass the dialog window
@@ -253,6 +286,7 @@ void Downloader::setDest(QString dest)
         ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest));
         ui->continueButton->setEnabled(true);
         ui->continueButton->setDefault(true);
+        ui->quitButton->setAutoDefault(false);
     }
     else
     {
