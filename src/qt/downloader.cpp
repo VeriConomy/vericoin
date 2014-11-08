@@ -233,6 +233,8 @@ void Downloader::startRequest(QUrl url)
     // there will be no more updates to the reply's data or metadata.
     connect(reply, SIGNAL(finished()),
             this, SLOT(downloaderFinished()));
+
+    progressDialog->show();
 }
 
 // This is called when the URL is already pre-defined and you want to bypass the dialog window

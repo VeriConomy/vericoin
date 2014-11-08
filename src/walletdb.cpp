@@ -699,11 +699,18 @@ bool ReloadBlockchain(const void *parent, const CWallet& wallet, const bool& tur
                     }
 
                     // Extract bootstrap.zip
-                    if (!JlCompress::extractDir(pathBootstrap.c_str(), GetDataDir().c_str()).isEmpty())
+                    if (!JlCompress::extractDir(pathBootstrap.c_str(), GetDataDir().c_str()).isEmpty() &&
+                            filesystem::exists(GetDataDir() / "bootstrap/blk0001.dat") &&
+                            filesystem::exists(GetDataDir() / "bootstrap/txleveldb"))
                     {
                         filesystem::rename(GetDataDir() / "bootstrap/blk0001.dat", GetDataDir() / "blk0001.dat");
                         filesystem::rename(GetDataDir() / "bootstrap/txleveldb", GetDataDir() / "txleveldb");
                         filesystem::remove(GetDataDir() / "bootstrap");
+                    }
+                    else
+                    {
+                        printf("Bootstrap extract failed!\n");
+                        return false;
                     }
                 }
                 else
