@@ -179,9 +179,18 @@ bool CDBEnv::Salvage(std::string strFile, bool fAggressive,
 
     Db db(&dbenv, 0);
     int result = db.verify(strFile.c_str(), NULL, &strDump, flags);
-    if (result != 0)
+    if (result == DB_VERIFY_BAD)
     {
-        printf("ERROR: db salvage failed\n");
+        printf("Error: Salvage found errors, all data may not be recoverable.\n");
+        if (!fAggressive)
+        {
+            printf("Error: Rerun with aggressive mode to ignore errors and continue.\n");
+            return false;
+        }
+    }
+    if (result != 0 && result != DB_VERIFY_BAD)
+    {
+        printf("ERROR: db salvage failed: %d\n",result);
         return false;
     }
 
@@ -430,7 +439,7 @@ bool CDB::Rewrite(const string& strFile, const char* pszSkip)
                 return fSuccess;
             }
         }
-        Sleep(100);
+        MilliSleep(100);
     }
     return false;
 }
@@ -438,7 +447,7 @@ bool CDB::Rewrite(const string& strFile, const char* pszSkip)
 
 void CDBEnv::Flush(bool fShutdown)
 {
-    int64 nStart = GetTimeMillis();
+    int64_t nStart = GetTimeMillis();
     // Flush log data to the actual data file
     //  on all files that are not in use
     printf("Flush(%s)%s\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " db not started");
@@ -469,7 +478,7 @@ void CDBEnv::Flush(bool fShutdown)
             else
                 mi++;
         }
-        printf("DBFlush(%s)%s ended %15"PRI64d"ms\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " db not started", GetTimeMillis() - nStart);
+        printf("DBFlush(%s)%s ended %15"PRId64"ms\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " db not started", GetTimeMillis() - nStart);
         if (fShutdown)
         {
             char** listp;

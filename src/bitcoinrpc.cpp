@@ -93,18 +93,18 @@ void RPCTypeCheck(const Object& o,
     }
 }
 
-int64 AmountFromValue(const Value& value)
+int64_t AmountFromValue(const Value& value)
 {
     double dAmount = value.get_real();
     if (dAmount <= 0.0 || dAmount > MAX_MONEY)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
-    int64 nAmount = roundint64(dAmount * COIN);
+    int64_t nAmount = roundint64(dAmount * COIN);
     if (!MoneyRange(nAmount))
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     return nAmount;
 }
 
-Value ValueFromAmount(int64 amount)
+Value ValueFromAmount(int64_t amount)
 {
     return (double)amount / (double)COIN;
 }
@@ -1007,7 +1007,7 @@ void ThreadRPCServer3(void* parg)
                If this results in a DOS the user really
                shouldn't have their RPC port exposed.*/
             if (mapArgs["-rpcpassword"].size() < 20)
-                Sleep(250);
+                MilliSleep(250);
 
             conn->stream() << HTTPReply(HTTP_UNAUTHORIZED, "", false) << std::flush;
             break;

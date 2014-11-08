@@ -123,13 +123,14 @@ public:
 
 extern const CRPCTable tableRPC;
 
-extern int64 nWalletUnlockTime;
-extern int64 AmountFromValue(const json_spirit::Value& value);
-extern json_spirit::Value ValueFromAmount(int64 amount);
+extern int64_t nWalletUnlockTime;
+extern int64_t AmountFromValue(const json_spirit::Value& value);
+extern json_spirit::Value ValueFromAmount(int64_t amount);
 extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
 
 extern double GetPoWMHashPS();
 extern double GetPoSKernelPS();
+extern double GetPoSKernelPS(CBlockIndex* pindexPrev);
 
 extern std::string HexBits(unsigned int nBits);
 extern std::string HelpRequiringPassphrase();

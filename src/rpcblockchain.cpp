@@ -49,7 +49,7 @@ double GetPoWMHashPS()
         return 0;
 
     int nPoWInterval = 72;
-    int64 nTargetSpacingWorkMin = 30, nTargetSpacingWork = 30;
+    int64_t nTargetSpacingWorkMin = 30, nTargetSpacingWork = 30;
 
     CBlockIndex* pindex = pindexGenesisBlock;
     CBlockIndex* pindexPrevWork = pindexGenesisBlock;
@@ -58,7 +58,7 @@ double GetPoWMHashPS()
     {
         if (pindex->IsProofOfWork())
         {
-            int64 nActualSpacingWork = pindex->GetBlockTime() - pindexPrevWork->GetBlockTime();
+            int64_t nActualSpacingWork = pindex->GetBlockTime() - pindexPrevWork->GetBlockTime();
             nTargetSpacingWork = ((nPoWInterval - 1) * nTargetSpacingWork + nActualSpacingWork + nActualSpacingWork) / (nPoWInterval + 1);
             nTargetSpacingWork = max(nTargetSpacingWork, nTargetSpacingWorkMin);
             pindexPrevWork = pindex;
@@ -95,6 +95,30 @@ double GetPoSKernelPS()
     return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
 }
 
+double GetPoSKernelPS(CBlockIndex* pindexPrev)
+{
+    int nPoSInterval = 72;
+    double dStakeKernelsTriedAvg = 0;
+    int nStakesHandled = 0, nStakesTime = 0;
+
+    CBlockIndex* pindexPrevStake = NULL;
+
+    while (pindexPrev && nStakesHandled < nPoSInterval)
+    {
+        if (pindexPrev->IsProofOfStake())
+        {
+            dStakeKernelsTriedAvg += GetDifficulty(pindexPrev) * 4294967296.0;
+            nStakesTime += pindexPrevStake ? (pindexPrevStake->nTime - pindexPrev->nTime) : 0;
+            pindexPrevStake = pindexPrev;
+            nStakesHandled++;
+        }
+
+        pindexPrev = pindexPrev->pprev;
+    }
+
+   return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
+}
+
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPrintTransactionDetail)
 {
     Object result;
@@ -121,7 +145,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPri
     result.push_back(Pair("flags", strprintf("%s%s", blockindex->IsProofOfStake()? "proof-of-stake" : "proof-of-work", blockindex->GeneratedStakeModifier()? " stake-modifier": "")));
     result.push_back(Pair("proofhash", blockindex->IsProofOfStake()? blockindex->hashProofOfStake.GetHex() : blockindex->GetBlockHash().GetHex()));
     result.push_back(Pair("entropybit", (int)blockindex->GetStakeEntropyBit()));
-    result.push_back(Pair("modifier", strprintf("%016"PRI64x, blockindex->nStakeModifier)));
+    result.push_back(Pair("modifier", strprintf("%016"PRIx64, blockindex->nStakeModifier)));
     result.push_back(Pair("modifierchecksum", strprintf("%08x", blockindex->nStakeModifierChecksum)));
     Array txinfo;
     BOOST_FOREACH (const CTransaction& tx, block.vtx)
