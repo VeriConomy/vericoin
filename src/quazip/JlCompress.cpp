@@ -26,7 +26,7 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #include "JlCompress.h"
 #include <QDebug>
 
-static QProgressDialog *progressDialog;
+QProgressDialog *progressDialog;
 
 void JlCompress::updateProgress(int progress)
 {
@@ -485,14 +485,12 @@ QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QStr
         if (!extractFile(&zip, "", absFilePath)) {
             removeFile(extracted);
             progressDialog->hide();
-            delete progressDialog;
             return QStringList();
         }
         extracted.append(absFilePath);
         updateProgress(++progress);
     } while (zip.goToNextFile());
     progressDialog->hide();
-    delete progressDialog;
 
     // Chiudo il file zip
     zip.close();

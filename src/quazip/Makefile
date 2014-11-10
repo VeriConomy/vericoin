@@ -828,9 +828,8 @@ compiler_clean: compiler_moc_header_clean
 		/opt/Qt/5.3/gcc_64/include/QtCore/qdir.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QFileInfo \
-		/opt/Qt/5.3/gcc_64/include/QtWidgets/QProgressBar \
-		/opt/Qt/5.3/gcc_64/include/QtWidgets/qprogressbar.h \
-		/opt/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QDialog \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
@@ -870,6 +869,10 @@ compiler_clean: compiler_moc_header_clean
 		/opt/Qt/5.3/gcc_64/include/QtCore/qurlquery.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QProgressDialog \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qprogressdialog.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QTranslator \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtranslator.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/JlCompress.o JlCompress.cpp
 
