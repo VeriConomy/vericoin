@@ -1,16 +1,16 @@
 #ifndef NOTIFICATOR_H
 #define NOTIFICATOR_H
-
+ 
 #include <QObject>
 #include <QIcon>
-
+ 
 QT_BEGIN_NAMESPACE
 class QSystemTrayIcon;
 #ifdef USE_DBUS
 class QDBusInterface;
 #endif
 QT_END_NAMESPACE
-
+ 
 /** Cross-platform desktop notification client. */
 class Notificator: public QObject
 {
@@ -21,7 +21,7 @@ public:
     */
     Notificator(const QString &programName=QString(), QSystemTrayIcon *trayIcon=0, QWidget *parent=0);
     ~Notificator();
-
+ 
     // Message class
     enum Class
     {
@@ -29,9 +29,9 @@ public:
         Warning,             /**< Notify user of potential problem */
         Critical             /**< An error occurred */
     };
-
+ 
 public slots:
-
+ 
     /** Show notification message.
        @param[in] cls    general message class
        @param[in] title  title shown with message
@@ -42,7 +42,7 @@ public slots:
      */
     void notify(Class cls, const QString &title, const QString &text,
                 const QIcon &icon = QIcon(), int millisTimeout = 10000);
-
+ 
 private:
     QWidget *parent;
     enum Mode {
@@ -57,7 +57,7 @@ private:
     QSystemTrayIcon *trayIcon;
 #ifdef USE_DBUS
     QDBusInterface *interface;
-
+ 
     void notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout);
 #endif
     void notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout);
@@ -65,5 +65,5 @@ private:
     void notifyGrowl(Class cls, const QString &title, const QString &text, const QIcon &icon);
 #endif
 };
-
+ 
 #endif // NOTIFICATOR_H
