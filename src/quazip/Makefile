@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQUAZIP_BUILD -DQUAZIP_STATIC -DQT_NO_DEBUG -DQT_CORE_LIB
+DEFINES       = -DQUAZIP_BUILD -DQUAZIP_STATIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -fPIC -Wall -W -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -O2 -fPIC -Wall -W -D_REENTRANT $(DEFINES)
-INCPATH       = -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I. -I. -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtCore -I.moc
+INCPATH       = -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I. -I. -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -I.moc
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /opt/Qt/5.3/gcc_64/bin/qmake
@@ -174,6 +174,8 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/qt.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/resources.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/moc.prf \
+		/opt/Qt/5.3/gcc_64/mkspecs/features/unix/opengl.prf \
+		/opt/Qt/5.3/gcc_64/mkspecs/features/uic.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/unix/thread.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/testcase_targets.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/exceptions.prf \
@@ -329,12 +331,16 @@ Makefile: quazip.pro /opt/Qt/5.3/gcc_64/mkspecs/linux-g++/qmake.conf /opt/Qt/5.3
 		/opt/Qt/5.3/gcc_64/mkspecs/features/qt.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/resources.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/moc.prf \
+		/opt/Qt/5.3/gcc_64/mkspecs/features/unix/opengl.prf \
+		/opt/Qt/5.3/gcc_64/mkspecs/features/uic.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/unix/thread.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/testcase_targets.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
 		quazip.pro \
+		/opt/Qt/5.3/gcc_64/lib/libQt5Widgets.prl \
+		/opt/Qt/5.3/gcc_64/lib/libQt5Gui.prl \
 		/opt/Qt/5.3/gcc_64/lib/libQt5Core.prl
 	$(QMAKE) -o Makefile quazip.pro
 /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf:
@@ -438,12 +444,16 @@ quazip.pri:
 /opt/Qt/5.3/gcc_64/mkspecs/features/qt.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/resources.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/moc.prf:
+/opt/Qt/5.3/gcc_64/mkspecs/features/unix/opengl.prf:
+/opt/Qt/5.3/gcc_64/mkspecs/features/uic.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/unix/thread.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/testcase_targets.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/exceptions.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf:
 quazip.pro:
+/opt/Qt/5.3/gcc_64/lib/libQt5Widgets.prl:
+/opt/Qt/5.3/gcc_64/lib/libQt5Gui.prl:
 /opt/Qt/5.3/gcc_64/lib/libQt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile quazip.pro
@@ -530,7 +540,7 @@ compiler_moc_header_clean:
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		quazip_global.h \
 		quagzipfile.h
-	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sdwoods/vericoin/vericoin/src/quazip -I/home/sdwoods/vericoin/vericoin/src/quazip -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtCore quagzipfile.h -o .moc/moc_quagzipfile.cpp
+	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sdwoods/vericoin/vericoin/src/quazip -I/home/sdwoods/vericoin/vericoin/src/quazip -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore quagzipfile.h -o .moc/moc_quagzipfile.cpp
 
 .moc/moc_quaziodevice.cpp: /opt/Qt/5.3/gcc_64/include/QtCore/QIODevice \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
@@ -584,7 +594,7 @@ compiler_moc_header_clean:
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		quazip_global.h \
 		quaziodevice.h
-	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sdwoods/vericoin/vericoin/src/quazip -I/home/sdwoods/vericoin/vericoin/src/quazip -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtCore quaziodevice.h -o .moc/moc_quaziodevice.cpp
+	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sdwoods/vericoin/vericoin/src/quazip -I/home/sdwoods/vericoin/vericoin/src/quazip -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore quaziodevice.h -o .moc/moc_quaziodevice.cpp
 
 .moc/moc_quazipfile.cpp: /opt/Qt/5.3/gcc_64/include/QtCore/QIODevice \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
@@ -663,10 +673,12 @@ compiler_moc_header_clean:
 		/opt/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
 		quazipnewinfo.h \
 		quazipfile.h
-	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sdwoods/vericoin/vericoin/src/quazip -I/home/sdwoods/vericoin/vericoin/src/quazip -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtCore quazipfile.h -o .moc/moc_quazipfile.cpp
+	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sdwoods/vericoin/vericoin/src/quazip -I/home/sdwoods/vericoin/vericoin/src/quazip -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore quazipfile.h -o .moc/moc_quazipfile.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
+compiler_uic_make_all:
+compiler_uic_clean:
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
 compiler_yacc_impl_make_all:
@@ -816,16 +828,49 @@ compiler_clean: compiler_moc_header_clean
 		/opt/Qt/5.3/gcc_64/include/QtCore/qdir.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QFileInfo \
-		/opt/Qt/5.3/gcc_64/include/QtCore/QDebug \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QProgressBar \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qprogressbar.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qpalette.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qmatrix.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qline.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qpainterpath.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qfontmetrics.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvariant.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qdebug.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qtextstream.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qlocale.h \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qvariant.h \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qvector.h \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qpoint.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qset.h \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qcontiguouscache.h
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/JlCompress.o JlCompress.cpp
 
 .obj/quaadler32.o: quaadler32.cpp quaadler32.h \

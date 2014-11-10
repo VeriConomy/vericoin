@@ -26,6 +26,13 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #include "JlCompress.h"
 #include <QDebug>
 
+static QProgressDialog *progressDialog;
+
+void JlCompress::updateProgress(int progress)
+{
+    progressDialog->setValue(progress);
+}
+
 static bool copyData(QIODevice &inFile, QIODevice &outFile)
 {
     while (!inFile.atEnd()) {
@@ -448,7 +455,7 @@ QStringList JlCompress::extractFiles(QString fileCompressed, QStringList files, 
  * * la compressione di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-QStringList JlCompress::extractDir(QString fileCompressed, QString dir) {
+QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QString dir) {
     // Apro lo zip
     QuaZip zip(fileCompressed);
     if(!zip.open(QuaZip::mdUnzip)) {
@@ -460,15 +467,32 @@ QStringList JlCompress::extractDir(QString fileCompressed, QString dir) {
     if (!zip.goToFirstFile()) {
         return QStringList();
     }
+
+    int progress = 0;
+    progressDialog = new QProgressDialog(parent);
+    progressDialog->setWindowTitle(QTranslator::tr("Extract"));
+    progressDialog->setLabelText(QTranslator::tr("Extracting %1.").arg(fileCompressed));
+    progressDialog->setCancelButtonText(QTranslator::tr("Please Wait..."));
+    progressDialog->setMinimum(progress);
+    progressDialog->setMaximum(zip.getEntriesCount());
+    progressDialog->setWindowModality(Qt::WindowModal);
+    progressDialog->show();
+    updateProgress(progress); // Prime the pump
+
     do {
         QString name = zip.getCurrentFileName();
         QString absFilePath = directory.absoluteFilePath(name);
         if (!extractFile(&zip, "", absFilePath)) {
             removeFile(extracted);
+            progressDialog->hide();
+            delete progressDialog;
             return QStringList();
         }
         extracted.append(absFilePath);
+        updateProgress(++progress);
     } while (zip.goToNextFile());
+    progressDialog->hide();
+    delete progressDialog;
 
     // Chiudo il file zip
     zip.close();

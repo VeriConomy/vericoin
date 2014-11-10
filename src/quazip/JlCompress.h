@@ -33,6 +33,9 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
+#include <QDialog>
+#include <QProgressDialog>
+#include <QTranslator>
 
 /// Utility class for typical operations.
 /**
@@ -74,6 +77,8 @@ private:
       \return true if success, false otherwise.
       */
     static bool removeFile(QStringList listFile);
+
+    static void updateProgress(int progress);
 
 public:
     /// Compress a single file.
@@ -126,7 +131,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QString fileCompressed, QString dir = QString());
+    static QStringList extractDir(QWidget *parent, QString fileCompressed, QString dir = QString());
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the

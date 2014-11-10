@@ -118,7 +118,19 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
-SOURCES += src/txdb-leveldb.cpp
+SOURCES += src/txdb-leveldb.cpp \
+    src/quazip/JlCompress.cpp \
+    src/quazip/qioapi.cpp \
+    src/quazip/quaadler32.cpp \
+    src/quazip/quacrc32.cpp \
+    src/quazip/quagzipfile.cpp \
+    src/quazip/quaziodevice.cpp \
+    src/quazip/quazipdir.cpp \
+    src/quazip/quazipfile.cpp \
+    src/quazip/quazipfileinfo.cpp \
+    src/quazip/quazipnewinfo.cpp \
+    src/quazip/unzip.c \
+    src/quazip/zip.c
 !win32 {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
@@ -281,7 +293,22 @@ HEADERS += src/qt/bitcoingui.h \
     src/netbase.h \
     src/clientversion.h \
     src/qt/downloader.h \
-    src/quazip/JlCompress.h
+    src/quazip/JlCompress.h \
+    src/quazip/crypt.h \
+    src/quazip/ioapi.h \
+    src/quazip/quaadler32.h \
+    src/quazip/quachecksum32.h \
+    src/quazip/quacrc32.h \
+    src/quazip/quagzipfile.h \
+    src/quazip/quaziodevice.h \
+    src/quazip/quazip.h \
+    src/quazip/quazip_global.h \
+    src/quazip/quazipdir.h \
+    src/quazip/quazipfile.h \
+    src/quazip/quazipfileinfo.h \
+    src/quazip/quazipnewinfo.h \
+    src/quazip/unzip.h \
+    src/quazip/zip.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \

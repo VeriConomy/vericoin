@@ -248,7 +248,7 @@ void Downloader::startRequest(QUrl url)
     progressDialog->show();
 }
 
-// This is called when the URL is already pre-defined and you want to bypass the dialog window
+// This is called during the download to check for a hung state
 void Downloader::timerCheckDownloadSize()
 {
     if (progressDialog->value() > downloadSize)
