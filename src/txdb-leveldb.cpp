@@ -50,7 +50,6 @@ void init_blockindex(leveldb::Options& options, bool fRemoveOld = false) {
 }
 
 void destroy_blockindex() {
-
     filesystem::path directory = GetDataDir() / "txleveldb";
 
     printf("Destroying LevelDB in: %s\n", directory.string().c_str());

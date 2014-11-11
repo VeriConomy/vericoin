@@ -633,11 +633,12 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
 
 bool ReloadBlockchain(const CWallet& wallet)
 {
-    if (!fShutdown)
+    if (fShutdown)
     {
         // Restart wallet
         printf("Shutting down and restarting wallet.\n");
         RestartWallet("", true);
+        return true;
 
         // bye-bye
     }

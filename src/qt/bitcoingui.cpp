@@ -1209,6 +1209,7 @@ void BitcoinGUI::reloadBlockchain()
         }
 
         // Leveldb instance destruction
+        fShutdown = true;
         CTxDB txdb;
         txdb.Destroy();
 
