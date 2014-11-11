@@ -26,7 +26,7 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #include "JlCompress.h"
 #include <QDebug>
 
-QProgressDialog *progressDialog;
+static QProgressDialog *progressDialog;
 
 void JlCompress::updateProgress(int progress)
 {

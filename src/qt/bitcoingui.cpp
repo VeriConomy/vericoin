@@ -26,9 +26,15 @@
 #include "notificator.h"
 #include "guiutil.h"
 #include "rpcconsole.h"
-#include "wallet.h"
 #include "ui_fiatpage.h"
 #include "tooltip.h"
+
+#include "walletdb.h"
+#include "wallet.h"
+#include "txdb.h"
+#include <boost/version.hpp>
+#include <boost/filesystem.hpp>
+#include <quazip/JlCompress.h>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -1107,9 +1113,12 @@ void BitcoinGUI::updateStakingIcon()
 
 void BitcoinGUI::reloadBlockchain()
 {
+    boost::filesystem::path pathBootstrap;
     bool turbo = true;
     bool confirm = false;
     QStringList options;
+    QUrl url;
+    QString dest;
 
     options << tr("Turbo") << tr("Classic");
 
@@ -1128,8 +1137,107 @@ void BitcoinGUI::reloadBlockchain()
 
     turbo = ((method == "Turbo") ? true : false);
 
-    if (!walletModel->reloadBlockchain(this, turbo))
+    if (turbo)
     {
-        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
+        pathBootstrap = GetDataDir() / "/bootstrap.zip";
+        url.setUrl("http://www.vericoin.info/downloads/bootstrap.zip");
+    }
+    else
+    {
+        pathBootstrap = GetDataDir() / "/bootstrap.dat";
+        url.setUrl("http://www.vericoin.info/downloads/bootstrap.dat");
+    }
+
+    printf("Downloading blockchain data...\n");
+    dest = pathBootstrap.c_str();
+    Downloader * bs = new Downloader(this);
+    bs->setWindowTitle("Bootstrap Download");
+    bs->setUrl(url);
+    bs->setDest(dest);
+    bs->exec();
+    if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
+    {
+        delete bs;
+        return;
+    }
+    delete bs;
+
+    if (boost::filesystem::exists(pathBootstrap) && boost::filesystem::file_size(pathBootstrap) != 0)
+    {
+        printf("Preparing for Blockchain Reload...\n");
+    }
+    else
+    {
+        printf("Download failed!\n");
+        return;
+    }
+
+    if (turbo)
+    {
+        // Test the archive
+        QStringList zlist = JlCompress::getFileList(pathBootstrap.c_str());
+        if (zlist.size() > 0 && zlist[0] == "bootstrap/")
+        {
+            printf("Bootstrap structure is valid.\n");
+        }
+        else
+        {
+            printf("Bootstrap structure is invalid!\n");
+            return;
+        }
+        // Extract bootstrap.zip
+        JlCompress::extractDir(this, pathBootstrap.c_str(), GetDataDir().c_str());
+
+        if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
+            !boost::filesystem::exists(GetDataDir() / "bootstrap" / "/txleveldb"))
+        {
+            printf("Bootstrap extract is invalid!\n");
+            return;
+        }
+
+        // Close wallet
+        LOCK(bitdb.cs_db);
+        if (!bitdb.mapFileUseCount.count(pwalletMain->strWalletFile) || bitdb.mapFileUseCount[pwalletMain->strWalletFile] == 0)
+        {
+            bitdb.CloseDb(pwalletMain->strWalletFile);
+            bitdb.CheckpointLSN(pwalletMain->strWalletFile);
+            bitdb.mapFileUseCount.erase(pwalletMain->strWalletFile);
+        }
+        else
+        {
+            return;
+        }
+
+        // Leveldb instance destruction
+        CTxDB txdb;
+        txdb.Destroy();
+
+        boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
+        boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+        boost::filesystem::remove(GetDataDir() / "bootstrap");
+    }
+    else
+    {
+        // Load bootstrap.dat
+        /*** No need to do anything, just restart. ***
+        FILE *file = fopen(pathBootstrap.string().c_str(), "rb");
+        if (file) {
+            boost::filesystem::path pathBootstrapOld = GetDataDir() / "bootstrap.dat.old";
+            LoadExternalBlockFile(file);
+            RenameOver(pathBootstrap, pathBootstrapOld);
+            printf("Reload of blockchain complete.\n");
+            return true;
+        }
+        else
+        {
+            printf("Open blockchain.dat failed.\n");
+            return false;
+        }
+        */
+    }
+
+    if (!walletModel->reloadBlockchain())
+    {
+        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain. Restart required!"));
     }
 }

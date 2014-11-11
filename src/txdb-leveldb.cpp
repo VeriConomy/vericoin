@@ -38,21 +38,7 @@ void init_blockindex(leveldb::Options& options, bool fRemoveOld = false) {
     filesystem::path directory = GetDataDir() / "txleveldb";
 
     if (fRemoveOld) {
-        filesystem::remove_all(directory); // remove directory
-        unsigned int nFile = 1;
-
-        while (true)
-        {
-            filesystem::path strBlockFile = GetDataDir() / strprintf("blk%04u.dat", nFile);
-
-            // Break if no such file
-            if( !filesystem::exists( strBlockFile ) )
-                break;
-
-            filesystem::remove(strBlockFile);
-
-            nFile++;
-        }
+        destroy_blockindex();
     }
 
     filesystem::create_directory(directory);
@@ -60,6 +46,30 @@ void init_blockindex(leveldb::Options& options, bool fRemoveOld = false) {
     leveldb::Status status = leveldb::DB::Open(options, directory.string(), &txdb);
     if (!status.ok()) {
         throw runtime_error(strprintf("init_blockindex(): error opening database environment %s", status.ToString().c_str()));
+    }
+}
+
+void destroy_blockindex() {
+
+    filesystem::path directory = GetDataDir() / "txleveldb";
+
+    printf("Destroying LevelDB in: %s\n", directory.string().c_str());
+
+    filesystem::remove_all(directory); // remove directory
+
+    unsigned int nFile = 1;
+
+    while (true)
+    {
+        filesystem::path strBlockFile = GetDataDir() / strprintf("blk%04u.dat", nFile);
+
+        // Break if no such file
+        if( !filesystem::exists( strBlockFile ) )
+            break;
+
+        filesystem::remove(strBlockFile);
+
+        nFile++;
     }
 }
 
@@ -130,6 +140,12 @@ void CTxDB::Close()
     options.block_cache = NULL;
     delete activeBatch;
     activeBatch = NULL;
+}
+
+void CTxDB::Destroy()
+{
+    CTxDB::Close();
+    destroy_blockindex();
 }
 
 bool CTxDB::TxnBegin()

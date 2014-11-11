@@ -5,10 +5,8 @@
 
 #include "walletdb.h"
 #include "wallet.h"
-#include "bitcoingui.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
-#include <quazip/JlCompress.h>
 
 using namespace std;
 using namespace boost;
@@ -633,126 +631,15 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
     return false;
 }
 
-bool ReloadBlockchain(const void *parent, const CWallet& wallet, const bool& turbo)
+bool ReloadBlockchain(const CWallet& wallet)
 {
-    filesystem::path pathBootstrap;
-    QUrl url;
-    QString dest;
-
-    if (turbo)
-    {
-        pathBootstrap = GetDataDir() / "/bootstrap.zip";
-        url.setUrl("http://www.vericoin.info/downloads/bootstrap.zip");
-    }
-    else
-    {
-        pathBootstrap = GetDataDir() / "/bootstrap.dat";
-        url.setUrl("http://www.vericoin.info/downloads/bootstrap.dat");
-    }
-
     if (!fShutdown)
     {
-        LOCK(bitdb.cs_db);
-        if (!bitdb.mapFileUseCount.count(wallet.strWalletFile) || bitdb.mapFileUseCount[wallet.strWalletFile] == 0)
-        {
-            printf("Downloading blockchain data...\n");
-            dest = pathBootstrap.c_str();
-            Downloader * bs = new Downloader((QWidget*)parent);
-            bs->setWindowTitle("Bootstrap Download");
-            bs->setUrl(url);
-            bs->setDest(dest);
-            bs->exec();
-            if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
-            {
-                delete bs;
-                return true;
-            }
-            delete bs;
+        // Restart wallet
+        printf("Shutting down and restarting wallet.\n");
+        RestartWallet("", true);
 
-            if (filesystem::exists(pathBootstrap) && filesystem::file_size(pathBootstrap) != 0)
-            {
-                printf("Preparing for Blockchain Reload...\n");
-
-                // Flush log data to the dat file
-                bitdb.CloseDb(wallet.strWalletFile);
-                bitdb.CheckpointLSN(wallet.strWalletFile);
-                bitdb.mapFileUseCount.erase(wallet.strWalletFile);
-
-                if (turbo)
-                {
-                    // Test the archive
-                    QStringList zlist = JlCompress::getFileList(pathBootstrap.c_str());
-                    if (zlist.size() > 0 && zlist[0] == "bootstrap/")
-                    {
-                        printf("Bootstrap structure is valid.\n");
-                    }
-                    else
-                    {
-                        printf("Bootstrap structure is invalid!\n");
-                        return false;
-                    }
-                    // Extract bootstrap.zip
-                    JlCompress::extractDir((QWidget*)parent, pathBootstrap.c_str(), GetDataDir().c_str());
-
-                    if (!filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
-                        !filesystem::exists(GetDataDir() / "bootstrap" / "/txleveldb"))
-                    {
-                        printf("Bootstrap extract is corrupt!\n");
-                        return false;
-                    }
-
-                    // Leveldb instance destruction
-                    // SDW TODO: txdb.Close();
-                    filesystem::path directory = GetDataDir() / "txleveldb";
-
-                    filesystem::remove_all(directory); // remove directory
-                    unsigned int nFile = 1;
-
-                    // Remove block index files.
-                    while (true)
-                    {
-                        filesystem::path strBlockFile = GetDataDir() / strprintf("blk%04u.dat", nFile);
-                        // Break if no such file
-                        if( !filesystem::exists( strBlockFile ) )
-                            break;
-                        filesystem::remove(strBlockFile);
-                        nFile++;
-                    }
-                    filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
-                    filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
-                    filesystem::remove(GetDataDir() / "bootstrap");
-                }
-                else
-                {
-                    // Load bootstrap.dat
-                    /*** No need to do anything, just restart. ***
-                    FILE *file = fopen(pathBootstrap.string().c_str(), "rb");
-                    if (file) {
-                        filesystem::path pathBootstrapOld = GetDataDir() / "bootstrap.dat.old";
-                        LoadExternalBlockFile(file);
-                        RenameOver(pathBootstrap, pathBootstrapOld);
-                        printf("Reload of blockchain complete.\n");
-                        return true;
-                    }
-                    else
-                    {
-                        printf("Open blockchain.dat failed.\n");
-                        return false;
-                    }
-                    */
-                }
-
-                // Restart wallet
-                printf("Shutting down and restarting wallet.\n");
-                RestartWallet("", true);
-
-                // bye-bye
-            }
-            else
-            {
-                printf("Download failed!\n");
-            }
-        }
+        // bye-bye
     }
 
     return false;

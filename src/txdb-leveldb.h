@@ -15,6 +15,10 @@
 #include <leveldb/db.h>
 #include <leveldb/write_batch.h>
 
+void init_blockindex(leveldb::Options& options, bool fRemoveOld);
+void destroy_blockindex(void);
+
+
 // Class that provides access to a LevelDB. Note that this class is frequently
 // instantiated on the stack and then destroyed again, so instantiation has to
 // be very cheap. Unfortunately that means, a CTxDB instance is actually just a
@@ -39,6 +43,8 @@ public:
 
     // Destroys the underlying shared global state accessed by this TxDB.
     void Close();
+    // Destroys the underlying shared global state accessed by this TxDB, and the directory structure.
+    void Destroy();
 
 private:
     leveldb::DB *pdb;  // Points to the global instance.
