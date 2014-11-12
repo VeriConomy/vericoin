@@ -1126,10 +1126,6 @@ void BitcoinGUI::reloadBlockchain()
                                            tr("Reload Method:"), options,
                                            0, false, &confirm);
 
-    //QMetaObject::invokeMethod(this, "confirm",
-    //                           Q_ARG(QString, tr("Please confirm reloading the blockchain using the %s method.").arg(method)),
-    //                           Q_ARG(bool*, &confirm));
-
     if (!confirm)
     {
         return;
@@ -1169,6 +1165,16 @@ void BitcoinGUI::reloadBlockchain()
     else
     {
         printf("Download failed!\n");
+        return;
+    }
+
+    // No turning back. Ask permission.
+    QMetaObject::invokeMethod(this, "confirm",
+                               Q_ARG(QString, tr("Please confirm reloading the blockchain. Your wallet will restart to complete the opertion.")),
+                               Q_ARG(bool*, &confirm));
+
+    if (!confirm)
+    {
         return;
     }
 

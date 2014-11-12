@@ -78,8 +78,6 @@ private:
       */
     static bool removeFile(QStringList listFile);
 
-    static void updateProgress(int progress);
-
 public:
     /// Compress a single file.
     /**

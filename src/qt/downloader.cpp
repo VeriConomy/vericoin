@@ -8,9 +8,9 @@ Downloader::Downloader(QWidget *parent) :
     ui->setupUi(this);
     ui->urlEdit->setText("");
     ui->statusLabel->setWordWrap(true);
-    ui->downloadButton->setDefault(true);
-    ui->quitButton->setAutoDefault(false);
+    ui->downloadButton->setAutoDefault(false);
     ui->continueButton->setAutoDefault(false);
+    ui->quitButton->setAutoDefault(false);
 
     progressDialog = new QProgressDialog(this);
 
@@ -30,8 +30,6 @@ Downloader::~Downloader()
 
 void Downloader::on_downloadButton_clicked()
 {
-    manager = new QNetworkAccessManager(this);
-
     // get url
     url = (ui->urlEdit->text());
 
@@ -65,6 +63,8 @@ void Downloader::on_downloadButton_clicked()
         QFile::remove(fileName);
     }
 
+    manager = new QNetworkAccessManager(this);
+
     file = new QFile(fileName);
     if (!file->open(QIODevice::WriteOnly))
     {
@@ -73,6 +73,7 @@ void Downloader::on_downloadButton_clicked()
                       .arg(fileName).arg(file->errorString()));
         delete file;
         file = 0;
+        ui->continueButton->setEnabled(false);
         return;
     }
 
@@ -82,6 +83,7 @@ void Downloader::on_downloadButton_clicked()
 
     progressDialog->setWindowTitle(tr("Downloader"));
     progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
+
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -140,6 +142,8 @@ void Downloader::cancelDownload()
     httpRequestAborted = true;
     reply->abort();
     ui->downloadButton->setEnabled(true);
+    ui->downloadButton->setDefault(true);
+    ui->continueButton->setEnabled(false);
 }
 
 // When download finished or canceled, this will be called
@@ -159,6 +163,9 @@ void Downloader::downloaderFinished()
         }
         reply->deleteLater();
         progressDialog->hide();
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setDefault(true);
+        ui->continueButton->setEnabled(false);
         return;
     }
 
@@ -176,6 +183,8 @@ void Downloader::downloaderFinished()
                                  tr("Download failed: %1.")
                                  .arg(reply->errorString()));
         ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setDefault(true);
+        ui->continueButton->setEnabled(false);
     }
     else
     {
@@ -201,7 +210,7 @@ void Downloader::downloaderFinished()
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
-            ui->quitButton->setAutoDefault(false);
+            ui->quitButton->setDefault(false);
         }
     }
 
@@ -285,8 +294,6 @@ void Downloader::setDest(QString dest)
     {
         ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest));
         ui->continueButton->setEnabled(true);
-        ui->continueButton->setDefault(true);
-        ui->quitButton->setAutoDefault(false);
     }
     else
     {

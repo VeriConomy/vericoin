@@ -51,6 +51,9 @@
        <property name="text">
         <string>Download</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -61,12 +64,18 @@
        <property name="text">
         <string>Continue</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="quitButton">
        <property name="text">
         <string>Quit</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
