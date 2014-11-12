@@ -46,7 +46,6 @@ unsigned int nTargetSpacing = 1 * 60; // 1 minute
 unsigned int nStakeMinAge = 8 * 60 * 60; // 8 hours
 unsigned int nStakeMaxAge = -1; // unlimited
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed
-double nNetworkDriftBuffer;
 
 int nCoinbaseMaturity = 500;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -297,6 +296,9 @@ bool CTransaction::ReadFromDisk(COutPoint prevout)
 bool CTransaction::IsStandard() const
 {
     if (nVersion > CTransaction::CURRENT_VERSION)
+        return false;
+
+    if (!IsFinal())
         return false;
 
     BOOST_FOREACH(const CTxIn& txin, vin)
@@ -978,19 +980,18 @@ int64_t GetProofOfWorkReward(int64_t nFees)
 }
 
 // miner's coin stake reward based on coin age spent (coin-days)
-int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
+int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
 {
     int64_t nSubsidy;
-    int64_t nNetworkWeight_ = GetPoSKernelPS();
+    double nNetworkWeight_ = GetPoSKernelPS(pindexPrev);
     if(nNetworkWeight_ < 21)
     {
         nSubsidy = 0;
     }
     else
     {
-        nSubsidy = (int64_t)(nCoinAge * ((0.17*(log(nNetworkWeight_/20)))*CENT) * 33 / (365 * 33 + 8));
-
-        //cout << nNetworkWeight_ << " " << nSubsidy;
+        int64_t nInterestRate = (17*(log(nNetworkWeight_/20)))*10000;
+        nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
     }
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
@@ -1587,10 +1588,15 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
-            if (tx.IsCoinStake())
+            int64_t currentHeight = pindex->pprev->nHeight+1;
+            if (tx.IsCoinStake() && currentHeight < 299000)
             {
-                nNetworkDriftBuffer = nTxValueOut*.02;
+                double nNetworkDriftBuffer = nTxValueOut*.02;
                 nTxValueOut = nTxValueOut-nNetworkDriftBuffer;
+                nStakeReward = nTxValueOut - nTxValueIn;
+            }
+            if (tx.IsCoinStake() && currentHeight >= 299000)
+            {
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
             nValueIn += nTxValueIn;
@@ -1623,7 +1629,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         if (!vtx[1].GetCoinAge(txdb, nCoinAge))
             return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
 
-        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees);
+        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->pprev);
 
         if (nStakeReward > nCalculatedStakeReward)
             return DoS(100, error("ConnectBlock() : coinstake pays too much(actual=%"PRId64" vs calculated=%"PRId64")", nStakeReward, nCalculatedStakeReward));
@@ -2298,17 +2304,17 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     if (!mapBlockIndex.count(pblock->hashPrevBlock))
     {
         printf("ProcessBlock: ORPHAN BLOCK, prev=%s\n", pblock->hashPrevBlock.ToString().substr(0,20).c_str());
-        CBlock* pblock2 = new CBlock(*pblock);
         // ppcoin: check proof-of-stake
-        if (pblock2->IsProofOfStake())
+        if (pblock->IsProofOfStake())
         {
             // Limited duplicity on stake: prevents block flood attack
             // Duplicate stake allowed only when there is orphan child block
-            if (setStakeSeenOrphan.count(pblock2->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
-                return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for orphan block %s", pblock2->GetProofOfStake().first.ToString().c_str(), pblock2->GetProofOfStake().second, hash.ToString().c_str());
+            if (setStakeSeenOrphan.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
+                return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for orphan block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
             else
-                setStakeSeenOrphan.insert(pblock2->GetProofOfStake());
+                setStakeSeenOrphan.insert(pblock->GetProofOfStake());
         }
+        CBlock* pblock2 = new CBlock(*pblock);
         mapOrphanBlocks.insert(make_pair(hash, pblock2));
         mapOrphanBlocksByPrev.insert(make_pair(pblock2->hashPrevBlock, pblock2));
 
@@ -2358,7 +2364,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 }
 
 // vericoin: attempt to generate suitable proof-of-stake
-bool CBlock::SignBlock(CWallet& wallet, int64_t nFees)
+bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
 {
     // if we are trying to sign
