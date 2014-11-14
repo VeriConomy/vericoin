@@ -224,12 +224,12 @@ void Downloader::downloaderFinished()
 // This will be called when download button is clicked
 void Downloader::startRequest(QUrl url)
 {
-    downloadSize = 0;
+    downloadProgress = 0;
     downloadFinished = false;
 
     // Create a timer to handle hung download requests
     downloadTimer = new QTimer(this);
-    connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadSize()));
+    connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadProgress()));
     downloadTimer->start(30000);
 
     // get() method posts a request
@@ -258,11 +258,11 @@ void Downloader::startRequest(QUrl url)
 }
 
 // This is called during the download to check for a hung state
-void Downloader::timerCheckDownloadSize()
+void Downloader::timerCheckDownloadProgress()
 {
-    if (progressDialog->value() > downloadSize)
+    if (progressDialog->value() > downloadProgress)
     {
-        downloadSize = progressDialog->value();
+        downloadProgress = progressDialog->value();
         return;
     }
     else

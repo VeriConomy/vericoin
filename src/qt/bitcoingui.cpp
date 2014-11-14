@@ -1216,6 +1216,7 @@ void BitcoinGUI::reloadBlockchain()
 
         // Leveldb instance destruction
         fShutdown = true;
+        MilliSleep(100);
         CTxDB txdb;
         txdb.Destroy();
 

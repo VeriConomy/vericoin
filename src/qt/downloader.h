@@ -50,7 +50,7 @@ private slots:
 
     // slot for downloadProgress()
     void updateDownloadProgress(qint64, qint64);
-    void timerCheckDownloadSize();
+    void timerCheckDownloadProgress();
 
     void enableDownloadButton();
     void cancelDownload();
@@ -64,7 +64,7 @@ private:
     QProgressDialog *progressDialog;
     QFile *file;
     bool downloadFinished;
-    qint64 downloadSize;
+    qint64 downloadProgress;
     qint64 fileSize;
     QTimer *downloadTimer;
 
