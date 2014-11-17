@@ -1740,6 +1740,10 @@ bool BindListenPort(const CService &addrBind, string& strError)
     }
 #endif
 
+    uiInterface.InitMessage("Binding to address " + addrBind.ToString());
+    printf("Binding to address %s\n", addrBind.ToString().c_str());
+    MilliSleep(1000);
+
     if (::bind(hListenSocket, (struct sockaddr*)&sockaddr, len) == SOCKET_ERROR)
     {
         int nErr = WSAGetLastError();
@@ -1922,7 +1926,20 @@ bool StopNode()
         MilliSleep(20);
     MilliSleep(50);
     DumpAddresses();
+    CloseSockets();
     return true;
+}
+
+void CloseSockets()
+{
+    // Close sockets
+    BOOST_FOREACH(CNode* pnode, vNodes)
+        if (pnode->hSocket != INVALID_SOCKET)
+            closesocket(pnode->hSocket);
+    BOOST_FOREACH(SOCKET hListenSocket, vhListenSocket)
+        if (hListenSocket != INVALID_SOCKET)
+            if (closesocket(hListenSocket) == SOCKET_ERROR)
+                printf("closesocket(hListenSocket) failed with error %d\n", WSAGetLastError());
 }
 
 class CNetCleanup

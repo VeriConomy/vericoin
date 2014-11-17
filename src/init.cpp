@@ -145,7 +145,6 @@ void RestartWallet(const char *parm, bool fOldParms)
 
     // Spawn a new instance.
     QProcess::startDetached(newArgv[0], newArgv);
-
     return;
 }
 
@@ -438,10 +437,6 @@ bool AppInit2()
     if (mapArgs.count("-restart")) {
         // a wallet restart was issued
         SoftSetBoolArg("-restart", true);
-
-        uiInterface.InitMessage(_("Restarting, please wait..."));
-        printf("Restarting, please wait...\n");
-        MilliSleep(60000);
     }
 
     if (mapArgs.count("-bind")) {
@@ -547,13 +542,6 @@ bool AppInit2()
     if (file) fclose(file);
     static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
 
-    // On restart, wait if the old instance is still running
-    int n = 0;
-    while (GetBoolArg("-restart") && n++ < 10) {
-        if (lock.try_lock())
-            break;
-        MilliSleep(5000);
-    }
     if (!lock.try_lock())
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s.  VeriCoin is probably already running."), strDataDir.c_str()));
 
