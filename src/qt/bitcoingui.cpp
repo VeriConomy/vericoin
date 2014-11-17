@@ -347,7 +347,7 @@ void BitcoinGUI::createActions()
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap"));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/tx_inout"), tr("&Rescan Blockchain..."), this);
+    rescanBlockchainAction = new QAction(QIcon(":/icons/tx_inout"), tr("Re&scan Blockchain..."), this);
     rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain"));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
