@@ -3,6 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "init.h"
+#include "util.h"
 #include "walletdb.h"
 #include "wallet.h"
 #include <boost/version.hpp>
@@ -633,17 +635,11 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
 
 bool ReloadBlockchain(const CWallet& wallet)
 {
-    if (fShutdown)
-    {
-        // Restart wallet
-        printf("Shutting down and restarting wallet.\n");
-        RestartWallet("", true);
-        return true;
+    fRestart = true;
 
-        // bye-bye
-    }
+    StartShutdown();
 
-    return false;
+    return true;
 }
 
 //

@@ -469,19 +469,19 @@ QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QStr
     progressDialog.setCancelButton(0);
     progressDialog.setMinimum(0);
     progressDialog.setMaximum(zip.getEntriesCount());
-    progressDialog.show();
     progressDialog.setValue(progress);
+    progressDialog.show();
 
     do {
         QString name = zip.getCurrentFileName();
         QString absFilePath = directory.absoluteFilePath(name);
+        progressDialog.setValue(++progress);
         if (!extractFile(&zip, "", absFilePath)) {
             removeFile(extracted);
             progressDialog.hide();
             return QStringList();
         }
         extracted.append(absFilePath);
-        progressDialog.setValue(++progress);
     } while (zip.goToNextFile());
 
     progressDialog.hide();

@@ -13,5 +13,6 @@ void StartShutdown();
 void Shutdown(void* parg);
 bool AppInit2();
 std::string HelpMessage();
+void RestartWallet(const char *parm, bool fOldParms = true);
 
 #endif

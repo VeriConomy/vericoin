@@ -17,6 +17,8 @@
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <openssl/crypto.h>
+#include <QProcess>
+#include <QApplication>
 
 #ifndef WIN32
 #include <signal.h>
@@ -95,6 +97,18 @@ void Shutdown(void* parg)
         MilliSleep(50);
         printf("VeriCoin exited\n\n");
         fExit = true;
+        if (fRestart)
+        {
+            if (fBootstrapTurbo)
+            {
+                // Leveldb instance destruction
+                CTxDB().Destroy();
+                boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
+                boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+            }
+            RestartWallet((fRescan ? "-rescan" : NULL), true);
+        }
 #ifndef QT_GUI
         // ensure non-UI client gets exited here, but let Bitcoin-Qt reach 'return 0;' in bitcoin.cpp
         exit(0);
@@ -107,6 +121,32 @@ void Shutdown(void* parg)
         MilliSleep(100);
         ExitThread(0);
     }
+}
+
+// Restart wallet
+void RestartWallet(const char *parm, bool fOldParms)
+{
+    QStringList newArgv(QApplication::instance()->arguments());
+
+    if (!fOldParms)
+    {
+        newArgv = QStringList(QApplication::instance()->arguments().first());
+    }
+
+    if (parm)
+    {
+        if ((fOldParms && !mapArgs.count(parm)) || !fOldParms)
+        {
+            newArgv.append(QString(parm));
+        }
+    }
+    if (!mapArgs.count("-restart"))
+        newArgv.append(QString("-restart"));
+
+    // Spawn a new instance.
+    QProcess::startDetached(newArgv[0], newArgv);
+
+    return;
 }
 
 void HandleSIGTERM(int)
@@ -138,6 +178,11 @@ bool AppInit(int argc, char* argv[])
         //
         // If Qt is used, parameters/bitcoin.conf are parsed in qt/bitcoin.cpp's main()
         ParseParameters(argc, argv);
+        // Restarting
+        if (mapArgs.count("-restart")) {
+            // a wallet restart was issued
+            SoftSetBoolArg("-restart", true);
+        }
         if (!boost::filesystem::is_directory(GetDataDir(false)))
         {
             fprintf(stderr, "Error: Specified directory does not exist\n");
@@ -217,6 +262,7 @@ bool static InitWarning(const std::string &str)
 bool static Bind(const CService &addr, bool fError = true) {
     if (IsLimited(addr))
         return false;
+
     std::string strError;
     if (!BindListenPort(addr, strError)) {
         if (fError)
@@ -388,6 +434,16 @@ bool AppInit2()
         SoftSetBoolArg("-irc", true);
     }
 
+    // Restarting
+    if (mapArgs.count("-restart")) {
+        // a wallet restart was issued
+        SoftSetBoolArg("-restart", true);
+
+        uiInterface.InitMessage(_("Restarting, please wait..."));
+        printf("Restarting, please wait...\n");
+        MilliSleep(60000);
+    }
+
     if (mapArgs.count("-bind")) {
         // when specifying an explicit binding address, you want to listen on it
         // even when -connect or -proxy is specified
@@ -491,12 +547,12 @@ bool AppInit2()
     if (file) fclose(file);
     static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
 
-    // Do not restart if the old instance is still running
+    // On restart, wait if the old instance is still running
     int n = 0;
-    while (GetBoolArg("-restart", true) && n++ < 10) {
+    while (GetBoolArg("-restart") && n++ < 10) {
         if (lock.try_lock())
-            SoftSetBoolArg("-restart", false);
-        MilliSleep(3000);
+            break;
+        MilliSleep(5000);
     }
     if (!lock.try_lock())
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s.  VeriCoin is probably already running."), strDataDir.c_str()));
@@ -645,7 +701,7 @@ bool AppInit2()
     if (!fNoListen)
     {
         std::string strError;
-        if (mapArgs.count("-bind")) {
+        if (mapArgs.count("-bind") && mapMultiArgs["-bind"].size() > 1) {
             BOOST_FOREACH(std::string strBind, mapMultiArgs["-bind"]) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, GetListenPort(), false))

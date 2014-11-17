@@ -54,6 +54,8 @@ void destroy_blockindex() {
 
     printf("Destroying LevelDB in: %s\n", directory.string().c_str());
 
+    MilliSleep(500);
+
     filesystem::remove_all(directory); // remove directory
 
     unsigned int nFile = 1;

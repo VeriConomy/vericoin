@@ -1180,7 +1180,8 @@ void BitcoinGUI::reloadBlockchain()
 
     if (turbo)
     {
-        // Test the archive
+        // bootstrap.zip
+        /*** Test the archive. ***/
         QStringList zlist = JlCompress::getFileList(pathBootstrap.c_str());
         if (zlist.size() > 0 && zlist[0] == "bootstrap/")
         {
@@ -1200,48 +1201,13 @@ void BitcoinGUI::reloadBlockchain()
             printf("Bootstrap extract is invalid!\n");
             return;
         }
-
-        // Close wallet
-        LOCK(bitdb.cs_db);
-        if (!bitdb.mapFileUseCount.count(pwalletMain->strWalletFile) || bitdb.mapFileUseCount[pwalletMain->strWalletFile] == 0)
-        {
-            bitdb.CloseDb(pwalletMain->strWalletFile);
-            bitdb.CheckpointLSN(pwalletMain->strWalletFile);
-            bitdb.mapFileUseCount.erase(pwalletMain->strWalletFile);
-        }
-        else
-        {
-            return;
-        }
-
-        // Leveldb instance destruction
-        fShutdown = true;
-        MilliSleep(100);
-        CTxDB txdb;
-        txdb.Destroy();
-
-        boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
-        boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
-        boost::filesystem::remove(GetDataDir() / "bootstrap");
+        fBootstrapTurbo = true;
     }
     else
     {
-        // Load bootstrap.dat
-        /*** No need to do anything, just restart. ***
-        FILE *file = fopen(pathBootstrap.string().c_str(), "rb");
-        if (file) {
-            boost::filesystem::path pathBootstrapOld = GetDataDir() / "bootstrap.dat.old";
-            LoadExternalBlockFile(file);
-            RenameOver(pathBootstrap, pathBootstrapOld);
-            printf("Reload of blockchain complete.\n");
-            return true;
-        }
-        else
-        {
-            printf("Open blockchain.dat failed.\n");
-            return false;
-        }
-        */
+        // bootstrap.dat
+        /*** No need to do anything, just restart. ***/
+        fBootstrap = true;
     }
 
     if (!walletModel->reloadBlockchain())
