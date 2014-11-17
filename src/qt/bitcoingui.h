@@ -100,6 +100,7 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *reloadBlockchainAction;
+    QAction *rescanBlockchainAction;
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
@@ -193,6 +194,8 @@ private slots:
     void unlockWallet();
     /** Reload the blockchain from bootstrap turbo or classic */
     void reloadBlockchain();
+    /** Rescan the blockchain */
+    void rescanBlockchain();
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
     void showNormalIfMinimized(bool fToggleHidden = false);

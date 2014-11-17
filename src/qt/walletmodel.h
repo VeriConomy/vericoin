@@ -97,6 +97,8 @@ public:
     bool backupWallet(const QString &filename);
     // Reload blockchain
     bool reloadBlockchain();
+    // Rescan blockchain
+    bool rescanBlockchain();
 
     // RAI object for unlocking wallet, returned by requestUnlock()
     class UnlockContext

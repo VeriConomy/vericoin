@@ -127,6 +127,8 @@ void Shutdown(void* parg)
 void RestartWallet(const char *parm, bool fOldParms)
 {
     QStringList newArgv(QApplication::instance()->arguments());
+    QString command = newArgv[0];
+    newArgv.removeFirst();
 
     if (!fOldParms)
     {
@@ -144,7 +146,7 @@ void RestartWallet(const char *parm, bool fOldParms)
         newArgv.append(QString("-restart"));
 
     // Spawn a new instance.
-    QProcess::startDetached(newArgv[0], newArgv);
+    QProcess::startDetached(command, newArgv);
     return;
 }
 

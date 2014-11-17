@@ -642,6 +642,16 @@ bool ReloadBlockchain(const CWallet& wallet)
     return true;
 }
 
+bool RescanBlockchain(const CWallet& wallet)
+{
+    fRestart = true;
+    fRescan = true;
+
+    StartShutdown();
+
+    return true;
+}
+
 //
 // Try to (very carefully!) recover wallet.dat if there is a problem.
 //

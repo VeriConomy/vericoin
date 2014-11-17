@@ -347,6 +347,8 @@ void BitcoinGUI::createActions()
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap"));
+    rescanBlockchainAction = new QAction(QIcon(":/icons/tx_inout"), tr("&Rescan Blockchain..."), this);
+    rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain"));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -365,6 +367,7 @@ void BitcoinGUI::createActions()
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
+    connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -384,6 +387,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
     file->addAction(reloadBlockchainAction);
+    file->addAction(rescanBlockchainAction);
     file->addSeparator();
     file->addAction(quitAction);
 
@@ -1212,6 +1216,26 @@ void BitcoinGUI::reloadBlockchain()
 
     if (!walletModel->reloadBlockchain())
     {
-        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain. Restart required!"));
+        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
+    }
+}
+
+void BitcoinGUI::rescanBlockchain()
+{
+    bool confirm = false;
+
+    // No turning back. Ask permission.
+    QMetaObject::invokeMethod(this, "confirm",
+                               Q_ARG(QString, tr("Please confirm rescanning the blockchain. Your wallet will restart to complete the opertion.")),
+                               Q_ARG(bool*, &confirm));
+
+    if (!confirm)
+    {
+        return;
+    }
+
+    if (!walletModel->rescanBlockchain())
+    {
+        QMessageBox::warning(this, tr("Rescan Failed"), tr("There was an error trying to rescan the blockchain."));
     }
 }
