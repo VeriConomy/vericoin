@@ -20,6 +20,7 @@ vericoin-qt.pro.user
 *.rej
 *.orig
 *.o
+*.a
 *.patch
 .vericoin
 #compilation and Qt preprocessor part
