@@ -28,6 +28,11 @@ Downloader::~Downloader()
     delete ui;
 }
 
+void Downloader::startDownload()
+{
+    on_downloadButton_clicked();
+}
+
 void Downloader::on_downloadButton_clicked()
 {
     // get url
@@ -38,9 +43,16 @@ void Downloader::on_downloadButton_clicked()
 
     if (fileName.isEmpty())
     {
-        QMessageBox::information(this, tr("Downloader"),
+        if (!autoDownload)
+        {
+            QMessageBox::information(this, tr("Downloader"),
                       tr("Filename cannot be empty.")
                       );
+        }
+        else
+        {
+            printf("Downloader: Filename is empty.\n");
+        }
         return;
     }
 
@@ -51,14 +63,17 @@ void Downloader::on_downloadButton_clicked()
 
     if (QFile::exists(fileName))
     {
-        if (QMessageBox::question(this, tr("Downloader"),
+        if (!autoDownload)
+        {
+            if (QMessageBox::question(this, tr("Downloader"),
                 tr("There already exists a file called %1 in "
                 "the current directory. Overwrite?").arg(fileName),
                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No)
                 == QMessageBox::No)
-        {
-            ui->continueButton->setEnabled(true);
-            return;
+            {
+                ui->continueButton->setEnabled(true);
+                return;
+            }
         }
         QFile::remove(fileName);
     }
@@ -68,9 +83,16 @@ void Downloader::on_downloadButton_clicked()
     file = new QFile(fileName);
     if (!file->open(QIODevice::WriteOnly))
     {
-        QMessageBox::information(this, tr("Downloader"),
+        if (!autoDownload)
+        {
+            QMessageBox::information(this, tr("Downloader"),
                       tr("Unable to save the file %1: %2.")
                       .arg(fileName).arg(file->errorString()));
+        }
+        else
+        {
+            printf("Downloader: Unable to save the file.\n");
+        }
         delete file;
         file = 0;
         ui->continueButton->setEnabled(false);
@@ -179,9 +201,16 @@ void Downloader::downloaderFinished()
     if (reply->error())
     {
         file->remove();
-        QMessageBox::information(this, tr("Downloader"),
+        if (!autoDownload)
+        {
+            QMessageBox::information(this, tr("Downloader"),
                                  tr("Download failed: %1.")
                                  .arg(reply->errorString()));
+        }
+        else
+        {
+            printf("Downloader: Download failed.\n");
+        }
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);
         ui->continueButton->setEnabled(false);
@@ -191,7 +220,7 @@ void Downloader::downloaderFinished()
         if (!redirectionTarget.isNull())
         {
             QUrl newUrl = url.resolved(redirectionTarget.toUrl());
-            if (QMessageBox::question(this, tr("Downloader"),
+            if (autoDownload || QMessageBox::question(this, tr("Downloader"),
                                   tr("Redirect to %1 ?").arg(newUrl.toString()),
                                   QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
             {
@@ -219,6 +248,18 @@ void Downloader::downloaderFinished()
     delete file;
     file = 0;
     manager = 0;
+
+    if (autoDownload)
+    {
+        if (ui->continueButton->isEnabled())
+        {
+            on_continueButton_clicked();
+        }
+        else
+        {
+            on_quitButton_clicked();
+        }
+    }
 }
 
 // This will be called when download button is clicked
@@ -254,7 +295,11 @@ void Downloader::startRequest(QUrl url)
     connect(reply, SIGNAL(finished()),
             this, SLOT(downloaderFinished()));
 
-    progressDialog->show();
+    ui->statusLabel->setText(tr("Downloading..."));
+    if (autoDownload)
+    {
+        progressDialog->hide();
+    }
 }
 
 // This is called during the download to check for a hung state
@@ -299,4 +344,9 @@ void Downloader::setDest(QString dest)
     {
         ui->continueButton->setEnabled(false);
     }
+}
+
+void Downloader::setAutoDownload(bool nogui)
+{
+    autoDownload = nogui;
 }
