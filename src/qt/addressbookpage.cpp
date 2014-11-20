@@ -201,21 +201,21 @@ void AddressBookPage::on_signMessage_clicked()
     }
 
     emit signMessage(addr);
-    void AddressBookPage::on_accessNxt_clicked()
-{
-	QTableView *table = ui->tableView;
-	QModelIndexList indexes = table->selectionModel()->selectedRows(AddressTableModel::Address);
-	QString addr;
-
-	foreach(QModelIndex index, indexes)
-	{
-		QVariant address = index.data();
-		addr = address.toString();
-	}
-
-	emit accessNxt(addr);
 }
 
+void AddressBookPage::on_accessNxt_clicked()
+{
+    QTableView *table = ui->tableView;
+    QModelIndexList indexes = table->selectionModel()->selectedRows(AddressTableModel::Address);
+    QString addr;
+
+    foreach(QModelIndex index, indexes)
+    {
+    	QVariant address = index.data();
+    	addr = address.toString();
+    }
+
+    emit accessNxt(addr);
 }
 
 void AddressBookPage::on_verifyMessage_clicked()
