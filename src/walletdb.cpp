@@ -3,6 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "init.h"
+#include "util.h"
 #include "walletdb.h"
 #include "wallet.h"
 #include <boost/version.hpp>
@@ -10,7 +12,6 @@
 
 using namespace std;
 using namespace boost;
-
 
 static uint64_t nAccountingEntryNumber = 0;
 extern bool fWalletUnlockStakingOnly;
@@ -630,6 +631,25 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
         MilliSleep(100);
     }
     return false;
+}
+
+bool ReloadBlockchain(const CWallet& wallet)
+{
+    fRestart = true;
+
+    StartShutdown();
+
+    return true;
+}
+
+bool RescanBlockchain(const CWallet& wallet)
+{
+    fRestart = true;
+    fRescan = true;
+
+    StartShutdown();
+
+    return true;
 }
 
 //

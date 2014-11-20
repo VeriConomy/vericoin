@@ -1,5 +1,5 @@
 /*
- * Qt4 bitcoin GUI.
+ * Qt5 bitcoin GUI.
  *
  * W.J. van der Laan 2011-2012
  * The Bitcoin Developers 2011-2012
@@ -27,9 +27,15 @@
 #include "notificator.h"
 #include "guiutil.h"
 #include "rpcconsole.h"
-#include "wallet.h"
 #include "ui_fiatpage.h"
 #include "tooltip.h"
+
+#include "walletdb.h"
+#include "wallet.h"
+#include "txdb.h"
+#include <boost/version.hpp>
+#include <boost/filesystem.hpp>
+#include <quazip/JlCompress.h>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -61,6 +67,7 @@
 #include <QUrl>
 #include <QStyle>
 #include <QFontDatabase>
+#include <QInputDialog>
 
 #include <iostream>
 
@@ -280,7 +287,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(sendBitCoinsAction);
 
     receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("Receive"), this);
-    receiveCoinsAction->setToolTip(tr("Receive Adresses"));
+    receiveCoinsAction->setToolTip(tr("Receive Addresses"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
     tabGroup->addAction(receiveCoinsAction);
@@ -344,6 +351,10 @@ void BitcoinGUI::createActions()
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
+    reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
+    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap"));
+    rescanBlockchainAction = new QAction(QIcon(":/icons/tx_inout"), tr("Re&scan Blockchain..."), this);
+    rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain"));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -362,6 +373,8 @@ void BitcoinGUI::createActions()
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
+    connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
+    connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -381,6 +394,8 @@ void BitcoinGUI::createMenuBar()
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
     file->addAction(accessNxtInsideAction);
+    file->addAction(reloadBlockchainAction);
+    file->addAction(rescanBlockchainAction);
     file->addSeparator();
     file->addAction(quitAction);
 
@@ -721,6 +736,14 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
+void BitcoinGUI::confirm(QString strMessage, bool *confirm)
+{
+    QMessageBox::StandardButton retval = QMessageBox::question(
+          this, tr("Confirm"), strMessage,
+          QMessageBox::Yes|QMessageBox::Cancel, QMessageBox::Yes);
+    *confirm = (retval == QMessageBox::Yes);
+}
+
 void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
 {
     QString strMessage =
@@ -1000,7 +1023,8 @@ void BitcoinGUI::encryptWallet(bool status)
 
 void BitcoinGUI::backupWallet()
 {
-    QString saveDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    //QString saveDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    QString saveDir = GetDataDir().string().c_str();
     QString filename = QFileDialog::getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (*.dat)"));
     if(!filename.isEmpty()) {
         if(!walletModel->backupWallet(filename)) {
@@ -1109,5 +1133,130 @@ void BitcoinGUI::updateStakingIcon()
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because wallet is offline"));
         else
             labelStakingIcon->setToolTip(tr("In sync at block %1 <br> Not staking because you don't have mature coins").arg(currentBlock));
+    }
+}
+
+void BitcoinGUI::reloadBlockchain()
+{
+    boost::filesystem::path pathBootstrap;
+    bool turbo = true;
+    bool confirm = false;
+    QStringList options;
+    QUrl url;
+    QString dest;
+
+    options << tr("Turbo") << tr("Classic");
+
+    QString method = QInputDialog::getItem(this, tr("Reload Blockchain"),
+                                           tr("Reload Method:"), options,
+                                           0, false, &confirm);
+
+    if (!confirm)
+    {
+        return;
+    }
+
+    turbo = ((method == "Turbo") ? true : false);
+
+    if (turbo)
+    {
+        pathBootstrap = GetDataDir() / "/bootstrap.zip";
+        url.setUrl("http://www.vericoin.info/downloads/bootstrap.zip");
+    }
+    else
+    {
+        pathBootstrap = GetDataDir() / "/bootstrap.dat";
+        url.setUrl("http://www.vericoin.info/downloads/bootstrap.dat");
+    }
+
+    printf("Downloading blockchain data...\n");
+    dest = pathBootstrap.c_str();
+    Downloader * bs = new Downloader(this);
+    bs->setWindowTitle("Bootstrap Download");
+    bs->setUrl(url);
+    bs->setDest(dest);
+    bs->exec();
+    if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
+    {
+        delete bs;
+        return;
+    }
+    delete bs;
+
+    if (boost::filesystem::exists(pathBootstrap) && boost::filesystem::file_size(pathBootstrap) != 0)
+    {
+        printf("Preparing for Blockchain Reload...\n");
+    }
+    else
+    {
+        printf("Download failed!\n");
+        return;
+    }
+
+    // No turning back. Ask permission.
+    QMetaObject::invokeMethod(this, "confirm",
+                               Q_ARG(QString, tr("Please confirm reloading the blockchain. Your wallet will restart to complete the opertion.")),
+                               Q_ARG(bool*, &confirm));
+
+    if (!confirm)
+    {
+        return;
+    }
+
+    if (turbo)
+    {
+        // bootstrap.zip
+        /*** Test the archive. ***/
+        QStringList zlist = JlCompress::getFileList(pathBootstrap.c_str());
+        if (zlist.size() > 0 && zlist[0] == "bootstrap/")
+        {
+            printf("Bootstrap structure is valid.\n");
+        }
+        else
+        {
+            printf("Bootstrap structure is invalid!\n");
+            return;
+        }
+        // Extract bootstrap.zip
+        JlCompress::extractDir(this, pathBootstrap.c_str(), GetDataDir().c_str());
+
+        if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
+            !boost::filesystem::exists(GetDataDir() / "bootstrap" / "/txleveldb"))
+        {
+            printf("Bootstrap extract is invalid!\n");
+            return;
+        }
+        fBootstrapTurbo = true;
+    }
+    else
+    {
+        // bootstrap.dat
+        /*** No need to do anything, just restart. ***/
+        fBootstrap = true;
+    }
+
+    if (!walletModel->reloadBlockchain())
+    {
+        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
+    }
+}
+
+void BitcoinGUI::rescanBlockchain()
+{
+    bool confirm = false;
+
+    // No turning back. Ask permission.
+    QMetaObject::invokeMethod(this, "confirm",
+                               Q_ARG(QString, tr("Please confirm rescanning the blockchain. Your wallet will restart to complete the opertion.")),
+                               Q_ARG(bool*, &confirm));
+
+    if (!confirm)
+    {
+        return;
+    }
+
+    if (!walletModel->rescanBlockchain())
+    {
+        QMessageBox::warning(this, tr("Rescan Failed"), tr("There was an error trying to rescan the blockchain."));
     }
 }

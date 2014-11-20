@@ -5,6 +5,7 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
+CONFIG += debug_and_release
 !win32{
 CONFIG += static
 }
@@ -117,7 +118,19 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
-SOURCES += src/txdb-leveldb.cpp
+SOURCES += src/txdb-leveldb.cpp \
+    src/quazip/JlCompress.cpp \
+    src/quazip/qioapi.cpp \
+    src/quazip/quaadler32.cpp \
+    src/quazip/quacrc32.cpp \
+    src/quazip/quagzipfile.cpp \
+    src/quazip/quaziodevice.cpp \
+    src/quazip/quazipdir.cpp \
+    src/quazip/quazipfile.cpp \
+    src/quazip/quazipfileinfo.cpp \
+    src/quazip/quazipnewinfo.cpp \
+    src/quazip/unzip.c \
+    src/quazip/zip.c
 !win32 {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
@@ -135,6 +148,26 @@ PRE_TARGETDEPS += $$PWD/src/leveldb/libleveldb.a
 QMAKE_EXTRA_TARGETS += genleveldb
 # Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
 QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) clean
+
+INCLUDEPATH += src/quazip
+LIBS += $$PWD/src/quazip/libquazip.a -lz
+SOURCES += src/quazip/quazip.cpp
+!win32 {
+    # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
+    genquazip.commands = cd $$PWD/src/quazip && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libquazip.a
+} else {
+    # make an educated guess about what the ranlib command is called
+    isEmpty(QMAKE_RANLIB) {
+        QMAKE_RANLIB = $$replace(QMAKE_STRIP, strip, ranlib)
+    }
+    LIBS += -lquazip
+}
+genquazip.target = $$PWD/src/quazip/libquazip.a
+genquazip.depends = FORCE
+PRE_TARGETDEPS += $$PWD/src/quazip/libquazip.a
+QMAKE_EXTRA_TARGETS += genquazip
+# Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
+QMAKE_CLEAN += $$PWD/src/quazip/libquazip.a; cd $$PWD/src/quazip ; $(MAKE) clean
 
 # regenerate src/build.h
 !windows|contains(USE_BUILD_INFO, 1) {
@@ -259,7 +292,24 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/rpcconsole.h \
     src/version.h \
     src/netbase.h \
-    src/clientversion.h
+    src/clientversion.h \
+    src/qt/downloader.h \
+    src/quazip/JlCompress.h \
+    src/quazip/crypt.h \
+    src/quazip/ioapi.h \
+    src/quazip/quaadler32.h \
+    src/quazip/quachecksum32.h \
+    src/quazip/quacrc32.h \
+    src/quazip/quagzipfile.h \
+    src/quazip/quaziodevice.h \
+    src/quazip/quazip.h \
+    src/quazip/quazip_global.h \
+    src/quazip/quazipdir.h \
+    src/quazip/quazipfile.h \
+    src/quazip/quazipfileinfo.h \
+    src/quazip/quazipnewinfo.h \
+    src/quazip/unzip.h \
+    src/quazip/zip.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
@@ -327,6 +377,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/notificator.cpp \
     src/qt/qtipcserver.cpp \
     src/qt/rpcconsole.cpp \
+    src/qt/downloader.cpp \
     src/noui.cpp \
     src/kernel.cpp \
     src/scrypt-arm.S \
@@ -364,7 +415,8 @@ FORMS += \
     src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \
     src/qt/forms/rpcconsole.ui \
-    src/qt/forms/optionsdialog.ui
+    src/qt/forms/optionsdialog.ui \
+    src/qt/forms/downloader.ui
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h

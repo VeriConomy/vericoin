@@ -95,6 +95,10 @@ public:
     bool changePassphrase(const SecureString &oldPass, const SecureString &newPass);
     // Wallet backup
     bool backupWallet(const QString &filename);
+    // Reload blockchain
+    bool reloadBlockchain();
+    // Rescan blockchain
+    bool rescanBlockchain();
 
     // RAI object for unlocking wallet, returned by requestUnlock()
     class UnlockContext
