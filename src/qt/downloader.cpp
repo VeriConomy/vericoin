@@ -17,6 +17,7 @@ Downloader::Downloader(QWidget *parent) :
     // This will be set true when Quit/Continue pressed
     downloaderQuit = false;
     downloaderContinue = false;
+    autoDownload = false;
 
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
@@ -299,6 +300,10 @@ void Downloader::startRequest(QUrl url)
     if (autoDownload)
     {
         progressDialog->hide();
+    }
+    else
+    {
+        progressDialog->show();
     }
 }
 
