@@ -29,6 +29,7 @@
 #include "rpcconsole.h"
 #include "ui_fiatpage.h"
 #include "tooltip.h"
+#include "downloader.h"
 
 #include "walletdb.h"
 #include "wallet.h"
@@ -1145,19 +1146,19 @@ void BitcoinGUI::reloadBlockchain()
     QUrl url;
     QString dest;
 
+    /* Removed option for Classic.
     options << tr("Turbo") << tr("Classic");
 
     QString method = QInputDialog::getItem(this, tr("Reload Blockchain"),
                                            tr("Reload Method:"), options,
                                            0, false, &confirm);
-
     if (!confirm)
     {
         return;
     }
 
     turbo = ((method == "Turbo") ? true : false);
-
+    */
     if (turbo)
     {
         pathBootstrap = GetDataDir() / "/bootstrap.zip";
@@ -1175,6 +1176,10 @@ void BitcoinGUI::reloadBlockchain()
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
     bs->setDest(dest);
+    // Experimental.
+    //bs->setAutoDownload(true);
+    //bs->setAttribute(Qt::WA_DontShowOnScreen);
+    //bs->startDownload();
     bs->exec();
     if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
     {

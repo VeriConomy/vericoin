@@ -26,9 +26,10 @@ public:
     ~Downloader();
 
 public:
+    void setAutoDownload(bool nogui);
     void setUrl(QUrl url);
     void setDest(QString dest);
-    void startRequest(QUrl url);
+    void startDownload();
     bool httpRequestAborted;
     bool downloaderContinue;
     bool downloaderQuit;
@@ -56,6 +57,7 @@ private slots:
     void cancelDownload();
 
 private:
+    void startRequest(QUrl url);
     Ui::Downloader *ui;
     QUrl url;
     QString fileDest;
@@ -67,7 +69,7 @@ private:
     qint64 downloadProgress;
     qint64 fileSize;
     QTimer *downloadTimer;
-
+    bool autoDownload;
 };
 
 #endif // DOWNLOADER_H

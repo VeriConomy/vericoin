@@ -84,7 +84,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QLabel" name="statusLabel">
      <property name="text">
-      <string>Status:</string>
+      <string></string>
      </property>
     </widget>
    </item>
