@@ -135,6 +135,9 @@ void RestartWallet(const char *parm, bool fOldParms)
         newArgv = QStringList(QApplication::instance()->arguments().first());
     }
 
+    if ((fOldParms && !mapArgs.count("-restart")) || !fOldParms)
+        newArgv.append(QString("-restart"));
+
     if (parm)
     {
         if ((fOldParms && !mapArgs.count(parm)) || !fOldParms)
@@ -142,8 +145,6 @@ void RestartWallet(const char *parm, bool fOldParms)
             newArgv.append(QString(parm));
         }
     }
-    if (!mapArgs.count("-restart"))
-        newArgv.append(QString("-restart"));
 
     // Spawn a new instance.
     QProcess::startDetached(command, newArgv);
