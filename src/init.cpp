@@ -417,17 +417,17 @@ bool AppInit2()
     fUseFastIndex = GetBoolArg("-fastindex", true);
     nMinerSleep = GetArg("-minersleep", 500);
 
-    CheckpointsMode = Checkpoints::STRICT;
+    CheckpointsMode = Checkpoints::CPSTRICT;
     std::string strCpMode = GetArg("-cppolicy", "strict");
 
     if(strCpMode == "strict")
-        CheckpointsMode = Checkpoints::STRICT;
+        CheckpointsMode = Checkpoints::CPSTRICT;
 
     if(strCpMode == "advisory")
-        CheckpointsMode = Checkpoints::ADVISORY;
+        CheckpointsMode = Checkpoints::CPADVISORY;
 
     if(strCpMode == "permissive")
-        CheckpointsMode = Checkpoints::PERMISSIVE;
+        CheckpointsMode = Checkpoints::CPPERMISSIVE;
 
     nDerivationMethodIndex = 0;
 
