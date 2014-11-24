@@ -1150,7 +1150,7 @@ void BitcoinGUI::reloadBlockchain()
     }
 
     printf("Downloading blockchain data...\n");
-    dest = pathBootstrap.c_str();
+    dest = QString((const char *)pathBootstrap.c_str());
     Downloader * bs = new Downloader(this);
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
@@ -1191,7 +1191,7 @@ void BitcoinGUI::reloadBlockchain()
     {
         // bootstrap.zip
         /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(pathBootstrap.c_str());
+        QStringList zlist = JlCompress::getFileList(QString((const char *)pathBootstrap.c_str()));
         if (zlist.size() > 0 && zlist[0] == "bootstrap/")
         {
             printf("Bootstrap structure is valid.\n");
@@ -1202,7 +1202,7 @@ void BitcoinGUI::reloadBlockchain()
             return;
         }
         // Extract bootstrap.zip
-        JlCompress::extractDir(this, pathBootstrap.c_str(), GetDataDir().c_str());
+        JlCompress::extractDir(this, QString((const char *)pathBootstrap.c_str()), QString((const char *)GetDataDir().c_str()));
 
         if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
             !boost::filesystem::exists(GetDataDir() / "bootstrap" / "/txleveldb"))
