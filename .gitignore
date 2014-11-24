@@ -26,14 +26,15 @@ vericoin-qt.pro.user
 #compilation and Qt preprocessor part
 *.qm
 Makefile
-Makefile.Release
-Makefile.Debug
+*.Release
+*.Debug
 #resources cpp
 qrc_*.cpp
 #qt creator
 *.pro.user
+src/quazip/release/*
+src/quazip/debug/*
 #mac specific
 .DS_Store
 
 !src/leveldb/Makefile
-!src/quazip/Makefile
