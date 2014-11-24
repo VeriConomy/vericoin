@@ -32,6 +32,7 @@ Makefile
 qrc_*.cpp
 #qt creator
 *.pro.user
+src/quazip/Makefile
 src/quazip/release/*
 src/quazip/debug/*
 #mac specific
