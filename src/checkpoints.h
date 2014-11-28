@@ -10,12 +10,6 @@
 
 #define CHECKPOINT_MAX_SPAN (60 * 60) // max 1 hour before latest block
 
-#ifdef WIN32
-#undef STRICT
-#undef PERMISSIVE
-#undef ADVISORY
-#endif
-
 class uint256;
 class CBlockIndex;
 class CSyncCheckpoint;
@@ -29,11 +23,11 @@ namespace Checkpoints
     enum CPMode
     {
         // Scrict checkpoints policy, perform conflicts verification and resolve conflicts
-        STRICT = 0,
+        CPSTRICT = 0,
         // Advisory checkpoints policy, perform conflicts verification but don't try to resolve them
-        ADVISORY = 1,
+        CPADVISORY = 1,
         // Permissive checkpoints policy, don't perform any checking
-        PERMISSIVE = 2
+        CPPERMISSIVE = 2
     };
 
     // Returns true if block passes checkpoint checks

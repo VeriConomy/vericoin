@@ -36,7 +36,8 @@
 #include "txdb.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
-#include <quazip/JlCompress.h>
+
+#include <JlCompress.h>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -1139,12 +1140,11 @@ void BitcoinGUI::updateStakingIcon()
 
 void BitcoinGUI::reloadBlockchain()
 {
-    boost::filesystem::path pathBootstrap;
     bool turbo = true;
     bool confirm = false;
-    QStringList options;
+    std::string strDataDir = GetDataDir().string();
+    QString pathBootstrap = QString(strDataDir.c_str());
     QUrl url;
-    QString dest;
 
     /* Removed option for Classic.
     options << tr("Turbo") << tr("Classic");
@@ -1161,21 +1161,20 @@ void BitcoinGUI::reloadBlockchain()
     */
     if (turbo)
     {
-        pathBootstrap = GetDataDir() / "/bootstrap.zip";
+        pathBootstrap.append("/bootstrap.zip");
         url.setUrl("http://www.vericoin.info/downloads/bootstrap.zip");
     }
     else
     {
-        pathBootstrap = GetDataDir() / "/bootstrap.dat";
+        pathBootstrap.append("/bootstrap.dat");
         url.setUrl("http://www.vericoin.info/downloads/bootstrap.dat");
     }
 
     printf("Downloading blockchain data...\n");
-    dest = pathBootstrap.c_str();
     Downloader * bs = new Downloader(this);
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
-    bs->setDest(dest);
+    bs->setDest(pathBootstrap);
     // Experimental.
     //bs->setAutoDownload(true);
     //bs->setAttribute(Qt::WA_DontShowOnScreen);
@@ -1188,7 +1187,7 @@ void BitcoinGUI::reloadBlockchain()
     }
     delete bs;
 
-    if (boost::filesystem::exists(pathBootstrap) && boost::filesystem::file_size(pathBootstrap) != 0)
+    if (QFile::exists(pathBootstrap))
     {
         printf("Preparing for Blockchain Reload...\n");
     }
@@ -1212,7 +1211,7 @@ void BitcoinGUI::reloadBlockchain()
     {
         // bootstrap.zip
         /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(pathBootstrap.c_str());
+        QStringList zlist = JlCompress::getFileList(pathBootstrap);
         if (zlist.size() > 0 && zlist[0] == "bootstrap/")
         {
             printf("Bootstrap structure is valid.\n");
@@ -1223,7 +1222,16 @@ void BitcoinGUI::reloadBlockchain()
             return;
         }
         // Extract bootstrap.zip
-        JlCompress::extractDir(this, pathBootstrap.c_str(), GetDataDir().c_str());
+        QStringList zextracted = JlCompress::extractDir(this, pathBootstrap, QString(strDataDir.c_str()));
+        if (zextracted.size() > 0)
+        {
+            printf("Bootstrap extract successful.\n");
+        }
+        else
+        {
+            printf("Bootstrap extract failed!\n");
+            return;
+        }
 
         if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
             !boost::filesystem::exists(GetDataDir() / "bootstrap" / "/txleveldb"))
