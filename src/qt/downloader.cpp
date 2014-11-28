@@ -57,18 +57,21 @@ void Downloader::on_downloadButton_clicked()
         return;
     }
 
-    if (!fileDest.isEmpty())
+    if (!fileDest.fileName().isEmpty())
     {
-        fileName = fileDest;
+        fileName = fileDest.filePath();
+    }
+    else
+    {
+        fileDest = QFileInfo(fileName);
     }
 
-    if (QFile::exists(fileName))
+    if (fileDest.exists())
     {
         if (!autoDownload)
         {
             if (QMessageBox::question(this, tr("Downloader"),
-                tr("There already exists a file called %1 in "
-                "the current directory. Overwrite?").arg(fileName),
+                tr("There already exists a file called %1. Overwrite?").arg(fileName),
                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No)
                 == QMessageBox::No)
             {
@@ -205,8 +208,7 @@ void Downloader::downloaderFinished()
         if (!autoDownload)
         {
             QMessageBox::information(this, tr("Downloader"),
-                                 tr("Download failed: %1.")
-                                 .arg(reply->errorString()));
+                                 tr("Download failed: %1.").arg(reply->errorString()));
         }
         else
         {
@@ -236,7 +238,7 @@ void Downloader::downloaderFinished()
         else
         {
             QString fileName = QFileInfo(QUrl(ui->urlEdit->text()).path()).fileName();
-            ui->statusLabel->setText(tr("Downloaded %1 to %2.").arg(fileName).arg(fileDest));
+            ui->statusLabel->setText(tr("Downloaded %1.").arg(fileDest.fileName()));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
@@ -338,11 +340,11 @@ void Downloader::setUrl(QUrl url)
 // This is called when the Destination is already pre-defined and you want to bypass the dialog window
 void Downloader::setDest(QString dest)
 {
-    fileDest = dest;
+    fileDest = QFileInfo(dest);
 
-    if (QFile::exists(fileDest))
+    if (fileDest.exists())
     {
-        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest));
+        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest.fileName()));
         ui->continueButton->setEnabled(true);
     }
     else

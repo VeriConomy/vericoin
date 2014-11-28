@@ -60,7 +60,7 @@ private:
     void startRequest(QUrl url);
     Ui::Downloader *ui;
     QUrl url;
-    QString fileDest;
+    QFileInfo fileDest;
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QProgressDialog *progressDialog;

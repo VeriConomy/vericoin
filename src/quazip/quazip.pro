@@ -35,15 +35,16 @@ CONFIG(staticlib): DEFINES += QUAZIP_STATIC
 # Input
 include(quazip.pri)
 
+# for extra security on Windows: enable ASLR and DEP via GCC linker flags
+win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware
+
 unix:!symbian {
     headers.path=$$PREFIX/include/quazip
     headers.files=$$HEADERS
     target.path=$$PREFIX/lib/$${LIB_ARCH}
     INSTALLS += headers target
-
-	OBJECTS_DIR=.obj
-	MOC_DIR=.moc
-	
+    OBJECTS_DIR=.obj
+    MOC_DIR=.moc
 }
 
 win32 {
@@ -55,9 +56,7 @@ win32 {
     DEFINES += NOMINMAX
 }
 
-
 symbian {
-
     # Note, on Symbian you may run into troubles with LGPL.
     # The point is, if your application uses some version of QuaZip,
     # and a newer binary compatible version of QuaZip is released, then
@@ -68,9 +67,6 @@ symbian {
     # This is probably best achieved by building QuaZip as a static
     # library and providing linkable object files of your application,
     # so users can relink it.
-
-    CONFIG += staticlib
-    CONFIG += debug_and_release
 
     LIBS += -lezip
 

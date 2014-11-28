@@ -535,4 +535,3 @@ QStringList JlCompress::getFileList(QString fileCompressed) {
 
     return lst;
 }
-

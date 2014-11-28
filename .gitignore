@@ -1,5 +1,7 @@
 *~
 build
+debug
+release
 src/*.exe
 src/vericoin
 src/vericoind
@@ -33,8 +35,8 @@ qrc_*.cpp
 #qt creator
 *.pro.user
 src/quazip/Makefile
-src/quazip/release/*
-src/quazip/debug/*
+src/quazip/release
+src/quazip/debug
 #mac specific
 .DS_Store
 

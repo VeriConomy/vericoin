@@ -5,10 +5,11 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-CONFIG += debug_and_release
-!win32{
+CONFIG += debug
+#CONFIG += debug_and_release
+#!win32{
 CONFIG += static
-}
+#}
 QT += network webkit
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += webkitwidgets
@@ -37,8 +38,8 @@ OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1i/include
 OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1i
 MINIUPNPC_INCLUDE_PATH=C:/deps/
 MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
-QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.3
-QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.3/.libs
+QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
+QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
 }
 
 OBJECTS_DIR = build
@@ -118,19 +119,7 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
-SOURCES += src/txdb-leveldb.cpp \
-    src/quazip/JlCompress.cpp \
-    src/quazip/qioapi.cpp \
-    src/quazip/quaadler32.cpp \
-    src/quazip/quacrc32.cpp \
-    src/quazip/quagzipfile.cpp \
-    src/quazip/quaziodevice.cpp \
-    src/quazip/quazipdir.cpp \
-    src/quazip/quazipfile.cpp \
-    src/quazip/quazipfileinfo.cpp \
-    src/quazip/quazipnewinfo.cpp \
-    src/quazip/unzip.c \
-    src/quazip/zip.c
+SOURCES += src/txdb-leveldb.cpp
 !win32 {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
@@ -149,25 +138,31 @@ QMAKE_EXTRA_TARGETS += genleveldb
 # Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
 QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) clean
 
-INCLUDEPATH += src/quazip
-LIBS += $$PWD/src/quazip/libquazip.a -lz
-SOURCES += src/quazip/quazip.cpp
-!win32 {
-    # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
-    genquazip.commands = cd $$PWD/src/quazip && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libquazip.a
-} else {
-    # make an educated guess about what the ranlib command is called
-    isEmpty(QMAKE_RANLIB) {
-        QMAKE_RANLIB = $$replace(QMAKE_STRIP, strip, ranlib)
-    }
-    LIBS += -lquazip
-}
-genquazip.target = $$PWD/src/quazip/libquazip.a
+# QuaZip Begin
+INCLUDEPATH += $$PWD/src/quazip
+DEPENDPATH += $$PWD/src/quazip
+DEFINES += QUAZIP_STATIC
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/src/quazip/release/ -lquazip -lz
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/src/quazip/debug/ -lquazip -lz
+else: LIBS += -L$$PWD/src/quazip/ -lquazip -lz
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/libquazip.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/libquazip.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/quazip.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/quazip.lib
+else: PRE_TARGETDEPS += $$PWD/src/quazip/libquazip.a
+
+win32:CONFIG(release, debug|release): QUAZIPLIB=release
+else:win32:CONFIG(debug, debug|release): QUAZIPLIB=debug
+else: QUAZIPLIB=
+
+genquazip.commands = cd $$PWD/src/quazip && $(MAKE)
+genquazip.target = $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a
 genquazip.depends = FORCE
-PRE_TARGETDEPS += $$PWD/src/quazip/libquazip.a
 QMAKE_EXTRA_TARGETS += genquazip
-# Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
-QMAKE_CLEAN += $$PWD/src/quazip/libquazip.a; cd $$PWD/src/quazip ; $(MAKE) clean
+QMAKE_CLEAN += $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a; cd $$PWD/src/quazip ; $(MAKE) clean
+# QuaZip End
 
 # regenerate src/build.h
 !windows|contains(USE_BUILD_INFO, 1) {
@@ -292,23 +287,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/version.h \
     src/netbase.h \
     src/clientversion.h \
-    src/qt/downloader.h \
-    src/quazip/JlCompress.h \
-    src/quazip/crypt.h \
-    src/quazip/ioapi.h \
-    src/quazip/quaadler32.h \
-    src/quazip/quachecksum32.h \
-    src/quazip/quacrc32.h \
-    src/quazip/quagzipfile.h \
-    src/quazip/quaziodevice.h \
-    src/quazip/quazip.h \
-    src/quazip/quazip_global.h \
-    src/quazip/quazipdir.h \
-    src/quazip/quazipfile.h \
-    src/quazip/quazipfileinfo.h \
-    src/quazip/quazipnewinfo.h \
-    src/quazip/unzip.h \
-    src/quazip/zip.h
+    src/qt/downloader.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
