@@ -396,6 +396,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
     file->addAction(accessNxtInsideAction);
+    file->addSeparator();
     file->addAction(reloadBlockchainAction);
     file->addAction(rescanBlockchainAction);
     file->addSeparator();
