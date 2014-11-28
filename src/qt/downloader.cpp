@@ -14,9 +14,10 @@ Downloader::Downloader(QWidget *parent) :
 
     progressDialog = new QProgressDialog(this);
 
-    // This will be set true when Quit/Continue pressed
+    // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
     downloaderContinue = false;
+    httpRequestAborted = false;
     autoDownload = false;
 
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
@@ -103,8 +104,9 @@ void Downloader::on_downloadButton_clicked()
         return;
     }
 
-    // used for progressDialog
-    // This will be set true when canceled from progress dialog
+    // These will be set true when Cancel/Continue/Quit pressed
+    downloaderQuit = false;
+    downloaderContinue = false;
     httpRequestAborted = false;
 
     progressDialog->setWindowTitle(tr("Downloader"));
@@ -238,7 +240,7 @@ void Downloader::downloaderFinished()
         else
         {
             QString fileName = QFileInfo(QUrl(ui->urlEdit->text()).path()).fileName();
-            ui->statusLabel->setText(tr("Downloaded %1.").arg(fileDest.fileName()));
+            ui->statusLabel->setText(tr("Downloaded %1.").arg(fileDest.filePath()));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
@@ -344,7 +346,7 @@ void Downloader::setDest(QString dest)
 
     if (fileDest.exists())
     {
-        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest.fileName()));
+        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest.filePath()));
         ui->continueButton->setEnabled(true);
     }
     else
