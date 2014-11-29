@@ -30,6 +30,7 @@ void ThreadFlushWalletDB(void* parg);
 bool BackupWallet(const CWallet& wallet, const std::string& strDest);
 bool ReloadBlockchain(const CWallet& wallet);
 bool RescanBlockchain(const CWallet& wallet);
+bool CheckForUpdate(const CWallet& wallet);
 
 
 class CDBEnv

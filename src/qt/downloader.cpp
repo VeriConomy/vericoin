@@ -330,11 +330,25 @@ void Downloader::timerCheckDownloadProgress()
     }
 }
 
+// This is called when the URL is already pre-defined and you want to bypass the dialog window (overloaded)
+void Downloader::setUrl(std::string url)
+{
+    QUrl u = QString::fromStdString(url);
+    setUrl(u);
+}
+
 // This is called when the URL is already pre-defined and you want to bypass the dialog window
 void Downloader::setUrl(QUrl url)
 {
     ui->urlEdit->setText(url.url());
     ui->urlEdit->setEnabled(false);
+}
+
+// This is called when the Destination is already pre-defined and you want to bypass the dialog window (overloaded)
+void Downloader::setDest(std::string dest)
+{
+    QString d = QString::fromStdString(dest);
+    setDest(d);
 }
 
 // This is called when the Destination is already pre-defined and you want to bypass the dialog window

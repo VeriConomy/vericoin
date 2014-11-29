@@ -99,6 +99,8 @@ public:
     bool reloadBlockchain();
     // Rescan blockchain
     bool rescanBlockchain();
+    // Check for wallet update
+    bool checkForUpdate();
 
     // RAI object for unlocking wallet, returned by requestUnlock()
     class UnlockContext

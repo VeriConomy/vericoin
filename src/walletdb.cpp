@@ -7,8 +7,10 @@
 #include "util.h"
 #include "walletdb.h"
 #include "wallet.h"
+#include "downloader.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
+#include "json/json_spirit.h"
 
 using namespace std;
 using namespace boost;
@@ -648,6 +650,32 @@ bool RescanBlockchain(const CWallet& wallet)
     fRescan = true;
 
     StartShutdown();
+
+    return true;
+}
+
+bool CheckForUpdate(const CWallet& wallet)
+{
+    std::string updateUrl = "http://www.vericoin.info/downloads/";
+    std::string versionFile = updateUrl.append("VERSION.json");
+    std::string strDataDir = GetDataDir().string();
+
+    printf("Downloading version data...\n");
+    Downloader * bs = new Downloader();
+    bs->setWindowTitle("Auto Download");
+    bs->setUrl(updateUrl);
+    bs->setDest(strDataDir);
+    // Experimental.
+    bs->setAutoDownload(true);
+    bs->setAttribute(Qt::WA_DontShowOnScreen);
+    //bs->startDownload();
+    bs->exec();
+    if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
+    {
+        delete bs;
+        return false;
+    }
+    delete bs;
 
     return true;
 }

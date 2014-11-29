@@ -321,6 +321,11 @@ bool WalletModel::rescanBlockchain()
     return RescanBlockchain(*wallet);
 }
 
+bool WalletModel::checkForUpdate()
+{
+    return CheckForUpdate(*wallet);
+}
+
 // Handlers for core signals
 static void NotifyKeyStoreStatusChanged(WalletModel *walletmodel, CCryptoKeyStore *wallet)
 {

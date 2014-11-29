@@ -349,8 +349,10 @@ void BitcoinGUI::createActions()
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap"));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/tx_inout"), tr("Re&scan Blockchain..."), this);
+    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Blockchain..."), this);
     rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain"));
+    checkForUpdateAction = new QAction(QIcon(":/icons/tx_inout"), tr("Check For &Update..."), this);
+    checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update"));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -370,6 +372,7 @@ void BitcoinGUI::createActions()
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
+    connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(checkForUpdate()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -403,6 +406,7 @@ void BitcoinGUI::createMenuBar()
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
+    help->addAction(checkForUpdateAction);
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
 }
@@ -1250,5 +1254,17 @@ void BitcoinGUI::rescanBlockchain()
     if (!walletModel->rescanBlockchain())
     {
         QMessageBox::warning(this, tr("Rescan Failed"), tr("There was an error trying to rescan the blockchain."));
+    }
+}
+
+void BitcoinGUI::checkForUpdate()
+{
+    if (!walletModel->checkForUpdate())
+    {
+        QMessageBox::warning(this, tr("Update Not Available"), tr("You have the most current wallet version. No update required."));
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Update Success!"), tr("Congratulations! You have successfully updated to the most current wallet version."));
     }
 }
