@@ -16,9 +16,9 @@ Downloader::Downloader(QWidget *parent) :
 
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
-    downloaderContinue = false;
     httpRequestAborted = false;
     autoDownload = false;
+    downloadFinished = false;
 
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
@@ -106,12 +106,13 @@ void Downloader::on_downloadButton_clicked()
 
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
-    downloaderContinue = false;
     httpRequestAborted = false;
 
-    progressDialog->setWindowTitle(tr("Downloader"));
-    progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
-
+    if (!autoDownload)
+    {
+        progressDialog->setWindowTitle(tr("Downloader"));
+        progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
+    }
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -141,7 +142,7 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
 
 void Downloader::on_continueButton_clicked()
 {
-    downloaderContinue = true;
+    downloadFinished = true;
 
     this->close();
 }
@@ -166,9 +167,10 @@ void Downloader::enableDownloadButton()
 // During the download progress, it can be canceled
 void Downloader::cancelDownload()
 {
-    ui->statusLabel->setText(tr("Download canceled."));
     httpRequestAborted = true;
     reply->abort();
+
+    ui->statusLabel->setText(tr("Download canceled."));
     ui->downloadButton->setEnabled(true);
     ui->downloadButton->setDefault(true);
     ui->continueButton->setEnabled(false);
@@ -177,8 +179,6 @@ void Downloader::cancelDownload()
 // When download finished or canceled, this will be called
 void Downloader::downloaderFinished()
 {
-    downloadFinished = true;
-
     // when canceled
     if (httpRequestAborted)
     {
@@ -239,7 +239,6 @@ void Downloader::downloaderFinished()
         }
         else
         {
-            QString fileName = QFileInfo(QUrl(ui->urlEdit->text()).path()).fileName();
             ui->statusLabel->setText(tr("Downloaded %1.").arg(fileDest.filePath()));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
@@ -253,6 +252,7 @@ void Downloader::downloaderFinished()
     delete file;
     file = 0;
     manager = 0;
+    downloadFinished = true;
 
     if (autoDownload)
     {
@@ -300,13 +300,9 @@ void Downloader::startRequest(QUrl url)
     connect(reply, SIGNAL(finished()),
             this, SLOT(downloaderFinished()));
 
-    ui->statusLabel->setText(tr("Downloading..."));
-    if (autoDownload)
+    if (!autoDownload)
     {
-        progressDialog->hide();
-    }
-    else
-    {
+        ui->statusLabel->setText(tr("Downloading..."));
         progressDialog->show();
     }
 }

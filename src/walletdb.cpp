@@ -7,7 +7,6 @@
 #include "util.h"
 #include "walletdb.h"
 #include "wallet.h"
-#include "downloader.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 #include "json/json_spirit.h"
@@ -635,16 +634,17 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
     return false;
 }
 
-bool ReloadBlockchain(const CWallet& wallet)
+bool ReloadBlockchain(bool turbo)
 {
     fRestart = true;
+    fBootstrapTurbo = turbo;
 
     StartShutdown();
 
     return true;
 }
 
-bool RescanBlockchain(const CWallet& wallet)
+bool RescanBlockchain()
 {
     fRestart = true;
     fRescan = true;
@@ -654,28 +654,11 @@ bool RescanBlockchain(const CWallet& wallet)
     return true;
 }
 
-bool CheckForUpdate(const CWallet& wallet)
+bool CheckForUpdate()
 {
-    std::string updateUrl = "http://www.vericoin.info/downloads/";
-    std::string versionFile = updateUrl.append("VERSION.json");
-    std::string strDataDir = GetDataDir().string();
+    fRestart = true;
 
-    printf("Downloading version data...\n");
-    Downloader * bs = new Downloader();
-    bs->setWindowTitle("Auto Download");
-    bs->setUrl(updateUrl);
-    bs->setDest(strDataDir);
-    // Experimental.
-    bs->setAutoDownload(true);
-    bs->setAttribute(Qt::WA_DontShowOnScreen);
-    //bs->startDownload();
-    bs->exec();
-    if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
-    {
-        delete bs;
-        return false;
-    }
-    delete bs;
+    StartShutdown();
 
     return true;
 }

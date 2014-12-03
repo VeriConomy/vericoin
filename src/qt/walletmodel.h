@@ -96,10 +96,10 @@ public:
     // Wallet backup
     bool backupWallet(const QString &filename);
     // Reload blockchain
-    bool reloadBlockchain();
+    bool reloadBlockchain(bool turbo);
     // Rescan blockchain
     bool rescanBlockchain();
-    // Check for wallet update
+    // Restart wallet on update
     bool checkForUpdate();
 
     // RAI object for unlocking wallet, returned by requestUnlock()

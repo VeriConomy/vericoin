@@ -33,8 +33,8 @@ public:
     void setDest(std::string dest); // overload
     void startDownload();
     bool httpRequestAborted;
-    bool downloaderContinue;
     bool downloaderQuit;
+    bool downloadFinished;
 
 private slots:
     void on_downloadButton_clicked();
@@ -67,7 +67,6 @@ private:
     QNetworkReply *reply;
     QProgressDialog *progressDialog;
     QFile *file;
-    bool downloadFinished;
     qint64 downloadProgress;
     qint64 fileSize;
     QTimer *downloadTimer;

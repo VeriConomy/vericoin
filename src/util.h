@@ -158,7 +158,6 @@ extern bool fShutdown;
 extern bool fRestart;
 extern bool fRescan;
 extern bool fBootstrapTurbo;
-extern bool fBootstrap;
 extern bool fDaemon;
 extern bool fServer;
 extern bool fCommandLine;
