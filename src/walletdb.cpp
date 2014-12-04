@@ -9,6 +9,7 @@
 #include "wallet.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
+#include "json/json_spirit.h"
 
 using namespace std;
 using namespace boost;
@@ -633,19 +634,29 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
     return false;
 }
 
-bool ReloadBlockchain(const CWallet& wallet)
+bool ReloadBlockchain(bool turbo)
 {
     fRestart = true;
+    fBootstrapTurbo = turbo;
 
     StartShutdown();
 
     return true;
 }
 
-bool RescanBlockchain(const CWallet& wallet)
+bool RescanBlockchain()
 {
     fRestart = true;
     fRescan = true;
+
+    StartShutdown();
+
+    return true;
+}
+
+bool CheckForUpdate()
+{
+    fRestart = true;
 
     StartShutdown();
 

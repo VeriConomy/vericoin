@@ -73,7 +73,6 @@ bool fShutdown = false;
 bool fRestart = false;
 bool fRescan = false;
 bool fBootstrapTurbo = false;
-bool fBootstrap = false;
 bool fDaemon = false;
 bool fServer = false;
 bool fCommandLine = false;

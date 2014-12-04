@@ -1,7 +1,7 @@
 TEMPLATE = lib
 CONFIG += qt warn_on
 CONFIG += staticlib
-QT -= gui
+#QT -= gui
 QT += widgets
 
 # The ABI version.

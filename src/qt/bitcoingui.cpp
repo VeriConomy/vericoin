@@ -354,9 +354,11 @@ void BitcoinGUI::createActions()
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
-    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap"));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/tx_inout"), tr("Re&scan Blockchain..."), this);
-    rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain"));
+    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
+    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Blockchain..."), this);
+    rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain."));
+    checkForUpdateAction = new QAction(QIcon(":/icons/tx_inout"), tr("Check For &Update..."), this);
+    checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -377,6 +379,7 @@ void BitcoinGUI::createActions()
     connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
+    connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(checkForUpdate()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -412,6 +415,7 @@ void BitcoinGUI::createMenuBar()
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
+    help->addAction(checkForUpdateAction);
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
 }
@@ -1176,12 +1180,9 @@ void BitcoinGUI::reloadBlockchain()
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
     bs->setDest(pathBootstrap);
-    // Experimental.
-    //bs->setAutoDownload(true);
-    //bs->setAttribute(Qt::WA_DontShowOnScreen);
-    //bs->startDownload();
     bs->exec();
-    if (bs->httpRequestAborted || bs->downloaderQuit || !bs->downloaderContinue)
+
+    if (!bs->downloadFinished)
     {
         delete bs;
         return;
@@ -1240,16 +1241,9 @@ void BitcoinGUI::reloadBlockchain()
             printf("Bootstrap extract is invalid!\n");
             return;
         }
-        fBootstrapTurbo = true;
-    }
-    else
-    {
-        // bootstrap.dat
-        /*** No need to do anything, just restart. ***/
-        fBootstrap = true;
     }
 
-    if (!walletModel->reloadBlockchain())
+    if (!walletModel->reloadBlockchain(turbo))
     {
         QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
     }
@@ -1272,5 +1266,43 @@ void BitcoinGUI::rescanBlockchain()
     if (!walletModel->rescanBlockchain())
     {
         QMessageBox::warning(this, tr("Rescan Failed"), tr("There was an error trying to rescan the blockchain."));
+    }
+}
+
+void BitcoinGUI::checkForUpdate()
+{
+    std::string updateUrl = "http://www.vericoin.info/downloads/VERSION.json";
+    std::string versionFile = GetDataDir().string() + "/VERSION.json";
+    bool success = false;
+
+    printf("Downloading version data...\n");
+    Downloader * bs = new Downloader(this);
+    bs->setUrl(updateUrl);
+    bs->setDest(versionFile);
+    bs->setAutoDownload(true);
+    bs->setAttribute(Qt::WA_DontShowOnScreen);
+    bs->startDownload();
+    delete bs;
+
+    if (QFile::exists(versionFile.c_str()))
+    {
+        printf("Parsing version data...\n");
+        if (success)
+        {
+            QMessageBox::warning(this, tr("Update Success!"), tr("Congratulations! You have successfully updated to the most current wallet version."));
+
+            if (!walletModel->checkForUpdate())
+            {
+                QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to update the wallet."));
+            }
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Update Unvailable"), tr("There was a problem retrieving version info from the update server."));
     }
 }

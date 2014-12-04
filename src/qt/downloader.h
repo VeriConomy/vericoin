@@ -28,11 +28,13 @@ public:
 public:
     void setAutoDownload(bool nogui);
     void setUrl(QUrl url);
+    void setUrl(std::string url); // overload
     void setDest(QString dest);
+    void setDest(std::string dest); // overload
     void startDownload();
     bool httpRequestAborted;
-    bool downloaderContinue;
     bool downloaderQuit;
+    bool downloadFinished;
 
 private slots:
     void on_downloadButton_clicked();
@@ -65,7 +67,6 @@ private:
     QNetworkReply *reply;
     QProgressDialog *progressDialog;
     QFile *file;
-    bool downloadFinished;
     qint64 downloadProgress;
     qint64 fileSize;
     QTimer *downloadTimer;
