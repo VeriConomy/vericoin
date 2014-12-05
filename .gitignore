@@ -1,5 +1,7 @@
 *~
 build
+debug
+release
 src/*.exe
 src/vericoin
 src/vericoind
@@ -20,19 +22,23 @@ vericoin-qt.pro.user
 *.rej
 *.orig
 *.o
+*.a
+src/quazip/libquazip.a
 *.patch
 .vericoin
 #compilation and Qt preprocessor part
 *.qm
 Makefile
-Makefile.Release
-Makefile.Debug
+*.Release
+*.Debug
 #resources cpp
 qrc_*.cpp
 #qt creator
 *.pro.user
+src/quazip/Makefile
+src/quazip/release
+src/quazip/debug
 #mac specific
 .DS_Store
 
 !src/leveldb/Makefile
-!src/quazip/Makefile

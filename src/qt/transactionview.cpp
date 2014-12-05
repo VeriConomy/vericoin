@@ -38,8 +38,6 @@ TransactionView::TransactionView(QWidget *parent) :
     // Build filter row
     this->setStyleSheet("background-color: #FFFFFF;");
 
-    _TOOLTIP_INIT_THIS
-
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0,0,0,0);
@@ -178,13 +176,13 @@ void TransactionView::setModel(WalletModel *model)
         transactionView->setSelectionBehavior(QAbstractItemView::SelectRows);
         transactionView->setSelectionMode(QAbstractItemView::ExtendedSelection);
         transactionView->setSortingEnabled(true);
-        transactionView->sortByColumn(TransactionTableModel::Status, Qt::AscendingOrder);
+        transactionView->sortByColumn(TransactionTableModel::Date, Qt::DescendingOrder);
         transactionView->verticalHeader()->hide();
 
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Status, 23);
         transactionView->horizontalHeader()->resizeSection(
-                TransactionTableModel::Date, 120);
+                TransactionTableModel::Date, 130);
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Type, 120);
         transactionView->horizontalHeader()->setResizeMode(

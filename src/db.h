@@ -28,6 +28,9 @@ extern unsigned int nWalletDBUpdated;
 
 void ThreadFlushWalletDB(void* parg);
 bool BackupWallet(const CWallet& wallet, const std::string& strDest);
+bool ReloadBlockchain(bool turbo);
+bool RescanBlockchain();
+bool CheckForUpdate();
 
 
 class CDBEnv
