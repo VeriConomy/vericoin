@@ -28,6 +28,8 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "ui_fiatpage.h"
+#include "ui_supernetpage.h"
+#include "ui_chatpage.h"
 #include "tooltip.h"
 #include "downloader.h"
 
@@ -144,6 +146,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     sendBitCoinsPage = new SendBitCoinsDialog(this);
 
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
+
     accessNxtInsideDialog = new AccessNxtInsideDialog(this);
     
     fiatPage = new QWidget(this);
@@ -154,6 +157,14 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
     connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
 
+    chatPage = new QWidget(this);
+    Ui::chatPage chat;
+    chat.setupUi(chatPage);
+
+    superNETPage = new QWidget(this);
+    Ui::superNETPage superNET;
+    superNET.setupUi(superNETPage);
+
     centralWidget = new QStackedWidget(this);
     centralWidget->setStyleSheet("background-color: white; font-size: 15px; font-family: Lato; color: #444748;");
     centralWidget->addWidget(overviewPage);
@@ -163,6 +174,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(sendBitCoinsPage);
     centralWidget->addWidget(fiatPage);
+    centralWidget->addWidget(chatPage);
+    centralWidget->addWidget(superNETPage);
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -312,6 +325,18 @@ void BitcoinGUI::createActions()
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
+    chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
+    chatAction->setToolTip(tr("Join the VeriCoin chat room"));
+    chatAction->setCheckable(true);
+    chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    tabGroup->addAction(chatAction);
+
+    superNETAction = new QAction(QIcon(":/icons/supernet_white"), tr("SuperNET"), this);
+    superNETAction->setToolTip(tr("Enter the SuperNET"));
+    superNETAction->setCheckable(true);
+    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
+    tabGroup->addAction(superNETAction);
+
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -326,6 +351,10 @@ void BitcoinGUI::createActions()
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     connect(fiatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(fiatAction, SIGNAL(triggered()), this, SLOT(gotoFiatPage()));
+    connect(chatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(chatAction, SIGNAL(triggered()), this, SLOT(gotoChatPage()));
+    connect(superNETAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(superNETAction, SIGNAL(triggered()), this, SLOT(gotoSuperNETPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit application"));
@@ -436,6 +465,8 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(addressBookAction);
     toolbar->addAction(sendBitCoinsAction);
     toolbar->addAction(fiatAction);
+    toolbar->addAction(chatAction);
+    toolbar->addAction(superNETAction);
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -857,6 +888,26 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 }
 
 void BitcoinGUI::gotoFiatPage()
+{
+    fiatAction->setChecked(true);
+    fiatPage->findChild<QWebView *>("webView")->load(QUrl("http://www.vericoin.info/fiat.html"));
+    centralWidget->setCurrentWidget(fiatPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoChatPage()
+{
+    chatAction->setChecked(true);
+    chatPage->findChild<QWebView *>("webView")->load(QUrl("https://kiwiirc.com/client/irc.freenode.net/#vericoin"));
+    centralWidget->setCurrentWidget(chatPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoSuperNETPage()
 {
     fiatAction->setChecked(true);
     fiatPage->findChild<QWebView *>("webView")->load(QUrl("http://www.vericoin.info/fiat.html"));

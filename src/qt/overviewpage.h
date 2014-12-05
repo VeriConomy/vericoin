@@ -47,7 +47,7 @@ private:
 private slots:
     void updateDisplayUnit();
     void handleTransactionClicked(const QModelIndex &index);
-    void on_chat_clicked();
+    void on_supernet_clicked();
     void on_forums_clicked();
     void on_home_clicked();
 };

@@ -5,7 +5,7 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-CONFIG += debug_and_release
+#CONFIG += debug_and_release
 !win32{
 CONFIG += static
 }
@@ -382,9 +382,11 @@ FORMS += \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/fiatpage.ui \
+    src/qt/forms/chatpage.ui \
+    src/qt/forms/supernetpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
-    src/qt/accessnxtinsidedialog.ui \
+    src/qt/forms/accessnxtinsidedialog.ui \
     src/qt/forms/aboutdialog.ui \
     src/qt/forms/editaddressdialog.ui \
     src/qt/forms/transactiondescdialog.ui \

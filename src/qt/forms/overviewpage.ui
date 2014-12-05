@@ -630,7 +630,7 @@ QPushButton:pressed { background : #418BCA; }</string>
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="chat">
+   <widget class="QPushButton" name="supernet">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -669,16 +669,16 @@ QPushButton:pressed { background : #418BCA; }</string>
 QPushButton:pressed { background : #418BCA; }</string>
     </property>
     <property name="text">
-     <string>Chat</string>
+     <string>SuperNET</string>
     </property>
     <property name="icon">
      <iconset resource="../bitcoin.qrc">
-      <normaloff>:/icons/chat </normaloff>:/icons/chat </iconset>
+      <normaloff>:/icons/supernet_white</normaloff>:/icons/supernet_white</iconset>
     </property>
     <property name="iconSize">
      <size>
-      <width>14</width>
-      <height>14</height>
+      <width>16</width>
+      <height>16</height>
      </size>
     </property>
    </widget>

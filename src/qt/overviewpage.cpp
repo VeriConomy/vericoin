@@ -209,9 +209,9 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 }
 
 //Link buttons
-void OverviewPage::on_chat_clicked()
+void OverviewPage::on_supernet_clicked()
 {
-    QString link="http://tinyurl.com/freenode-vericoin";
+    QString link="http://www.supernet.org/";
     QDesktopServices::openUrl(QUrl(link));
 }
 void OverviewPage::on_forums_clicked()
