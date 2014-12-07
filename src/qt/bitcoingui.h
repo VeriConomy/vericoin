@@ -48,8 +48,8 @@ public:
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
-    /** Reload the blockchain from another class */
     void ReloadBlockchain();
+    void CheckForUpdate();
 
 protected:
     void changeEvent(QEvent *e);

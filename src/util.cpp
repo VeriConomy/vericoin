@@ -592,7 +592,10 @@ void SetArg(const std::string& strArg, const std::string& strValue)
 
 void SetBoolArg(const std::string& strArg, bool fValue)
 {
-    mapArgs[strArg] = fValue;
+    if (fValue)
+        SetArg(strArg, std::string("1"));
+    else
+        SetArg(strArg, std::string("0"));
     return;
 }
 
@@ -1223,8 +1226,7 @@ boost::filesystem::path GetVersionFile()
 }
 
 // Reads the version file and maps it to the current configuration.
-void ReadVersionFile(map<string, string>& mapSettingsRet,
-                    map<string, vector<string> >& mapMultiSettingsRet)
+void ReadVersionFile()
 {
     QString versionData;
     std::string line;
@@ -1260,15 +1262,11 @@ void ReadVersionFile(map<string, string>& mapSettingsRet,
 #endif
         bool vBootstrap = versionObj.value(QString("bootstrap")).toBool();
 
-        mapSettingsRet["-vTitle"] = vTitle.toStdString();
-        mapMultiSettingsRet["-vTitle"].push_back(vTitle.toStdString());
-        mapSettingsRet["-vDescription"] = vDescription.toStdString();
-        mapMultiSettingsRet["-vDescription"].push_back(vDescription.toStdString());
-        mapSettingsRet["-vVersion"] = vVersion.toStdString();
-        mapMultiSettingsRet["-vVersion"].push_back(vVersion.toStdString());
-        mapSettingsRet["-vFileName"] = vFileName.toStdString();
-        mapMultiSettingsRet["-vFileName"].push_back(vFileName.toStdString());
-        mapSettingsRet["-vBootstrap"] = vBootstrap;
+        SetArg("-vTitle", vTitle.toStdString());
+        SetArg("-vDescription", vDescription.toStdString());
+        SetArg("-vVersion", vVersion.toStdString());
+        SetArg("-vFileName", vFileName.toStdString());
+        SetBoolArg("-vBootstrap", vBootstrap);
 
         if (!boost::iequals(FormatVersion(CLIENT_VERSION), GetArg("-vVersion", FormatVersion(CLIENT_VERSION))))
         {

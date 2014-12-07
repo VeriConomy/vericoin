@@ -308,7 +308,10 @@ void Downloader::startRequest(QUrl url)
     {
         progressDialog->setCancelButton(NULL);
     }
-    progressDialog->show();
+    if (this->isVisible())
+    {
+        progressDialog->show();
+    }
 }
 
 // This is called during the download to check for a hung state

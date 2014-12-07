@@ -1237,6 +1237,11 @@ void BitcoinGUI::rescanBlockchain()
     }
 }
 
+void BitcoinGUI::CheckForUpdate()
+{
+    checkForUpdate();
+}
+
 void BitcoinGUI::checkForUpdate()
 {
     bool confirm = false;
@@ -1244,7 +1249,7 @@ void BitcoinGUI::checkForUpdate()
     QUrl url;
 
     printf("Downloading and parsing version data...\n");
-    ReadVersionFile(mapArgs, mapMultiArgs);
+    ReadVersionFile();
 
     if (mapArgs.count("-vFileName"))
     {

@@ -311,7 +311,7 @@ std::string HelpMessage()
         "  -pid=<file>            " + _("Specify pid file (default: vericoind.pid)") + "\n" +
         "  -datadir=<dir>         " + _("Specify data directory") + "\n" +
         "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n" +
-        "  -bootstrapturbo        " + _("Force a reload of the turbo bootstrap file. Wallet will restart on completion.") + "\n" +
+        "  -bootstrapturbo        " + _("Force a reload of the turbo bootstrap file if flag is 'true' in version file.") + "\n" +
         "  -dbcache=<n>           " + _("Set database cache size in megabytes (default: 25)") + "\n" +
         "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n" +
         "  -timeout=<n>           " + _("Specify connection timeout in milliseconds (default: 5000)") + "\n" +
@@ -468,6 +468,12 @@ bool AppInit2()
     // Restarting
     if (mapArgs.count("-restart")) {
         SoftSetBoolArg("-restart", true);
+    }
+
+    // Check if we need to bootstrap and restart.
+    if (mapArgs.count("-bootstrapturbo"))
+    {
+        SoftSetBoolArg("-bootstrapturbo", true);
     }
 
     if (mapArgs.count("-bind")) {

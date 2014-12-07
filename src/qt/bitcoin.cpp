@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     }
     ReadConfigFile(mapArgs, mapMultiArgs);
 
-    ReadVersionFile(mapArgs, mapMultiArgs);
+    ReadVersionFile();
     if (mapArgs.count("-bootstrapturbo") && mapArgs.count("-vBootstrap") && !GetBoolArg("-vBootstrap"))
     {
         SetBoolArg("-bootstrapturbo", false); // This version does not require bootstrapping.
@@ -259,6 +259,10 @@ int main(int argc, char *argv[])
                 // Place this here as guiref has to be defined if we don't want to lose URIs
                 ipcInit(argc, argv);
 
+                if (fNewVersion) // Prompt user for upgrade
+                {
+                    window.CheckForUpdate();
+                }
                 if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
                 {
                     window.ReloadBlockchain();
