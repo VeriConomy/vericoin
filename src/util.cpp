@@ -9,6 +9,9 @@
 #include "version.h"
 #include "ui_interface.h"
 #include <boost/algorithm/string/join.hpp>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include "downloader.h"
 
 // Work around clang compilation problem in Boost 1.46:
 // /usr/include/boost/program_options/detail/config_file.hpp:163:17: error: call to function 'to_internal' that is neither visible in the template definition nor found by argument-dependent lookup
@@ -26,6 +29,7 @@ namespace boost {
 #include <boost/filesystem/fstream.hpp>
 #include <boost/foreach.hpp>
 #include <boost/thread.hpp>
+#include <boost/algorithm/string.hpp>
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 #include <stdarg.h>
@@ -64,6 +68,8 @@ using namespace std;
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
+const char *walletUrl = "http://www.vericoin.info/";
+const char *walletDownloadsUrl = "http://www.vericoin.info/downloads/";
 bool fDebug = false;
 bool fDebugNet = false;
 bool fPrintToConsole = false;
@@ -72,6 +78,7 @@ bool fRequestShutdown = false;
 bool fShutdown = false;
 bool fRestart = false;
 bool fRescan = false;
+bool fNewVersion = false;
 bool fBootstrapTurbo = false;
 bool fDaemon = false;
 bool fServer = false;
@@ -574,6 +581,19 @@ bool GetBoolArg(const std::string& strArg, bool fDefault)
         return (atoi(mapArgs[strArg]) != 0);
     }
     return fDefault;
+}
+
+void SetArg(const std::string& strArg, const std::string& strValue)
+{
+    mapArgs[strArg] = strValue;
+    mapMultiArgs[strArg].push_back(strValue);
+    return;
+}
+
+void SetBoolArg(const std::string& strArg, bool fValue)
+{
+    mapArgs[strArg] = fValue;
+    return;
 }
 
 bool SoftSetArg(const std::string& strArg, const std::string& strValue)
@@ -1173,6 +1193,91 @@ void ShrinkDebugFile()
             fwrite(pch, 1, nBytes, file);
             fclose(file);
         }
+    }
+}
+
+// Downloads the latest version info and returns the path to it.
+boost::filesystem::path GetVersionFile()
+{
+    boost::filesystem::path versionFile("VERSION.json");
+    string versionUrl(walletDownloadsUrl);
+
+    versionUrl.append(versionFile.c_str());
+    versionFile = (GetDataDir(false) / versionFile);
+
+    if (fNewVersion)
+        return versionFile;
+
+    // Download the file.
+    printf("Downloading version data...\n");
+    Downloader * vf = new Downloader(NULL);
+    vf->setUrl(versionUrl);
+    vf->setDest(string(versionFile.c_str()));
+    vf->setAutoDownload(true);
+    vf->setAttribute(Qt::WA_DontShowOnScreen);
+    vf->startDownload();
+    vf->exec();
+    delete vf;
+
+    return versionFile;
+}
+
+// Reads the version file and maps it to the current configuration.
+void ReadVersionFile(map<string, string>& mapSettingsRet,
+                    map<string, vector<string> >& mapMultiSettingsRet)
+{
+    QString versionData;
+    std::string line;
+    boost::filesystem::ifstream streamVersion(GetVersionFile());
+
+    if (fNewVersion)
+        return; // New version data already loaded
+
+    if (streamVersion.is_open())
+    {
+        while (getline(streamVersion,line))
+        {
+            versionData.append(line.c_str());
+        }
+        streamVersion.close();
+
+        QJsonDocument versionDoc = QJsonDocument::fromJson(versionData.toUtf8());
+        QJsonObject versionObj = versionDoc.object();
+        QString vTitle = versionObj.value(QString("title")).toString();
+        QString vDescription = versionObj.value(QString("description")).toString();
+        QString vVersion = versionObj.value(QString("version")).toString();
+        QString vFileName = versionObj.value(QString("prefix")).toString();
+        vFileName.append(vVersion);
+#ifdef WIN32
+        vFileName.append(versionObj.value(QString("arch32")).toString());
+        vFileName.append(versionObj.value(QString("windows")).toString());
+#else
+#ifdef MAC_OSX
+        vFileName.append(versionObj.value(QString("mac")).toString());
+#else
+        vFileName.append(versionObj.value(QString("linux")).toString());
+#endif
+#endif
+        bool vBootstrap = versionObj.value(QString("bootstrap")).toBool();
+
+        mapSettingsRet["-vTitle"] = vTitle.toStdString();
+        mapMultiSettingsRet["-vTitle"].push_back(vTitle.toStdString());
+        mapSettingsRet["-vDescription"] = vDescription.toStdString();
+        mapMultiSettingsRet["-vDescription"].push_back(vDescription.toStdString());
+        mapSettingsRet["-vVersion"] = vVersion.toStdString();
+        mapMultiSettingsRet["-vVersion"].push_back(vVersion.toStdString());
+        mapSettingsRet["-vFileName"] = vFileName.toStdString();
+        mapMultiSettingsRet["-vFileName"].push_back(vFileName.toStdString());
+        mapSettingsRet["-vBootstrap"] = vBootstrap;
+
+        if (!boost::iequals(FormatVersion(CLIENT_VERSION), GetArg("-vVersion", FormatVersion(CLIENT_VERSION))))
+        {
+            fNewVersion = true;
+        }
+    }
+    else
+    {
+        cout << "Unable to open version file.";
     }
 }
 

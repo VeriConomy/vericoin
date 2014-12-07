@@ -107,6 +107,7 @@ void Shutdown(void* parg)
                 boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
                 boost::filesystem::remove_all(GetDataDir() / "bootstrap");
             }
+
             RestartWallet((fRescan ? "-rescan" : NULL), true);
         }
 #ifndef QT_GUI
@@ -127,13 +128,40 @@ void Shutdown(void* parg)
 void RestartWallet(const char *parm, bool fOldParms)
 {
     QStringList newArgv(QApplication::instance()->arguments());
-    QString command = newArgv[0];
+    QString command;
+
+    if (fNewVersion) // For Auto Update executable
+    {
+        // SDW TODO:
+#ifdef WIN32
+        // If Windows, replace argv[0] with exe and restart.
+        command = QString(GetArg("-vFileName","vericoin-qt.exe").c_str());
+#else
+#ifdef MAC_OSX
+        // If Mac, just exit and let them manually install the pkg.
+        command = QString("");
+#else
+        // If Linux, restart (already extracted from zip).
+        command = QString(GetArg("-vFileName","vericoin-qt").c_str());
+        if (GetBoolArg("-vBootstrap"))
+            parm = "-bootstrapturbo";
+#endif
+#endif
+
+    }
+    else
+    {
+        command = newArgv[0];
+    }
     newArgv.removeFirst();
 
     if (!fOldParms)
     {
-        newArgv = QStringList(QApplication::instance()->arguments().first());
+        newArgv.clear();
     }
+
+    if ((fOldParms && mapArgs.count("-bootstrapturbo")))
+        newArgv.removeOne(QString("-bootstrapturbo"));
 
     if ((fOldParms && !mapArgs.count("-restart")) || !fOldParms)
         newArgv.append(QString("-restart"));
@@ -283,6 +311,7 @@ std::string HelpMessage()
         "  -pid=<file>            " + _("Specify pid file (default: vericoind.pid)") + "\n" +
         "  -datadir=<dir>         " + _("Specify data directory") + "\n" +
         "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n" +
+        "  -bootstrapturbo        " + _("Force a reload of the turbo bootstrap file. Wallet will restart on completion.") + "\n" +
         "  -dbcache=<n>           " + _("Set database cache size in megabytes (default: 25)") + "\n" +
         "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n" +
         "  -timeout=<n>           " + _("Specify connection timeout in milliseconds (default: 5000)") + "\n" +
@@ -438,7 +467,6 @@ bool AppInit2()
 
     // Restarting
     if (mapArgs.count("-restart")) {
-        // a wallet restart was issued
         SoftSetBoolArg("-restart", true);
     }
 

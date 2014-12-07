@@ -1,6 +1,7 @@
 TEMPLATE = lib
 CONFIG += qt warn_on
 CONFIG += staticlib
+CONFIG += release
 #QT -= gui
 QT += widgets
 

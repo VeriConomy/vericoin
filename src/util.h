@@ -141,14 +141,10 @@ inline void MilliSleep(int64_t n)
 #endif
 
 
-
-
-
-
-
-
 extern std::map<std::string, std::string> mapArgs;
 extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
+extern const char *walletUrl;
+extern const char *walletDownloadsUrl;
 extern bool fDebug;
 extern bool fDebugNet;
 extern bool fPrintToConsole;
@@ -157,6 +153,7 @@ extern bool fRequestShutdown;
 extern bool fShutdown;
 extern bool fRestart;
 extern bool fRescan;
+extern bool fNewVersion;
 extern bool fBootstrapTurbo;
 extern bool fDaemon;
 extern bool fServer;
@@ -224,11 +221,13 @@ bool RenameOver(boost::filesystem::path src, boost::filesystem::path dest);
 boost::filesystem::path GetDefaultDataDir();
 const boost::filesystem::path &GetDataDir(bool fNetSpecific = true);
 boost::filesystem::path GetConfigFile();
+boost::filesystem::path GetVersionFile();
 boost::filesystem::path GetPidFile();
 #ifndef WIN32
 void CreatePidFile(const boost::filesystem::path &path, pid_t pid);
 #endif
 void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet, std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
+void ReadVersionFile(std::map<std::string, std::string>& mapSettingsRet, std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
 #ifdef WIN32
 boost::filesystem::path GetSpecialFolderPath(int nFolder, bool fCreate = true);
 #endif
@@ -240,6 +239,7 @@ int64_t GetTime();
 void SetMockTime(int64_t nMockTimeIn);
 int64_t GetAdjustedTime();
 int64_t GetTimeOffset();
+std::string FormatVersion(int nVersion);
 std::string FormatFullVersion();
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments);
 void AddTimeData(const CNetAddr& ip, int64_t nTime);
@@ -425,11 +425,29 @@ int64_t GetArg(const std::string& strArg, int64_t nDefault);
 bool GetBoolArg(const std::string& strArg, bool fDefault=false);
 
 /**
- * Set an argument if it doesn't already have a value
+ * Set an argument even if it already has a value
  *
  * @param strArg Argument to set (e.g. "-foo")
  * @param strValue Value (e.g. "1")
  * @return true if argument gets set, false if it already had a value
+ */
+void SetArg(const std::string& strArg, const std::string& strValue);
+
+/**
+ * Set a boolean argument even if it already has a value
+ *
+ * @param strArg Argument to set (e.g. "-foo")
+ * @param fValue Value (e.g. false)
+ * @return true if argument gets set
+ */
+void SetBoolArg(const std::string& strArg, bool fValue);
+
+/**
+ * Set an argument if it doesn't already have a value
+ *
+ * @param strArg Argument to set (e.g. "-foo")
+ * @param strValue Value (e.g. "1")
+ * @return true if argument gets set
  */
 bool SoftSetArg(const std::string& strArg, const std::string& strValue);
 

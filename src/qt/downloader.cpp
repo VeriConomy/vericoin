@@ -32,6 +32,10 @@ Downloader::~Downloader()
 
 void Downloader::startDownload()
 {
+    if (autoDownload)
+    {
+        ui->quitButton->setEnabled(false);
+    }
     on_downloadButton_clicked();
 }
 
@@ -108,11 +112,8 @@ void Downloader::on_downloadButton_clicked()
     downloaderQuit = false;
     httpRequestAborted = false;
 
-    if (!autoDownload)
-    {
-        progressDialog->setWindowTitle(tr("Downloader"));
-        progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
-    }
+    progressDialog->setWindowTitle(tr("Downloader"));
+    progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -138,6 +139,8 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
 
     progressDialog->setMaximum(totalBytes);
     progressDialog->setValue(bytesRead);
+
+    progressDialog->raise();
 }
 
 void Downloader::on_continueButton_clicked()
@@ -300,11 +303,12 @@ void Downloader::startRequest(QUrl url)
     connect(reply, SIGNAL(finished()),
             this, SLOT(downloaderFinished()));
 
-    if (!autoDownload)
+    ui->statusLabel->setText(tr("Downloading %1.").arg(url.url()));
+    if (autoDownload)
     {
-        ui->statusLabel->setText(tr("Downloading..."));
-        progressDialog->show();
+        progressDialog->setCancelButton(NULL);
     }
+    progressDialog->show();
 }
 
 // This is called during the download to check for a hung state
@@ -329,15 +333,18 @@ void Downloader::timerCheckDownloadProgress()
 }
 
 // This is called when the URL is already pre-defined and you want to bypass the dialog window (overloaded)
-void Downloader::setUrl(std::string url)
+void Downloader::setUrl(std::string source)
 {
-    QUrl u = QString::fromStdString(url);
+    QUrl u;
+    u.setUrl(QString::fromStdString(source));
     setUrl(u);
 }
 
 // This is called when the URL is already pre-defined and you want to bypass the dialog window
-void Downloader::setUrl(QUrl url)
+void Downloader::setUrl(QUrl source)
 {
+    url = source;
+
     ui->urlEdit->setText(url.url());
     ui->urlEdit->setEnabled(false);
 }

@@ -848,7 +848,7 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 void BitcoinGUI::gotoFiatPage()
 {
     fiatAction->setChecked(true);
-    fiatPage->findChild<QWebView *>("webView")->load(QUrl("http://www.vericoin.info/fiat.html"));
+    fiatPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("fiat.html")));
     centralWidget->setCurrentWidget(fiatPage);
 
     exportAction->setEnabled(false);
@@ -1122,45 +1122,32 @@ void BitcoinGUI::updateStakingIcon()
     }
 }
 
+void BitcoinGUI::ReloadBlockchain()
+{
+    reloadBlockchain();
+}
+
 void BitcoinGUI::reloadBlockchain()
 {
     bool turbo = true;
     bool confirm = false;
-    std::string strDataDir = GetDataDir().string();
-    QString pathBootstrap = QString(strDataDir.c_str());
+    QString pathBootstrap(GetDataDir().c_str());
     QUrl url;
 
-    /* Removed option for Classic.
-    options << tr("Turbo") << tr("Classic");
-
-    QString method = QInputDialog::getItem(this, tr("Reload Blockchain"),
-                                           tr("Reload Method:"), options,
-                                           0, false, &confirm);
-    if (!confirm)
-    {
-        return;
-    }
-
-    turbo = ((method == "Turbo") ? true : false);
-    */
-    if (turbo)
-    {
-        pathBootstrap.append("/bootstrap.zip");
-        url.setUrl("http://www.vericoin.info/downloads/bootstrap.zip");
-    }
-    else
-    {
-        pathBootstrap.append("/bootstrap.dat");
-        url.setUrl("http://www.vericoin.info/downloads/bootstrap.dat");
-    }
+    pathBootstrap.append("/bootstrap.zip");
+    url.setUrl(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
     printf("Downloading blockchain data...\n");
     Downloader * bs = new Downloader(this);
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
     bs->setDest(pathBootstrap);
+    if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
+    {
+        bs->setAutoDownload(true);
+        bs->startDownload();
+    }
     bs->exec();
-
     if (!bs->downloadFinished)
     {
         delete bs;
@@ -1178,14 +1165,16 @@ void BitcoinGUI::reloadBlockchain()
         return;
     }
 
-    // No turning back. Ask permission.
-    QMetaObject::invokeMethod(this, "confirm",
+    if (!GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
+    {
+        // No turning back. Ask permission.
+        QMetaObject::invokeMethod(this, "confirm",
                                Q_ARG(QString, tr("Please confirm reloading the blockchain. Your wallet will restart to complete the opertion.")),
                                Q_ARG(bool*, &confirm));
-
-    if (!confirm)
-    {
-        return;
+        if (!confirm)
+        {
+            return;
+        }
     }
 
     if (turbo)
@@ -1203,7 +1192,7 @@ void BitcoinGUI::reloadBlockchain()
             return;
         }
         // Extract bootstrap.zip
-        QStringList zextracted = JlCompress::extractDir(this, pathBootstrap, QString(strDataDir.c_str()));
+        QStringList zextracted = JlCompress::extractDir(this, pathBootstrap, QString(GetDataDir().c_str()));
         if (zextracted.size() > 0)
         {
             printf("Bootstrap extract successful.\n");
@@ -1250,26 +1239,58 @@ void BitcoinGUI::rescanBlockchain()
 
 void BitcoinGUI::checkForUpdate()
 {
-    std::string updateUrl = "http://www.vericoin.info/downloads/VERSION.json";
-    std::string versionFile = GetDataDir().string() + "/VERSION.json";
-    bool success = false;
+    bool confirm = false;
+    QString fileName(GetDataDir().c_str());
+    QUrl url;
 
-    printf("Downloading version data...\n");
-    Downloader * bs = new Downloader(this);
-    bs->setUrl(updateUrl);
-    bs->setDest(versionFile);
-    bs->setAutoDownload(true);
-    bs->setAttribute(Qt::WA_DontShowOnScreen);
-    bs->startDownload();
-    delete bs;
+    printf("Downloading and parsing version data...\n");
+    ReadVersionFile(mapArgs, mapMultiArgs);
 
-    if (QFile::exists(versionFile.c_str()))
+    if (mapArgs.count("-vFileName"))
     {
-        printf("Parsing version data...\n");
-        if (success)
+        if (fNewVersion)
         {
-            QMessageBox::warning(this, tr("Update Success!"), tr("Congratulations! You have successfully updated to the most current wallet version."));
+            // No turning back. Ask permission.
+            QMetaObject::invokeMethod(this, "confirm",
+                                  Q_ARG(QString, tr("A new version of the wallet is available. Please confirm downloading and installation. Your wallet will restart to complete the opertion.")),
+                                  Q_ARG(bool*, &confirm));
+            if (!confirm)
+            {
+                return;
+            }
 
+            std::string basename = GetArg("-vFileName","vericoin-qt");
+            fileName.append("/");
+            fileName.append(basename.c_str());
+            url.setUrl(QString(walletDownloadsUrl).append(basename.c_str()));
+
+            printf("Downloading new wallet...\n");
+            Downloader * w = new Downloader(this);
+            w->setWindowTitle("Wallet Download");
+            w->setUrl(url);
+            w->setDest(fileName);
+            w->setAutoDownload(true);
+            w->startDownload();
+            w->exec();
+            if (!w->downloadFinished)
+            {
+                delete w;
+                return;
+            }
+            delete w;
+
+            if (!QFile::exists(fileName))
+            {
+                printf("Update download failed!\n");
+                QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet."));
+                return;
+            }
+            // SDW TODO:
+            // If Linux, extract zip contents and make vericoin-qt executable then restart.
+            // If Windows, replace argv[0] with exe and restart.
+            // If Mac, replace argv[0] with package manager and add vFileName to argv[1].
+
+            // Restart with the executable.
             if (!walletModel->checkForUpdate())
             {
                 QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to update the wallet."));
@@ -1277,7 +1298,7 @@ void BitcoinGUI::checkForUpdate()
         }
         else
         {
-            QMessageBox::warning(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+            QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
         }
     }
     else

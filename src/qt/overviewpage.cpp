@@ -1,6 +1,7 @@
 #include "overviewpage.h"
 #include "ui_overviewpage.h"
 
+#include "util.h"
 #include "walletmodel.h"
 #include "bitcoinunits.h"
 #include "optionsmodel.h"
@@ -221,7 +222,7 @@ void OverviewPage::on_forums_clicked()
 }
 void OverviewPage::on_home_clicked()
 {
-    QString link="http://www.vericoin.info";
+    QString link(walletUrl);
     QDesktopServices::openUrl(QUrl(link));
 }
 
