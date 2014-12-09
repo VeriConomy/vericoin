@@ -476,6 +476,7 @@ QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QStr
         QString name = zip.getCurrentFileName();
         QString absFilePath = directory.absoluteFilePath(name);
         progressDialog.setValue(++progress);
+        progressDialog.raise();
         if (!extractFile(&zip, "", absFilePath)) {
             removeFile(extracted);
             progressDialog.hide();

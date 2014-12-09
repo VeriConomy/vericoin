@@ -49,6 +49,8 @@ public:
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
+    void ReloadBlockchain();
+    void CheckForUpdate();
 
 protected:
     void changeEvent(QEvent *e);

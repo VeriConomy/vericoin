@@ -27,8 +27,8 @@ public:
 
 public:
     void setAutoDownload(bool nogui);
-    void setUrl(QUrl url);
-    void setUrl(std::string url); // overload
+    void setUrl(QUrl source);
+    void setUrl(std::string source); // overload
     void setDest(QString dest);
     void setDest(std::string dest); // overload
     void startDownload();
