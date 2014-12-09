@@ -132,19 +132,22 @@ void RestartWallet(const char *parm, bool fOldParms)
 
     if (fNewVersion) // For Auto Update executable
     {
-        // SDW TODO:
 #ifdef WIN32
-        // If Windows, replace argv[0] with exe and restart.
+        // If Windows, replace argv[0] with the exe installer and restart.
         command = QString(GetArg("-vFileName","vericoin-qt.exe").c_str());
+        parm = NULL;
+        fOldParms = false;
 #else
 #ifdef MAC_OSX
-        // If Mac, just exit and let them manually install the pkg.
+        // SDW TODO:
+        // If Mac, replace argv[0] with the installer and pass the pkg file.
         command = QString("");
+        parm = NULL;
+        fOldParms = false;
 #else
-        // If Linux, restart (already extracted from zip).
-        command = QString(GetArg("-vFileName","vericoin-qt").c_str());
-        if (GetBoolArg("-vBootstrap"))
-            parm = "-bootstrapturbo";
+        // If Linux, just restart (already extracted vericoin-qt from the zip in bitcoingui.cpp).
+        command = newArgv[0];
+        parm = "-bootstrapturbo";
 #endif
 #endif
 

@@ -29,6 +29,7 @@
 #include "ui_fiatpage.h"
 #include "tooltip.h"
 #include "downloader.h"
+#include "updatedialog.h"
 
 #include "walletdb.h"
 #include "wallet.h"
@@ -1256,10 +1257,10 @@ void BitcoinGUI::checkForUpdate()
         if (fNewVersion)
         {
             // No turning back. Ask permission.
-            QMetaObject::invokeMethod(this, "confirm",
-                                  Q_ARG(QString, tr("A new version of the wallet is available. Please confirm downloading and installation. Your wallet will restart to complete the opertion.")),
-                                  Q_ARG(bool*, &confirm));
-            if (!confirm)
+            UpdateDialog ud;
+            ud.setModel(clientModel);
+            ud.exec();
+            if (!ud.updateAccepted)
             {
                 return;
             }
@@ -1291,9 +1292,9 @@ void BitcoinGUI::checkForUpdate()
                 return;
             }
             // SDW TODO:
+#if !defined(WIN32) && !defined(MAC_OSX)
             // If Linux, extract zip contents and make vericoin-qt executable then restart.
-            // If Windows, replace argv[0] with exe and restart.
-            // If Mac, replace argv[0] with package manager and add vFileName to argv[1].
+#endif
 
             // Restart with the executable.
             if (!walletModel->checkForUpdate())
