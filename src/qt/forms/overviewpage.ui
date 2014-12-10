@@ -531,7 +531,7 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>92</width>
+      <width>95</width>
       <height>27</height>
      </rect>
     </property>
@@ -543,13 +543,13 @@
     </property>
     <property name="minimumSize">
      <size>
-      <width>92</width>
+      <width>95</width>
       <height>0</height>
      </size>
     </property>
     <property name="maximumSize">
      <size>
-      <width>85</width>
+      <width>95</width>
       <height>16777215</height>
      </size>
     </property>
@@ -583,7 +583,7 @@ QPushButton:pressed { background : #418BCA; }</string>
      <rect>
       <x>120</x>
       <y>10</y>
-      <width>92</width>
+      <width>95</width>
       <height>27</height>
      </rect>
     </property>
@@ -595,13 +595,13 @@ QPushButton:pressed { background : #418BCA; }</string>
     </property>
     <property name="minimumSize">
      <size>
-      <width>92</width>
+      <width>95</width>
       <height>0</height>
      </size>
     </property>
     <property name="maximumSize">
      <size>
-      <width>85</width>
+      <width>95</width>
       <height>16777215</height>
      </size>
     </property>
@@ -635,7 +635,7 @@ QPushButton:pressed { background : #418BCA; }</string>
      <rect>
       <x>220</x>
       <y>10</y>
-      <width>92</width>
+      <width>95</width>
       <height>27</height>
      </rect>
     </property>
@@ -647,13 +647,13 @@ QPushButton:pressed { background : #418BCA; }</string>
     </property>
     <property name="minimumSize">
      <size>
-      <width>92</width>
+      <width>95</width>
       <height>0</height>
      </size>
     </property>
     <property name="maximumSize">
      <size>
-      <width>85</width>
+      <width>95</width>
       <height>16777215</height>
      </size>
     </property>
@@ -682,37 +682,6 @@ QPushButton:pressed { background : #418BCA; }</string>
      </size>
     </property>
    </widget>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>490</y>
-     <width>901</width>
-     <height>111</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel { background : #0a3057; border: none}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="../bitcoin.qrc">:/images/logo</pixmap>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-   </property>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget_2">
    <property name="geometry">
@@ -908,7 +877,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <property name="leftMargin">
-          <number>0</number>
+          <number>3</number>
          </property>
          <property name="topMargin">
           <number>12</number>
@@ -1007,7 +976,6 @@ QPushButton:pressed { background : #418BCA; }</string>
   <zorder>gridLayoutWidget_2</zorder>
   <zorder>gridLayoutWidget_4</zorder>
   <zorder>frame_3</zorder>
-  <zorder>label_2</zorder>
  </widget>
  <customwidgets>
   <customwidget>

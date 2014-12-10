@@ -99,19 +99,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     setMinimumSize(820, 246);
     setMaximumSize(880, 640);
-    resize(880, 580);
+    resize(880, 562);
     setWindowTitle(tr("VeriCoin") + " - " + tr("Wallet"));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
-#endif
-#ifdef Q_OS_WIN
-    resize(880, 570);
-#endif
-#ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
     resize(880, 562);
+#endif
+#ifdef Q_OS_WIN
+    resize(880, 570);
 #endif
 
     // Accept D&D of URIs
@@ -167,6 +165,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     superNET.setupUi(superNETPage);
 
     centralWidget = new QStackedWidget(this);
+    centralWidget->setFrameShape(QFrame::NoFrame);
     centralWidget->setStyleSheet("background-color: white; font-size: 15px; font-family: Lato; color: #444748;");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
@@ -180,21 +179,33 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setCentralWidget(centralWidget);
 
     // Create status bar
-    statusBar();
-    statusBar()->setStyleSheet("border: none; background-color: white; color: #444748;");
+    statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; } QStatusBar::item { border: 0px solid black; }");
 
     // Status bar notification icons
-    QFrame *frameBlocks = new QFrame();
+    QWidget *frameBlocks = new QWidget();
     frameBlocks->setContentsMargins(0,0,0,0);
-    frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    frameBlocks->setStyleSheet("color: #444748;");
+    frameBlocks->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    frameBlocks->setStyleSheet("QWidget { background: none; margin-bottom: 5px; }");
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
-
-    frameBlocksLayout->setContentsMargins(3,0,3,0);
-    frameBlocksLayout->setSpacing(3);
+    frameBlocksLayout->setContentsMargins(24,0,8,0);
+    frameBlocksLayout->setSpacing(27);
+    frameBlocksLayout->setAlignment(Qt::AlignLeft);
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
+    frameBlocksLayout->addWidget(labelBlocksIcon);
+    frameBlocksLayout->addWidget(labelStakingIcon);
+    frameBlocksLayout->addWidget(labelConnectionsIcon);
+
+    //wallet minimizer
+    QWidget *frameMin = new QWidget();
+    frameMin->setContentsMargins(0,0,0,0);
+    frameMin->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    frameMin->setStyleSheet("QWidget { background: none; margin-bottom: 5px; }");
+    QHBoxLayout *frameMinLayout = new QHBoxLayout(frameMin);
+    frameMinLayout->setContentsMargins(8,0,8,0);
+    frameMinLayout->setSpacing(10);
+    frameMinLayout->setAlignment(Qt::AlignRight);
     QPushButton *minimize = new QPushButton();
     minimize->setFocusPolicy(Qt::NoFocus);
     QIcon *ico = new QIcon();
@@ -203,19 +214,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     minimize->setIcon(*ico);
     minimize->setCheckable(true);
     minimize->setToolTip("Simple Wallet");
+    frameMinLayout->addWidget(minimize);
+
     connect(minimize, SIGNAL(clicked()), this, SLOT(resizeGUI()));
-
-    frameBlocksLayout->addStretch();
-    frameBlocksLayout->addWidget(labelStakingIcon);
-    frameBlocksLayout->addStretch();
-    frameBlocksLayout->addWidget(labelBlocksIcon);
-    frameBlocksLayout->addStretch();
-    frameBlocksLayout->addWidget(labelConnectionsIcon);
-    frameBlocksLayout->addStretch();
-    frameBlocksLayout->addSpacing(7);
-    frameBlocksLayout->addWidget(minimize);
-    frameBlocksLayout->addStretch();
-
 
     if (GetBoolArg("-staking", true))
     {
@@ -228,9 +229,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Progress bar and label for blocks download
     progressBarLabel = new QLabel();
     progressBarLabel->setVisible(false);
-    progressBarLabel->setStyleSheet("border: 0px; color: #444748;");
+    progressBarLabel->setFrameShape(QFrame::NoFrame);
+    progressBarLabel->setStyleSheet("border-color: " + STRING_VERIBLUE + "; color: white;");
     progressBar = new QProgressBar();
-    progressBar->setStyleSheet("border: 0px; color: #444748;");
+    progressBar->setStyleSheet("QProgressBar::chunk { background-color: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: white; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
 
@@ -244,9 +246,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         progressBar->setStyleSheet("QProgressBar { background-color: #FFFFFF; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
     }
 
+    statusBar()->addWidget(frameBlocks);
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
-    statusBar()->addPermanentWidget(frameBlocks);
+    statusBar()->addWidget(frameMin);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
 
@@ -455,8 +458,8 @@ void BitcoinGUI::createToolBars()
     QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setAutoFillBackground(true);
-    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none } QToolButton { background : " + STRING_VERIBLUE + "; border : none; color: white; font-size: 9pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
-    toolbar->setIconSize(QSize(60,36));
+    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none } QToolButton { background : " + STRING_VERIBLUE + "; border : none; color: white; font-size: 8pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
+    toolbar->setIconSize(QSize(60,32));
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     toolbar->addAction(overviewAction);
@@ -945,7 +948,7 @@ void BitcoinGUI::resizeGUI()
         }
         else
         {
-           resize(880, 580);
+           resize(880, 562);
            #ifdef Q_OS_WIN
                 resize(880, 570);
            #endif
