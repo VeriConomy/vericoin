@@ -201,6 +201,10 @@ private slots:
     void rescanBlockchain();
     /** Check for wallet update */
     void checkForUpdate();
+    /** Check for wallet update from Help menu */
+    void menuCheckForUpdate();
+    /** Check for wallet update from timer */
+    void timerCheckForUpdate();
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
     void showNormalIfMinimized(bool fToggleHidden = false);

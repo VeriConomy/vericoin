@@ -78,6 +78,8 @@ extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
 double GetPoSKernelPS();
 bool blocksIcon = true;
+bool fMenuCheckForUpdate = false;
+bool fTimerCheckForUpdate = false;
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
@@ -209,6 +211,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         timerStakingIcon->start(30 * 1000);
         updateStakingIcon();
     }
+
+    // Set a timer to check for updates daily
+    QTimer *tCheckForUpdate = new QTimer(this);
+    connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
+    tCheckForUpdate->start(86400 * 1000);
 
     // Progress bar and label for blocks download
     progressBarLabel = new QLabel();
@@ -373,7 +380,7 @@ void BitcoinGUI::createActions()
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
-    connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(checkForUpdate()));
+    connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -1238,9 +1245,33 @@ void BitcoinGUI::rescanBlockchain()
     }
 }
 
+// Called by user
+void BitcoinGUI::menuCheckForUpdate()
+{
+    fMenuCheckForUpdate = true;
+
+    if (!fTimerCheckForUpdate)
+        checkForUpdate();
+
+    fMenuCheckForUpdate = false;
+}
+
+// Called by timer
+void BitcoinGUI::timerCheckForUpdate()
+{
+    fTimerCheckForUpdate = true;
+
+    if (!fMenuCheckForUpdate)
+        checkForUpdate();
+
+    fTimerCheckForUpdate = false;
+}
+
+// Called by external (bitcoin.cpp)
 void BitcoinGUI::CheckForUpdate()
 {
-    checkForUpdate();
+    if (!fMenuCheckForUpdate && !fTimerCheckForUpdate)
+        checkForUpdate();
 }
 
 void BitcoinGUI::checkForUpdate()
@@ -1289,7 +1320,7 @@ void BitcoinGUI::checkForUpdate()
             fNewVersion = false;
             return;
         }
-        // SDW TODO:
+
 #if !defined(WIN32) && !defined(MAC_OSX)
         // If Linux, extract zip contents and make vericoin-qt executable then restart.
         /*** Test the archive. ***/
@@ -1346,6 +1377,9 @@ void BitcoinGUI::checkForUpdate()
     }
     else
     {
-        QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+        if (fMenuCheckForUpdate)
+        {
+            QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+        }
     }
 }
