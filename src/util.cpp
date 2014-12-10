@@ -517,6 +517,10 @@ void ParseParameters(int argc, const char* const argv[])
 {
     mapArgs.clear();
     mapMultiArgs.clear();
+
+    mapArgs["-programpath"] = argv[0];
+    mapMultiArgs["-programpath"].push_back(argv[0]);
+
     for (int i = 1; i < argc; i++)
     {
         char psz[10000];
@@ -1061,6 +1065,28 @@ boost::filesystem::path GetDefaultDataDir()
 #endif
 }
 
+const boost::filesystem::path &GetProgramDir()
+{
+    namespace fs = boost::filesystem;
+
+    static fs::path path = ".";
+
+    if (mapArgs.count("-programpath")) {
+        path = fs::system_complete(mapArgs["-programpath"]);
+        if (fs::is_directory(path.parent_path())) {
+            path = path.parent_path();
+        }
+        else
+        {
+            path = ".";
+        }
+    } else {
+        path = ".";
+    }
+
+    return path;
+}
+
 const boost::filesystem::path &GetDataDir(bool fNetSpecific)
 {
     namespace fs = boost::filesystem;
@@ -1099,7 +1125,7 @@ const boost::filesystem::path &GetDataDir(bool fNetSpecific)
 boost::filesystem::path GetConfigFile()
 {
     boost::filesystem::path pathConfigFile(GetArg("-conf", "vericoin.conf"));
-    if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir(false) / pathConfigFile;
+    if (!pathConfigFile.is_complete()) pathConfigFile = GetProgramDir() / pathConfigFile;
     return pathConfigFile;
 }
 
@@ -1208,9 +1234,6 @@ boost::filesystem::path GetVersionFile()
     versionUrl.append(versionFile.c_str());
     versionFile = (GetDataDir(false) / versionFile);
 
-    if (fNewVersion)
-        return versionFile;
-
     // Download the file.
     printf("Downloading version data...\n");
     Downloader * vf = new Downloader(NULL);
@@ -1220,20 +1243,27 @@ boost::filesystem::path GetVersionFile()
     vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->startDownload();
     vf->exec();
-    delete vf;
-
-    return versionFile;
+    if (vf->downloadFinished)
+    {
+        delete vf;
+        return versionFile;
+    }
+    else
+    {
+        delete vf;
+        return NULL;
+    }
 }
 
 // Reads the version file and maps it to the current configuration.
 void ReadVersionFile()
 {
+    if (fNewVersion)
+        return; // New version data already loaded
+
     QString versionData;
     std::string line;
     boost::filesystem::ifstream streamVersion(GetVersionFile());
-
-    if (fNewVersion)
-        return; // New version data already loaded
 
     if (streamVersion.is_open())
     {
@@ -1275,7 +1305,7 @@ void ReadVersionFile()
     }
     else
     {
-        cout << "Unable to open version file.";
+        cout << "Unable to read version file.";
     }
 }
 

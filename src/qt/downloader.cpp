@@ -13,6 +13,7 @@ Downloader::Downloader(QWidget *parent) :
     ui->quitButton->setAutoDefault(false);
 
     progressDialog = new QProgressDialog(this);
+    progressDialog->setCancelButton(NULL);
 
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
@@ -304,10 +305,6 @@ void Downloader::startRequest(QUrl url)
             this, SLOT(downloaderFinished()));
 
     ui->statusLabel->setText(tr("Downloading %1.").arg(url.url()));
-    if (autoDownload)
-    {
-        progressDialog->setCancelButton(NULL);
-    }
     if (this->isVisible())
     {
         progressDialog->show();

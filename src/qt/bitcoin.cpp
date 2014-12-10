@@ -135,6 +135,10 @@ int main(int argc, char *argv[])
     if (mapArgs.count("-restart")) {
         // a wallet restart was issued
         SoftSetBoolArg("-restart", true);
+#if !defined(WIN32) && !defined(MAC_OSX)
+        if (boost::filesystem::exists(GetDataDir() / "vericoin-qt.old"))
+            boost::filesystem::remove(GetDataDir() / "vericoin-qt.old");
+#endif // Linux
     }
 
     // ... then bitcoin.conf:

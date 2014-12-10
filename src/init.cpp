@@ -101,11 +101,17 @@ void Shutdown(void* parg)
         {
             if (fBootstrapTurbo)
             {
-                // Leveldb instance destruction
-                CTxDB().Destroy();
-                boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
-                boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
-                boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+                try
+                {
+                    // Leveldb instance destruction
+                    CTxDB().Destroy();
+                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
+                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                    boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+                }
+                catch (std::exception &e) {
+                    printf("Bootstrapturbo filesystem error!\n");
+                }
             }
 
             RestartWallet((fRescan ? "-rescan" : NULL), true);

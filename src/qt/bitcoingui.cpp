@@ -1183,7 +1183,7 @@ void BitcoinGUI::reloadBlockchain()
         // bootstrap.zip
         /*** Test the archive. ***/
         QStringList zlist = JlCompress::getFileList(pathBootstrap);
-        if (zlist.size() > 0 && zlist[0] == "bootstrap/")
+        if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
         {
             printf("Bootstrap structure is valid.\n");
         }
@@ -1194,7 +1194,7 @@ void BitcoinGUI::reloadBlockchain()
         }
         // Extract bootstrap.zip
         QStringList zextracted = JlCompress::extractDir(this, pathBootstrap, QString(GetDataDir().c_str()));
-        if (zextracted.size() > 0)
+        if (!zextracted.isEmpty())
         {
             printf("Bootstrap extract successful.\n");
         }
@@ -1204,8 +1204,8 @@ void BitcoinGUI::reloadBlockchain()
             return;
         }
 
-        if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
-            !boost::filesystem::exists(GetDataDir() / "bootstrap" / "/txleveldb"))
+        if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
+            !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
         {
             printf("Bootstrap extract is invalid!\n");
             return;
@@ -1245,70 +1245,107 @@ void BitcoinGUI::CheckForUpdate()
 
 void BitcoinGUI::checkForUpdate()
 {
-    bool confirm = false;
-    QString fileName(GetDataDir().c_str());
+    QString fileName(GetProgramDir().c_str());
     QUrl url;
 
     printf("Downloading and parsing version data...\n");
     ReadVersionFile();
 
-    if (mapArgs.count("-vFileName"))
+    if (fNewVersion)
     {
-        if (fNewVersion)
+        // No turning back. Ask permission.
+        UpdateDialog ud;
+        ud.setModel(clientModel);
+        ud.exec();
+        if (!ud.updateAccepted)
         {
-            // No turning back. Ask permission.
-            UpdateDialog ud;
-            ud.setModel(clientModel);
-            ud.exec();
-            if (!ud.updateAccepted)
-            {
-                return;
-            }
+            return;
+        }
 
-            std::string basename = GetArg("-vFileName","vericoin-qt");
-            fileName.append("/");
-            fileName.append(basename.c_str());
-            url.setUrl(QString(walletDownloadsUrl).append(basename.c_str()));
+        std::string basename = GetArg("-vFileName","vericoin-qt");
+        fileName.append("/");
+        fileName.append(basename.c_str());
+        url.setUrl(QString(walletDownloadsUrl).append(basename.c_str()));
 
-            printf("Downloading new wallet...\n");
-            Downloader * w = new Downloader(this);
-            w->setWindowTitle("Wallet Download");
-            w->setUrl(url);
-            w->setDest(fileName);
-            w->setAutoDownload(true);
-            w->startDownload();
-            w->exec();
-            if (!w->downloadFinished)
-            {
-                delete w;
-                return;
-            }
+        printf("Downloading new wallet...\n");
+        Downloader * w = new Downloader(this);
+        w->setWindowTitle("Wallet Download");
+        w->setUrl(url);
+        w->setDest(fileName);
+        w->setAutoDownload(true);
+        w->startDownload();
+        w->exec();
+        if (!w->downloadFinished)
+        {
             delete w;
+            return;
+        }
+        delete w;
 
-            if (!QFile::exists(fileName))
-            {
-                printf("Update download failed!\n");
-                QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet."));
-                return;
-            }
-            // SDW TODO:
+        if (!QFile::exists(fileName))
+        {
+            printf("Update download failed!\n");
+            QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet."));
+            fNewVersion = false;
+            return;
+        }
+        // SDW TODO:
 #if !defined(WIN32) && !defined(MAC_OSX)
-            // If Linux, extract zip contents and make vericoin-qt executable then restart.
-#endif
-
-            // Restart with the executable.
-            if (!walletModel->checkForUpdate())
-            {
-                QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to update the wallet."));
-            }
+        // If Linux, extract zip contents and make vericoin-qt executable then restart.
+        /*** Test the archive. ***/
+        QStringList zlist = JlCompress::getFileList(fileName);
+        if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","").c_str()))
+        {
+            printf("Update structure is valid.\n");
         }
         else
         {
-            QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+            printf("Update structure is invalid!\n");
+            return;
+        }
+        // Extract the Update
+        QStringList zextracted = JlCompress::extractDir(this, fileName, QString(GetProgramDir().c_str()));
+        if (!zextracted.isEmpty())
+        {
+            printf("Update extract successful.\n");
+        }
+        else
+        {
+            printf("Update extract failed!\n");
+            return;
+        }
+
+        if (!boost::filesystem::exists(GetProgramDir() / zlist[0].toStdString().append("vericoin-qt")))
+        {
+            printf("Update extract is invalid!\n");
+            return;
+        }
+        try
+        {
+            // Rename the old and move in the new binary
+            boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
+            boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
+            // Rename the old and move in the new config
+            boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old")); // SDW TODO It's in the DataDir!!!
+            boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
+            // Get the README
+            boost::filesystem::rename(zlist[0].toStdString().append("README"), "README");
+            boost::filesystem::remove_all(zlist[0].toStdString());
+        }
+        catch (std::exception &e) {
+            printf("Update filesystem error!\n");
+            return;
+        }
+#endif // Linux
+
+        // Restart with the executable.
+        if (!walletModel->checkForUpdate())
+        {
+            QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to update the wallet."));
         }
     }
     else
     {
-        QMessageBox::warning(this, tr("Update Unvailable"), tr("There was a problem retrieving version info from the update server."));
+        QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
     }
 }
