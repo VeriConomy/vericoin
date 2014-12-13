@@ -1359,7 +1359,7 @@ void BitcoinGUI::checkForUpdate()
             boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
             boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
             // Rename the old and move in the new config
-            boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old")); // SDW TODO It's in the DataDir!!!
+            boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
             boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
             // Get the README
             boost::filesystem::rename(zlist[0].toStdString().append("README"), "README");

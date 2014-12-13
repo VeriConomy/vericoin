@@ -180,6 +180,18 @@
          </item>
          <item row="0" column="1">
           <widget class="QLabel" name="labelBalance">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <family>Lato</family>
@@ -200,6 +212,9 @@
            </property>
            <property name="text">
             <string notr="true">0 VRC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="textInteractionFlags">
             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -225,6 +240,12 @@
          </item>
          <item row="1" column="1">
           <widget class="QLabel" name="labelStake">
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <family>Lato</family>
@@ -245,6 +266,9 @@
            </property>
            <property name="text">
             <string notr="true">0 VRC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="textInteractionFlags">
             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -270,6 +294,12 @@
          </item>
          <item row="2" column="1">
           <widget class="QLabel" name="labelUnconfirmed">
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <family>Lato</family>
@@ -290,6 +320,9 @@
            </property>
            <property name="text">
             <string notr="true">0 VRC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="textInteractionFlags">
             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -317,6 +350,12 @@
          </item>
          <item row="3" column="1">
           <widget class="QLabel" name="labelTotal">
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <family>Lato</family>
@@ -337,6 +376,9 @@
            </property>
            <property name="text">
             <string notr="true">0 VRC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="textInteractionFlags">
             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -831,8 +873,8 @@ QPushButton:pressed { background : #418BCA; }</string>
           <number>0</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="stats">
-           <property name="url">
+          <widget class="QWebView" name="stats" native="true">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -969,13 +1011,13 @@ QPushButton:pressed { background : #418BCA; }</string>
           <number>0</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="value">
+          <widget class="QWebView" name="value" native="true">
            <property name="font">
             <font>
              <pointsize>10</pointsize>
             </font>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
