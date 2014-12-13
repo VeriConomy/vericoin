@@ -23,6 +23,7 @@ vericoin-qt.pro.user
 *.orig
 *.o
 *.a
+src/quazip/libquazip.a
 *.patch
 .vericoin
 #compilation and Qt preprocessor part

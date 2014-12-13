@@ -10,6 +10,7 @@
 #include "sendcoinsdialog.h"
 #include "sendbitcoinsdialog.h"
 #include "signverifymessagedialog.h"
+#include "accessnxtinsidedialog.h"
 #include "optionsdialog.h"
 #include "aboutdialog.h"
 #include "clientmodel.h"
@@ -146,7 +147,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     sendBitCoinsPage = new SendBitCoinsDialog(this);
 
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
-
+    accessNxtInsideDialog = new AccessNxtInsideDialog(this);
+    
     fiatPage = new QWidget(this);
     Ui::fiatPage fiat;
     fiat.setupUi(fiatPage);
@@ -257,6 +259,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Clicking on "Sign Message" in the receive coins page sends you to the sign message tab
     connect(receiveCoinsPage, SIGNAL(signMessage(QString)), this, SLOT(gotoSignMessageTab(QString)));
 
+// Clicking on "Access Nxt Inside" in the receive coins page sends you to access Nxt inside tab
+	connect(receiveCoinsPage, SIGNAL(accessNxt(QString)), this, SLOT(gotoAccessNxtInsideTab(QString)));
+
     gotoOverviewPage();
 }
 
@@ -355,6 +360,7 @@ void BitcoinGUI::createActions()
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
+    accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Blockchain..."), this);
@@ -378,6 +384,7 @@ void BitcoinGUI::createActions()
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
+    connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
@@ -399,6 +406,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(exportAction);
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
+    file->addAction(accessNxtInsideAction);
     file->addSeparator();
     file->addAction(reloadBlockchainAction);
     file->addAction(rescanBlockchainAction);
@@ -496,6 +504,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         sendCoinsPage->setModel(walletModel);
         sendBitCoinsPage->setModel(walletModel);
         signVerifyMessageDialog->setModel(walletModel);
+        accessNxtInsideDialog->setModel(walletModel);
 
         setEncryptionStatus(walletModel->getEncryptionStatus());
         connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
@@ -536,6 +545,8 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(signMessageAction);
     trayIconMenu->addAction(verifyMessageAction);
+    trayIconMenu->addSeparator();
+	trayIconMenu->addAction(accessNxtInsideAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openRPCConsoleAction);
@@ -920,6 +931,16 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 
     if(!addr.isEmpty())
         signVerifyMessageDialog->setAddress_VM(addr);
+
+}
+
+void BitcoinGUI::gotoAccessNxtInsideTab(QString addr)
+{
+    // call show() in showTab_AN()
+    accessNxtInsideDialog->showTab_AN(true);
+
+    if(!addr.isEmpty())
+        accessNxtInsideDialog->setAddress_AN(addr);
 }
 
 void BitcoinGUI::dragEnterEvent(QDragEnterEvent *event)

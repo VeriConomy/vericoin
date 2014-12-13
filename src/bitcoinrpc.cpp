@@ -339,9 +339,13 @@ string HTTPPost(const string& strMsg, const map<string,string>& mapRequestHeader
 {
     ostringstream s;
     s << "POST / HTTP/1.1\r\n"
-      << "User-Agent: vericoin-json-rpc/" << FormatFullVersion() << "\r\n"
+      << "User-Agent: VeriCoin-json-rpc/" << FormatFullVersion() << "\r\n"
       << "Host: 127.0.0.1\r\n"
       << "Content-Type: application/json\r\n"
+      << "Access-Control-Allow-Origin: http://localhost:7876\r\n"
+      << "Access-Control-Allow-Headers: Authorization, Content-Type\r\n"
+      << "Access-Control-Allow-Credentials: true\r\n"
+      << "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
       << "Content-Length: " << strMsg.size() << "\r\n"
       << "Connection: close\r\n"
       << "Accept: application/json\r\n";
@@ -370,10 +374,14 @@ static string HTTPReply(int nStatus, const string& strMsg, bool keepalive)
     if (nStatus == HTTP_UNAUTHORIZED)
         return strprintf("HTTP/1.0 401 Authorization Required\r\n"
             "Date: %s\r\n"
-            "Server: vericoin-json-rpc/%s\r\n"
+            "Server: VeriCoin-json-rpc/%s\r\n"
             "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
             "Content-Type: text/html\r\n"
             "Content-Length: 296\r\n"
+            "Access-Control-Allow-Origin: http://localhost:7876\r\n"
+            "Access-Control-Allow-Headers: Authorization, Content-Type\r\n"
+            "Access-Control-Allow-Credentials: true\r\n"
+			"Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
             "\r\n"
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\r\n"
             "\"http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd\">\r\n"
@@ -397,7 +405,11 @@ static string HTTPReply(int nStatus, const string& strMsg, bool keepalive)
             "Connection: %s\r\n"
             "Content-Length: %"PRIszu"\r\n"
             "Content-Type: application/json\r\n"
-            "Server: vericoin-json-rpc/%s\r\n"
+            "Access-Control-Allow-Origin: http://localhost:7876\r\n"
+            "Access-Control-Allow-Headers: Authorization, Content-Type\r\n"
+			"Access-Control-Allow-Credentials: true\r\n"
+	        "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+            "Server: VeriCoin-json-rpc/%s\r\n"
             "\r\n"
             "%s",
         nStatus,
