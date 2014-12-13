@@ -74,7 +74,7 @@ int veriBitcoinUnits::amountDigits(int unit)
     }
 }
 
-int veriBitcoinUnits::decimals(int unit)
+int veriBitcoinUnits::maxdecimals(int unit)
 {
     switch(unit)
     {
@@ -83,6 +83,15 @@ int veriBitcoinUnits::decimals(int unit)
     case uBTC: return 2;
     default: return 0;
     }
+}
+
+int veriBitcoinUnits::decimals(int unit)
+{
+    // No walletmodel here.
+    //if (walletModel)
+    //return walletModel->getOptionsModel()->getDecimalPoints();
+    //else
+    return maxdecimals(unit);
 }
 
 QString veriBitcoinUnits::format(int unit, qint64 n, bool fPlus)
@@ -97,13 +106,17 @@ QString veriBitcoinUnits::format(int unit, qint64 n, bool fPlus)
     qint64 quotient = n_abs / coin;
     qint64 remainder = n_abs % coin;
     QString quotient_str = QString::number(quotient);
-    QString remainder_str = QString::number(remainder).rightJustified(num_decimals, '0');
+    QString remainder_str = QString::number(remainder).rightJustified(maxdecimals(unit), '0').left(num_decimals);
 
     // Right-trim excess zeros after the decimal point
-    int nTrim = 0;
-    for (int i = remainder_str.size()-1; i>=2 && (remainder_str.at(i) == '0'); --i)
-        ++nTrim;
-    remainder_str.chop(nTrim);
+    //int nTrim = 0;
+    //for (int i = remainder_str.size()-1; i>=2 && (remainder_str.at(i) == '0'); --i)
+    //    ++nTrim;
+    //remainder_str.chop(nTrim);
+
+    // Pad zeros after remainder up to number of decimals
+    for (int i = remainder_str.size(); i < num_decimals; ++i)
+        remainder_str.append("0");
 
     if (n < 0)
         quotient_str.insert(0, '-');

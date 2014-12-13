@@ -770,6 +770,7 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
                     .data(Qt::EditRole).toULongLong();
     if(!clientModel->inInitialBlockDownload())
     {
+        BitcoinUnits *bcu = new BitcoinUnits(this, walletModel);
         // On new transaction, make an info balloon
         // Unless the initial block download is in progress, to prevent balloon-spam
         QString date = ttm->index(start, TransactionTableModel::Date, parent)
@@ -790,9 +791,10 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
                                  "Type: %3\n"
                                  "Address: %4\n")
                               .arg(date)
-                              .arg(BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), amount, true))
+                              .arg(bcu->formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), amount, true))
                               .arg(type)
                               .arg(address), icon);
+        delete bcu;
     }
 }
 

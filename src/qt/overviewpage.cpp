@@ -20,6 +20,7 @@
 #define DECORATION_SIZE 46
 #define NUM_ITEMS 3
 
+
 class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
@@ -71,7 +72,7 @@ public:
             foreground = COLOR_BAREADDRESS;
         }
         painter->setPen(foreground);
-        QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true);
+        QString amountText =  BitcoinUnits::formatWithUnit(unit, amount, true);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
@@ -139,18 +140,20 @@ OverviewPage::~OverviewPage()
 
 void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance)
 {
+    BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
     int unit = model->getOptionsModel()->getDisplayUnit();
     currentBalance = balance;
     currentStake = stake;
     currentUnconfirmedBalance = unconfirmedBalance;
     currentImmatureBalance = immatureBalance;
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
-    ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, stake));
-    ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
-    //ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
-    ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
+    ui->labelBalance->setText(bcu->formatWithUnit(unit, balance));
+    ui->labelStake->setText(bcu->formatWithUnit(unit, stake));
+    ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance));
+    //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance));
+    ui->labelTotal->setText(bcu->formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
    // ui->labelImmature->setVisible(true);
     //ui->labelImmatureText->setVisible(true);
+    delete bcu;
 }
 
 void OverviewPage::setNumTransactions(int count)

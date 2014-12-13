@@ -395,6 +395,81 @@
         </layout>
        </item>
        <item>
+        <widget class="QGroupBox" name="decimalGroupBox">
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QSpinBox" name="decimalPoints">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>0</y>
+            <width>64</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>How many decimal places to display in currencies.</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="maximum">
+           <number>8</number>
+          </property>
+          <property name="value">
+           <number>8</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="decimalLabel">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>400</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="text">
+           <string>Choose how many decimal places you prefer in currencies:</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="displayAddresses">
          <property name="toolTip">
           <string>Whether to show VeriCoin addresses in the transaction list or not.</string>
