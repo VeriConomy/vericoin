@@ -681,5 +681,14 @@ inline uint32_t ByteReverse(uint32_t value)
     return (value<<16) | (value>>16);
 }
 
+#if BOOST_FILESYSTEM_VERSION >= 3
+boost::filesystem::path stringToBoostPath(const std::string &path);
+std::string boostPathToString(const boost::filesystem::path &path);
+#else
+#warning Conversion between boost path and QString can use invalid character encoding with boost_filesystem v2 and older
+boost::filesystem::path stringToBoostPath(const std::string &path);
+std::string boostPathToString(const boost::filesystem::path &path);
 #endif
+
+#endif // util.h
 

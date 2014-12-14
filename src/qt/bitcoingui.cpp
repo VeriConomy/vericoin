@@ -74,6 +74,8 @@
 
 #include <iostream>
 
+using namespace GUIUtil;
+
 extern CWallet* pwalletMain;
 extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
@@ -1162,17 +1164,16 @@ void BitcoinGUI::reloadBlockchain()
 {
     bool turbo = true;
     bool confirm = false;
-    QString pathBootstrap(GetDataDir().c_str());
+    boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
     QUrl url;
 
-    pathBootstrap.append("/bootstrap.zip");
     url.setUrl(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
     printf("Downloading blockchain data...\n");
     Downloader * bs = new Downloader(this);
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
-    bs->setDest(pathBootstrap);
+    bs->setDest(boostPathToQString(pathBootstrap));
     if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
     {
         bs->setAutoDownload(true);
@@ -1186,7 +1187,7 @@ void BitcoinGUI::reloadBlockchain()
     }
     delete bs;
 
-    if (QFile::exists(pathBootstrap))
+    if (boost::filesystem::exists(pathBootstrap))
     {
         printf("Preparing for Blockchain Reload...\n");
     }
@@ -1212,7 +1213,7 @@ void BitcoinGUI::reloadBlockchain()
     {
         // bootstrap.zip
         /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(pathBootstrap);
+        QStringList zlist = JlCompress::getFileList(boostPathToQString(pathBootstrap));
         if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
         {
             printf("Bootstrap structure is valid.\n");
@@ -1223,7 +1224,7 @@ void BitcoinGUI::reloadBlockchain()
             return;
         }
         // Extract bootstrap.zip
-        QStringList zextracted = JlCompress::extractDir(this, pathBootstrap, QString(GetDataDir().c_str()));
+        QStringList zextracted = JlCompress::extractDir(this, boostPathToQString(pathBootstrap), boostPathToQString(pathBootstrap.parent_path()));
         if (!zextracted.isEmpty())
         {
             printf("Bootstrap extract successful.\n");
@@ -1299,7 +1300,7 @@ void BitcoinGUI::CheckForUpdate()
 
 void BitcoinGUI::checkForUpdate()
 {
-    QString fileName(GetProgramDir().c_str());
+    boost::filesystem::path fileName(GetProgramDir());
     QUrl url;
 
     printf("Downloading and parsing version data...\n");
@@ -1317,15 +1318,14 @@ void BitcoinGUI::checkForUpdate()
         }
 
         std::string basename = GetArg("-vFileName","vericoin-qt");
-        fileName.append("/");
-        fileName.append(basename.c_str());
+        fileName = fileName / basename.c_str();
         url.setUrl(QString(walletDownloadsUrl).append(basename.c_str()));
 
         printf("Downloading new wallet...\n");
         Downloader * w = new Downloader(this);
         w->setWindowTitle("Wallet Download");
         w->setUrl(url);
-        w->setDest(fileName);
+        w->setDest(boostPathToQString(fileName));
         w->setAutoDownload(true);
         w->startDownload();
         w->exec();
@@ -1336,7 +1336,7 @@ void BitcoinGUI::checkForUpdate()
         }
         delete w;
 
-        if (!QFile::exists(fileName))
+        if (!boost::filesystem::exists(fileName))
         {
             printf("Update download failed!\n");
             QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet."));
@@ -1347,7 +1347,7 @@ void BitcoinGUI::checkForUpdate()
 #if !defined(WIN32) && !defined(MAC_OSX)
         // If Linux, extract zip contents and make vericoin-qt executable then restart.
         /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(fileName);
+        QStringList zlist = JlCompress::getFileList(boostPathToQString(fileName));
         if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","").c_str()))
         {
             printf("Update structure is valid.\n");
@@ -1358,7 +1358,7 @@ void BitcoinGUI::checkForUpdate()
             return;
         }
         // Extract the Update
-        QStringList zextracted = JlCompress::extractDir(this, fileName, QString(GetProgramDir().c_str()));
+        QStringList zextracted = JlCompress::extractDir(this, boostPathToQString(fileName), boostPathToQString(fileName.parent_path()));
         if (!zextracted.isEmpty())
         {
             printf("Update extract successful.\n");

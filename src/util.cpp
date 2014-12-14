@@ -34,6 +34,11 @@ namespace boost {
 #include <openssl/rand.h>
 #include <stdarg.h>
 
+#if BOOST_FILESYSTEM_VERSION >= 3
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
+static boost::filesystem::detail::utf8_codecvt_facet utf8;
+#endif
+
 #ifdef WIN32
 #ifdef _MSC_VER
 #pragma warning(disable:4786)
@@ -1231,14 +1236,14 @@ boost::filesystem::path GetVersionFile()
     boost::filesystem::path versionFile("VERSION.json");
     string versionUrl(walletDownloadsUrl);
 
-    versionUrl.append(versionFile.c_str());
-    versionFile = (GetDataDir(false) / versionFile);
+    versionUrl.append(boostPathToString(versionFile));
+    versionFile = (GetProgramDir() / versionFile);
 
     // Download the file.
     printf("Downloading version data...\n");
     Downloader * vf = new Downloader(NULL);
     vf->setUrl(versionUrl);
-    vf->setDest(string(versionFile.c_str()));
+    vf->setDest(boostPathToString(versionFile));
     vf->setAutoDownload(true);
     vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->startDownload();
@@ -1490,3 +1495,26 @@ bool NewThread(void(*pfn)(void*), void* parg)
     }
     return true;
 }
+
+#if BOOST_FILESYSTEM_VERSION >= 3
+boost::filesystem::path stringToBoostPath(const std::string &path)
+{
+    return boost::filesystem::path(path, utf8);
+}
+
+std::string boostPathToString(const boost::filesystem::path &path)
+{
+    return path.string(utf8);
+}
+#else
+#warning Conversion between boost path and QString can use invalid character encoding with boost_filesystem v2 and older
+boost::filesystem::path stringToBoostPath(const std::string &path)
+{
+    return boost::filesystem::path(path);
+}
+
+std::string boostPathToString(const boost::filesystem::path &path)
+{
+    return path.string();
+}
+#endif

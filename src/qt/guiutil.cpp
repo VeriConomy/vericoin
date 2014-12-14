@@ -22,6 +22,10 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#if BOOST_FILESYSTEM_VERSION >= 3
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
+static boost::filesystem::detail::utf8_codecvt_facet utf8;
+#endif
 
 #ifdef WIN32
 #ifdef _WIN32_WINNT
@@ -455,5 +459,27 @@ void HelpMessageBox::showOrPrint()
 #endif
 }
 
-} // namespace GUIUtil
+#if BOOST_FILESYSTEM_VERSION >= 3
+boost::filesystem::path qstringToBoostPath(const QString &path)
+{
+    return boost::filesystem::path(path.toStdString(), utf8);
+}
 
+QString boostPathToQString(const boost::filesystem::path &path)
+{
+    return QString::fromStdString(path.string(utf8));
+}
+#else
+#warning Conversion between boost path and QString can use invalid character encoding with boost_filesystem v2 and older
+boost::filesystem::path qstringToBoostPath(const QString &path)
+{
+    return boost::filesystem::path(path.toStdString());
+}
+
+QString boostPathToQString(const boost::filesystem::path &path)
+{
+    return QString::fromStdString(path.string());
+}
+#endif
+
+} // namespace GUIUtil
