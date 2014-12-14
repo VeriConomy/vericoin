@@ -92,7 +92,10 @@ int BitcoinUnits::decimals(int unit)
 {
     if(walletModel && walletModel->getOptionsModel())
     {
-        return walletModel->getOptionsModel()->getDecimalPoints();
+        if (walletModel->getOptionsModel()->getDecimalPoints() > maxdecimals(unit))
+            return maxdecimals(unit);
+        else
+            return walletModel->getOptionsModel()->getDecimalPoints();
     }
     else
     {

@@ -14,6 +14,9 @@ Downloader::Downloader(QWidget *parent) :
 
     progressDialog = new QProgressDialog(this);
     progressDialog->setCancelButton(NULL);
+    // Create a timer to handle hung download requests
+    downloadTimer = new QTimer(this);
+    connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadProgress()));
 
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
@@ -40,8 +43,62 @@ void Downloader::startDownload()
     on_downloadButton_clicked();
 }
 
+void Downloader::on_continueButton_clicked()
+{
+    downloadFinished = true;
+
+    this->close();
+}
+
+void Downloader::on_quitButton_clicked()
+{
+    downloaderQuit = true;
+
+    if (!downloadFinished && progressDialog->value() > 0)
+    {
+        // Clean up
+        httpRequestAborted = true;
+        reply->abort();
+        downloaderFinished();
+    }
+
+    downloadFinished = false;
+
+    this->close();
+}
+
+void Downloader::on_urlEdit_returnPressed()
+{
+    on_downloadButton_clicked();
+}
+
+void Downloader::enableDownloadButton()
+{
+    ui->downloadButton->setEnabled(!(ui->urlEdit->text()).isEmpty());
+}
+
+// During the download progress, it can be canceled
+void Downloader::cancelDownload()
+{
+    // Finished with timer
+    if (downloadTimer->isActive())
+    {
+        downloadTimer->stop();
+    }
+
+    httpRequestAborted = true;
+    reply->abort();
+
+    ui->statusLabel->setText(tr("Download canceled."));
+    ui->downloadButton->setEnabled(true);
+    ui->downloadButton->setDefault(true);
+    ui->continueButton->setEnabled(false);
+}
+
 void Downloader::on_downloadButton_clicked()
 {
+    downloadFinished = false;
+
     // get url
     url = (ui->urlEdit->text());
 
@@ -56,10 +113,6 @@ void Downloader::on_downloadButton_clicked()
                       tr("Filename cannot be empty.")
                       );
         }
-        else
-        {
-            printf("Downloader: Filename is empty.\n");
-        }
         return;
     }
 
@@ -67,10 +120,7 @@ void Downloader::on_downloadButton_clicked()
     {
         fileName = fileDest.filePath();
     }
-    else
-    {
-        fileDest = QFileInfo(fileName);
-    }
+    fileDest = QFileInfo(fileName);
 
     if (fileDest.exists())
     {
@@ -99,10 +149,6 @@ void Downloader::on_downloadButton_clicked()
                       tr("Unable to save the file %1: %2.")
                       .arg(fileName).arg(file->errorString()));
         }
-        else
-        {
-            printf("Downloader: Unable to save the file.\n");
-        }
         delete file;
         file = 0;
         ui->continueButton->setEnabled(false);
@@ -115,6 +161,7 @@ void Downloader::on_downloadButton_clicked()
 
     progressDialog->setWindowTitle(tr("Downloader"));
     progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
+    progressDialog->setValue(0);
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -123,66 +170,53 @@ void Downloader::on_downloadButton_clicked()
     startRequest(url);
 }
 
-void Downloader::httpReadyRead()
+// This will be called when download button is clicked (or from Autodownload feature)
+void Downloader::startRequest(QUrl url)
 {
-    // this slot gets called every time the QNetworkReply has new data.
-    // We read all of its new data and write it into the file.
-    // That way we use less RAM than when reading it at the finished()
-    // signal of the QNetworkReply
-    if (file)
-        file->write(reply->readAll());
-}
+    downloadProgress = 0;
+    downloadFinished = false;
 
-void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
-{
-    if (httpRequestAborted)
-        return;
+    // Start the timer
+    downloadTimer->start(30000);
 
-    progressDialog->setMaximum(totalBytes);
-    progressDialog->setValue(bytesRead);
+    // get() method posts a request
+    // to obtain the contents of the target request
+    // and returns a new QNetworkReply object
+    // opened for reading which emits
+    // the readyRead() signal whenever new data arrives.
+    reply = manager->get(QNetworkRequest(url));
 
-    progressDialog->raise();
-}
+    // Whenever more data is received from the network,
+    // this readyRead() signal is emitted
+    connect(reply, SIGNAL(readyRead()),
+            this, SLOT(httpReadyRead()));
 
-void Downloader::on_continueButton_clicked()
-{
-    downloadFinished = true;
+    // Also, downloadProgress() signal is emitted when data is received
+    connect(reply, SIGNAL(downloadProgress(qint64,qint64)),
+            this, SLOT(updateDownloadProgress(qint64,qint64)));
 
-    this->close();
-}
+    // This signal is emitted when the reply has finished processing.
+    // After this signal is emitted,
+    // there will be no more updates to the reply's data or metadata.
+    connect(reply, SIGNAL(finished()),
+            this, SLOT(downloaderFinished()));
 
-void Downloader::on_quitButton_clicked()
-{
-    downloaderQuit = true;
-
-    this->close();
-}
-
-void Downloader::on_urlEdit_returnPressed()
-{
-    on_downloadButton_clicked();
-}
-
-void Downloader::enableDownloadButton()
-{
-    ui->downloadButton->setEnabled(!(ui->urlEdit->text()).isEmpty());
-}
-
-// During the download progress, it can be canceled
-void Downloader::cancelDownload()
-{
-    httpRequestAborted = true;
-    reply->abort();
-
-    ui->statusLabel->setText(tr("Download canceled."));
-    ui->downloadButton->setEnabled(true);
-    ui->downloadButton->setDefault(true);
-    ui->continueButton->setEnabled(false);
+    ui->statusLabel->setText(tr("Downloading %1.").arg(url.url()));
+    if (this->isVisible())
+    {
+        progressDialog->show();
+    }
 }
 
 // When download finished or canceled, this will be called
 void Downloader::downloaderFinished()
 {
+    // Finished with timer
+    if (downloadTimer->isActive())
+    {
+        downloadTimer->stop();
+    }
+
     // when canceled
     if (httpRequestAborted)
     {
@@ -215,10 +249,6 @@ void Downloader::downloaderFinished()
         {
             QMessageBox::information(this, tr("Downloader"),
                                  tr("Download failed: %1.").arg(reply->errorString()));
-        }
-        else
-        {
-            printf("Downloader: Download failed.\n");
         }
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);
@@ -271,44 +301,25 @@ void Downloader::downloaderFinished()
     }
 }
 
-// This will be called when download button is clicked
-void Downloader::startRequest(QUrl url)
+void Downloader::httpReadyRead()
 {
-    downloadProgress = 0;
-    downloadFinished = false;
+    // this slot gets called every time the QNetworkReply has new data.
+    // We read all of its new data and write it into the file.
+    // That way we use less RAM than when reading it at the finished()
+    // signal of the QNetworkReply
+    if (file)
+        file->write(reply->readAll());
+}
 
-    // Create a timer to handle hung download requests
-    downloadTimer = new QTimer(this);
-    connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadProgress()));
-    downloadTimer->start(30000);
+void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
+{
+    if (httpRequestAborted)
+        return;
 
-    // get() method posts a request
-    // to obtain the contents of the target request
-    // and returns a new QNetworkReply object
-    // opened for reading which emits
-    // the readyRead() signal whenever new data arrives.
-    reply = manager->get(QNetworkRequest(url));
+    progressDialog->setMaximum(totalBytes);
+    progressDialog->setValue(bytesRead);
 
-    // Whenever more data is received from the network,
-    // this readyRead() signal is emitted
-    connect(reply, SIGNAL(readyRead()),
-            this, SLOT(httpReadyRead()));
-
-    // Also, downloadProgress() signal is emitted when data is received
-    connect(reply, SIGNAL(downloadProgress(qint64,qint64)),
-            this, SLOT(updateDownloadProgress(qint64,qint64)));
-
-    // This signal is emitted when the reply has finished processing.
-    // After this signal is emitted,
-    // there will be no more updates to the reply's data or metadata.
-    connect(reply, SIGNAL(finished()),
-            this, SLOT(downloaderFinished()));
-
-    ui->statusLabel->setText(tr("Downloading %1.").arg(url.url()));
-    if (this->isVisible())
-    {
-        progressDialog->show();
-    }
+    progressDialog->raise();
 }
 
 // This is called during the download to check for a hung state
@@ -326,9 +337,6 @@ void Downloader::timerCheckDownloadProgress()
             // We appear to be hung.
             cancelDownload();
         }
-        // Finished with timer
-        if (downloadTimer->isActive())
-            downloadTimer->stop();
     }
 }
 

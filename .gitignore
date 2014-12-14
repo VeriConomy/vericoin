@@ -38,6 +38,7 @@ qrc_*.cpp
 src/quazip/Makefile
 src/quazip/release
 src/quazip/debug
+src/quazip/.moc
 #mac specific
 .DS_Store
 

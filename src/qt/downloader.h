@@ -66,10 +66,10 @@ private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QProgressDialog *progressDialog;
+    QTimer *downloadTimer;
     QFile *file;
     qint64 downloadProgress;
     qint64 fileSize;
-    QTimer *downloadTimer;
     bool autoDownload;
 };
 
