@@ -1256,7 +1256,7 @@ boost::filesystem::path GetVersionFile()
     else
     {
         delete vf;
-        return NULL;
+        return boost::filesystem::path("");
     }
 }
 
@@ -1270,7 +1270,7 @@ void ReadVersionFile()
     std::string line;
     boost::filesystem::ifstream streamVersion(GetVersionFile());
 
-    if (streamVersion.is_open())
+    if (streamVersion && streamVersion.is_open())
     {
         while (getline(streamVersion,line))
         {
@@ -1310,7 +1310,7 @@ void ReadVersionFile()
     }
     else
     {
-        cout << "Unable to read version file.";
+        printf("Error: Unable to read version file.\n");
     }
 }
 
