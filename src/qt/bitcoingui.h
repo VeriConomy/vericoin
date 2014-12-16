@@ -82,6 +82,8 @@ private:
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
     QLabel *progressBarLabel;
+    QLabel *stakingLabel;
+    QLabel *connectionsLabel;
     QProgressBar *progressBar;
 
     QMenuBar *appMenuBar;

@@ -99,17 +99,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     setMinimumSize(820, 246);
     setMaximumSize(880, 640);
-    resize(880, 562);
+    resize(880, 560);
     setWindowTitle(tr("VeriCoin") + " - " + tr("Wallet"));
-#ifndef Q_OS_MAC
+#ifdef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-    resize(880, 562);
+    resize(880, 542);
 #endif
 #ifdef Q_OS_WIN
-    resize(880, 570);
+    resize(880, 550);
 #endif
 
     // Accept D&D of URIs
@@ -179,33 +179,26 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setCentralWidget(centralWidget);
 
     // Create status bar
-    statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; } QStatusBar::item { border: 0px solid black; }");
+    statusBar();
+    statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
+    stakingLabel = new QLabel();
+    stakingLabel->setText(QString("Syncing..."));
+    connectionsLabel= new QLabel();
+    connectionsLabel->setText(QString("Connecting..."));
 
-    // Status bar notification icons
-    QWidget *frameBlocks = new QWidget();
+    QFrame *frameBlocks = new QFrame();
     frameBlocks->setContentsMargins(0,0,0,0);
-    frameBlocks->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    frameBlocks->setStyleSheet("QWidget { background: none; margin-bottom: 5px; }");
+    frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    frameBlocks->setStyleSheet("color: white;");
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
-    frameBlocksLayout->setContentsMargins(24,0,8,0);
-    frameBlocksLayout->setSpacing(27);
-    frameBlocksLayout->setAlignment(Qt::AlignLeft);
+
+    frameBlocksLayout->setContentsMargins(3,3,3,3);
+    frameBlocksLayout->setSpacing(10);
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
-    frameBlocksLayout->addWidget(labelBlocksIcon);
-    frameBlocksLayout->addWidget(labelStakingIcon);
-    frameBlocksLayout->addWidget(labelConnectionsIcon);
-
-    //wallet minimizer
-    QWidget *frameMin = new QWidget();
-    frameMin->setContentsMargins(0,0,0,0);
-    frameMin->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    frameMin->setStyleSheet("QWidget { background: none; margin-bottom: 5px; }");
-    QHBoxLayout *frameMinLayout = new QHBoxLayout(frameMin);
-    frameMinLayout->setContentsMargins(8,0,8,0);
-    frameMinLayout->setSpacing(10);
-    frameMinLayout->setAlignment(Qt::AlignRight);
+    labelBlocksIcon->setVisible(true);
+    labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
     QPushButton *minimize = new QPushButton();
     minimize->setFocusPolicy(Qt::NoFocus);
     QIcon *ico = new QIcon();
@@ -214,7 +207,18 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     minimize->setIcon(*ico);
     minimize->setCheckable(true);
     minimize->setToolTip("Simple Wallet");
-    frameMinLayout->addWidget(minimize);
+    connect(minimize, SIGNAL(clicked()), this, SLOT(resizeGUI()));
+
+    frameBlocksLayout->addStretch();
+    frameBlocksLayout->addWidget(labelStakingIcon);
+    frameBlocksLayout->addWidget(labelBlocksIcon);
+    frameBlocksLayout->addWidget(stakingLabel);
+    frameBlocksLayout->addStretch();
+    frameBlocksLayout->addWidget(labelConnectionsIcon);
+    frameBlocksLayout->addWidget(connectionsLabel);
+
+
+    frameBlocksLayout->addStretch();
 
     connect(minimize, SIGNAL(clicked()), this, SLOT(resizeGUI()));
 
@@ -246,10 +250,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         progressBar->setStyleSheet("QProgressBar { background-color: #FFFFFF; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
     }
 
-    statusBar()->addWidget(frameBlocks);
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
-    statusBar()->addWidget(frameMin);
+    statusBar()->addPermanentWidget(frameBlocks);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
 
@@ -458,7 +461,7 @@ void BitcoinGUI::createToolBars()
     QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setAutoFillBackground(true);
-    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none } QToolButton { background : " + STRING_VERIBLUE + "; border : none; color: white; font-size: 8pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
+    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none;} QToolButton { background : " + STRING_VERIBLUE + "; border : none; color: white; font-size: 8pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
     toolbar->setIconSize(QSize(60,32));
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -623,6 +626,10 @@ void BitcoinGUI::setNumConnections(int count)
     case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
     default: icon = ":/icons/connect_4"; break;
     }
+    QString connections = QString::number(count);
+    QString label = " connections";
+    QString connectionlabel = connections + label;
+    connectionsLabel->setText(QString(connectionlabel));
     labelConnectionsIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
     labelConnectionsIcon->setToolTip(tr("%n active connection(s) to VeriCoin network", "", count));
 }
@@ -711,6 +718,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
     else
     {
+        stakingLabel->setText(QString("Syncing..."));
         labelStakingIcon->hide();
         labelBlocksIcon->show();
         tooltip = tr("Syncing") + QString(".<br>") + tooltip;
@@ -948,12 +956,12 @@ void BitcoinGUI::resizeGUI()
         }
         else
         {
-           resize(880, 562);
+           resize(880, 560);
            #ifdef Q_OS_WIN
-                resize(880, 570);
+                resize(880, 550);
            #endif
            #ifdef Q_OS_MAC
-                resize(880, 562);
+                resize(880, 542);
            #endif
            dynamic_cast<QPushButton*>(sender())->setToolTip("Simple Wallet");
         }
@@ -1179,6 +1187,7 @@ void BitcoinGUI::updateStakingIcon()
         {
             text = tr("%n day(s)", "", nEstimateTime/(60*60*24));
         }
+        stakingLabel->setText(QString("Staking"));
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
@@ -1186,6 +1195,7 @@ void BitcoinGUI::updateStakingIcon()
     }
     else
     {
+        stakingLabel->setText(QString("In sync"));
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
