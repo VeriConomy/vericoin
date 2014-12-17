@@ -212,6 +212,7 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelTransactionsStatus->setVisible(fShow);
 }
 
+/* Moved to Help menu
 //Link buttons
 void OverviewPage::on_chat_clicked()
 {
@@ -228,4 +229,4 @@ void OverviewPage::on_home_clicked()
     QString link(walletUrl);
     QDesktopServices::openUrl(QUrl(link));
 }
-
+*/

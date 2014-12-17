@@ -96,6 +96,8 @@ private:
     QAction *aboutAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
+    QAction *forumsAction;
+    QAction *webAction;
     QAction *toggleHideAction;
     QAction *exportAction;
     QAction *encryptWalletAction;
@@ -181,6 +183,10 @@ private slots:
 
     /** Show configuration dialog */
     void optionsClicked();
+    /** Show forums page */
+    void forumsClicked();
+    /** Show web page */
+    void webClicked();
     /** Show about dialog */
     void aboutClicked();
 #ifndef Q_OS_MAC

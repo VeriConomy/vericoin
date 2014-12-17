@@ -369,6 +369,10 @@ void BitcoinGUI::createActions()
     rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain."));
     checkForUpdateAction = new QAction(QIcon(":/icons/tx_inout"), tr("Check For &Update..."), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
+    forumsAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums..."), this);
+    forumsAction->setToolTip(tr("Go to VeriCoin forums."));
+    webAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin on the &Web..."), this);
+    webAction->setToolTip(tr("Go to VeriCoin website."));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -390,6 +394,8 @@ void BitcoinGUI::createActions()
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
+    connect(forumsAction, SIGNAL(triggered()), this, SLOT(forumsClicked()));
+    connect(webAction, SIGNAL(triggered()), this, SLOT(webClicked()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -424,6 +430,8 @@ void BitcoinGUI::createMenuBar()
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->addAction(openRPCConsoleAction);
+    help->addAction(forumsAction);
+    help->addAction(webAction);
     help->addSeparator();
     help->addAction(checkForUpdateAction);
     help->addAction(aboutAction);
@@ -578,6 +586,18 @@ void BitcoinGUI::optionsClicked()
     OptionsDialog dlg;
     dlg.setModel(clientModel->getOptionsModel());
     dlg.exec();
+}
+
+void BitcoinGUI::forumsClicked()
+{
+    QString link("http://www.vericoinforums.com");
+    QDesktopServices::openUrl(QUrl(link));
+}
+
+void BitcoinGUI::webClicked()
+{
+    QString link(walletUrl);
+    QDesktopServices::openUrl(QUrl(link));
 }
 
 void BitcoinGUI::aboutClicked()

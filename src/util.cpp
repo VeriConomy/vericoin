@@ -1268,6 +1268,7 @@ void ReadVersionFile()
 
     QString versionData;
     std::string line;
+    std::string version;
     boost::filesystem::ifstream streamVersion(GetVersionFile());
 
     if (streamVersion && streamVersion.is_open())
@@ -1303,9 +1304,31 @@ void ReadVersionFile()
         SetArg("-vFileName", vFileName.toStdString());
         SetBoolArg("-vBootstrap", vBootstrap);
 
-        if (!boost::iequals(FormatVersion(CLIENT_VERSION), GetArg("-vVersion", FormatVersion(CLIENT_VERSION))))
+        version = vVersion.toStdString();
+        if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
         {
-            fNewVersion = true;
+            int maj = 0;
+            int min = 0;
+            int rev = 0;
+            int bld = 0;
+            typedef vector<string> parts_type;
+            parts_type parts;
+            boost::split(parts, version, ::ispunct);
+            int i = parts.size();
+            for (vector<string>::iterator it = parts.begin(); it != parts.end() && --i < 4; ++it)
+            {
+                switch (i)
+                {
+                case 3: maj = atoi(*it); break;
+                case 2: min = atoi(*it); break;
+                case 1: rev = atoi(*it); break;
+                case 0: bld = atoi(*it); break;
+                }
+            }
+            if (maj > CLIENT_VERSION_MAJOR || min > CLIENT_VERSION_MINOR || rev > CLIENT_VERSION_REVISION || bld > CLIENT_VERSION_BUILD)
+            {
+                fNewVersion = true;
+            }
         }
     }
     else
