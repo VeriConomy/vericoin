@@ -106,8 +106,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
-    ui->stats->load(QUrl("http://vericoinnews.info/wallet/index.html"));
-    ui->value->load(QUrl("http://vericoinnews.info/wallet/chart.html"));
+    ui->stats->load(QUrl("http://www.vericoin.info/wallet/index.html"));
+    ui->value->load(QUrl("http://www.vericoin.info/wallet/chart.html"));
     this->setStyleSheet("background-color: #FFFFFF;");
 
     // Recent transactionsBalances
@@ -211,22 +211,3 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
 }
-
-/* Moved to Help menu
-//Link buttons
-void OverviewPage::on_chat_clicked()
-{
-    QString link="http://tinyurl.com/freenode-vericoin";
-    QDesktopServices::openUrl(QUrl(link));
-}
-void OverviewPage::on_forums_clicked()
-{
-    QString link="http://www.vericoinforums.com";
-    QDesktopServices::openUrl(QUrl(link));
-}
-void OverviewPage::on_home_clicked()
-{
-    QString link(walletUrl);
-    QDesktopServices::openUrl(QUrl(link));
-}
-*/
