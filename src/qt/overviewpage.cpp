@@ -4,6 +4,7 @@
 #include "util.h"
 #include "walletmodel.h"
 #include "bitcoinunits.h"
+#include "cookiejar.h"
 #include "optionsmodel.h"
 #include "transactiontablemodel.h"
 #include "transactionfilterproxy.h"
@@ -19,7 +20,6 @@
 
 #define DECORATION_SIZE 46
 #define NUM_ITEMS 3
-
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -106,9 +106,17 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
-    ui->stats->load(QUrl("http://www.vericoin.info/wallet/index.html"));
-    ui->value->load(QUrl("http://www.vericoin.info/wallet/chart.html"));
     this->setStyleSheet("background-color: #FFFFFF;");
+
+    QUrl statsUrl("http://www.vericoin.info/wallet/index.html");
+    CookieJar *statsJar = new CookieJar;
+    ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
+    ui->stats->load(statsUrl);
+
+    QUrl valueUrl("http://www.vericoin.info/wallet/chart.html");
+    CookieJar *valueJar = new CookieJar;
+    ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
+    ui->value->load(valueUrl);
 
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
@@ -135,6 +143,9 @@ void OverviewPage::handleTransactionClicked(const QModelIndex &index)
 
 OverviewPage::~OverviewPage()
 {
+    delete ui->stats->page()->networkAccessManager()->cookieJar();
+    delete ui->value->page()->networkAccessManager()->cookieJar();
+
     delete ui;
 }
 
@@ -151,7 +162,7 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
     ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance));
     //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance));
     ui->labelTotal->setText(bcu->formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
-   // ui->labelImmature->setVisible(true);
+    // ui->labelImmature->setVisible(true);
     //ui->labelImmatureText->setVisible(true);
     delete bcu;
 }
