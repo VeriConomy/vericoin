@@ -13,6 +13,8 @@ void StartShutdown();
 void Shutdown(void* parg);
 bool AppInit2();
 std::string HelpMessage();
+#ifdef QT_GUI
 void RestartWallet(const char *parm, bool fOldParms = true);
+#endif
 
 #endif
