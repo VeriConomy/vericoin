@@ -37,6 +37,7 @@
 **
 ** $QT_END_LICENSE$
 **
+** 20141219 : onsightit: stripped GUI components out.
 ****************************************************************************/
 
 #ifndef COOKIEJAR_H

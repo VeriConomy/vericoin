@@ -105,7 +105,7 @@ QString veriBitcoinUnits::format(int unit, qint64 n, bool fPlus)
     qint64 n_abs = (n > 0 ? n : -n);
     qint64 quotient = n_abs / coin;
     qint64 remainder = n_abs % coin;
-    QString quotient_str = QString::number(quotient);
+    QString quotient_str = QString("%L1").arg(quotient);
     QString remainder_str = QString::number(remainder).rightJustified(maxdecimals(unit), '0').left(num_decimals);
 
     // Right-trim excess zeros after the decimal point
