@@ -143,6 +143,7 @@ inline void MilliSleep(int64_t n)
 
 extern std::map<std::string, std::string> mapArgs;
 extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
+extern const char *chatUrl;
 extern const char *walletUrl;
 extern const char *walletDownloadsUrl;
 extern bool fDebug;

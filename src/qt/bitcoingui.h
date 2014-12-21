@@ -73,6 +73,7 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     AccessNxtInsideDialog *accessNxtInsideDialog;
     QWidget *fiatPage;
+    QWidget *newsPage;
     QWidget *chatPage;
     QWidget *superNETPage;
     //QWidget *statsBox;
@@ -94,6 +95,7 @@ private:
     QAction *sendBitCoinsAction;
     QAction *fiatAction;
     QAction *superNETAction;
+    QAction *newsAction;
     QAction *chatAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
@@ -174,9 +176,13 @@ private slots:
     void gotoSendCoinsPage();
     /** Switch to send coins page */
     void gotoSendBitCoinsPage();
-    /** Switch to fiat page */
+    /** Switch to News page */
+    void gotoNewsPage();
+    /** Switch to Chat page */
     void gotoChatPage();
+    /** Switch to SuperNET page */
     void gotoSuperNETPage();
+    /** Switch to Fiat page */
     void gotoFiatPage();
     void resizeGUI();
 

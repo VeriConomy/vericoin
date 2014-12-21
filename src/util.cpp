@@ -76,6 +76,7 @@ using namespace std;
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
+const char *chatUrl = "https://kiwiirc.com/client/irc.freenode.net/#vericoin";
 const char *walletUrl = "http://www.vericoin.info/";
 const char *walletDownloadsUrl = "http://www.vericoin.info/downloads/";
 bool fDebug = false;

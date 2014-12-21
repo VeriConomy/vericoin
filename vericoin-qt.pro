@@ -388,6 +388,7 @@ FORMS += \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/fiatpage.ui \
+    src/qt/forms/newspage.ui \
     src/qt/forms/chatpage.ui \
     src/qt/forms/supernetpage.ui \
     src/qt/forms/addressbookpage.ui \

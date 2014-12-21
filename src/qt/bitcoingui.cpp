@@ -28,8 +28,9 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "ui_fiatpage.h"
-#include "ui_supernetpage.h"
+#include "ui_newspage.h"
 #include "ui_chatpage.h"
+#include "ui_supernetpage.h"
 #include "tooltip.h"
 #include "downloader.h"
 #include "updatedialog.h"
@@ -103,17 +104,19 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     setMinimumSize(820, 246);
     setMaximumSize(880, 640);
-    resize(880, 560);
     setWindowTitle(tr("VeriCoin") + " - " + tr("Wallet"));
-#ifdef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
+#ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-    resize(880, 542);
-#endif
+    resize(880, 545);
+#else
 #ifdef Q_OS_WIN
-    resize(880, 550);
+    resize(880, 585);
+#else
+    resize(880, 595);
+#endif
 #endif
 
     // Accept D&D of URIs
@@ -160,6 +163,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
     connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
 
+    newsPage = new QWidget(this);
+    Ui::newsPage news;
+    news.setupUi(newsPage);
+
     chatPage = new QWidget(this);
     Ui::chatPage chat;
     chat.setupUi(chatPage);
@@ -178,6 +185,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(sendBitCoinsPage);
     centralWidget->addWidget(fiatPage);
+    centralWidget->addWidget(newsPage);
     centralWidget->addWidget(chatPage);
     centralWidget->addWidget(superNETPage);
     setCentralWidget(centralWidget);
@@ -341,16 +349,22 @@ void BitcoinGUI::createActions()
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
+    newsAction = new QAction(QIcon(":/icons/news"), tr("News"), this);
+    newsAction->setToolTip(tr("Get the latest VeriCoin news"));
+    newsAction->setCheckable(true);
+    newsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    tabGroup->addAction(newsAction);
+
     chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
     chatAction->setToolTip(tr("Join the VeriCoin chat room"));
     chatAction->setCheckable(true);
-    chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
     superNETAction = new QAction(QIcon(":/icons/supernet_white"), tr("SuperNET"), this);
     superNETAction->setToolTip(tr("Enter the SuperNET"));
     superNETAction->setCheckable(true);
-    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
+    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(superNETAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -367,6 +381,8 @@ void BitcoinGUI::createActions()
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     connect(fiatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(fiatAction, SIGNAL(triggered()), this, SLOT(gotoFiatPage()));
+    connect(newsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(newsAction, SIGNAL(triggered()), this, SLOT(gotoNewsPage()));
     connect(chatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(chatAction, SIGNAL(triggered()), this, SLOT(gotoChatPage()));
     connect(superNETAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -489,6 +505,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(addressBookAction);
     toolbar->addAction(sendBitCoinsAction);
     toolbar->addAction(fiatAction);
+    toolbar->addAction(newsAction);
     toolbar->addAction(chatAction);
     toolbar->addAction(superNETAction);
 }
@@ -933,8 +950,18 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 void BitcoinGUI::gotoFiatPage()
 {
     fiatAction->setChecked(true);
-    fiatPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("fiat.html")));
+    fiatPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/fiat.html")));
     centralWidget->setCurrentWidget(fiatPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoNewsPage()
+{
+    newsAction->setChecked(true);
+    newsPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/news.html")));
+    centralWidget->setCurrentWidget(newsPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
@@ -943,7 +970,7 @@ void BitcoinGUI::gotoFiatPage()
 void BitcoinGUI::gotoChatPage()
 {
     chatAction->setChecked(true);
-    chatPage->findChild<QWebView *>("webView")->load(QUrl("https://kiwiirc.com/client/irc.freenode.net/#vericoin"));
+    chatPage->findChild<QWebView *>("webView")->load(QUrl(QString(chatUrl)));
     centralWidget->setCurrentWidget(chatPage);
 
     exportAction->setEnabled(false);
@@ -952,9 +979,9 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    fiatAction->setChecked(true);
-    fiatPage->findChild<QWebView *>("webView")->load(QUrl("http://www.vericoin.info/fiat.html"));
-    centralWidget->setCurrentWidget(fiatPage);
+    superNETAction->setChecked(true);
+    superNETPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/supernet.html")));
+    centralWidget->setCurrentWidget(superNETPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
