@@ -73,6 +73,8 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     AccessNxtInsideDialog *accessNxtInsideDialog;
     QWidget *fiatPage;
+    QWidget *chatPage;
+    QWidget *superNETPage;
     //QWidget *statsBox;
 
     QLabel *labelEncryptionIcon;
@@ -80,6 +82,8 @@ private:
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
     QLabel *progressBarLabel;
+    QLabel *stakingLabel;
+    QLabel *connectionsLabel;
     QProgressBar *progressBar;
 
     QMenuBar *appMenuBar;
@@ -89,6 +93,8 @@ private:
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
     QAction *fiatAction;
+    QAction *superNETAction;
+    QAction *chatAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -169,6 +175,8 @@ private slots:
     /** Switch to send coins page */
     void gotoSendBitCoinsPage();
     /** Switch to fiat page */
+    void gotoChatPage();
+    void gotoSuperNETPage();
     void gotoFiatPage();
     void resizeGUI();
 

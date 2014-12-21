@@ -57,8 +57,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="addressBookButton_AN">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Choose an address from the address book</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -66,6 +76,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>18</width>
+             <height>18</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Alt+A</string>
@@ -77,8 +93,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="pasteButton_AN">
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Paste address from clipboard</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -86,6 +112,12 @@
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
              <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Alt+P</string>
@@ -101,15 +133,25 @@
         <layout class="QHBoxLayout" name="horizontalLayout_3_AN">
          <item>
           <widget class="QPushButton" name="accessNxtInsideButton_AN">
+           <property name="minimumSize">
+            <size>
+             <width>140</width>
+             <height>27</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Enter SuperNET</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>Enter &amp;SuperNET</string>
            </property>
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
-             <normaloff>:/icons/supernet</normaloff>:/icons/supernet</iconset>
+             <normaloff>:/icons/supernet_white</normaloff>:/icons/supernet_white</iconset>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -118,8 +160,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="clearButton_AN">
+           <property name="minimumSize">
+            <size>
+             <width>140</width>
+             <height>27</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Reset all fields</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>Clear &amp;All</string>

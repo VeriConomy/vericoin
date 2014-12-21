@@ -76,8 +76,6 @@ using namespace std;
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
-const char *walletUrl = "http://www.vericoin.info/";
-const char *walletDownloadsUrl = "http://www.vericoin.info/downloads/";
 bool fDebug = false;
 bool fDebugNet = false;
 bool fPrintToConsole = false;
@@ -97,6 +95,10 @@ bool fNoListen = false;
 bool fLogTimestamps = false;
 CMedianFilter<int64_t> vTimeOffsets(200,0);
 bool fReopenDebugLog = false;
+#ifdef QT_GUI
+const char *walletUrl = "http://www.vericoin.info/";
+const char *walletDownloadsUrl = "http://www.vericoin.info/downloads/";
+#endif
 
 // Init OpenSSL library multithreading support
 static CCriticalSection** ppmutexOpenSSL;

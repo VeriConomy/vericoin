@@ -48,6 +48,16 @@
      </item>
      <item>
       <widget class="QPushButton" name="downloadButton">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
         <string>Download</string>
        </property>
@@ -61,6 +71,16 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
         <string>Continue</string>
        </property>
@@ -71,8 +91,18 @@
      </item>
      <item>
       <widget class="QPushButton" name="quitButton">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
+       </property>
        <property name="text">
-        <string>Quit</string>
+        <string>Close</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -84,7 +114,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QLabel" name="statusLabel">
      <property name="text">
-      <string></string>
+      <string/>
      </property>
     </widget>
    </item>

@@ -143,8 +143,6 @@ inline void MilliSleep(int64_t n)
 
 extern std::map<std::string, std::string> mapArgs;
 extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
-extern const char *walletUrl;
-extern const char *walletDownloadsUrl;
 extern bool fDebug;
 extern bool fDebugNet;
 extern bool fPrintToConsole;
@@ -163,6 +161,10 @@ extern bool fTestNet;
 extern bool fNoListen;
 extern bool fLogTimestamps;
 extern bool fReopenDebugLog;
+#ifdef QT_GUI
+extern const char *walletUrl;
+extern const char *walletDownloadsUrl;
+#endif
 
 void RandAddSeed();
 void RandAddSeedPerfmon();
