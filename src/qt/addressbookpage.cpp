@@ -55,12 +55,10 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
         ui->labelExplanation->setVisible(false);
         ui->deleteButton->setVisible(true);
         ui->signMessage->setVisible(false);
-        ui->accessNxt->setVisible(false);
         break;
     case ReceivingTab:
         ui->deleteButton->setVisible(false);
         ui->signMessage->setVisible(true);
-        ui->accessNxt->setVisible(true);
         break;
     }
 
@@ -71,7 +69,6 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     QAction *showQRCodeAction = new QAction(ui->showQRCode->text(), this);
     QAction *signMessageAction = new QAction(ui->signMessage->text(), this);
     QAction *verifyMessageAction = new QAction(ui->verifyMessage->text(), this);
-    QAction *accessNxtInsideAction = new QAction(ui->accessNxt->text(), this);
     deleteAction = new QAction(ui->deleteButton->text(), this);
 
     // Build context menu
@@ -86,7 +83,6 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     if (tab == ReceivingTab)
     {
     	contextMenu->addAction(signMessageAction);
-    	contextMenu->addAction(accessNxtInsideAction);
     }
     else if(tab == SendingTab)
         contextMenu->addAction(verifyMessageAction);
@@ -99,7 +95,6 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     connect(showQRCodeAction, SIGNAL(triggered()), this, SLOT(on_showQRCode_clicked()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(on_signMessage_clicked()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(on_verifyMessage_clicked()));
-    connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(on_accessNxt_clicked()));
 
     connect(ui->tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextualMenu(QPoint)));
 
@@ -203,21 +198,6 @@ void AddressBookPage::on_signMessage_clicked()
     emit signMessage(addr);
 }
 
-void AddressBookPage::on_accessNxt_clicked()
-{
-    QTableView *table = ui->tableView;
-    QModelIndexList indexes = table->selectionModel()->selectedRows(AddressTableModel::Address);
-    QString addr;
-
-    foreach(QModelIndex index, indexes)
-    {
-    	QVariant address = index.data();
-    	addr = address.toString();
-    }
-
-    emit accessNxt(addr);
-}
-
 void AddressBookPage::on_verifyMessage_clicked()
 {
     QTableView *table = ui->tableView;
@@ -280,8 +260,6 @@ void AddressBookPage::selectionChanged()
             ui->signMessage->setVisible(false);
             ui->verifyMessage->setEnabled(true);
             ui->verifyMessage->setVisible(true);
-            ui->accessNxt->setEnabled(false);
-            ui->accessNxt->setVisible(false);
             break;
         case ReceivingTab:
             // Deleting receiving addresses, however, is not allowed
@@ -292,8 +270,6 @@ void AddressBookPage::selectionChanged()
             ui->signMessage->setVisible(true);
             ui->verifyMessage->setEnabled(false);
             ui->verifyMessage->setVisible(false);
-            ui->accessNxt->setEnabled(true);
-            ui->accessNxt->setVisible(true);
             break;
         }
         ui->copyToClipboard->setEnabled(true);
@@ -306,7 +282,6 @@ void AddressBookPage::selectionChanged()
         ui->copyToClipboard->setEnabled(false);
         ui->signMessage->setEnabled(false);
         ui->verifyMessage->setEnabled(false);
-        ui->accessNxt->setEnabled(false);
     }
 }
 

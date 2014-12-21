@@ -1740,8 +1740,8 @@ bool BindListenPort(const CService &addrBind, string& strError)
     }
 #endif
 
-    uiInterface.InitMessage("Binding to address " + addrBind.ToString());
-    printf("Binding to address %s\n", addrBind.ToString().c_str());
+    //uiInterface.InitMessage("Binding to address " + addrBind.ToString());
+    //printf("Binding to address %s\n", addrBind.ToString().c_str());
     MilliSleep(1000);
 
     if (::bind(hListenSocket, (struct sockaddr*)&sockaddr, len) == SOCKET_ERROR)

@@ -3,7 +3,7 @@ CONFIG += qt warn_on
 CONFIG += staticlib
 CONFIG += release
 #QT -= gui
-QT += widgets
+QT += widgets core
 
 # The ABI version.
 
