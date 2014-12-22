@@ -110,12 +110,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-    resize(880, 545);
+    resize(880, 570);
 #else
 #ifdef Q_OS_WIN
-    resize(880, 585);
+    resize(880, 610);
 #else
-    resize(880, 595);
+    resize(880, 620);
 #endif
 #endif
 
