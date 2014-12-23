@@ -4,6 +4,7 @@
 #include <QString>
 #include <QObject>
 #include <QMessageBox>
+#include <boost/filesystem.hpp>
 
 QT_BEGIN_NAMESPACE
 class QFont;
@@ -114,6 +115,15 @@ namespace GUIUtil
         QString coreOptions;
         QString uiOptions;
     };
+
+    #if BOOST_FILESYSTEM_VERSION >= 3
+    boost::filesystem::path qstringToBoostPath(const QString &path);
+    QString boostPathToQString(const boost::filesystem::path &path);
+    #else
+    #warning Conversion between boost path and QString can use invalid character encoding with boost_filesystem v2 and older
+    boost::filesystem::path qstringToBoostPath(const QString &path);
+    QString boostPathToQString(const boost::filesystem::path &path);
+    #endif
 
 } // namespace GUIUtil
 

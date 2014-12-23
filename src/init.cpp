@@ -17,8 +17,10 @@
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <openssl/crypto.h>
-#include <QProcess>
+#ifdef QT_GUI
 #include <QApplication>
+#include <QProcess>
+#endif
 
 #ifndef WIN32
 #include <signal.h>
@@ -97,6 +99,7 @@ void Shutdown(void* parg)
         MilliSleep(50);
         printf("VeriCoin exited\n\n");
         fExit = true;
+#ifdef QT_GUI
         if (fRestart)
         {
             if (fBootstrapTurbo)
@@ -116,7 +119,7 @@ void Shutdown(void* parg)
 
             RestartWallet((fRescan ? "-rescan" : NULL), true);
         }
-#ifndef QT_GUI
+#else // !QT_GUI
         // ensure non-UI client gets exited here, but let Bitcoin-Qt reach 'return 0;' in bitcoin.cpp
         exit(0);
 #endif
@@ -130,6 +133,7 @@ void Shutdown(void* parg)
     }
 }
 
+#ifdef QT_GUI
 // Restart wallet
 void RestartWallet(const char *parm, bool fOldParms)
 {
@@ -185,8 +189,10 @@ void RestartWallet(const char *parm, bool fOldParms)
 
     // Spawn a new instance.
     QProcess::startDetached(command, newArgv);
+
     return;
 }
+#endif
 
 void HandleSIGTERM(int)
 {

@@ -38,7 +38,9 @@ public:
     static qint64 factor(int unit);
     //! Number of amount digits (to represent max number of coins)
     static int amountDigits(int unit);
-    //! Number of decimals left
+    //! Maximum number of decimals left
+    static int maxdecimals(int unit);
+    //! Number of decimals from options left
     static int decimals(int unit);
     //! Format as string
     static QString format(int unit, qint64 amount, bool plussign=false);

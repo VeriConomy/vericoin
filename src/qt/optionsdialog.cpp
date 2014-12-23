@@ -23,7 +23,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     fProxyIpValid(true)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet("background-color: #FFFFFF; color:#000000;");
 
     /* Network elements init */
 #ifndef USE_UPNP
@@ -81,7 +81,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
         }
     }
 
-    ui->unit->setModel(new BitcoinUnits(this));
+    ui->unit->setModel(new BitcoinUnits(this, NULL));
 
     /* Widget-to-option mapper */
     mapper = new MonitoredDataMapper(this);
@@ -108,6 +108,7 @@ void OptionsDialog::setModel(OptionsModel *model)
     if(model)
     {
         connect(model, SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model, SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
 
         mapper->setModel(model);
         setMapper();
@@ -116,6 +117,8 @@ void OptionsDialog::setModel(OptionsModel *model)
 
     /* update the display unit, to not use the default ("VRC") */
     updateDisplayUnit();
+
+    updateDecimalPoints();
 
     /* warn only when language selection changes by user action (placed here so init via mapper doesn't trigger this) */
     connect(ui->lang, SIGNAL(valueChanged()), this, SLOT(showRestartWarning_Lang()));
@@ -151,6 +154,7 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
     mapper->addMapping(ui->displayAddresses, OptionsModel::DisplayAddresses);
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
+    mapper->addMapping(ui->decimalPoints, OptionsModel::DecimalPoints);
 }
 
 void OptionsDialog::enableApplyButton()
@@ -222,6 +226,15 @@ void OptionsDialog::updateDisplayUnit()
     {
         /* Update transactionFee with the current unit */
         ui->transactionFee->setDisplayUnit(model->getDisplayUnit());
+    }
+}
+
+void OptionsDialog::updateDecimalPoints()
+{
+    if(model)
+    {
+        /* Update decimalPoints with the current value */
+        ui->decimalPoints->setValue(model->getDecimalPoints());
     }
 }
 

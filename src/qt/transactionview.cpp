@@ -49,6 +49,21 @@ TransactionView::TransactionView(QWidget *parent) :
     hlayout->addSpacing(23);
 #endif
 
+    dateWidget = new QComboBox(this);
+#ifdef Q_OS_MAC
+    dateWidget->setFixedWidth(121);
+#else
+    dateWidget->setFixedWidth(120);
+#endif
+    dateWidget->addItem(tr("All"), All);
+    dateWidget->addItem(tr("Today"), Today);
+    dateWidget->addItem(tr("This week"), ThisWeek);
+    dateWidget->addItem(tr("This month"), ThisMonth);
+    dateWidget->addItem(tr("Last month"), LastMonth);
+    dateWidget->addItem(tr("This year"), ThisYear);
+    dateWidget->addItem(tr("Range..."), Range);
+    hlayout->addWidget(dateWidget);
+
     typeWidget = new QComboBox(this);
 #ifdef Q_OS_MAC
     typeWidget->setFixedWidth(121);
@@ -66,21 +81,6 @@ TransactionView::TransactionView(QWidget *parent) :
     typeWidget->addItem(tr("Other"), TransactionFilterProxy::TYPE(TransactionRecord::Other));
 
     hlayout->addWidget(typeWidget);
-
-    dateWidget = new QComboBox(this);
-#ifdef Q_OS_MAC
-    dateWidget->setFixedWidth(121);
-#else
-    dateWidget->setFixedWidth(120);
-#endif
-    dateWidget->addItem(tr("All"), All);
-    dateWidget->addItem(tr("Today"), Today);
-    dateWidget->addItem(tr("This week"), ThisWeek);
-    dateWidget->addItem(tr("This month"), ThisMonth);
-    dateWidget->addItem(tr("Last month"), LastMonth);
-    dateWidget->addItem(tr("This year"), ThisYear);
-    dateWidget->addItem(tr("Range..."), Range);
-    hlayout->addWidget(dateWidget);
 
     addressWidget = new QLineEdit(this);
 #if QT_VERSION >= 0x040700
@@ -188,7 +188,7 @@ void TransactionView::setModel(WalletModel *model)
         transactionView->horizontalHeader()->setResizeMode(
                 TransactionTableModel::ToAddress, QHeaderView::Stretch);
         transactionView->horizontalHeader()->resizeSection(
-                TransactionTableModel::Amount, 120);
+                TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
     }
 }
 

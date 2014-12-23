@@ -1,6 +1,7 @@
 #ifndef BITCOINUNITS_H
 #define BITCOINUNITS_H
 
+#include "walletmodel.h"
 #include <QString>
 #include <QAbstractListModel>
 
@@ -10,7 +11,7 @@
 class BitcoinUnits: public QAbstractListModel
 {
 public:
-    explicit BitcoinUnits(QObject *parent);
+    explicit BitcoinUnits(QObject *parent, WalletModel *wModel);
 
     /** Bitcoin units.
       @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
@@ -38,7 +39,9 @@ public:
     static qint64 factor(int unit);
     //! Number of amount digits (to represent max number of coins)
     static int amountDigits(int unit);
-    //! Number of decimals left
+    //! Maximum number of decimals left
+    static int maxdecimals(int unit);
+    //! Number of decimals from options left
     static int decimals(int unit);
     //! Format as string
     static QString format(int unit, qint64 amount, bool plussign=false);

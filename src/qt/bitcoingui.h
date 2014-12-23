@@ -73,6 +73,7 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     AccessNxtInsideDialog *accessNxtInsideDialog;
     QWidget *fiatPage;
+    QWidget *newsPage;
     QWidget *chatPage;
     QWidget *superNETPage;
     //QWidget *statsBox;
@@ -94,6 +95,7 @@ private:
     QAction *sendBitCoinsAction;
     QAction *fiatAction;
     QAction *superNETAction;
+    QAction *newsAction;
     QAction *chatAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
@@ -102,6 +104,8 @@ private:
     QAction *aboutAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
+    QAction *forumsAction;
+    QAction *webAction;
     QAction *toggleHideAction;
     QAction *exportAction;
     QAction *encryptWalletAction;
@@ -172,9 +176,13 @@ private slots:
     void gotoSendCoinsPage();
     /** Switch to send coins page */
     void gotoSendBitCoinsPage();
-    /** Switch to fiat page */
+    /** Switch to News page */
+    void gotoNewsPage();
+    /** Switch to Chat page */
     void gotoChatPage();
+    /** Switch to SuperNET page */
     void gotoSuperNETPage();
+    /** Switch to Fiat page */
     void gotoFiatPage();
     void resizeGUI();
 
@@ -189,6 +197,10 @@ private slots:
 
     /** Show configuration dialog */
     void optionsClicked();
+    /** Show forums page */
+    void forumsClicked();
+    /** Show web page */
+    void webClicked();
     /** Show about dialog */
     void aboutClicked();
 #ifndef Q_OS_MAC
@@ -214,6 +226,10 @@ private slots:
     void rescanBlockchain();
     /** Check for wallet update */
     void checkForUpdate();
+    /** Check for wallet update from Help menu */
+    void menuCheckForUpdate();
+    /** Check for wallet update from timer */
+    void timerCheckForUpdate();
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
     void showNormalIfMinimized(bool fToggleHidden = false);

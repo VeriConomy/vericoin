@@ -32,6 +32,7 @@ public:
         DetachDatabases,   // bool
         Language,          // QString
         CoinControlFeatures, // bool
+        DecimalPoints, // int
         OptionIDRowCount,
     };
 
@@ -50,12 +51,14 @@ public:
     bool getMinimizeToTray();
     bool getMinimizeOnClose();
     int getDisplayUnit();
+    int getDecimalPoints();
     bool getDisplayAddresses();
     bool getCoinControlFeatures();
     QString getLanguage() { return language; }
 
 private:
     int nDisplayUnit;
+    int nDecimalPoints;
     bool bDisplayAddresses;
     bool fMinimizeToTray;
     bool fMinimizeOnClose;
@@ -64,6 +67,7 @@ private:
 
 signals:
     void displayUnitChanged(int unit);
+    void decimalPointsChanged(int unit);
     void transactionFeeChanged(qint64);
     void reserveBalanceChanged(qint64);
     void coinControlFeaturesChanged(bool);

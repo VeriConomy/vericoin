@@ -49,6 +49,7 @@
         <file alias="veriBit">res/icons/veriBit.png</file>
         <file alias="notsynced">res/icons/notsynced.png</file>
         <file alias="fiat">res/icons/fiat.png</file>
+        <file alias="news">res/icons/news_white.png</file>
         <file alias="chat">res/icons/chat.png</file>
         <file alias="sendButton">res/icons/sendButton.png</file>
         <file alias="editButton">res/icons/editButton.png</file>
@@ -61,11 +62,11 @@
         <file alias="maximize">res/icons/maximize.png</file>
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="supernet_white">res/icons/supernet-white.png</file>
+        <file>res/icons/news_white.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
-        <file alias="logo">res/images/logo.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="update_spinner">res/movies/update_spinner.mng</file>

@@ -9,9 +9,12 @@
 #include "version.h"
 #include "ui_interface.h"
 #include <boost/algorithm/string/join.hpp>
+
+#ifdef QT_GUI
+#include "downloader.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include "downloader.h"
+#endif
 
 // Work around clang compilation problem in Boost 1.46:
 // /usr/include/boost/program_options/detail/config_file.hpp:163:17: error: call to function 'to_internal' that is neither visible in the template definition nor found by argument-dependent lookup
@@ -33,6 +36,11 @@ namespace boost {
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 #include <stdarg.h>
+
+#if BOOST_FILESYSTEM_VERSION >= 3
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
+static boost::filesystem::detail::utf8_codecvt_facet utf8;
+#endif
 
 #ifdef WIN32
 #ifdef _MSC_VER
@@ -68,6 +76,7 @@ using namespace std;
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
+const char *chatUrl = "https://kiwiirc.com/client/irc.freenode.net/#vericoin";
 const char *walletUrl = "http://www.vericoin.info/";
 const char *walletDownloadsUrl = "http://www.vericoin.info/downloads/";
 bool fDebug = false;
@@ -1225,20 +1234,21 @@ void ShrinkDebugFile()
     }
 }
 
+#ifdef QT_GUI
 // Downloads the latest version info and returns the path to it.
 boost::filesystem::path GetVersionFile()
 {
     boost::filesystem::path versionFile("VERSION.json");
     string versionUrl(walletDownloadsUrl);
 
-    versionUrl.append(versionFile.c_str());
-    versionFile = (GetDataDir(false) / versionFile);
+    versionUrl.append(boostPathToString(versionFile));
+    versionFile = (GetProgramDir() / versionFile);
 
     // Download the file.
     printf("Downloading version data...\n");
     Downloader * vf = new Downloader(NULL);
     vf->setUrl(versionUrl);
-    vf->setDest(string(versionFile.c_str()));
+    vf->setDest(boostPathToString(versionFile));
     vf->setAutoDownload(true);
     vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->startDownload();
@@ -1251,7 +1261,7 @@ boost::filesystem::path GetVersionFile()
     else
     {
         delete vf;
-        return NULL;
+        return boost::filesystem::path("");
     }
 }
 
@@ -1263,9 +1273,10 @@ void ReadVersionFile()
 
     QString versionData;
     std::string line;
+    std::string version;
     boost::filesystem::ifstream streamVersion(GetVersionFile());
 
-    if (streamVersion.is_open())
+    if (streamVersion && streamVersion.is_open())
     {
         while (getline(streamVersion,line))
         {
@@ -1298,17 +1309,39 @@ void ReadVersionFile()
         SetArg("-vFileName", vFileName.toStdString());
         SetBoolArg("-vBootstrap", vBootstrap);
 
-        if (!boost::iequals(FormatVersion(CLIENT_VERSION), GetArg("-vVersion", FormatVersion(CLIENT_VERSION))))
+        version = vVersion.toStdString();
+        if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
         {
-            fNewVersion = true;
+            int maj = 0;
+            int min = 0;
+            int rev = 0;
+            int bld = 0;
+            typedef vector<string> parts_type;
+            parts_type parts;
+            boost::split(parts, version, ::ispunct);
+            int i = parts.size();
+            for (vector<string>::iterator it = parts.begin(); it != parts.end() && --i < 4; ++it)
+            {
+                switch (i)
+                {
+                case 3: maj = atoi(*it); break;
+                case 2: min = atoi(*it); break;
+                case 1: rev = atoi(*it); break;
+                case 0: bld = atoi(*it); break;
+                }
+            }
+            if (maj > CLIENT_VERSION_MAJOR || min > CLIENT_VERSION_MINOR || rev > CLIENT_VERSION_REVISION || bld > CLIENT_VERSION_BUILD)
+            {
+                fNewVersion = true;
+            }
         }
     }
     else
     {
-        cout << "Unable to read version file.";
+        printf("Error: Unable to read version file.\n");
     }
 }
-
+#endif // QT_GUI
 
 
 
@@ -1490,3 +1523,26 @@ bool NewThread(void(*pfn)(void*), void* parg)
     }
     return true;
 }
+
+#if BOOST_FILESYSTEM_VERSION >= 3
+boost::filesystem::path stringToBoostPath(const std::string &path)
+{
+    return boost::filesystem::path(path, utf8);
+}
+
+std::string boostPathToString(const boost::filesystem::path &path)
+{
+    return path.string(utf8);
+}
+#else
+#warning Conversion between boost path and QString can use invalid character encoding with boost_filesystem v2 and older
+boost::filesystem::path stringToBoostPath(const std::string &path)
+{
+    return boost::filesystem::path(path);
+}
+
+std::string boostPathToString(const boost::filesystem::path &path)
+{
+    return path.string();
+}
+#endif

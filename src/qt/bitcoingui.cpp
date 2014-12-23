@@ -28,8 +28,9 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "ui_fiatpage.h"
-#include "ui_supernetpage.h"
+#include "ui_newspage.h"
 #include "ui_chatpage.h"
+#include "ui_supernetpage.h"
 #include "tooltip.h"
 #include "downloader.h"
 #include "updatedialog.h"
@@ -76,11 +77,15 @@
 
 #include <iostream>
 
+using namespace GUIUtil;
+
 extern CWallet* pwalletMain;
 extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
 double GetPoSKernelPS();
 bool blocksIcon = true;
+bool fMenuCheckForUpdate = false;
+bool fTimerCheckForUpdate = false;
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
@@ -99,17 +104,19 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     setMinimumSize(820, 246);
     setMaximumSize(880, 640);
-    resize(880, 560);
     setWindowTitle(tr("VeriCoin") + " - " + tr("Wallet"));
-#ifdef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
+#ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-    resize(880, 542);
-#endif
+    resize(880, 570);
+#else
 #ifdef Q_OS_WIN
-    resize(880, 550);
+    resize(880, 610);
+#else
+    resize(880, 620);
+#endif
 #endif
 
     // Accept D&D of URIs
@@ -156,6 +163,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
     connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
 
+    newsPage = new QWidget(this);
+    Ui::newsPage news;
+    news.setupUi(newsPage);
+
     chatPage = new QWidget(this);
     Ui::chatPage chat;
     chat.setupUi(chatPage);
@@ -174,6 +185,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(sendBitCoinsPage);
     centralWidget->addWidget(fiatPage);
+    centralWidget->addWidget(newsPage);
     centralWidget->addWidget(chatPage);
     centralWidget->addWidget(superNETPage);
     setCentralWidget(centralWidget);
@@ -229,6 +241,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         timerStakingIcon->start(30 * 1000);
         updateStakingIcon();
     }
+
+    // Set a timer to check for updates daily
+    QTimer *tCheckForUpdate = new QTimer(this);
+    connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
+    tCheckForUpdate->start(86400 * 1000);
 
     // Progress bar and label for blocks download
     progressBarLabel = new QLabel();
@@ -332,16 +349,22 @@ void BitcoinGUI::createActions()
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
+    newsAction = new QAction(QIcon(":/icons/news"), tr("News"), this);
+    newsAction->setToolTip(tr("Get the latest VeriCoin news"));
+    newsAction->setCheckable(true);
+    newsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    tabGroup->addAction(newsAction);
+
     chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
     chatAction->setToolTip(tr("Join the VeriCoin chat room"));
     chatAction->setCheckable(true);
-    chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
     superNETAction = new QAction(QIcon(":/icons/supernet_white"), tr("SuperNET"), this);
     superNETAction->setToolTip(tr("Enter the SuperNET"));
     superNETAction->setCheckable(true);
-    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
+    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(superNETAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -358,6 +381,8 @@ void BitcoinGUI::createActions()
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     connect(fiatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(fiatAction, SIGNAL(triggered()), this, SLOT(gotoFiatPage()));
+    connect(newsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(newsAction, SIGNAL(triggered()), this, SLOT(gotoNewsPage()));
     connect(chatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(chatAction, SIGNAL(triggered()), this, SLOT(gotoChatPage()));
     connect(superNETAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -395,6 +420,10 @@ void BitcoinGUI::createActions()
     rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain."));
     checkForUpdateAction = new QAction(QIcon(":/icons/tx_inout"), tr("Check For &Update..."), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
+    forumsAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums..."), this);
+    forumsAction->setToolTip(tr("Go to VeriCoin forums."));
+    webAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin on the &Web..."), this);
+    webAction->setToolTip(tr("Go to VeriCoin website."));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
@@ -415,7 +444,9 @@ void BitcoinGUI::createActions()
     connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
-    connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(checkForUpdate()));
+    connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
+    connect(forumsAction, SIGNAL(triggered()), this, SLOT(forumsClicked()));
+    connect(webAction, SIGNAL(triggered()), this, SLOT(webClicked()));
 }
 
 void BitcoinGUI::createMenuBar()
@@ -450,6 +481,8 @@ void BitcoinGUI::createMenuBar()
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->addAction(openRPCConsoleAction);
+    help->addAction(forumsAction);
+    help->addAction(webAction);
     help->addSeparator();
     help->addAction(checkForUpdateAction);
     help->addAction(aboutAction);
@@ -472,6 +505,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(addressBookAction);
     toolbar->addAction(sendBitCoinsAction);
     toolbar->addAction(fiatAction);
+    toolbar->addAction(newsAction);
     toolbar->addAction(chatAction);
     toolbar->addAction(superNETAction);
 }
@@ -606,6 +640,18 @@ void BitcoinGUI::optionsClicked()
     OptionsDialog dlg;
     dlg.setModel(clientModel->getOptionsModel());
     dlg.exec();
+}
+
+void BitcoinGUI::forumsClicked()
+{
+    QString link("http://www.vericoinforums.com");
+    QDesktopServices::openUrl(QUrl(link));
+}
+
+void BitcoinGUI::webClicked()
+{
+    QString link(walletUrl);
+    QDesktopServices::openUrl(QUrl(link));
 }
 
 void BitcoinGUI::aboutClicked()
@@ -816,6 +862,7 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
                     .data(Qt::EditRole).toULongLong();
     if(!clientModel->inInitialBlockDownload())
     {
+        BitcoinUnits *bcu = new BitcoinUnits(this, walletModel);
         // On new transaction, make an info balloon
         // Unless the initial block download is in progress, to prevent balloon-spam
         QString date = ttm->index(start, TransactionTableModel::Date, parent)
@@ -836,9 +883,10 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
                                  "Type: %3\n"
                                  "Address: %4\n")
                               .arg(date)
-                              .arg(BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), amount, true))
+                              .arg(bcu->formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), amount, true))
                               .arg(type)
                               .arg(address), icon);
+        delete bcu;
     }
 }
 
@@ -902,8 +950,18 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 void BitcoinGUI::gotoFiatPage()
 {
     fiatAction->setChecked(true);
-    fiatPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("fiat.html")));
+    fiatPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/fiat.html")));
     centralWidget->setCurrentWidget(fiatPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoNewsPage()
+{
+    newsAction->setChecked(true);
+    newsPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/news.html")));
+    centralWidget->setCurrentWidget(newsPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
@@ -912,7 +970,7 @@ void BitcoinGUI::gotoFiatPage()
 void BitcoinGUI::gotoChatPage()
 {
     chatAction->setChecked(true);
-    chatPage->findChild<QWebView *>("webView")->load(QUrl("https://kiwiirc.com/client/irc.freenode.net/#vericoin"));
+    chatPage->findChild<QWebView *>("webView")->load(QUrl(QString(chatUrl)));
     centralWidget->setCurrentWidget(chatPage);
 
     exportAction->setEnabled(false);
@@ -921,9 +979,9 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    fiatAction->setChecked(true);
-    fiatPage->findChild<QWebView *>("webView")->load(QUrl("http://www.vericoin.info/fiat.html"));
-    centralWidget->setCurrentWidget(fiatPage);
+    superNETAction->setChecked(true);
+    superNETPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/supernet.html")));
+    centralWidget->setCurrentWidget(superNETPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
@@ -1217,17 +1275,16 @@ void BitcoinGUI::reloadBlockchain()
 {
     bool turbo = true;
     bool confirm = false;
-    QString pathBootstrap(GetDataDir().c_str());
+    boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
     QUrl url;
 
-    pathBootstrap.append("/bootstrap.zip");
     url.setUrl(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
     printf("Downloading blockchain data...\n");
     Downloader * bs = new Downloader(this);
     bs->setWindowTitle("Bootstrap Download");
     bs->setUrl(url);
-    bs->setDest(pathBootstrap);
+    bs->setDest(boostPathToQString(pathBootstrap));
     if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
     {
         bs->setAutoDownload(true);
@@ -1241,7 +1298,7 @@ void BitcoinGUI::reloadBlockchain()
     }
     delete bs;
 
-    if (QFile::exists(pathBootstrap))
+    if (boost::filesystem::exists(pathBootstrap))
     {
         printf("Preparing for Blockchain Reload...\n");
     }
@@ -1267,7 +1324,7 @@ void BitcoinGUI::reloadBlockchain()
     {
         // bootstrap.zip
         /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(pathBootstrap);
+        QStringList zlist = JlCompress::getFileList(boostPathToQString(pathBootstrap));
         if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
         {
             printf("Bootstrap structure is valid.\n");
@@ -1278,7 +1335,7 @@ void BitcoinGUI::reloadBlockchain()
             return;
         }
         // Extract bootstrap.zip
-        QStringList zextracted = JlCompress::extractDir(this, pathBootstrap, QString(GetDataDir().c_str()));
+        QStringList zextracted = JlCompress::extractDir(this, boostPathToQString(pathBootstrap), boostPathToQString(pathBootstrap.parent_path()));
         if (!zextracted.isEmpty())
         {
             printf("Bootstrap extract successful.\n");
@@ -1323,14 +1380,38 @@ void BitcoinGUI::rescanBlockchain()
     }
 }
 
+// Called by user
+void BitcoinGUI::menuCheckForUpdate()
+{
+    fMenuCheckForUpdate = true;
+
+    if (!fTimerCheckForUpdate)
+        checkForUpdate();
+
+    fMenuCheckForUpdate = false;
+}
+
+// Called by timer
+void BitcoinGUI::timerCheckForUpdate()
+{
+    fTimerCheckForUpdate = true;
+
+    if (!fMenuCheckForUpdate)
+        checkForUpdate();
+
+    fTimerCheckForUpdate = false;
+}
+
+// Called by external (bitcoin.cpp)
 void BitcoinGUI::CheckForUpdate()
 {
-    checkForUpdate();
+    if (!fMenuCheckForUpdate && !fTimerCheckForUpdate)
+        checkForUpdate();
 }
 
 void BitcoinGUI::checkForUpdate()
 {
-    QString fileName(GetProgramDir().c_str());
+    boost::filesystem::path fileName(GetProgramDir());
     QUrl url;
 
     printf("Downloading and parsing version data...\n");
@@ -1348,15 +1429,14 @@ void BitcoinGUI::checkForUpdate()
         }
 
         std::string basename = GetArg("-vFileName","vericoin-qt");
-        fileName.append("/");
-        fileName.append(basename.c_str());
+        fileName = fileName / basename.c_str();
         url.setUrl(QString(walletDownloadsUrl).append(basename.c_str()));
 
         printf("Downloading new wallet...\n");
         Downloader * w = new Downloader(this);
         w->setWindowTitle("Wallet Download");
         w->setUrl(url);
-        w->setDest(fileName);
+        w->setDest(boostPathToQString(fileName));
         w->setAutoDownload(true);
         w->startDownload();
         w->exec();
@@ -1367,18 +1447,18 @@ void BitcoinGUI::checkForUpdate()
         }
         delete w;
 
-        if (!QFile::exists(fileName))
+        if (!boost::filesystem::exists(fileName))
         {
             printf("Update download failed!\n");
             QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet."));
             fNewVersion = false;
             return;
         }
-        // SDW TODO:
+
 #if !defined(WIN32) && !defined(MAC_OSX)
         // If Linux, extract zip contents and make vericoin-qt executable then restart.
         /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(fileName);
+        QStringList zlist = JlCompress::getFileList(boostPathToQString(fileName));
         if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","").c_str()))
         {
             printf("Update structure is valid.\n");
@@ -1389,7 +1469,7 @@ void BitcoinGUI::checkForUpdate()
             return;
         }
         // Extract the Update
-        QStringList zextracted = JlCompress::extractDir(this, fileName, QString(GetProgramDir().c_str()));
+        QStringList zextracted = JlCompress::extractDir(this, boostPathToQString(fileName), boostPathToQString(fileName.parent_path()));
         if (!zextracted.isEmpty())
         {
             printf("Update extract successful.\n");
@@ -1411,7 +1491,7 @@ void BitcoinGUI::checkForUpdate()
             boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
             boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
             // Rename the old and move in the new config
-            boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old")); // SDW TODO It's in the DataDir!!!
+            boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
             boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
             // Get the README
             boost::filesystem::rename(zlist[0].toStdString().append("README"), "README");
@@ -1431,6 +1511,9 @@ void BitcoinGUI::checkForUpdate()
     }
     else
     {
-        QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+        if (fMenuCheckForUpdate)
+        {
+            QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
+        }
     }
 }

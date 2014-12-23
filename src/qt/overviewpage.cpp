@@ -4,6 +4,7 @@
 #include "util.h"
 #include "walletmodel.h"
 #include "bitcoinunits.h"
+#include "cookiejar.h"
 #include "optionsmodel.h"
 #include "transactiontablemodel.h"
 #include "transactionfilterproxy.h"
@@ -71,7 +72,7 @@ public:
             foreground = COLOR_BAREADDRESS;
         }
         painter->setPen(foreground);
-        QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true);
+        QString amountText =  BitcoinUnits::formatWithUnit(unit, amount, true);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
@@ -105,9 +106,17 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
-    ui->stats->load(QUrl("http://vericoinnews.info/wallet/index.html"));
-    ui->value->load(QUrl("http://vericoinnews.info/wallet/chart.html"));
     this->setStyleSheet("background-color: #FFFFFF;");
+
+    QUrl statsUrl("http://www.vericoin.info/wallet/index.html");
+    CookieJar *statsJar = new CookieJar;
+    ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
+    ui->stats->load(statsUrl);
+
+    QUrl valueUrl("http://www.vericoin.info/wallet/chart.html");
+    CookieJar *valueJar = new CookieJar;
+    ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
+    ui->value->load(valueUrl);
 
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
@@ -134,23 +143,28 @@ void OverviewPage::handleTransactionClicked(const QModelIndex &index)
 
 OverviewPage::~OverviewPage()
 {
+    delete ui->stats->page()->networkAccessManager()->cookieJar();
+    delete ui->value->page()->networkAccessManager()->cookieJar();
+
     delete ui;
 }
 
 void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance)
 {
+    BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
     int unit = model->getOptionsModel()->getDisplayUnit();
     currentBalance = balance;
     currentStake = stake;
     currentUnconfirmedBalance = unconfirmedBalance;
     currentImmatureBalance = immatureBalance;
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
-    ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, stake));
-    ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
-    //ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
-    ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
-   // ui->labelImmature->setVisible(true);
+    ui->labelBalance->setText(bcu->formatWithUnit(unit, balance));
+    ui->labelStake->setText(bcu->formatWithUnit(unit, stake));
+    ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance));
+    //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance));
+    ui->labelTotal->setText(bcu->formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
+    // ui->labelImmature->setVisible(true);
     //ui->labelImmatureText->setVisible(true);
+    delete bcu;
 }
 
 void OverviewPage::setNumTransactions(int count)
@@ -208,21 +222,3 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
 }
-
-//Link buttons
-void OverviewPage::on_supernet_clicked()
-{
-    QString link="http://www.supernet.org/";
-    QDesktopServices::openUrl(QUrl(link));
-}
-void OverviewPage::on_forums_clicked()
-{
-    QString link="http://www.vericoinforums.com";
-    QDesktopServices::openUrl(QUrl(link));
-}
-void OverviewPage::on_home_clicked()
-{
-    QString link(walletUrl);
-    QDesktopServices::openUrl(QUrl(link));
-}
-

@@ -49,6 +49,7 @@ void OptionsModel::Init()
     nTransactionFee = settings.value("nTransactionFee").toLongLong();
     nReserveBalance = settings.value("nReserveBalance").toLongLong();
     language = settings.value("language", "").toString();
+    nDecimalPoints = settings.value("nDecimalPoints", 8).toInt();
 
     // These are shared with core Bitcoin; we want
     // command-line options to override the GUI settings:
@@ -78,7 +79,7 @@ bool OptionsModel::Upgrade()
     CWalletDB walletdb(strWalletFileName);
 
     QList<QString> intOptions;
-    intOptions << "nDisplayUnit" << "nTransactionFee" << "nReserveBalance";
+    intOptions << "nDisplayUnit" << "nTransactionFee" << "nReserveBalance" << "nDecimalPoints";
     foreach(QString key, intOptions)
     {
         int value = 0;
@@ -177,6 +178,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("language", "");
         case CoinControlFeatures:
             return QVariant(fCoinControlFeatures);
+        case DecimalPoints:
+            return QVariant(nDecimalPoints);
         default:
             return QVariant();
         }
@@ -277,6 +280,11 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             emit coinControlFeaturesChanged(fCoinControlFeatures);
             }
             break;
+        case DecimalPoints:
+            nDecimalPoints = value.toInt();
+            settings.setValue("nDecimalPoints", nDecimalPoints);
+            emit decimalPointsChanged(nDecimalPoints);
+            break;
         default:
             break;
         }
@@ -314,6 +322,11 @@ bool OptionsModel::getMinimizeOnClose()
 int OptionsModel::getDisplayUnit()
 {
     return nDisplayUnit;
+}
+
+int OptionsModel::getDecimalPoints()
+{
+    return nDecimalPoints;
 }
 
 bool OptionsModel::getDisplayAddresses()
