@@ -247,6 +247,15 @@ int main(int argc, char *argv[])
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
+//#ifdef Q_OS_MAC
+//                window.setFixedSize(880, 702);
+//#else
+//#ifdef Q_OS_WIN
+//                window.setFixedSize(880, 710);
+//#else
+                window.setFixedSize(880, 720);
+//#endif
+//#endif
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel);
 

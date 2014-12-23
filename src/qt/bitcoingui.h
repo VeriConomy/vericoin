@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QWebFrame>
+#include <QWebView>
 
 class TransactionTableModel;
 class ClientModel;
@@ -125,10 +126,6 @@ private:
 
     QMovie *syncIconMovie;
 
-    bool fiatInit;
-
-    QWebFrame * fiatFrame;
-
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
@@ -237,6 +234,8 @@ private slots:
     void toggleHidden();
 
     void updateStakingIcon();
+    void openUrl(QUrl url);
+    void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 
 #endif
