@@ -482,4 +482,16 @@ QString boostPathToQString(const boost::filesystem::path &path)
 }
 #endif
 
+bool isTrustedUrl(QUrl url)
+{
+    QList<QString> trustedHosts;
+
+    trustedHosts << "www.vericoin.info" << "vericoin.info";
+
+    if (trustedHosts.contains(url.host()))
+        return true;
+    else
+        return false;
+}
+
 } // namespace GUIUtil

@@ -97,8 +97,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     aboutQtAction(0),
     trayIcon(0),
     notificator(0),
-    rpcConsole(0),
-    fiatInit(false)    
+    rpcConsole(0)
 {
     _TOOLTIP_INIT_QAPP
 
@@ -110,13 +109,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-    resize(880, 570);
-#else
-#ifdef Q_OS_WIN
-    resize(880, 610);
-#else
-    resize(880, 620);
-#endif
 #endif
 
     // Accept D&D of URIs
@@ -155,25 +147,31 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     accessNxtInsideDialog = new AccessNxtInsideDialog(this);
     
-    fiatPage = new QWidget(this);
+    fiatPage = new QWebView(this);
     Ui::fiatPage fiat;
     fiat.setupUi(fiatPage);
     QPushButton * back = fiatPage->findChild<QPushButton *>("back");
     QPushButton * reload = fiatPage->findChild<QPushButton *>("reload");
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
     connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
+    connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
-    newsPage = new QWidget(this);
+    newsPage = new QWebView(this);
     Ui::newsPage news;
     news.setupUi(newsPage);
+    news.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(news.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(news.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
 
-    chatPage = new QWidget(this);
+    chatPage = new QWebView(this);
     Ui::chatPage chat;
     chat.setupUi(chatPage);
+    connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
-    superNETPage = new QWidget(this);
+    superNETPage = new QWebView(this);
     Ui::superNETPage superNET;
     superNET.setupUi(superNETPage);
+    connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
@@ -192,6 +190,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create status bar
     statusBar();
+    statusBar()->setContentsMargins(8,0,0,0);
     statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     stakingLabel = new QLabel();
     stakingLabel->setText(QString("Syncing..."));
@@ -494,7 +493,7 @@ void BitcoinGUI::createToolBars()
     QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setAutoFillBackground(true);
-    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none;} QToolButton { background : " + STRING_VERIBLUE + "; border : none; color: white; font-size: 8pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
+    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none; } QToolButton { background : " + STRING_VERIBLUE + "; padding-bottom: 10px; border: none; color: white; font-size: 8pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
     toolbar->setIconSize(QSize(60,32));
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -892,6 +891,7 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
 
@@ -901,6 +901,7 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
 
@@ -911,6 +912,7 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
@@ -921,6 +923,7 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
 
@@ -931,6 +934,7 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -940,6 +944,7 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
@@ -949,8 +954,15 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    QUrl url(QString(walletUrl).append("wallet/fiat.html"));
+
+    if (fiatPage->findChild<QWebView *>("webView")->url() != url)
+    {
+        fiatPage->findChild<QWebView *>("webView")->load(url);
+    }
+
     fiatAction->setChecked(true);
-    fiatPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/fiat.html")));
     centralWidget->setCurrentWidget(fiatPage);
 
     exportAction->setEnabled(false);
@@ -959,8 +971,15 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: #EBEBEB;}");
+    QUrl url(QString(walletUrl).append("wallet/news.html"));
+
+    if (newsPage->findChild<QWebView *>("webView")->url() != url)
+    {
+        newsPage->findChild<QWebView *>("webView")->load(url);
+    }
+
     newsAction->setChecked(true);
-    newsPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/news.html")));
     centralWidget->setCurrentWidget(newsPage);
 
     exportAction->setEnabled(false);
@@ -969,8 +988,15 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    QUrl url(chatUrl);
+
+    if (chatPage->findChild<QWebView *>("webView")->url() != url)
+    {
+        chatPage->findChild<QWebView *>("webView")->load(url);
+    }
+
     chatAction->setChecked(true);
-    chatPage->findChild<QWebView *>("webView")->load(QUrl(QString(chatUrl)));
     centralWidget->setCurrentWidget(chatPage);
 
     exportAction->setEnabled(false);
@@ -979,8 +1005,15 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
+    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    QUrl url(QString(walletUrl).append("wallet/supernet.html"));
+
+    if (superNETPage->findChild<QWebView *>("webView")->url() != url)
+    {
+        superNETPage->findChild<QWebView *>("webView")->load(url);
+    }
+
     superNETAction->setChecked(true);
-    superNETPage->findChild<QWebView *>("webView")->load(QUrl(QString(walletUrl).append("wallet/supernet.html")));
     centralWidget->setCurrentWidget(superNETPage);
 
     exportAction->setEnabled(false);
@@ -1014,12 +1047,12 @@ void BitcoinGUI::resizeGUI()
         }
         else
         {
-           resize(880, 560);
+           resize(880, 720);
            #ifdef Q_OS_WIN
-                resize(880, 550);
+                resize(880, 710);
            #endif
            #ifdef Q_OS_MAC
-                resize(880, 542);
+                resize(880, 702);
            #endif
            dynamic_cast<QPushButton*>(sender())->setToolTip("Simple Wallet");
         }
@@ -1264,6 +1297,28 @@ void BitcoinGUI::updateStakingIcon()
         else
             labelStakingIcon->setToolTip(tr("In sync at block %1 <br> Not staking because you don't have mature coins").arg(currentBlock));
     }
+}
+
+void BitcoinGUI::openUrl(QUrl url)
+{
+    if (!isTrustedUrl(url))
+    {
+        QDesktopServices::openUrl(url);
+    }
+    else
+    {
+        qobject_cast<QWebView *>(sender())->load(url);
+    }
+}
+
+void BitcoinGUI::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
+{
+
+  // Show list of all ssl errors
+  foreach (QSslError err, errlist)
+      printf((QString("sslErrorHandler Url: %1 , Error: %2\n").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
+
+   qnr->ignoreSslErrors();
 }
 
 void BitcoinGUI::ReloadBlockchain()

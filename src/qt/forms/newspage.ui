@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>811</width>
-    <height>381</height>
+    <width>1024</width>
+    <height>1024</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,8 +21,8 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
    <item>
-    <widget class="QWebView" name="webView">
-     <property name="url">
+    <widget class="QWebView" name="webView" native="true">
+     <property name="url" stdset="0">
       <url>
        <string>about:blank</string>
       </url>

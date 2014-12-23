@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
-    <height>573</height>
+    <width>1024</width>
+    <height>1024</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -566,8 +566,8 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>5000</width>
-        <height>5000</height>
+        <width>16777215</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="layoutDirection">
@@ -704,15 +704,15 @@
     <item row="0" column="0">
      <widget class="QFrame" name="frame_5">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
       <property name="maximumSize">
        <size>
-        <width>5000</width>
-        <height>5000</height>
+        <width>16777215</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="layoutDirection">
