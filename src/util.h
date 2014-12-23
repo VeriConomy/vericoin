@@ -143,9 +143,11 @@ inline void MilliSleep(int64_t n)
 
 extern std::map<std::string, std::string> mapArgs;
 extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
+#ifdef QT_GUI
 extern const char *chatUrl;
 extern const char *walletUrl;
 extern const char *walletDownloadsUrl;
+#endif
 extern bool fDebug;
 extern bool fDebugNet;
 extern bool fPrintToConsole;
