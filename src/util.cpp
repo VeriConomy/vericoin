@@ -1133,8 +1133,19 @@ const boost::filesystem::path &GetDataDir(bool fNetSpecific)
 
 boost::filesystem::path GetConfigFile()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-conf", "vericoin.conf"));
-    if (!pathConfigFile.is_complete()) pathConfigFile = GetProgramDir() / pathConfigFile;
+    namespace fs = boost::filesystem;
+
+    std::string conf("vericoin.conf");
+    std::string confArg(GetArg("-conf", conf));
+    fs::path pathConfigFile(confArg);
+
+    if (fs::exists(pathConfigFile) && pathConfigFile.is_relative()) pathConfigFile = fs::canonical(confArg);
+
+    if (!fs::exists(pathConfigFile)) pathConfigFile = GetProgramDir() / conf;
+    if (!fs::exists(pathConfigFile)) pathConfigFile = GetDataDir(false) / conf;
+    if (!fs::exists(pathConfigFile)) pathConfigFile = fs::current_path() / conf;  // set it to default current path
+    if (!fs::exists(pathConfigFile)) printf("GetConfigFile: Cannot find config file. Using default: %s\n", pathConfigFile.c_str());
+
     return pathConfigFile;
 }
 
