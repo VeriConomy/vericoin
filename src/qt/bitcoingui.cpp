@@ -109,13 +109,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-    //resize(880, 892);
-#else
-#ifdef Q_OS_WIN
-    //resize(880, 900);
-#else
-    //resize(880, 910);
-#endif
 #endif
 
     // Accept D&D of URIs
@@ -1054,12 +1047,12 @@ void BitcoinGUI::resizeGUI()
         }
         else
         {
-           resize(880, 910);
+           resize(880, 720);
            #ifdef Q_OS_WIN
-                resize(880, 900);
+                resize(880, 710);
            #endif
            #ifdef Q_OS_MAC
-                resize(880, 892);
+                resize(880, 702);
            #endif
            dynamic_cast<QPushButton*>(sender())->setToolTip("Simple Wallet");
         }
@@ -1323,7 +1316,7 @@ void BitcoinGUI::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & er
 
   // Show list of all ssl errors
   foreach (QSslError err, errlist)
-      qDebug((QString("sslErrorHandler Url: %1 , Error: %2").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
+      printf((QString("sslErrorHandler Url: %1 , Error: %2\n").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
 
    qnr->ignoreSslErrors();
 }
