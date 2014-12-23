@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QWebFrame>
+#include <QWebView>
 
 class TransactionTableModel;
 class ClientModel;
@@ -73,6 +74,7 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     AccessNxtInsideDialog *accessNxtInsideDialog;
     QWidget *fiatPage;
+    QWidget *newsPage;
     QWidget *chatPage;
     QWidget *superNETPage;
     //QWidget *statsBox;
@@ -94,6 +96,7 @@ private:
     QAction *sendBitCoinsAction;
     QAction *fiatAction;
     QAction *superNETAction;
+    QAction *newsAction;
     QAction *chatAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
@@ -122,10 +125,6 @@ private:
     RPCConsole *rpcConsole;
 
     QMovie *syncIconMovie;
-
-    bool fiatInit;
-
-    QWebFrame * fiatFrame;
 
     /** Create the main UI actions. */
     void createActions();
@@ -174,9 +173,13 @@ private slots:
     void gotoSendCoinsPage();
     /** Switch to send coins page */
     void gotoSendBitCoinsPage();
-    /** Switch to fiat page */
+    /** Switch to News page */
+    void gotoNewsPage();
+    /** Switch to Chat page */
     void gotoChatPage();
+    /** Switch to SuperNET page */
     void gotoSuperNETPage();
+    /** Switch to Fiat page */
     void gotoFiatPage();
     void resizeGUI();
 
@@ -231,6 +234,8 @@ private slots:
     void toggleHidden();
 
     void updateStakingIcon();
+    void openUrl(QUrl url);
+    void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 
 #endif

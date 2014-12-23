@@ -185,6 +185,7 @@ void Downloader::startRequest(QUrl url)
     // opened for reading which emits
     // the readyRead() signal whenever new data arrives.
     reply = manager->get(QNetworkRequest(url));
+    reply->ignoreSslErrors();
 
     // Whenever more data is received from the network,
     // this readyRead() signal is emitted

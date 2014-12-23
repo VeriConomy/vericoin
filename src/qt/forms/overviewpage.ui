@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
-    <height>573</height>
+    <width>1024</width>
+    <height>1024</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -546,37 +546,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>490</y>
-     <width>901</width>
-     <height>111</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel { background : #0a3057; border: none}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="../bitcoin.qrc">:/images/logo</pixmap>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-   </property>
-  </widget>
   <widget class="QWidget" name="gridLayoutWidget_2">
    <property name="geometry">
     <rect>
@@ -597,8 +566,8 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>5000</width>
-        <height>5000</height>
+        <width>16777215</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="layoutDirection">
@@ -735,15 +704,15 @@
     <item row="0" column="0">
      <widget class="QFrame" name="frame_5">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
       <property name="maximumSize">
        <size>
-        <width>5000</width>
-        <height>5000</height>
+        <width>16777215</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="layoutDirection">
@@ -865,11 +834,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>gridLayoutWidget</zorder>
-  <zorder>gridLayoutWidget_3</zorder>
-  <zorder>gridLayoutWidget_2</zorder>
-  <zorder>gridLayoutWidget_4</zorder>
-  <zorder>label_2</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -878,8 +842,6 @@
    <header>QtWebKitWidgets/QWebView</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../bitcoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
