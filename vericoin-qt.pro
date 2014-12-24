@@ -208,6 +208,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
+    src/qt/tooltip.h \
     src/alert.h \
     src/addrman.h \
     src/base58.h \

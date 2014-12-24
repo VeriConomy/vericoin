@@ -18,6 +18,9 @@
   <property name="windowTitle">
    <string>Coin Control</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: white; color: black;</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayoutTop" stretch="0,0,0,0">
@@ -369,12 +372,6 @@
        <height>40</height>
       </size>
      </property>
-     <!--property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property-->
      <widget class="QWidget" name="horizontalLayoutWidget">
       <property name="geometry">
        <rect>

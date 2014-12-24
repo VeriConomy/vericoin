@@ -36,7 +36,7 @@ TransactionView::TransactionView(QWidget *parent) :
     transactionView(0)
 {
     // Build filter row
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet("background-color: white; color: black;");
 
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -51,9 +51,9 @@ TransactionView::TransactionView(QWidget *parent) :
 
     dateWidget = new QComboBox(this);
 #ifdef Q_OS_MAC
-    dateWidget->setFixedWidth(121);
+    dateWidget->setFixedWidth(151);
 #else
-    dateWidget->setFixedWidth(120);
+    dateWidget->setFixedWidth(150);
 #endif
     dateWidget->addItem(tr("All"), All);
     dateWidget->addItem(tr("Today"), Today);
@@ -94,11 +94,7 @@ TransactionView::TransactionView(QWidget *parent) :
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
     amountWidget->setPlaceholderText(tr("Min amount"));
 #endif
-#ifdef Q_OS_MAC
-    amountWidget->setFixedWidth(97);
-#else
     amountWidget->setFixedWidth(100);
-#endif
     amountWidget->setValidator(new QDoubleValidator(0, 1e20, 8, this));
     hlayout->addWidget(amountWidget);
 
@@ -182,13 +178,13 @@ void TransactionView::setModel(WalletModel *model)
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Status, 23);
         transactionView->horizontalHeader()->resizeSection(
-                TransactionTableModel::Date, 130);
+                TransactionTableModel::Date, 150);
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Type, 120);
         transactionView->horizontalHeader()->setResizeMode(
                 TransactionTableModel::ToAddress, QHeaderView::Stretch);
         transactionView->horizontalHeader()->resizeSection(
-                TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
+                TransactionTableModel::Amount, 80 + (model->getOptionsModel()->getDecimalPoints() * 10));
     }
 }
 

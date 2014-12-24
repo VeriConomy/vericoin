@@ -35,9 +35,7 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // _TOOLTIP_INIT_THIS
-
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet("background-color: white; color: black;");
 
 /*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
     ui->addButton->setIcon(QIcon());
@@ -113,6 +111,7 @@ void SendBitCoinsDialog::setModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(coinControlFeaturesChanged(bool)), this, SLOT(coinControlFeatureChanged(bool)));
         connect(model->getOptionsModel(), SIGNAL(transactionFeeChanged(qint64)), this, SLOT(coinControlUpdateLabels()));
         ui->frameCoinControl->setVisible(model->getOptionsModel()->getCoinControlFeatures());
+        ui->frameCoinControl->setStyleSheet("QToolTip { background-color: white; color: black; }");
         coinControlUpdateLabels();
     }
 }
