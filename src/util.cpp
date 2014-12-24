@@ -79,7 +79,7 @@ map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
 const char *chatUrl = "https://kiwiirc.com/client/irc.freenode.net/#vericoin";
 const char *walletUrl = "https://www.vericoin.info/";
-const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";  // Don't set to https if the cert is invalid
+const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
 #endif
 bool fDebug = false;
 bool fDebugNet = false;

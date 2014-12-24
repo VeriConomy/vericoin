@@ -94,7 +94,7 @@ TransactionView::TransactionView(QWidget *parent) :
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
     amountWidget->setPlaceholderText(tr("Min amount"));
 #endif
-    amountWidget->setFixedWidth(80 + (model->getOptionsModel()->getDecimalPoints() * 10));
+    amountWidget->setFixedWidth(100);
     amountWidget->setValidator(new QDoubleValidator(0, 1e20, 8, this));
     hlayout->addWidget(amountWidget);
 
