@@ -36,7 +36,7 @@ TransactionView::TransactionView(QWidget *parent) :
     transactionView(0)
 {
     // Build filter row
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet("background-color: white; color: black;");
 
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();

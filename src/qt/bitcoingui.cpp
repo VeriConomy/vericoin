@@ -86,6 +86,11 @@ double GetPoSKernelPS();
 bool blocksIcon = true;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
+bool fFiatPageLoaded = false;
+bool fNewsPageLoaded = false;
+bool fChatPageLoaded = false;
+bool fSuperNETPageLoaded = false;
+
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
@@ -175,7 +180,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
-    centralWidget->setStyleSheet("background-color: white; font-size: 15px; font-family: Lato; color: #444748;");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(addressBookPage);
@@ -263,7 +268,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QString curStyle = qApp->style()->metaObject()->className();
     if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
     {
-        progressBar->setStyleSheet("QProgressBar { background-color: #FFFFFF; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
+        progressBar->setStyleSheet("QProgressBar { background-color: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
     }
 
     statusBar()->addWidget(progressBarLabel);
@@ -493,7 +498,7 @@ void BitcoinGUI::createToolBars()
     QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setAutoFillBackground(true);
-    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; border: none; } QToolButton { background : " + STRING_VERIBLUE + "; padding-bottom: 10px; border: none; color: white; font-size: 8pt; } QToolButton:hover { background : " + STRING_VERIBLUE_LT + "; } QToolButton:pressed { background : " + STRING_VERIBLUE_LT + "; } QToolButton:checked { background : " + STRING_VERIBLUE_LT + "; }");
+    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; color: white; border: none; } QToolButton { background: " + STRING_VERIBLUE + "; color: white; padding-bottom: 10px; border: none; font-size: 8pt; } QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; }");
     toolbar->setIconSize(QSize(60,32));
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -891,7 +896,8 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    overviewPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
 
@@ -901,7 +907,8 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    transactionsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
 
@@ -912,7 +919,8 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    addressBookPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
@@ -923,7 +931,8 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    receiveCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
 
@@ -934,7 +943,8 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    sendCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -944,7 +954,8 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    sendBitCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
@@ -954,12 +965,14 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    fiatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(QString(walletUrl).append("wallet/fiat.html"));
 
-    if (fiatPage->findChild<QWebView *>("webView")->url() != url)
+    if (!fFiatPageLoaded)
     {
         fiatPage->findChild<QWebView *>("webView")->load(url);
+        fFiatPageLoaded = true;
     }
 
     fiatAction->setChecked(true);
@@ -971,12 +984,14 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: #EBEBEB;}");
+    centralWidget->setStyleSheet("QWidget { background-color: #EBEBEB; font-size: 15px; font-family: Lato; color: #444748; }");
+    newsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(QString(walletUrl).append("wallet/news.html"));
 
-    if (newsPage->findChild<QWebView *>("webView")->url() != url)
+    if (!fNewsPageLoaded)
     {
         newsPage->findChild<QWebView *>("webView")->load(url);
+        fNewsPageLoaded = true;
     }
 
     newsAction->setChecked(true);
@@ -988,12 +1003,14 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    chatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(chatUrl);
 
-    if (chatPage->findChild<QWebView *>("webView")->url() != url)
+    if (!fChatPageLoaded)
     {
         chatPage->findChild<QWebView *>("webView")->load(url);
+        fChatPageLoaded = true;
     }
 
     chatAction->setChecked(true);
@@ -1005,12 +1022,14 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white;}");
+    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    superNETPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(QString(walletUrl).append("wallet/supernet.html"));
 
-    if (superNETPage->findChild<QWebView *>("webView")->url() != url)
+    if (!fSuperNETPageLoaded)
     {
         superNETPage->findChild<QWebView *>("webView")->load(url);
+        fSuperNETPageLoaded = true;
     }
 
     superNETAction->setChecked(true);

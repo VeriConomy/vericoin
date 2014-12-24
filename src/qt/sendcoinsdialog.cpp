@@ -34,8 +34,6 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // _TOOLTIP_INIT_THIS
-
     this->setStyleSheet("background-color: #FFFFFF;");
 
 /*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
