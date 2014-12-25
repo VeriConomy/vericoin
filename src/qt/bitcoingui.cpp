@@ -80,7 +80,11 @@
 
 using namespace GUIUtil;
 
+#ifdef Q_OS_WIN
+QFont veriFont("Lato", 11, QFont::Normal, false);
+#else
 QFont veriFont("Lato", 10, QFont::Normal, false);
+#endif
 
 extern CWallet* pwalletMain;
 extern int64_t nLastCoinStakeSearchInterval;
@@ -505,7 +509,7 @@ void BitcoinGUI::createToolBars()
     QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setAutoFillBackground(true);
-    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; color: white; border: none; } QToolButton { background: " + STRING_VERIBLUE + "; color: white; padding-bottom: 10px; border: none; font-size: 8pt; } QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; }");
+    toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; color: white; border: none; } QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-size: 10px; padding-bottom: 10px; } QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; }");
     toolbar->setIconSize(QSize(60,32));
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setMovable(false);
