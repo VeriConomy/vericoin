@@ -74,10 +74,13 @@
 #include <QStyle>
 #include <QFontDatabase>
 #include <QInputDialog>
+#include <QGraphicsView>
 
 #include <iostream>
 
 using namespace GUIUtil;
+
+QFont veriFont("Lato", 10, QFont::Normal, false);
 
 extern CWallet* pwalletMain;
 extern int64_t nLastCoinStakeSearchInterval;
@@ -107,9 +110,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     _TOOLTIP_INIT_QAPP
 
     setMinimumSize(820, 246);
-    setMaximumSize(880, 640);
     setWindowTitle(tr("VeriCoin") + " - " + tr("Wallet"));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
+    qApp->setFont(veriFont);
     setWindowIcon(QIcon(":icons/bitcoin"));
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
@@ -131,7 +134,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create the tray icon (or setup the dock icon)
     createTrayIcon();
 
-    // Create tabs
+    // Create tab items
     overviewPage = new OverviewPage();
 
     transactionsPage = new QWidget(this);
@@ -151,10 +154,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
 
     accessNxtInsideDialog = new AccessNxtInsideDialog(this);
-    
+
     fiatPage = new QWebView(this);
     Ui::fiatPage fiat;
     fiat.setupUi(fiatPage);
+    fiat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     QPushButton * back = fiatPage->findChild<QPushButton *>("back");
     QPushButton * reload = fiatPage->findChild<QPushButton *>("reload");
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
@@ -164,6 +168,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     newsPage = new QWebView(this);
     Ui::newsPage news;
     news.setupUi(newsPage);
+    news.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOn);
     news.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(news.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     connect(news.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
@@ -171,16 +176,18 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     chatPage = new QWebView(this);
     Ui::chatPage chat;
     chat.setupUi(chatPage);
+    chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
     superNETPage = new QWebView(this);
     Ui::superNETPage superNET;
     superNET.setupUi(superNETPage);
+    superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(addressBookPage);
@@ -292,7 +299,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Clicking on "Sign Message" in the receive coins page sends you to the sign message tab
     connect(receiveCoinsPage, SIGNAL(signMessage(QString)), this, SLOT(gotoSignMessageTab(QString)));
 
-// Clicking on "Access Nxt Inside" in the receive coins page sends you to access Nxt inside tab
+    // Clicking on "Access Nxt Inside" in the receive coins page sends you to access Nxt inside tab
 	connect(receiveCoinsPage, SIGNAL(accessNxt(QString)), this, SLOT(gotoAccessNxtInsideTab(QString)));
 
     gotoOverviewPage();
@@ -501,6 +508,7 @@ void BitcoinGUI::createToolBars()
     toolbar->setStyleSheet("QToolBar { background-color: " + STRING_VERIBLUE + "; color: white; border: none; } QToolButton { background: " + STRING_VERIBLUE + "; color: white; padding-bottom: 10px; border: none; font-size: 8pt; } QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; } QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; }");
     toolbar->setIconSize(QSize(60,32));
     toolbar->setOrientation(Qt::Vertical);
+    toolbar->setMovable(false);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     toolbar->addAction(overviewAction);
     toolbar->addAction(sendCoinsAction);
@@ -896,7 +904,7 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     overviewPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
@@ -907,7 +915,7 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     transactionsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
@@ -919,7 +927,7 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     addressBookPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
@@ -931,7 +939,7 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     receiveCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
@@ -943,7 +951,7 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     sendCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
@@ -954,7 +962,7 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     sendBitCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
@@ -965,7 +973,7 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     fiatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(QString(walletUrl).append("wallet/fiat.html"));
 
@@ -984,7 +992,7 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: #EBEBEB; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: #EBEBEB; }");
     newsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(QString(walletUrl).append("wallet/news.html"));
 
@@ -1003,7 +1011,7 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     chatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(chatUrl);
 
@@ -1022,7 +1030,7 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    centralWidget->setStyleSheet("QWidget { background-color: white; font-size: 15px; font-family: Lato; color: #444748; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     superNETPage->setStyleSheet("QToolTip { background-color: white; color: #444748; }");
     QUrl url(QString(walletUrl).append("wallet/supernet.html"));
 

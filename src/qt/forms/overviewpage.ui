@@ -29,7 +29,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>160</y>
+     <y>0</y>
      <width>341</width>
      <height>191</height>
     </rect>
@@ -74,7 +74,7 @@
         <number>10</number>
        </property>
        <property name="rightMargin">
-        <number>7</number>
+        <number>0</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -238,43 +238,6 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="labelStake">
-           <property name="minimumSize">
-            <size>
-             <width>195</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Lato</family>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-             <stylestrategy>PreferAntialias</stylestrategy>
-            </font>
-           </property>
-           <property name="cursor">
-            <cursorShape>IBeamCursor</cursorShape>
-           </property>
-           <property name="toolTip">
-            <string>Total of coins that was staked, and do not yet count toward the spendable balance.</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QLabel {color: #444748}</string>
-           </property>
-           <property name="text">
-            <string notr="true">0 VRC</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_3">
            <property name="font">
@@ -385,6 +348,43 @@
            </property>
           </widget>
          </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="labelStake">
+           <property name="minimumSize">
+            <size>
+             <width>195</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Lato</family>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+             <stylestrategy>PreferAntialias</stylestrategy>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>IBeamCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string>Total of coins that was staked, and do not yet count toward the spendable balance.</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel {color: #444748}</string>
+           </property>
+           <property name="text">
+            <string notr="true">0 VRC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -408,8 +408,8 @@
   <widget class="QWidget" name="gridLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>160</y>
+     <x>350</x>
+     <y>0</y>
      <width>471</width>
      <height>191</height>
     </rect>
@@ -445,7 +445,7 @@
         <number>10</number>
        </property>
        <property name="rightMargin">
-        <number>25</number>
+        <number>15</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -525,7 +525,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">QListView { background: transparent; color: #444748 }</string>
+          <string notr="true">QListView { background: transparent; color: #444748; }</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -550,7 +550,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>350</y>
+     <y>190</y>
      <width>341</width>
      <height>301</height>
     </rect>
@@ -584,7 +584,7 @@
         <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -663,14 +663,14 @@
           <number>0</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="stats">
+          <widget class="QWebView" name="stats" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -700,8 +700,8 @@
   <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>350</y>
+     <x>350</x>
+     <y>190</y>
      <width>471</width>
      <height>301</height>
     </rect>
@@ -738,7 +738,7 @@
         <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -806,8 +806,11 @@
          <property name="leftMargin">
           <number>0</number>
          </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="value">
+          <widget class="QWebView" name="value" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -819,7 +822,7 @@
              <pointsize>10</pointsize>
             </font>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -845,37 +848,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QGraphicsView" name="graphicsView">
-   <property name="geometry">
-    <rect>
-     <x>-1</x>
-     <y>-1</y>
-     <width>1024</width>
-     <height>160</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QWidget {background : white url(:images/headerOverview) no-repeat 0px 0px; border: 0;}</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <property name="lineWidth">
-    <number>0</number>
-   </property>
-   <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
-   </property>
-   <property name="horizontalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
-   </property>
   </widget>
  </widget>
  <customwidgets>

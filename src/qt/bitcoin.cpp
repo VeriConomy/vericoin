@@ -247,7 +247,9 @@ int main(int argc, char *argv[])
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
-                window.setFixedSize(900, 780);
+                // Set main window size fixed
+                window.setFixedSize(900, 720);
+
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel);
 
