@@ -487,7 +487,7 @@
         <number>10</number>
        </property>
        <property name="rightMargin">
-        <number>15</number>
+        <number>16</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -611,8 +611,8 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>339</width>
+        <height>299</height>
        </size>
       </property>
       <property name="layoutDirection">
@@ -717,6 +717,12 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>311</width>
+             <height>238</height>
+            </size>
            </property>
            <property name="url">
             <url>
