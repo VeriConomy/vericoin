@@ -13,7 +13,7 @@
   <property name="font">
    <font>
     <family>Lato</family>
-    <pointsize>10</pointsize>
+    <pointsize>11</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -43,7 +43,7 @@
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -229,7 +229,7 @@ QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="font">
             <font>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="toolTip">
@@ -267,7 +267,7 @@ QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="font">
             <font>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="toolTip">
@@ -350,7 +350,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <widget class="QLabel" name="infoLabel_VM">
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -444,7 +444,7 @@ QPushButton:pressed { background : #418BCA; }</string>
            <property name="font">
             <font>
              <family>Lato</family>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="toolTip">
@@ -486,7 +486,7 @@ QPushButton:pressed { background : #418BCA; }</string>
            <property name="font">
             <font>
              <family>Lato</family>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="toolTip">

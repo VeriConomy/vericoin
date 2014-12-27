@@ -112,6 +112,12 @@
               <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>Lato</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
 QPushButton:pressed { background : #418BCA; }</string>
@@ -227,7 +233,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlQuantityText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -272,7 +278,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlBytesText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -330,7 +336,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlAmountText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -372,7 +378,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlPriorityText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -430,7 +436,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlFeeText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -472,7 +478,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlLowOutputText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -530,7 +536,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlAfterFeeText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -572,7 +578,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlChangeText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -704,7 +710,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>782</height>
+        <height>797</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -760,7 +766,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
@@ -805,7 +811,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
@@ -852,7 +858,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -871,7 +877,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -917,7 +923,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">

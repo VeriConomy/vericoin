@@ -30,7 +30,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>341</width>
+     <width>344</width>
      <height>191</height>
     </rect>
    </property>
@@ -188,7 +188,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>218</width>
              <height>0</height>
             </size>
            </property>
@@ -259,7 +259,7 @@
           <widget class="QLabel" name="labelUnconfirmed">
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>218</width>
              <height>0</height>
             </size>
            </property>
@@ -315,7 +315,7 @@
           <widget class="QLabel" name="labelTotal">
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>218</width>
              <height>0</height>
             </size>
            </property>
@@ -352,7 +352,7 @@
           <widget class="QLabel" name="labelStake">
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>218</width>
              <height>0</height>
             </size>
            </property>
@@ -408,7 +408,7 @@
   <widget class="QWidget" name="gridLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>360</x>
      <y>0</y>
      <width>471</width>
      <height>191</height>
@@ -703,7 +703,7 @@
   <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>360</x>
      <y>190</y>
      <width>471</width>
      <height>301</height>

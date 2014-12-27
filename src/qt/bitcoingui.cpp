@@ -483,10 +483,11 @@ void BitcoinGUI::createMenuBar()
     // Get the main window's menu bar on other platforms
     appMenuBar = menuBar();
 #endif
-    appMenuBar->setFont(veriFontMedium);
+    appMenuBar->setFont(veriFont);
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
+    file->setFont(veriFont);
     file->addAction(backupWalletAction);
     file->addAction(exportAction);
     file->addSeparator();
@@ -501,6 +502,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(quitAction);
 
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
+    settings->setFont(veriFont);
     settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
     settings->addSeparator();
@@ -509,6 +511,7 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
+    help->setFont(veriFont);
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
     help->addAction(forumsAction);
@@ -1550,7 +1553,7 @@ void BitcoinGUI::checkForUpdate()
         if (!w->downloadFinished)
         {
             printf("Update download failed!\n");
-            QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet."));
+            QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to download the wallet.  Please try again later."));
             fNewVersion = false;
             delete w;
             return;
