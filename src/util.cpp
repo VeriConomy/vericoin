@@ -1325,30 +1325,32 @@ void ReadVersionFile()
         SetBoolArg("-vBootstrap", vBootstrap);
 
         version = vVersion.toStdString();
+        int maj = 0;
+        int min = 0;
+        int rev = 0;
+        int bld = 0;
+        typedef vector<string> parts_type;
+        parts_type parts;
+        boost::split(parts, version, ::ispunct);
+        int i = 0;
+        for (vector<string>::iterator it = parts.begin(); it != parts.end() && i++ < parts.size(); ++it)
+        {
+            switch (i)
+                {
+                case 1: maj = atoi(*it); break;
+                case 2: min = atoi(*it); break;
+                case 3: rev = atoi(*it); break;
+                case 4: bld = atoi(*it); break;
+                }
+        }
+        version = itostr(maj) + "." + itostr(min) + "." + itostr(rev) + "." + itostr(bld);
         if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
         {
-            int maj = 0;
-            int min = 0;
-            int rev = 0;
-            int bld = 0;
-            typedef vector<string> parts_type;
-            parts_type parts;
-            boost::split(parts, version, ::ispunct);
-            int i = parts.size();
-            for (vector<string>::iterator it = parts.begin(); it != parts.end() && --i < 4; ++it)
-            {
-                switch (i)
-                {
-                case 3: maj = atoi(*it); break;
-                case 2: min = atoi(*it); break;
-                case 1: rev = atoi(*it); break;
-                case 0: bld = atoi(*it); break;
-                }
-            }
-            if (maj > CLIENT_VERSION_MAJOR || min > CLIENT_VERSION_MINOR || rev > CLIENT_VERSION_REVISION || bld > CLIENT_VERSION_BUILD)
-            {
-                fNewVersion = true;
-            }
+            fNewVersion = true;
+        }
+        else
+        {
+            fNewVersion = false;
         }
     }
     else
