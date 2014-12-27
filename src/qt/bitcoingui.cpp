@@ -85,8 +85,6 @@ extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
 double GetPoSKernelPS();
 bool blocksIcon = true;
-bool fMenuCheckForUpdate = false;
-bool fTimerCheckForUpdate = false;
 bool fFiatPageLoaded = false;
 bool fNewsPageLoaded = false;
 bool fChatPageLoaded = false;
@@ -364,7 +362,7 @@ void BitcoinGUI::createActions()
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
 
-    fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Buy VRC"), this);
+    fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Get VRC"), this);
     fiatAction->setFont(veriFontSmall);
     fiatAction->setToolTip(tr("Buy VeriCoin with Fiat"));
     fiatAction->setCheckable(true);

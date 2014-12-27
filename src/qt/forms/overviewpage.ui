@@ -626,7 +626,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0">
        <property name="leftMargin">
-        <number>12</number>
+        <number>11</number>
        </property>
        <property name="topMargin">
         <number>6</number>
@@ -711,7 +711,7 @@
           <number>6</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="stats">
+          <widget class="QWebView" name="stats" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -724,7 +724,7 @@
              <height>238</height>
             </size>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -872,7 +872,7 @@
        <number>0</number>
       </property>
       <item row="0" column="0" colspan="2">
-       <widget class="QWebView" name="value">
+       <widget class="QWebView" name="value" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -884,12 +884,12 @@
           <pointsize>10</pointsize>
          </font>
         </property>
-        <property name="url">
+        <property name="url" stdset="0">
          <url>
           <string>about:blank</string>
          </url>
         </property>
-        <property name="zoomFactor">
+        <property name="zoomFactor" stdset="0">
          <double>1.000000000000000</double>
         </property>
        </widget>

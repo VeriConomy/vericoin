@@ -157,6 +157,8 @@ extern bool fShutdown;
 extern bool fRestart;
 extern bool fRescan;
 extern bool fNewVersion;
+extern bool fMenuCheckForUpdate;
+extern bool fTimerCheckForUpdate;
 extern bool fBootstrapTurbo;
 extern bool fDaemon;
 extern bool fServer;
