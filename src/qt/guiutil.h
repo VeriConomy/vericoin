@@ -16,6 +16,11 @@ class QAbstractItemView;
 QT_END_NAMESPACE
 class SendCoinsRecipient;
 
+const QFont veriFont("Lato", 11, QFont::Normal, false);
+const QFont veriFontLarge("Lato", 12, QFont::Normal, false);
+const QFont veriFontMedium("Lato", 10, QFont::Normal, false);
+const QFont veriFontSmall("Lato", 9, QFont::Normal, false);
+
 /** Utility functions used by the Bitcoin Qt UI.
  */
 namespace GUIUtil

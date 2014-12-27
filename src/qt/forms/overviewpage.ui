@@ -525,7 +525,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">QListView { background: transparent; color: #444748; }</string>
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -538,6 +538,9 @@
          </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Fixed</enum>
          </property>
         </widget>
        </item>
@@ -663,14 +666,14 @@
           <number>0</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="stats" native="true">
+          <widget class="QWebView" name="stats">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="url" stdset="0">
+           <property name="url">
             <url>
              <string>about:blank</string>
             </url>
@@ -810,7 +813,7 @@
           <number>0</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="value" native="true">
+          <widget class="QWebView" name="value">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -822,7 +825,7 @@
              <pointsize>10</pointsize>
             </font>
            </property>
-           <property name="url" stdset="0">
+           <property name="url">
             <url>
              <string>about:blank</string>
             </url>
