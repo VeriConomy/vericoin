@@ -24,7 +24,14 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
 #include "JlCompress.h"
+#include "../qt/bitcoingui.h"
 #include <QDebug>
+
+#include <QLabel>
+#include <QProgressBar>
+
+extern QLabel *progressBar2Label;
+extern QProgressBar *progressBar2;
 
 static bool copyData(QIODevice &inFile, QIODevice &outFile)
 {
@@ -37,6 +44,16 @@ static bool copyData(QIODevice &inFile, QIODevice &outFile)
             return false;
     }
     return true;
+}
+
+void JlCompress::initProgressBar()
+{
+    progressBar2Label->setText("Please wait...");
+    progressBar2->setMinimum(0);
+    progressBar2->setMaximum(100);
+    progressBar2->setValue(0);
+    progressBar2Label->setVisible(true);
+    progressBar2->setVisible(true);
 }
 
 /**OK
@@ -449,43 +466,46 @@ QStringList JlCompress::extractFiles(QString fileCompressed, QStringList files, 
  * * non si riesce a chiudere l'oggetto zip;
  */
 QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QString dir) {
+
+    int progress = 0;
+    initProgressBar();
+
     // Apro lo zip
     QuaZip zip(fileCompressed);
     if(!zip.open(QuaZip::mdUnzip)) {
+        progressBar2Label->setVisible(false);
+        progressBar2->setVisible(false);
         return QStringList();
     }
+
+    progressBar2Label->setText("Extracting...");
+    progressBar2->setMinimum(0);
+    progressBar2->setMaximum(zip.getEntriesCount());
+    progressBar2->setValue(0);
 
     QDir directory(dir);
     QStringList extracted;
     if (!zip.goToFirstFile()) {
+        progressBar2Label->setVisible(false);
+        progressBar2->setVisible(false);
         return QStringList();
     }
-
-    int progress = 0;
-    QProgressDialog progressDialog(parent);
-    progressDialog.setWindowModality(Qt::WindowModal);
-    progressDialog.setWindowTitle(QTranslator::tr("Extract Directory"));
-    progressDialog.setLabelText(QTranslator::tr("Extracting: %1").arg(fileCompressed));
-    progressDialog.setCancelButton(0);
-    progressDialog.setMinimum(0);
-    progressDialog.setMaximum(zip.getEntriesCount());
-    progressDialog.setValue(progress);
-    progressDialog.show();
 
     do {
         QString name = zip.getCurrentFileName();
         QString absFilePath = directory.absoluteFilePath(name);
-        progressDialog.setValue(++progress);
-        progressDialog.raise();
+        progressBar2->setValue(++progress);
         if (!extractFile(&zip, "", absFilePath)) {
             removeFile(extracted);
-            progressDialog.hide();
+            progressBar2Label->setVisible(false);
+            progressBar2->setVisible(false);
             return QStringList();
         }
         extracted.append(absFilePath);
     } while (zip.goToNextFile());
 
-    progressDialog.hide();
+    progressBar2Label->setVisible(false);
+    progressBar2->setVisible(false);
 
     // Chiudo il file zip
     zip.close();
@@ -506,7 +526,7 @@ QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QStr
  * * la richiesta di informazioni di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-QStringList JlCompress::getFileList(QString fileCompressed) {
+QStringList JlCompress::getFileList(QString fileCompressed, int i) { // i = num entries; -1 for all.
     // Apro lo zip
     QuaZip* zip = new QuaZip(QFileInfo(fileCompressed).absoluteFilePath());
     if(!zip->open(QuaZip::mdUnzip)) {
@@ -517,7 +537,7 @@ QStringList JlCompress::getFileList(QString fileCompressed) {
     // Estraggo i nomi dei file
     QStringList lst;
     QuaZipFileInfo64 info;
-    for(bool more=zip->goToFirstFile(); more; more=zip->goToNextFile()) {
+    for(bool more=zip->goToFirstFile(); more && abs(i--); more=zip->goToNextFile()) {
       if(!zip->getCurrentFileInfo(&info)) {
           delete zip;
           return QStringList();

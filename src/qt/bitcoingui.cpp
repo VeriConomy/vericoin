@@ -90,6 +90,9 @@ bool fNewsPageLoaded = false;
 bool fChatPageLoaded = false;
 bool fSuperNETPageLoaded = false;
 
+QLabel *progressBar2Label;
+QProgressBar *progressBar2;
+
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
@@ -160,6 +163,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
     connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
     connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(fiat.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
 
     newsPage = new QWebView(this);
     Ui::newsPage news;
@@ -174,12 +178,14 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     chat.setupUi(chatPage);
     chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(chat.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
 
     superNETPage = new QWebView(this);
     Ui::superNETPage superNET;
     superNET.setupUi(superNETPage);
     superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(superNET.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
@@ -198,7 +204,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create status bar
     statusBar();
-    statusBar()->setContentsMargins(8,0,0,0);
+    statusBar()->setContentsMargins(6,0,0,0);
     statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     statusBar()->setFont(veriFontSmall);
     stakingLabel = new QLabel();
@@ -265,12 +271,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBarLabel->setFrameShape(QFrame::NoFrame);
     progressBarLabel->setStyleSheet("border-color: " + STRING_VERIBLUE + "; color: white;");
     progressBar = new QProgressBar();
+    progressBar->setFixedWidth(350);
     progressBar->setFont(veriFontSmall);
-    progressBar->setStyleSheet("QProgressBar::chunk { background-color: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: white; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
+    progressBar->setStyleSheet("QProgressBar::chunk { background-color: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
-
-
     // Override style sheet for progress bar for styles that have a segmented progress bar,
     // as they make the text unreadable (workaround for issue #1071)
     // See https://qt-project.org/doc/qt-4.8/gallery.html
@@ -280,8 +285,27 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         progressBar->setStyleSheet("QProgressBar { background-color: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
     }
 
+    // Progress bar and label for blockchain download/extract, and auto update
+    progressBar2Label = new QLabel();
+    progressBar2Label->setFont(veriFontSmall);
+    progressBar2Label->setVisible(false);
+    progressBar2Label->setFrameShape(QFrame::NoFrame);
+    progressBar2Label->setStyleSheet("border-color: " + STRING_VERIBLUE + "; color: white;");
+    progressBar2 = new QProgressBar();
+    progressBar2->setFixedWidth(100);
+    progressBar2->setFont(veriFontSmall);
+    progressBar2->setStyleSheet("QProgressBar::chunk { background-color: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
+    progressBar2->setAlignment(Qt::AlignCenter);
+    progressBar2->setVisible(false);
+    if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
+    {
+        progressBar2->setStyleSheet("QProgressBar { background-color: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
+    }
+
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
+    statusBar()->addPermanentWidget(progressBar2Label);
+    statusBar()->addPermanentWidget(progressBar2);
     statusBar()->addPermanentWidget(frameBlocks);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
@@ -739,7 +763,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBarLabel->setText(tr("Synchronizing with network..."));
+            progressBarLabel->setText(tr("Synchronizing..."));
             progressBarLabel->setVisible(true);
             progressBar->setFormat(tr("~%n block(s) remaining", "", nRemainingBlocks));
             progressBar->setMaximum(nTotalBlocks);
@@ -1039,7 +1063,7 @@ void BitcoinGUI::gotoChatPage()
 {
     centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
     chatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
-    QUrl url(chatUrl);
+    QUrl url(QString(walletUrl).append("wallet/chat.html"));
 
     if (!fChatPageLoaded)
     {
@@ -1356,6 +1380,7 @@ void BitcoinGUI::openUrl(QUrl url)
 {
     if (!isTrustedUrl(url))
     {
+        printf("User requested URL: %s\n", url.toString().toStdString().c_str());
         QDesktopServices::openUrl(url);
     }
     else
@@ -1399,6 +1424,7 @@ void BitcoinGUI::reloadBlockchain()
         bs->startDownload();
     }
     bs->exec();
+
     if (!bs->downloadFinished)
     {
         delete bs;
@@ -1420,7 +1446,7 @@ void BitcoinGUI::reloadBlockchain()
     {
         // No turning back. Ask permission.
         QMetaObject::invokeMethod(this, "confirm",
-                               Q_ARG(QString, tr("Please confirm reloading the blockchain. Your wallet will restart to complete the opertion.")),
+                               Q_ARG(QString, tr("Please confirm reloading the blockchain. There may be a slight delay while extracting it. Your wallet will restart to complete the opertion.")),
                                Q_ARG(bool*, &confirm));
         if (!confirm)
         {
@@ -1430,9 +1456,8 @@ void BitcoinGUI::reloadBlockchain()
 
     if (turbo)
     {
-        // bootstrap.zip
-        /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(boostPathToQString(pathBootstrap));
+        // Test the archive.
+        QStringList zlist = JlCompress::getFileList(boostPathToQString(pathBootstrap), 1);
         if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
         {
             printf("Bootstrap structure is valid.\n");
@@ -1442,8 +1467,10 @@ void BitcoinGUI::reloadBlockchain()
             printf("Bootstrap structure is invalid!\n");
             return;
         }
+
         // Extract bootstrap.zip
         QStringList zextracted = JlCompress::extractDir(this, boostPathToQString(pathBootstrap), boostPathToQString(pathBootstrap.parent_path()));
+
         if (!zextracted.isEmpty())
         {
             printf("Bootstrap extract successful.\n");
@@ -1560,9 +1587,9 @@ void BitcoinGUI::checkForUpdate()
 
 #if !defined(WIN32) && !defined(MAC_OSX)
         // If Linux, extract zip contents and make vericoin-qt executable then restart.
-        /*** Test the archive. ***/
-        QStringList zlist = JlCompress::getFileList(boostPathToQString(fileName));
-        if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","").c_str()))
+        // Test the archive by looking for the version number that was in VERSION.json.
+        QStringList zlist = JlCompress::getFileList(boostPathToQString(fileName), -1);
+        if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","1.0.0.0").c_str()))
         {
             printf("Update structure is valid.\n");
         }

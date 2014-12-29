@@ -6,7 +6,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
-#include <QProgressDialog>
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
@@ -56,6 +55,7 @@ private slots:
     void timerCheckDownloadProgress();
 
     void enableDownloadButton();
+    void networkError();
     void cancelDownload();
 
 private:
@@ -65,7 +65,6 @@ private:
     QFileInfo fileDest;
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
-    QProgressDialog *progressDialog;
     QTimer *downloadTimer;
     QFile *file;
     qint64 downloadProgress;

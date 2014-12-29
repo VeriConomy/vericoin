@@ -1,19 +1,34 @@
 #include "downloader.h"
 #include "ui_downloader.h"
+#include "bitcoingui.h"
+#include "guiconstants.h"
+#include "guiutil.h"
+
+#include <QLabel>
+#include <QProgressBar>
+
+extern QLabel *progressBar2Label;
+extern QProgressBar *progressBar2;
 
 Downloader::Downloader(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Downloader)
 {
+    this->setStyleSheet("QDialog { background-color: white; color: black; }");
+    this->setFixedWidth(480);
+    this->setFont(veriFont);
+
     ui->setupUi(this);
     ui->urlEdit->setText("");
     ui->statusLabel->setWordWrap(true);
+    ui->statusLabel->setFont(veriFontMedium);
     ui->downloadButton->setAutoDefault(false);
+    ui->downloadButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
     ui->continueButton->setAutoDefault(false);
+    ui->continueButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
     ui->quitButton->setAutoDefault(false);
+    ui->quitButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
 
-    progressDialog = new QProgressDialog(this);
-    progressDialog->setCancelButton(NULL);
     // Create a timer to handle hung download requests
     downloadTimer = new QTimer(this);
     connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadProgress()));
@@ -23,10 +38,15 @@ Downloader::Downloader(QWidget *parent) :
     httpRequestAborted = false;
     autoDownload = false;
     downloadFinished = false;
+    reply = 0;
+    file = 0;
+    manager = 0;
 
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
-    connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
+
+    progressBar2Label->setText(tr("Downloading..."));
+    progressBar2->setValue(0);
 }
 
 Downloader::~Downloader()
@@ -43,22 +63,22 @@ void Downloader::startDownload()
     on_downloadButton_clicked();
 }
 
-void Downloader::on_continueButton_clicked()
+void Downloader::on_continueButton_clicked() // Next button
 {
     downloadFinished = true;
 
     this->close();
 }
 
-void Downloader::on_quitButton_clicked()
+void Downloader::on_quitButton_clicked() // Cancel button
 {
     downloaderQuit = true;
 
-    if (!downloadFinished && progressDialog->value() > 0)
+    if (!downloadFinished)
     {
         // Clean up
         httpRequestAborted = true;
-        reply->abort();
+        if (reply) reply->abort();
         downloaderFinished();
     }
 
@@ -77,8 +97,8 @@ void Downloader::enableDownloadButton()
     ui->downloadButton->setEnabled(!(ui->urlEdit->text()).isEmpty());
 }
 
-// During the download progress, it can be canceled
-void Downloader::cancelDownload()
+// Network error ocurred. Download cancelled
+void Downloader::networkError()
 {
     // Finished with timer
     if (downloadTimer->isActive())
@@ -89,7 +109,25 @@ void Downloader::cancelDownload()
     httpRequestAborted = true;
     reply->abort();
 
-    ui->statusLabel->setText(tr("Download canceled."));
+    ui->statusLabel->setText(tr("Network error. Download was canceled."));
+    ui->downloadButton->setEnabled(true);
+    ui->downloadButton->setDefault(true);
+    ui->continueButton->setEnabled(false);
+}
+
+// During the download progress, it can be canceled
+void Downloader::cancelDownload()
+{
+    // Finished with timer
+    if (downloadTimer->isActive())
+    {
+        downloadTimer->stop();
+    }
+
+    httpRequestAborted = true;
+    if (reply) reply->abort();
+
+    ui->statusLabel->setText(tr("Download was canceled."));
     ui->downloadButton->setEnabled(true);
     ui->downloadButton->setDefault(true);
     ui->continueButton->setEnabled(false);
@@ -127,7 +165,7 @@ void Downloader::on_downloadButton_clicked()
         if (!autoDownload)
         {
             if (QMessageBox::question(this, tr("Downloader"),
-                tr("There already exists a file called %1. Overwrite?").arg(fileName),
+                tr("The file \"%1\" already exists. Overwrite it?").arg(fileName),
                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No)
                 == QMessageBox::No)
             {
@@ -146,7 +184,7 @@ void Downloader::on_downloadButton_clicked()
         if (!autoDownload)
         {
             QMessageBox::information(this, tr("Downloader"),
-                      tr("Unable to save the file %1: %2.")
+                      tr("Unable to save the file \"%1\": %2.")
                       .arg(fileName).arg(file->errorString()));
         }
         delete file;
@@ -159,9 +197,8 @@ void Downloader::on_downloadButton_clicked()
     downloaderQuit = false;
     httpRequestAborted = false;
 
-    progressDialog->setWindowTitle(tr("Downloader"));
-    progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
-    progressDialog->setValue(0);
+    progressBar2Label->setText(tr("Downloading..."));
+    progressBar2->setValue(0);
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -202,11 +239,17 @@ void Downloader::startRequest(QUrl url)
     connect(reply, SIGNAL(finished()),
             this, SLOT(downloaderFinished()));
 
-    ui->statusLabel->setText(tr("Downloading %1.").arg(url.url()));
+    // Network error
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(networkError()));
+
     if (this->isVisible())
     {
-        progressDialog->show();
+        ui->statusLabel->setText(tr("Downloading...  Please wait.\n\nProgress is reported in the status area."));
+        progressBar2Label->setVisible(true);
+        progressBar2->setVisible(true);
     }
+
 }
 
 // When download finished or canceled, this will be called
@@ -229,7 +272,8 @@ void Downloader::downloaderFinished()
             file = 0;
         }
         reply->deleteLater();
-        progressDialog->hide();
+        progressBar2Label->setVisible(false);
+        progressBar2->setVisible(false);
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);
         ui->continueButton->setEnabled(false);
@@ -237,7 +281,8 @@ void Downloader::downloaderFinished()
     }
 
     // download finished normally
-    progressDialog->hide();
+    progressBar2Label->setVisible(false);
+    progressBar2->setVisible(false);
     file->flush();
     file->close();
 
@@ -274,7 +319,7 @@ void Downloader::downloaderFinished()
         }
         else
         {
-            ui->statusLabel->setText(tr("Downloaded %1.").arg(fileDest.filePath()));
+            ui->statusLabel->setText(tr("Download was successfull.  Press 'Next' to continue."));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
@@ -317,18 +362,16 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
     if (httpRequestAborted)
         return;
 
-    progressDialog->setMaximum(totalBytes);
-    progressDialog->setValue(bytesRead);
-
-    progressDialog->raise();
+    progressBar2->setMaximum(totalBytes);
+    progressBar2->setValue(bytesRead);
 }
 
 // This is called during the download to check for a hung state
 void Downloader::timerCheckDownloadProgress()
 {
-    if (progressDialog->value() > downloadProgress)
+    if (progressBar2->value() > downloadProgress)
     {
-        downloadProgress = progressDialog->value();
+        downloadProgress = progressBar2->value();
         return;
     }
     else
@@ -341,7 +384,7 @@ void Downloader::timerCheckDownloadProgress()
     }
 }
 
-// This is called when the URL is already pre-defined and you want to bypass the dialog window (overloaded)
+// This is called when the URL is already pre-defined (overloaded)
 void Downloader::setUrl(std::string source)
 {
     QUrl u;
@@ -349,7 +392,7 @@ void Downloader::setUrl(std::string source)
     setUrl(u);
 }
 
-// This is called when the URL is already pre-defined and you want to bypass the dialog window
+// This is called when the URL is already pre-defined
 void Downloader::setUrl(QUrl source)
 {
     url = source;
@@ -358,25 +401,26 @@ void Downloader::setUrl(QUrl source)
     ui->urlEdit->setEnabled(false);
 }
 
-// This is called when the Destination is already pre-defined and you want to bypass the dialog window (overloaded)
+// This is called when the Destination is already pre-defined (overloaded)
 void Downloader::setDest(std::string dest)
 {
     QString d = QString::fromStdString(dest);
     setDest(d);
 }
 
-// This is called when the Destination is already pre-defined and you want to bypass the dialog window
+// This is called when the Destination is already pre-defined
 void Downloader::setDest(QString dest)
 {
     fileDest = QFileInfo(dest);
 
     if (fileDest.exists())
     {
-        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest.filePath()));
+        ui->statusLabel->setText(tr("The file \"%1\" already exists.\nPress 'Next' to continue with this file, or 'Download' to get a new one.").arg(fileDest.filePath()));
         ui->continueButton->setEnabled(true);
     }
     else
     {
+        ui->statusLabel->setText(tr("Press 'Download' to get the file."));
         ui->continueButton->setEnabled(false);
     }
 }

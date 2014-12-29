@@ -77,9 +77,14 @@ using namespace std;
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
-const char *chatUrl = "https://kiwiirc.com/client/irc.freenode.net/#vericoin";
 const char *walletUrl = "https://www.vericoin.info/";
 const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
+bool fRestart = false;
+bool fRescan = false;
+bool fNewVersion = false;
+bool fMenuCheckForUpdate = false;
+bool fTimerCheckForUpdate = false;
+bool fBootstrapTurbo = false;
 #endif
 bool fDebug = false;
 bool fDebugNet = false;
@@ -87,12 +92,6 @@ bool fPrintToConsole = false;
 bool fPrintToDebugger = false;
 bool fRequestShutdown = false;
 bool fShutdown = false;
-bool fRestart = false;
-bool fRescan = false;
-bool fNewVersion = false;
-bool fMenuCheckForUpdate = false;
-bool fTimerCheckForUpdate = false;
-bool fBootstrapTurbo = false;
 bool fDaemon = false;
 bool fServer = false;
 bool fCommandLine = false;
@@ -1262,10 +1261,10 @@ boost::filesystem::path GetVersionFile()
     // Download the file.
     printf("Downloading version data...\n");
     Downloader * vf = new Downloader(NULL);
+    vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->setUrl(versionUrl);
     vf->setDest(boostPathToString(versionFile));
     vf->setAutoDownload(true);
-    vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->startDownload();
     vf->exec();
     if (vf->downloadFinished)

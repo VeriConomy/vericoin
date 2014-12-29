@@ -44,6 +44,8 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
   */
 class QUAZIP_EXPORT JlCompress {
 private:
+    static void initProgressBar();
+
     /// Compress a single file.
     /**
       \param zip Opened zip to compress the file to.
@@ -136,6 +138,7 @@ public:
       list of the entries, including both files and directories if they
       are present separately.
       */
+    static QStringList getFileList(QString fileCompressed, int i); // i = num entries; -1 for all.
     static QStringList getFileList(QString fileCompressed);
 };
 
