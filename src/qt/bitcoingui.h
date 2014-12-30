@@ -18,6 +18,7 @@ class SignVerifyMessageDialog;
 class AccessNxtInsideDialog;
 class Notificator;
 class RPCConsole;
+class Downloader;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -50,7 +51,6 @@ public:
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
-    void ReloadBlockchain();
     void CheckForUpdate();
 
 protected:
@@ -159,6 +159,8 @@ public slots:
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
     void confirm(QString strMessage, bool *confirm);
+    void reloadBlockchainActionEnabled(bool enabled);
+    void reloadBlockchain();
 
 private slots:
     /** Switch to overview (home) page */
@@ -217,8 +219,6 @@ private slots:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
-    /** Reload the blockchain from bootstrap turbo or classic */
-    void reloadBlockchain();
     /** Rescan the blockchain */
     void rescanBlockchain();
     /** Check for wallet update */

@@ -23,12 +23,13 @@ static const int STATUSBAR_ICONSIZE = 16;
 #define COLOR_BAREADDRESS QColor(140, 140, 140)
 
 /* Custom colors */
-//#define COLOR_VERIBLUE QColor(010, 048, 087)
-//#define STRING_VERIBLUE QString("#0a3057")
+//OLD#define COLOR_VERIBLUE QColor(010, 048, 087)
+//OLD#define STRING_VERIBLUE QString("#0a3057")
 #define COLOR_VERIBLUE QColor(000, 04A, 087)
 #define STRING_VERIBLUE QString("#003257")
 #define COLOR_VERIBLUE_LT QColor(065, 139, 202)
 #define STRING_VERIBLUE_LT QString("#418BCA")
+#define STRING_VERIFONT QString("#444748")
 
 /* Tooltips longer than this (in characters) are converted into rich text,
    so that they can be word-wrapped.

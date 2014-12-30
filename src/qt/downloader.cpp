@@ -3,31 +3,47 @@
 #include "bitcoingui.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "util.h"
+#include "JlCompress.h"
 
 #include <QLabel>
 #include <QProgressBar>
+#include <boost/version.hpp>
+#include <boost/filesystem.hpp>
 
-extern QLabel *progressBar2Label;
-extern QProgressBar *progressBar2;
+using namespace GUIUtil;
 
-Downloader::Downloader(QWidget *parent) :
+Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     QDialog(parent),
+    walletModel(0),
     ui(new Ui::Downloader)
 {
-    this->setStyleSheet("QDialog { background-color: white; color: black; }");
+    this->walletModel = walletModel;
+    this->setStyleSheet("QDialog { background-color: white; color: " + STRING_VERIFONT + "; }");
     this->setFixedWidth(480);
     this->setFont(veriFont);
 
     ui->setupUi(this);
+    ui->urlEdit->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->urlEdit->setFont(veriFont);
     ui->urlEdit->setText("");
     ui->statusLabel->setWordWrap(true);
-    ui->statusLabel->setFont(veriFontMedium);
+    ui->statusLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->statusLabel->setFont(veriFont);
     ui->downloadButton->setAutoDefault(false);
     ui->downloadButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
     ui->continueButton->setAutoDefault(false);
     ui->continueButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
     ui->quitButton->setAutoDefault(false);
     ui->quitButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
+
+    // Progress bar and label for blockchain download/extract, and auto update
+    ui->progressBarLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->progressBarLabel->setFont(veriFont);
+    ui->progressBarLabel->setText(tr("Status:"));
+    ui->progressBar->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->progressBar->setFont(veriFont);
+    ui->progressBar->setValue(0);
 
     // Create a timer to handle hung download requests
     downloadTimer = new QTimer(this);
@@ -36,17 +52,19 @@ Downloader::Downloader(QWidget *parent) :
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
     httpRequestAborted = false;
-    autoDownload = false;
     downloadFinished = false;
+
+    // These are set by the class creating the Downloader object
+    autoDownload = false;
+    processBlockchain = false;
+
+    // Init these, or else
     reply = 0;
     file = 0;
     manager = 0;
 
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
-
-    progressBar2Label->setText(tr("Downloading..."));
-    progressBar2->setValue(0);
 }
 
 Downloader::~Downloader()
@@ -65,9 +83,14 @@ void Downloader::startDownload()
 
 void Downloader::on_continueButton_clicked() // Next button
 {
-    downloadFinished = true;
-
-    this->close();
+    if (downloadFinished && processBlockchain)
+    {
+        reloadBlockchain();
+    }
+    if (autoDownload || processBlockchain)
+    {
+        on_quitButton_clicked();
+    }
 }
 
 void Downloader::on_quitButton_clicked() // Cancel button
@@ -82,7 +105,11 @@ void Downloader::on_quitButton_clicked() // Cancel button
         downloaderFinished();
     }
 
-    downloadFinished = false;
+    if (processBlockchain)
+    {
+        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
+        p->reloadBlockchainActionEnabled(true); // Set back to true when dialog closes.
+    }
 
     this->close();
 }
@@ -170,6 +197,9 @@ void Downloader::on_downloadButton_clicked()
                 == QMessageBox::No)
             {
                 ui->continueButton->setEnabled(true);
+                downloadFinished = true;
+                ui->progressBar->setMaximum(100);
+                ui->progressBar->setValue(100);
                 return;
             }
         }
@@ -197,8 +227,8 @@ void Downloader::on_downloadButton_clicked()
     downloaderQuit = false;
     httpRequestAborted = false;
 
-    progressBar2Label->setText(tr("Downloading..."));
-    progressBar2->setValue(0);
+    ui->progressBarLabel->setText(tr("Downloading:"));
+    ui->progressBar->setValue(0);
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -245,9 +275,7 @@ void Downloader::startRequest(QUrl url)
 
     if (this->isVisible())
     {
-        ui->statusLabel->setText(tr("Downloading...  Please wait.\n\nProgress is reported in the status area."));
-        progressBar2Label->setVisible(true);
-        progressBar2->setVisible(true);
+        ui->statusLabel->setText(tr("Please wait..."));
     }
 
 }
@@ -272,8 +300,6 @@ void Downloader::downloaderFinished()
             file = 0;
         }
         reply->deleteLater();
-        progressBar2Label->setVisible(false);
-        progressBar2->setVisible(false);
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);
         ui->continueButton->setEnabled(false);
@@ -281,8 +307,6 @@ void Downloader::downloaderFinished()
     }
 
     // download finished normally
-    progressBar2Label->setVisible(false);
-    progressBar2->setVisible(false);
     file->flush();
     file->close();
 
@@ -319,7 +343,7 @@ void Downloader::downloaderFinished()
         }
         else
         {
-            ui->statusLabel->setText(tr("Download was successfull.  Press 'Next' to continue."));
+            ui->statusLabel->setText(tr("Download was successful.  Press 'Next' to continue."));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
@@ -362,16 +386,16 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
     if (httpRequestAborted)
         return;
 
-    progressBar2->setMaximum(totalBytes);
-    progressBar2->setValue(bytesRead);
+    ui->progressBar->setMaximum(totalBytes);
+    ui->progressBar->setValue(bytesRead);
 }
 
 // This is called during the download to check for a hung state
 void Downloader::timerCheckDownloadProgress()
 {
-    if (progressBar2->value() > downloadProgress)
+    if (ui->progressBar->value() > downloadProgress)
     {
-        downloadProgress = progressBar2->value();
+        downloadProgress = ui->progressBar->value();
         return;
     }
     else
@@ -415,8 +439,11 @@ void Downloader::setDest(QString dest)
 
     if (fileDest.exists())
     {
-        ui->statusLabel->setText(tr("The file \"%1\" already exists.\nPress 'Next' to continue with this file, or 'Download' to get a new one.").arg(fileDest.filePath()));
+        ui->statusLabel->setText(tr("The file \"%1\" already exists.\n\nPress 'Next' to continue with this file, or 'Download' to get a new one.").arg(fileDest.filePath()));
         ui->continueButton->setEnabled(true);
+        downloadFinished = true;
+        ui->progressBar->setMaximum(100);
+        ui->progressBar->setValue(100);
     }
     else
     {
@@ -425,7 +452,109 @@ void Downloader::setDest(QString dest)
     }
 }
 
-void Downloader::setAutoDownload(bool nogui)
+void Downloader::reloadBlockchain()
 {
-    autoDownload = nogui;
+    bool turbo = true;
+
+    ui->statusLabel->setText(tr("Please wait...."));
+    ui->downloadButton->setEnabled(false);
+    ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(false);
+    ui->downloadButton->setDefault(false);
+    ui->continueButton->setDefault(false);
+    ui->quitButton->setDefault(true);
+    this->raise();
+
+    ui->progressBarLabel->setText(tr("Extracting:"));
+    ui->progressBar->setValue(0);
+
+    if (boost::filesystem::exists(fileDest.filePath().toStdString()))
+    {
+        printf("Preparing for Blockchain Reload...\n");
+    }
+    else
+    {
+        printf("Download failed!\n");
+        ui->statusLabel->setText(tr("An error ocurred. The bootstrap file could not be found. Please try to download it again."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(true);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(false);
+        return;
+    }
+
+    if (turbo)
+    {
+        // Test the archive.
+        QStringList zlist = JlCompress::getFileList(fileDest.filePath(), 1);
+        if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
+        {
+            printf("Bootstrap structure is valid.\n");
+        }
+        else
+        {
+            printf("Bootstrap structure is invalid!\n");
+            ui->statusLabel->setText(tr("I'm sorry, the bootstrap structure appears to be invalid."));
+            ui->downloadButton->setEnabled(true);
+            ui->continueButton->setEnabled(false);
+            ui->quitButton->setEnabled(true);
+            ui->downloadButton->setDefault(false);
+            ui->continueButton->setDefault(false);
+            ui->quitButton->setDefault(true);
+            return;
+        }
+
+        // Extract bootstrap.zip
+        QStringList zextracted = JlCompress::extractDir(this, fileDest.filePath(), fileDest.path(), ui->progressBarLabel, ui->progressBar);
+
+        if (!zextracted.isEmpty())
+        {
+            printf("Bootstrap extract successful.\n");
+        }
+        else
+        {
+            printf("Bootstrap extract failed!\n");
+            ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract failed."));
+            ui->downloadButton->setEnabled(true);
+            ui->continueButton->setEnabled(false);
+            ui->quitButton->setEnabled(true);
+            ui->downloadButton->setDefault(false);
+            ui->continueButton->setDefault(false);
+            ui->quitButton->setDefault(true);
+            return;
+        }
+
+        if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
+            !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
+        {
+            printf("Bootstrap extract is invalid!\n");
+            ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract was successful, but the contents are invalid."));
+            ui->downloadButton->setEnabled(true);
+            ui->continueButton->setEnabled(false);
+            ui->quitButton->setEnabled(true);
+            ui->downloadButton->setDefault(false);
+            ui->continueButton->setDefault(false);
+            ui->quitButton->setDefault(true);
+            return;
+        }
+    }
+
+    printf("Bootstrap extract successful!\n");
+    ui->statusLabel->setText(tr("Congratulations, the bootstrap extract was successful! Your wallet will now restart..."));
+    ui->downloadButton->setEnabled(false);
+    ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(true);
+    ui->downloadButton->setDefault(false);
+    ui->continueButton->setDefault(false);
+    ui->quitButton->setDefault(false);
+    ui->progressBar->setValue(0);
+    this->raise();
+    MilliSleep(2000);
+
+    if (!walletModel->reloadBlockchain(turbo))
+    {
+        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
+    }
 }

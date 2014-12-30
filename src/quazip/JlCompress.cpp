@@ -24,14 +24,9 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
 #include "JlCompress.h"
-#include "../qt/bitcoingui.h"
 #include <QDebug>
-
 #include <QLabel>
 #include <QProgressBar>
-
-extern QLabel *progressBar2Label;
-extern QProgressBar *progressBar2;
 
 static bool copyData(QIODevice &inFile, QIODevice &outFile)
 {
@@ -44,16 +39,6 @@ static bool copyData(QIODevice &inFile, QIODevice &outFile)
             return false;
     }
     return true;
-}
-
-void JlCompress::initProgressBar()
-{
-    progressBar2Label->setText("Please wait...");
-    progressBar2->setMinimum(0);
-    progressBar2->setMaximum(100);
-    progressBar2->setValue(0);
-    progressBar2Label->setVisible(true);
-    progressBar2->setVisible(true);
 }
 
 /**OK
@@ -465,47 +450,36 @@ QStringList JlCompress::extractFiles(QString fileCompressed, QStringList files, 
  * * la compressione di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QString dir) {
+QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QString dir, QLabel *progressBarLabel, QProgressBar *progressBar) {
 
     int progress = 0;
-    initProgressBar();
 
     // Apro lo zip
     QuaZip zip(fileCompressed);
     if(!zip.open(QuaZip::mdUnzip)) {
-        progressBar2Label->setVisible(false);
-        progressBar2->setVisible(false);
         return QStringList();
     }
 
-    progressBar2Label->setText("Extracting...");
-    progressBar2->setMinimum(0);
-    progressBar2->setMaximum(zip.getEntriesCount());
-    progressBar2->setValue(0);
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(zip.getEntriesCount());
+    progressBar->setValue(0);
 
     QDir directory(dir);
     QStringList extracted;
     if (!zip.goToFirstFile()) {
-        progressBar2Label->setVisible(false);
-        progressBar2->setVisible(false);
         return QStringList();
     }
 
     do {
         QString name = zip.getCurrentFileName();
         QString absFilePath = directory.absoluteFilePath(name);
-        progressBar2->setValue(++progress);
+        progressBar->setValue(++progress);
         if (!extractFile(&zip, "", absFilePath)) {
             removeFile(extracted);
-            progressBar2Label->setVisible(false);
-            progressBar2->setVisible(false);
             return QStringList();
         }
         extracted.append(absFilePath);
     } while (zip.goToNextFile());
-
-    progressBar2Label->setVisible(false);
-    progressBar2->setVisible(false);
 
     // Chiudo il file zip
     zip.close();

@@ -1264,7 +1264,7 @@ boost::filesystem::path GetVersionFile()
     vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->setUrl(versionUrl);
     vf->setDest(boostPathToString(versionFile));
-    vf->setAutoDownload(true);
+    vf->autoDownload = true;
     vf->startDownload();
     vf->exec();
     if (vf->downloadFinished)
@@ -1278,7 +1278,9 @@ boost::filesystem::path GetVersionFile()
         return boost::filesystem::path("");
     }
 }
+#endif // QT_GUI
 
+#ifdef QT_GUI
 // Reads the version file and maps it to the current configuration.
 void ReadVersionFile()
 {

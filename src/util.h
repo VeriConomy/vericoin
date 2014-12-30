@@ -167,10 +167,6 @@ extern bool fTestNet;
 extern bool fNoListen;
 extern bool fLogTimestamps;
 extern bool fReopenDebugLog;
-#ifdef QT_GUI
-extern const char *walletUrl;
-extern const char *walletDownloadsUrl;
-#endif
 
 void RandAddSeed();
 void RandAddSeedPerfmon();

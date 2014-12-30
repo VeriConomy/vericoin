@@ -3,6 +3,7 @@
 #include "clientmodel.h"
 #include "util.h"
 #include "guiutil.h"
+#include "guiconstants.h"
 #include "version.h"
 
 bool updateAccepted = false;
@@ -16,7 +17,7 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
     std::string version = "NEW " + GetArg("-vVersion", "1.0.0.0");
     std::string postreq = std::string("\n\nPost-Install Notes: ").append((GetBoolArg("-vBootstrap") ? "Auto Bootstrap will run after the installation." : "Bootstrap is not required."));
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
     this->setFont(veriFont);
 
     ui->title->setFont(veriFontLarge);

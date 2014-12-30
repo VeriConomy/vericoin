@@ -8,6 +8,7 @@
 #include "optionsmodel.h"
 #include "coincontrol.h"
 #include "tooltip.h"
+#include "guiconstants.h"
 
 #include <QApplication>
 #include <QCheckBox>
@@ -35,7 +36,7 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
 
     _TOOLTIP_INIT_THIS
 
-    this->setStyleSheet("color: black; background-color: #FFFFFF;");
+    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
 
     // context menu actions
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);

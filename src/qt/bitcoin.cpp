@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
                 }
                 if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
                 {
-                    window.ReloadBlockchain();
+                    window.reloadBlockchain();
                 }
 
                 app.exec();

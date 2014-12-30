@@ -91,14 +91,7 @@ void Shutdown(void* parg)
         bitdb.Flush(false);
         StopNode();
         bitdb.Flush(true);
-        boost::filesystem::remove(GetPidFile());
-        UnregisterWallet(pwalletMain);
-        delete pwalletMain;
-        NewThread(ExitTimeout, NULL);
 
-        MilliSleep(50);
-        printf("VeriCoin exited\n\n");
-        fExit = true;
 #ifdef QT_GUI
         if (fRestart)
         {
@@ -116,10 +109,18 @@ void Shutdown(void* parg)
                     printf("Bootstrapturbo filesystem error!\n");
                 }
             }
-
             RestartWallet((fRescan ? "-rescan" : NULL), true);
         }
-#else // !QT_GUI
+#endif
+        boost::filesystem::remove(GetPidFile());
+        UnregisterWallet(pwalletMain);
+        delete pwalletMain;
+        NewThread(ExitTimeout, NULL);
+        MilliSleep(50);
+        printf("VeriCoin exited\n\n");
+        fExit = true;
+
+#ifndef QT_GUI
         // ensure non-UI client gets exited here, but let Bitcoin-Qt reach 'return 0;' in bitcoin.cpp
         exit(0);
 #endif
@@ -140,7 +141,7 @@ void RestartWallet(const char *parm, bool fOldParms)
     QStringList newArgv(QApplication::instance()->arguments());
     QString command;
 
-    if (fNewVersion) // For Auto Update executable
+    if (fNewVersion && !fBootstrapTurbo && !fRescan) // For Auto Update executable
     {
 #ifdef WIN32
         // If Windows, replace argv[0] with the exe installer and restart.
@@ -160,7 +161,6 @@ void RestartWallet(const char *parm, bool fOldParms)
         parm = "-bootstrapturbo";
 #endif
 #endif
-
     }
     else
     {

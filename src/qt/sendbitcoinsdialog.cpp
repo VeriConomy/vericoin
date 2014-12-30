@@ -13,6 +13,7 @@
 #include "optionsmodel.h"
 #include "sendbitcoinsentry.h"
 #include "guiutil.h"
+#include "guiconstants.h"
 #include "askpassphrasedialog.h"
 #include "coincontrol.h"
 #include "coincontroldialog.h"
@@ -34,7 +35,7 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: white; color: black;");
+    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
 
 /*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
     ui->addButton->setIcon(QIcon());
@@ -351,7 +352,7 @@ void SendBitCoinsDialog::coinControlChangeEdited(const QString & text)
         CoinControlDialog::coinControl->destChange = CBitcoinAddress(text.toStdString()).Get();
 
         // label for the change address
-        ui->labelCoinControlChangeLabel->setStyleSheet("QLabel{color:black;}");
+        ui->labelCoinControlChangeLabel->setStyleSheet("QLabel{ color: " + STRING_VERIFONT + "; }");
         if (text.isEmpty())
             ui->labelCoinControlChangeLabel->setText("");
         else if (!CBitcoinAddress(text.toStdString()).IsValid())

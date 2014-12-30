@@ -35,13 +35,12 @@
 #include "downloader.h"
 #include "updatedialog.h"
 
+#include "JlCompress.h"
 #include "walletdb.h"
 #include "wallet.h"
 #include "txdb.h"
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
-
-#include <JlCompress.h>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -90,6 +89,7 @@ bool fNewsPageLoaded = false;
 bool fChatPageLoaded = false;
 bool fSuperNETPageLoaded = false;
 
+// ProgressBar2 is just to the right of ProgressBar (available using extern pointers).
 QLabel *progressBar2Label;
 QProgressBar *progressBar2;
 
@@ -451,14 +451,13 @@ void BitcoinGUI::createActions()
     toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Show / Hide"), this);
     encryptWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Set Password..."), this);
     encryptWalletAction->setToolTip(tr("Encrypt or decrypt wallet"));
-    encryptWalletAction->setCheckable(true);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet..."), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password..."), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
     unlockWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("&Unlock Wallet for Staking..."), this);
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
-    signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
+    signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
@@ -509,6 +508,7 @@ void BitcoinGUI::createMenuBar()
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
+    file->setStyleSheet("color: " + STRING_VERIFONT + ";");
     file->setFont(veriFont);
     file->addAction(backupWalletAction);
     file->addAction(exportAction);
@@ -524,6 +524,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(quitAction);
 
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
+    settings->setStyleSheet("color: " + STRING_VERIFONT + ";");
     settings->setFont(veriFont);
     settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
@@ -533,6 +534,7 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
+    help->setStyleSheet("color: " + STRING_VERIFONT + ";");
     help->setFont(veriFont);
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
@@ -1220,14 +1222,12 @@ void BitcoinGUI::setEncryptionStatus(int status)
     switch(status)
     {
     case WalletModel::Unencrypted:
-        //labelEncryptionIcon->hide();
         encryptWalletAction->setChecked(false);
         changePassphraseAction->setEnabled(false);
         unlockWalletAction->setEnabled(false);
         encryptWalletAction->setEnabled(true);
         break;
     case WalletModel::Unlocked:
-        //labelEncryptionIcon->show();
         //labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>"));
         encryptWalletAction->setChecked(true);
@@ -1236,7 +1236,6 @@ void BitcoinGUI::setEncryptionStatus(int status)
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         break;
     case WalletModel::Locked:
-        //labelEncryptionIcon->show();
         //labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_closed").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
         encryptWalletAction->setChecked(true);
@@ -1399,100 +1398,30 @@ void BitcoinGUI::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & er
    qnr->ignoreSslErrors();
 }
 
-void BitcoinGUI::ReloadBlockchain()
+void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
 {
-    reloadBlockchain();
+    reloadBlockchainAction->setEnabled(enabled);
 }
 
 void BitcoinGUI::reloadBlockchain()
 {
-    bool turbo = true;
-    bool confirm = false;
-    boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
-    QUrl url;
+    reloadBlockchainActionEnabled(false); // Sets back to true when dialog closes.
 
-    url.setUrl(QString(walletDownloadsUrl).append("bootstrap.zip"));
+    boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
+    QUrl url(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
     printf("Downloading blockchain data...\n");
-    Downloader * bs = new Downloader(this);
-    bs->setWindowTitle("Bootstrap Download");
+    Downloader *bs = new Downloader(this, walletModel);
+    bs->setWindowTitle("Blockchain Reload");
     bs->setUrl(url);
     bs->setDest(boostPathToQString(pathBootstrap));
+    bs->processBlockchain = true;
     if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
     {
-        bs->setAutoDownload(true);
+        bs->autoDownload = true;
         bs->startDownload();
     }
-    bs->exec();
-
-    if (!bs->downloadFinished)
-    {
-        delete bs;
-        return;
-    }
-    delete bs;
-
-    if (boost::filesystem::exists(pathBootstrap))
-    {
-        printf("Preparing for Blockchain Reload...\n");
-    }
-    else
-    {
-        printf("Download failed!\n");
-        return;
-    }
-
-    if (!GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
-    {
-        // No turning back. Ask permission.
-        QMetaObject::invokeMethod(this, "confirm",
-                               Q_ARG(QString, tr("Please confirm reloading the blockchain. There may be a slight delay while extracting it. Your wallet will restart to complete the opertion.")),
-                               Q_ARG(bool*, &confirm));
-        if (!confirm)
-        {
-            return;
-        }
-    }
-
-    if (turbo)
-    {
-        // Test the archive.
-        QStringList zlist = JlCompress::getFileList(boostPathToQString(pathBootstrap), 1);
-        if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
-        {
-            printf("Bootstrap structure is valid.\n");
-        }
-        else
-        {
-            printf("Bootstrap structure is invalid!\n");
-            return;
-        }
-
-        // Extract bootstrap.zip
-        QStringList zextracted = JlCompress::extractDir(this, boostPathToQString(pathBootstrap), boostPathToQString(pathBootstrap.parent_path()));
-
-        if (!zextracted.isEmpty())
-        {
-            printf("Bootstrap extract successful.\n");
-        }
-        else
-        {
-            printf("Bootstrap extract failed!\n");
-            return;
-        }
-
-        if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
-            !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
-        {
-            printf("Bootstrap extract is invalid!\n");
-            return;
-        }
-    }
-
-    if (!walletModel->reloadBlockchain(turbo))
-    {
-        QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
-    }
+    bs->show();
 }
 
 void BitcoinGUI::rescanBlockchain()
@@ -1572,7 +1501,7 @@ void BitcoinGUI::checkForUpdate()
         w->setWindowTitle("Wallet Download");
         w->setUrl(url);
         w->setDest(boostPathToQString(fileName));
-        w->setAutoDownload(true);
+        w->autoDownload = true;
         w->startDownload();
         w->exec();
         if (!w->downloadFinished)

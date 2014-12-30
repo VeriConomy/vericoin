@@ -125,8 +125,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listTransactions->setMouseTracking(true);
     ui->listTransactions->viewport()->setAttribute(Qt::WA_Hover, true);
-    ui->listTransactions->setStyleSheet("QListView::hover { background : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #fafbfe, stop: 1 #ECF3FA); }");
-    ui->listTransactions->setFont(veriFontMedium);
+    ui->listTransactions->setStyleSheet("color: " + STRING_VERIFONT + "; QListView::hover { background : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #fafbfe, stop: 1 #ECF3FA); }");
+    ui->listTransactions->setFont(veriFont);
 
     connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
 

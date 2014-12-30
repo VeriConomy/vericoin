@@ -36,7 +36,7 @@ TransactionView::TransactionView(QWidget *parent) :
     transactionView(0)
 {
     // Build filter row
-    this->setStyleSheet("background-color: white; color: black;");
+    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
     this->setFont(veriFont);
 
     setContentsMargins(0,0,0,0);
@@ -107,7 +107,7 @@ TransactionView::TransactionView(QWidget *parent) :
     view->setFont(veriFont);
     view->setMouseTracking(true);
     view->viewport()->setAttribute(Qt::WA_Hover, true);
-    view->setStyleSheet("QTableView::item:hover { background-color: #EBEBEB; color: black; }");
+    view->setStyleSheet("QTableView::item:hover { background-color: #EBEBEB; color: " + STRING_VERIFONT + "; }");
     vlayout->addLayout(hlayout);
     vlayout->addWidget(createDateRangeWidget());
     vlayout->addWidget(view);
