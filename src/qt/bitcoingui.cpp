@@ -1410,6 +1410,16 @@ void BitcoinGUI::reloadBlockchain()
     boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
     QUrl url(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
+    if (boost::filesystem::exists(pathBootstrap))
+    {
+        std::time_t bs_time = boost::filesystem::last_write_time(pathBootstrap);
+        if (std::difftime(std::time(0), bs_time) > (48 * 60 * 60)) // 48 hour time difference
+        {
+            // Old boostrap, remove it.
+            boost::filesystem::remove(pathBootstrap);
+        }
+    }
+
     printf("Downloading blockchain data...\n");
     Downloader *bs = new Downloader(this, walletModel);
     bs->setWindowTitle("Blockchain Reload");

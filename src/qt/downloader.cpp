@@ -551,7 +551,7 @@ void Downloader::reloadBlockchain()
     ui->quitButton->setDefault(false);
     ui->progressBar->setValue(0);
     this->raise();
-    MilliSleep(2000);
+    MilliSleep(3000);
 
     if (!walletModel->reloadBlockchain(turbo))
     {
