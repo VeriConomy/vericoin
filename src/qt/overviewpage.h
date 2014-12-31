@@ -46,6 +46,7 @@ private:
 
 private slots:
     void updateDisplayUnit();
+    void updateDecimalPoints();
     void handleTransactionClicked(const QModelIndex &index);
 };
 

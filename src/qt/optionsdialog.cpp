@@ -117,7 +117,7 @@ void OptionsDialog::setModel(OptionsModel *model)
 
     /* update the display unit, to not use the default ("VRC") */
     updateDisplayUnit();
-
+    /* update the decimal points */
     updateDecimalPoints();
 
     /* warn only when language selection changes by user action (placed here so init via mapper doesn't trigger this) */

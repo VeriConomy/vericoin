@@ -1367,14 +1367,13 @@ void BitcoinGUI::updateStakingIcon()
 
 void BitcoinGUI::openUrl(const QUrl &url)
 {
-    if (!isTrustedUrl(url))
+    if (isTrustedUrl(url))
     {
-        printf("User requested URL: %s\n", url.toString().toStdString().c_str());
-        QDesktopServices::openUrl(url);
+        qobject_cast<QWebView *>(sender())->load(url);
     }
     else
     {
-        qobject_cast<QWebView *>(sender())->load(url);
+        QDesktopServices::openUrl(url);
     }
 }
 

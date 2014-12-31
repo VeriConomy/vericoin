@@ -71,7 +71,10 @@ void SendBitCoinsEntry::setModel(WalletModel *model)
     this->model = model;
 
     if(model && model->getOptionsModel())
+    {
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
+    }
 
     connect(ui->payAmount, SIGNAL(textChanged()), this, SIGNAL(payAmountChanged()));
 
@@ -170,5 +173,14 @@ void SendBitCoinsEntry::updateDisplayUnit()
     {
         // Update payAmount with the current unit
         ui->payAmount->setDisplayUnit(model->getOptionsModel()->getDisplayUnit());
+    }
+}
+
+void SendBitCoinsEntry::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        // Update payAmount with the current decimals
+        ui->payAmount->setDisplayDecimals(model->getOptionsModel()->getDecimalPoints());
     }
 }

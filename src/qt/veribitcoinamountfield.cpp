@@ -168,3 +168,8 @@ void veriBitcoinAmountField::setDisplayUnit(int newUnit)
 {
     unit->setValue(newUnit);
 }
+
+void veriBitcoinAmountField::setDisplayDecimals(int newDecimals)
+{
+    amount->setDecimals(newDecimals);
+}
