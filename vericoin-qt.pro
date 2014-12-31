@@ -293,7 +293,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/downloader.h \
     src/qt/updatedialog.h \
     src/qt/cookiejar.h \
-    src/qt/autosaver.h
+    src/qt/autosaver.h \
+    src/qt/rescandialog.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
@@ -363,6 +364,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/rpcconsole.cpp \
     src/qt/downloader.cpp \
     src/qt/updatedialog.cpp \
+    src/qt/rescandialog.cpp \
     src/noui.cpp \
     src/kernel.cpp \
     src/scrypt-arm.S \
@@ -405,7 +407,8 @@ FORMS += \
     src/qt/forms/rpcconsole.ui \
     src/qt/forms/optionsdialog.ui \
     src/qt/forms/downloader.ui \
-    src/qt/forms/updatedialog.ui
+    src/qt/forms/updatedialog.ui \
+    src/qt/forms/rescandialog.ui
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h

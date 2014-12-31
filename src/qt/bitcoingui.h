@@ -158,7 +158,6 @@ public slots:
     */
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
-    void confirm(QString strMessage, bool *confirm);
     void reloadBlockchainActionEnabled(bool enabled);
     void reloadBlockchain();
 
@@ -234,7 +233,7 @@ private slots:
     void toggleHidden();
 
     void updateStakingIcon();
-    void openUrl(QUrl url);
+    void openUrl(const QUrl &url);
     void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 

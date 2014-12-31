@@ -34,6 +34,7 @@
 #include "tooltip.h"
 #include "downloader.h"
 #include "updatedialog.h"
+#include "rescandialog.h"
 
 #include "JlCompress.h"
 #include "walletdb.h"
@@ -163,7 +164,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
     connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
     connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(fiat.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
+    connect(fiat.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
 
     newsPage = new QWebView(this);
     Ui::newsPage news;
@@ -171,21 +172,21 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     news.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     news.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(news.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(news.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
+    connect(news.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
 
     chatPage = new QWebView(this);
     Ui::chatPage chat;
     chat.setupUi(chatPage);
     chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(chat.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
+    connect(chat.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
 
     superNETPage = new QWebView(this);
     Ui::superNETPage superNET;
     superNET.setupUi(superNETPage);
     superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(superNET.webView, SIGNAL(linkClicked(QUrl)), this, SLOT(openUrl(QUrl)));
+    connect(superNET.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
@@ -508,7 +509,6 @@ void BitcoinGUI::createMenuBar()
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
-    file->setStyleSheet("color: " + STRING_VERIFONT + ";");
     file->setFont(veriFont);
     file->addAction(backupWalletAction);
     file->addAction(exportAction);
@@ -524,7 +524,6 @@ void BitcoinGUI::createMenuBar()
     file->addAction(quitAction);
 
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
-    settings->setStyleSheet("color: " + STRING_VERIFONT + ";");
     settings->setFont(veriFont);
     settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
@@ -534,7 +533,6 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
-    help->setStyleSheet("color: " + STRING_VERIFONT + ";");
     help->setFont(veriFont);
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
@@ -591,7 +589,7 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
 #endif
             if(trayIcon)
             {
-                trayIcon->setToolTip(tr("VeriCoin client") + QString(" ") + tr("[testnet]"));
+                trayIcon->setToolTip(tr("VeriCoin Wallet") + QString(" ") + tr("[testnet]"));
                 trayIcon->setIcon(QIcon(":/icons/toolbar_testnet"));
                 toggleHideAction->setIcon(QIcon(":/icons/toolbar_testnet"));
             }
@@ -653,7 +651,7 @@ void BitcoinGUI::createTrayIcon()
     trayIcon = new QSystemTrayIcon(this);
     trayIconMenu = new QMenu(this);
     trayIcon->setContextMenu(trayIconMenu);
-    trayIcon->setToolTip(tr("VeriCoin client"));
+    trayIcon->setToolTip(tr("VeriCoin Wallet"));
     trayIcon->setIcon(QIcon(":/icons/toolbar"));
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
@@ -894,14 +892,6 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 #endif
     }
     QMainWindow::closeEvent(event);
-}
-
-void BitcoinGUI::confirm(QString strMessage, bool *confirm)
-{
-    QMessageBox::StandardButton retval = QMessageBox::question(
-          this, tr("Confirm"), strMessage,
-          QMessageBox::Yes|QMessageBox::Cancel, QMessageBox::Yes);
-    *confirm = (retval == QMessageBox::Yes);
 }
 
 void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
@@ -1375,7 +1365,7 @@ void BitcoinGUI::updateStakingIcon()
     }
 }
 
-void BitcoinGUI::openUrl(QUrl url)
+void BitcoinGUI::openUrl(const QUrl &url)
 {
     if (!isTrustedUrl(url))
     {
@@ -1426,7 +1416,7 @@ void BitcoinGUI::reloadBlockchain()
     bs->setUrl(url);
     bs->setDest(boostPathToQString(pathBootstrap));
     bs->processBlockchain = true;
-    if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
+    if (GetBoolArg("-bootstrapturbo")) // Get bootsrap in auto mode
     {
         bs->autoDownload = true;
         bs->startDownload();
@@ -1436,14 +1426,11 @@ void BitcoinGUI::reloadBlockchain()
 
 void BitcoinGUI::rescanBlockchain()
 {
-    bool confirm = false;
-
     // No turning back. Ask permission.
-    QMetaObject::invokeMethod(this, "confirm",
-                               Q_ARG(QString, tr("Please confirm rescanning the blockchain. Your wallet will restart to complete the opertion.")),
-                               Q_ARG(bool*, &confirm));
-
-    if (!confirm)
+    RescanDialog rs;
+    rs.setModel(clientModel);
+    rs.exec();
+    if (!rs.rescanAccepted)
     {
         return;
     }
@@ -1556,9 +1543,10 @@ void BitcoinGUI::checkForUpdate()
         }
         try
         {
-            // Rename the old and move in the new binary
+            // Rename the old and move in the new binary then make sure it's executable
             boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
             boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
+            boost::filesystem::permissions(boost::filesystem::path(GetArg("-programpath","vericoin-qt")), boost::filesystem::others_exe | boost::filesystem::owner_exe);
             // Rename the old and move in the new config
             boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
             boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
