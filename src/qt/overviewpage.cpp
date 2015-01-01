@@ -200,10 +200,13 @@ void OverviewPage::setModel(WalletModel *model)
         connect(model, SIGNAL(numTransactionsChanged(int)), this, SLOT(setNumTransactions(int)));
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
     }
 
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
+    // update the decimal points
+    updateDecimalPoints();
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -217,6 +220,15 @@ void OverviewPage::updateDisplayUnit()
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
 
         ui->listTransactions->update();
+    }
+}
+
+void OverviewPage::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        if(currentBalance != -1)
+            setBalance(currentBalance, model->getStake(), currentUnconfirmedBalance, currentImmatureBalance);
     }
 }
 
