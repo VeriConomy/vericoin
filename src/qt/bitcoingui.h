@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QWebFrame>
-#include <QWebView>
 
 class TransactionTableModel;
 class ClientModel;
@@ -19,6 +18,11 @@ class AccessNxtInsideDialog;
 class Notificator;
 class RPCConsole;
 class Downloader;
+class WebView;
+class fiatPage;
+class newsPage;
+class chatPage;
+class superNETPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -184,8 +188,6 @@ private slots:
     void gotoFiatPage();
     void resizeGUI();
 
-
-
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
@@ -233,8 +235,6 @@ private slots:
     void toggleHidden();
 
     void updateStakingIcon();
-    void openUrl(const QUrl &url);
-    void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 
 #endif

@@ -79,6 +79,7 @@ map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
 const char *walletUrl = "https://www.vericoin.info/";
 const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
+const char *forumsUrl = "http://www.vericoinforums.com";
 bool fRestart = false;
 bool fRescan = false;
 bool fNewVersion = false;

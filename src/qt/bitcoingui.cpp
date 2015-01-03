@@ -35,6 +35,7 @@
 #include "downloader.h"
 #include "updatedialog.h"
 #include "rescandialog.h"
+#include "webview.h"
 
 #include "JlCompress.h"
 #include "walletdb.h"
@@ -67,7 +68,6 @@
 #include <QDateTime>
 #include <QMovie>
 #include <QFileDialog>
-#include <QDesktopServices>
 #include <QTimer>
 #include <QDragEnterEvent>
 #include <QUrl>
@@ -155,38 +155,62 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     accessNxtInsideDialog = new AccessNxtInsideDialog(this);
 
-    fiatPage = new QWebView(this);
+    // fiat web page
+    fiatPage = new WebView(this); // extends QWebView
     Ui::fiatPage fiat;
     fiat.setupUi(fiatPage);
     fiat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    QPushButton * back = fiatPage->findChild<QPushButton *>("back");
-    QPushButton * reload = fiatPage->findChild<QPushButton *>("reload");
-    connect(back, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(back()));
-    connect(reload, SIGNAL(clicked()), fiatPage->findChild<QWebView *>("webView"), SLOT(reload()));
-    connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(fiat.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
+    fiat.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), fiatPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(fiat.webView->page(), SIGNAL(linkClicked(QUrl)), fiatPage->findChild<WebView *>("webView"), SLOT(myOpenUrl(QUrl)));
+    // fiat buttons
+    connect(fiat.back, SIGNAL(clicked()), fiatPage->findChild<WebView *>("webView"), SLOT(myBack()));
+    connect(fiat.home, SIGNAL(clicked()), fiatPage->findChild<WebView *>("webView"), SLOT(myHome()));
+    connect(fiat.forward, SIGNAL(clicked()), fiatPage->findChild<WebView *>("webView"), SLOT(myForward()));
+    connect(fiat.reload, SIGNAL(clicked()), fiatPage->findChild<WebView *>("webView"), SLOT(myReload()));
 
-    newsPage = new QWebView(this);
+    // news web page
+    newsPage = new WebView(this); // extends QWebView
     Ui::newsPage news;
     news.setupUi(newsPage);
+    news.frame->setVisible(false); // Set to true to enable webView navigation buttons
     news.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     news.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    connect(news.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(news.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
+    connect(news.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), newsPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(news.webView->page(), SIGNAL(linkClicked(QUrl)), newsPage->findChild<WebView *>("webView"), SLOT(myOpenUrl(QUrl)));
+    // news buttons
+    connect(news.back, SIGNAL(clicked()), newsPage->findChild<WebView *>("webView"), SLOT(myBack()));
+    connect(news.home, SIGNAL(clicked()), newsPage->findChild<WebView *>("webView"), SLOT(myHome()));
+    connect(news.forward, SIGNAL(clicked()), newsPage->findChild<WebView *>("webView"), SLOT(myForward()));
+    connect(news.reload, SIGNAL(clicked()), newsPage->findChild<WebView *>("webView"), SLOT(myReload()));
 
-    chatPage = new QWebView(this);
+    // chat web page
+    chatPage = new WebView(this); // extends QWebView
     Ui::chatPage chat;
     chat.setupUi(chatPage);
     chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(chat.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
+    chat.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), chatPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(chat.webView->page(), SIGNAL(linkClicked(QUrl)), chatPage->findChild<WebView *>("webView"), SLOT(myOpenUrl(QUrl)));
+    // chat buttons
+    connect(chat.back, SIGNAL(clicked()), chatPage->findChild<WebView *>("webView"), SLOT(myBack()));
+    connect(chat.home, SIGNAL(clicked()), chatPage->findChild<WebView *>("webView"), SLOT(myHome()));
+    connect(chat.forward, SIGNAL(clicked()), chatPage->findChild<WebView *>("webView"), SLOT(myForward()));
+    connect(chat.reload, SIGNAL(clicked()), chatPage->findChild<WebView *>("webView"), SLOT(myReload()));
 
-    superNETPage = new QWebView(this);
+    // superNET web page
+    superNETPage = new WebView(this); // extends QWebView
     Ui::superNETPage superNET;
     superNET.setupUi(superNETPage);
     superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-    connect(superNET.webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(openUrl(const QUrl&)), Qt::DirectConnection);
+    superNET.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), superNETPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(superNET.webView->page(), SIGNAL(linkClicked(QUrl)), superNETPage->findChild<WebView *>("webView"), SLOT(myOpenUrl(QUrl)));
+    // superNET buttons
+    connect(superNET.back, SIGNAL(clicked()), superNETPage->findChild<WebView *>("webView"), SLOT(myBack()));
+    connect(superNET.home, SIGNAL(clicked()), superNETPage->findChild<WebView *>("webView"), SLOT(myHome()));
+    connect(superNET.forward, SIGNAL(clicked()), superNETPage->findChild<WebView *>("webView"), SLOT(myForward()));
+    connect(superNET.reload, SIGNAL(clicked()), superNETPage->findChild<WebView *>("webView"), SLOT(myReload()));
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
@@ -263,7 +287,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Set a timer to check for updates daily
     QTimer *tCheckForUpdate = new QTimer(this);
     connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
-    tCheckForUpdate->start(86400 * 1000);
+    tCheckForUpdate->start(24 * 60 * 60 * 1000); // every 24 hours
 
     // Progress bar and label for blocks download
     progressBarLabel = new QLabel();
@@ -706,14 +730,12 @@ void BitcoinGUI::optionsClicked()
 
 void BitcoinGUI::forumsClicked()
 {
-    QString link("http://www.vericoinforums.com");
-    QDesktopServices::openUrl(QUrl(link));
+    QDesktopServices::openUrl(QUrl(forumsUrl));
 }
 
 void BitcoinGUI::webClicked()
 {
-    QString link(walletUrl);
-    QDesktopServices::openUrl(QUrl(link));
+    QDesktopServices::openUrl(QUrl(walletUrl));
 }
 
 void BitcoinGUI::aboutClicked()
@@ -1021,7 +1043,7 @@ void BitcoinGUI::gotoFiatPage()
 
     if (!fFiatPageLoaded)
     {
-        fiatPage->findChild<QWebView *>("webView")->load(url);
+        fiatPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fFiatPageLoaded = true;
     }
 
@@ -1040,7 +1062,7 @@ void BitcoinGUI::gotoNewsPage()
 
     if (!fNewsPageLoaded)
     {
-        newsPage->findChild<QWebView *>("webView")->load(url);
+        newsPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fNewsPageLoaded = true;
     }
 
@@ -1059,7 +1081,7 @@ void BitcoinGUI::gotoChatPage()
 
     if (!fChatPageLoaded)
     {
-        chatPage->findChild<QWebView *>("webView")->load(url);
+        chatPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fChatPageLoaded = true;
     }
 
@@ -1078,7 +1100,7 @@ void BitcoinGUI::gotoSuperNETPage()
 
     if (!fSuperNETPageLoaded)
     {
-        superNETPage->findChild<QWebView *>("webView")->load(url);
+        superNETPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fSuperNETPageLoaded = true;
     }
 
@@ -1105,23 +1127,23 @@ void BitcoinGUI::resizeGUI()
     {
         if (QMainWindow::height() > 270)
         {
-           resize(880, 256);
+           resize(1024, 256);
            #ifdef Q_OS_WIN
-                resize(880, 246);
+                resize(1024, 246);
            #endif
            #ifdef Q_OS_MAC
-                resize(880, 246);
+                resize(1024, 246);
            #endif
            dynamic_cast<QPushButton*>(sender())->setToolTip("Full Wallet");
         }
         else
         {
-           resize(880, 720);
+           resize(1024, 720);
            #ifdef Q_OS_WIN
-                resize(880, 710);
+                resize(1024, 710);
            #endif
            #ifdef Q_OS_MAC
-                resize(880, 702);
+                resize(1024, 702);
            #endif
            dynamic_cast<QPushButton*>(sender())->setToolTip("Simple Wallet");
         }
@@ -1365,28 +1387,6 @@ void BitcoinGUI::updateStakingIcon()
     }
 }
 
-void BitcoinGUI::openUrl(const QUrl &url)
-{
-    if (isTrustedUrl(url))
-    {
-        qobject_cast<QWebView *>(sender())->load(url);
-    }
-    else
-    {
-        QDesktopServices::openUrl(url);
-    }
-}
-
-void BitcoinGUI::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
-{
-
-  // Show list of all ssl errors
-  foreach (QSslError err, errlist)
-      printf((QString("sslErrorHandler Url: %1 , Error: %2\n").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
-
-   qnr->ignoreSslErrors();
-}
-
 void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
 {
     reloadBlockchainAction->setEnabled(enabled);
@@ -1454,6 +1454,9 @@ void BitcoinGUI::menuCheckForUpdate()
 // Called by timer
 void BitcoinGUI::timerCheckForUpdate()
 {
+    if (fTimerCheckForUpdate)
+        return;
+
     fTimerCheckForUpdate = true;
 
     if (!fMenuCheckForUpdate)
@@ -1462,7 +1465,7 @@ void BitcoinGUI::timerCheckForUpdate()
     fTimerCheckForUpdate = false;
 }
 
-// Called by external (bitcoin.cpp)
+// Called by external (bitcoin.cpp) on startup
 void BitcoinGUI::CheckForUpdate()
 {
     if (!fMenuCheckForUpdate && !fTimerCheckForUpdate)

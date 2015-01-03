@@ -64,6 +64,7 @@
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="supernet_white">res/icons/supernet-white.png</file>
         <file>res/icons/news_white.png</file>
+        <file>res/icons/forward.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
