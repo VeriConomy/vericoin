@@ -4,6 +4,7 @@
  * W.J. van der Laan 2011-2012
  * The Bitcoin Developers 2011-2012
  */
+#include "init.h"
 #include "bitcoingui.h"
 #include "transactiontablemodel.h"
 #include "addressbookpage.h"
@@ -20,6 +21,7 @@
 #include "transactiondescdialog.h"
 #include "addresstablemodel.h"
 #include "transactionview.h"
+#include "transactionspage.h"
 #include "overviewpage.h"
 #include "bitcoinunits.h"
 #include "guiconstants.h"
@@ -89,6 +91,7 @@ bool fFiatPageLoaded = false;
 bool fNewsPageLoaded = false;
 bool fChatPageLoaded = false;
 bool fSuperNETPageLoaded = false;
+bool resizeGUICalled = false;
 
 // ProgressBar2 is just to the right of ProgressBar (available using extern pointers).
 QLabel *progressBar2Label;
@@ -109,7 +112,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     _TOOLTIP_INIT_QAPP
 
-    setMinimumSize(820, 246);
+    setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
+    setMaximumSize(2048, 2048);
+    resizeGUI();
+
     setWindowTitle(tr("VeriCoin Wallet - ") + tr(FormatVersion(CLIENT_VERSION).c_str()));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     qApp->setFont(veriFont);
@@ -134,13 +140,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create the tray icon (or setup the dock icon)
     createTrayIcon();
 
-    // Create tab items
+    // Create tab pages
+
     overviewPage = new OverviewPage();
 
-    transactionsPage = new QWidget(this);
+    transactionsPage = new TransactionsPage();
+
+    /* Build the transactio view then pass it to the transaction page to share */
     QVBoxLayout *vbox = new QVBoxLayout();
     transactionView = new TransactionView(this);
     vbox->addWidget(transactionView);
+    vbox->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
     transactionsPage->setLayout(vbox);
 
     addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::SendingTab);
@@ -214,7 +224,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(addressBookPage);
@@ -232,6 +242,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->setContentsMargins(6,0,0,0);
     statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     statusBar()->setFont(veriFontSmall);
+
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
@@ -253,15 +264,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelBlocksIcon = new QLabel();
     labelBlocksIcon->setVisible(true);
     labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-    QPushButton *minimize = new QPushButton();
-    minimize->setFocusPolicy(Qt::NoFocus);
-    QIcon *ico = new QIcon();
-    ico->addPixmap(QPixmap(":/icons/maximize"),QIcon::Normal,QIcon::On);
-    ico->addPixmap(QPixmap(":/icons/minimize"),QIcon::Normal,QIcon::Off);
-    minimize->setIcon(*ico);
-    minimize->setCheckable(true);
-    minimize->setToolTip("Simple Wallet");
-    connect(minimize, SIGNAL(clicked()), this, SLOT(resizeGUI()));
 
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelStakingIcon);
@@ -270,11 +272,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelConnectionsIcon);
     frameBlocksLayout->addWidget(connectionsLabel);
-
-
     frameBlocksLayout->addStretch();
-
-    connect(minimize, SIGNAL(clicked()), this, SLOT(resizeGUI()));
 
     if (GetBoolArg("-staking", true))
     {
@@ -571,13 +569,14 @@ void BitcoinGUI::createMenuBar()
 
 void BitcoinGUI::createToolBars()
 {
-    QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
+    QToolBar *toolbar = addToolBar(tr("Tabs Toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
     toolbar->setFont(veriFontSmall);
     toolbar->setOrientation(Qt::Vertical);
-    toolbar->setIconSize(QSize(60,32));
+    toolbar->setIconSize(QSize(TOOLBAR_WIDTH,32));
+    toolbar->setFixedWidth(TOOLBAR_WIDTH);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     toolbar->setStyleSheet("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
                            QToolButton { background-color: " + STRING_VERIBLUE + "; color: white; border: none; width: 60px; padding-bottom: 8px; } \
@@ -910,6 +909,7 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
            !clientModel->getOptionsModel()->getMinimizeOnClose())
         {
             qApp->quit();
+            MilliSleep(1000);
         }
 #endif
     }
@@ -953,11 +953,11 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
         notificator->notify(Notificator::Information,
                             (amount)<0 ? tr("Sent transaction") :
-                                         tr("Incoming transaction"),
+                              tr("Incoming transaction"),
                               tr("Date: %1\n"
-                                 "Amount: %2\n"
-                                 "Type: %3\n"
-                                 "Address: %4\n")
+                              "Amount: %2\n"
+                              "Type: %3\n"
+                              "Address: %4\n")
                               .arg(date)
                               .arg(bcu->formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), amount, true))
                               .arg(type)
@@ -968,8 +968,9 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    overviewPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+    overviewPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
 
@@ -979,8 +980,10 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    transactionsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+    transactionsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    transactionsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
 
@@ -991,8 +994,10 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    addressBookPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    addressBookPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    addressBookPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
@@ -1003,8 +1008,10 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    receiveCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    receiveCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
 
@@ -1015,8 +1022,10 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    sendCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    sendCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    sendCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -1026,8 +1035,10 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    sendBitCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    sendBitCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    sendBitCoinsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; } + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
@@ -1037,8 +1048,10 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    fiatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    fiatPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    fiatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     QUrl url(QString(walletUrl).append("wallet/fiat.html"));
 
     if (!fFiatPageLoaded)
@@ -1056,8 +1069,10 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: #EBEBEB; }");
-    newsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    newsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    newsPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     QUrl url(QString(walletUrl).append("wallet/news.html"));
 
     if (!fNewsPageLoaded)
@@ -1075,8 +1090,10 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    chatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    chatPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    chatPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     QUrl url(QString(walletUrl).append("wallet/chat.html"));
 
     if (!fChatPageLoaded)
@@ -1094,8 +1111,10 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: url(:images/headerOverview) no-repeat 0px 0px; padding-top: 160px; background-color: white; }");
-    superNETPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }");
+    // Set Header
+// SDW TODO    superNETPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
+
+    superNETPage->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
     QUrl url(QString(walletUrl).append("wallet/supernet.html"));
 
     if (!fSuperNETPageLoaded)
@@ -1111,43 +1130,33 @@ void BitcoinGUI::gotoSuperNETPage()
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
 
-void BitcoinGUI::resizeGUI()
+void BitcoinGUI::resizeEvent(QResizeEvent *e)
 {
-    if (clientModel->getOptionsModel()->getCoinControlFeatures())
+    if (resizeGUICalled) return;  // Don't allow resizeEvent to be called twice
+
+    if (e->size().height() < WINDOW_MIN_HEIGHT + 50)
     {
-        QMessageBox::warning(this, tr("Simple Wallet"),
-            tr("%1").
-            arg("Please turn coin control off in options to use the simple wallet."),
-            QMessageBox::Ok, QMessageBox::Ok);
-        bool checked = dynamic_cast<QPushButton*>(sender())->isChecked();
-        dynamic_cast<QPushButton*>(sender())->setChecked(!checked);
-        return;
+        resizeGUI(); // snap to normal size wallet if within 50 pixels
     }
     else
     {
-        if (QMainWindow::height() > 270)
-        {
-           resize(1024, 256);
-           #ifdef Q_OS_WIN
-                resize(1024, 246);
-           #endif
-           #ifdef Q_OS_MAC
-                resize(1024, 246);
-           #endif
-           dynamic_cast<QPushButton*>(sender())->setToolTip("Full Wallet");
-        }
-        else
-        {
-           resize(1024, 720);
-           #ifdef Q_OS_WIN
-                resize(1024, 710);
-           #endif
-           #ifdef Q_OS_MAC
-                resize(1024, 702);
-           #endif
-           dynamic_cast<QPushButton*>(sender())->setToolTip("Simple Wallet");
-        }
+        resizeGUICalled = false;
     }
+}
+
+void BitcoinGUI::resizeGUI()
+{
+    resizeGUICalled = true;
+
+    resize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
+    #ifdef Q_OS_WIN
+        resize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT -10);
+    #endif
+    #ifdef Q_OS_MAC
+        resize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT - 10);
+    #endif
+
+    resizeGUICalled = false;
 }
 
 void BitcoinGUI::gotoSignMessageTab(QString addr)

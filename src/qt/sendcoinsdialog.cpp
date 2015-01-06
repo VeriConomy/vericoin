@@ -378,6 +378,15 @@ void SendCoinsDialog::updateDisplayUnit()
     }
 }
 
+void SendCoinsDialog::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        // Update labelBalance with the current balance and decimal points
+        updateDisplayUnit();
+    }
+}
+
 // Coin Control: copy label "Quantity" to clipboard
 void SendCoinsDialog::coinControlClipboardQuantity()
 {

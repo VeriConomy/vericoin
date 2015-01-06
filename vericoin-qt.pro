@@ -5,7 +5,7 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-#CONFIG += debug_and_release
+CONFIG += debug_and_release
 !win32{
 CONFIG += static
 }
@@ -267,6 +267,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \
     src/qt/transactionview.h \
+    src/qt/transactionspage.h \
     src/qt/walletmodel.h \
     src/bitcoinrpc.h \
     src/qt/overviewpage.h \
@@ -339,6 +340,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
     src/qt/transactionview.cpp \
+    src/qt/transactionspage.cpp \
     src/qt/walletmodel.cpp \
     src/bitcoinrpc.cpp \
     src/rpcdump.cpp \
@@ -410,7 +412,8 @@ FORMS += \
     src/qt/forms/optionsdialog.ui \
     src/qt/forms/downloader.ui \
     src/qt/forms/updatedialog.ui \
-    src/qt/forms/rescandialog.ui
+    src/qt/forms/rescandialog.ui \
+    src/qt/forms/transactionspage.ui
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h

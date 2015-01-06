@@ -68,8 +68,8 @@ bool WebView::isTrustedUrl(QUrl url)
 void WebView::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
 {
     // Show list of all ssl errors
-    foreach (QSslError err, errlist)
-        printf((QString("sslErrorHandler Url: %1 , Error: %2\n").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
+    //foreach (QSslError err, errlist)
+    //    printf((QString("sslErrorHandler Url: %1 , Error: %2\n").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
 
     qnr->ignoreSslErrors();
 }

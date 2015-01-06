@@ -94,6 +94,7 @@ void SendBitCoinsEntry::clear()
     ui->payTo->setFocus();
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
+    updateDecimalPoints();
 }
 
 void SendBitCoinsEntry::on_deleteButton_clicked()

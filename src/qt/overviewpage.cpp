@@ -11,6 +11,7 @@
 #include "guiutil.h"
 #include "guiconstants.h"
 #include "bitcoingui.h"
+#include "webview.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
@@ -106,17 +107,26 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
 
-    QUrl statsUrl("http://www.vericoin.info/wallet/index.html");
+    QUrl statsUrl(QString(walletUrl).append("wallet/stats.html?v=1"));
     CookieJar *statsJar = new CookieJar;
     ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
+    connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->stats->load(statsUrl);
 
-    QUrl valueUrl("http://www.vericoin.info/wallet/chart.html");
+    QUrl valueUrl(QString(walletUrl).append("wallet/chart.html?v=1"));
     CookieJar *valueJar = new CookieJar;
     ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
+    connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->value->load(valueUrl);
+
+    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.html?v=1"));
+    CookieJar *tickerJar = new CookieJar;
+    ui->ticker->page()->networkAccessManager()->setCookieJar(tickerJar);
+    ui->ticker->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    connect(ui->ticker->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    ui->ticker->load(tickerUrl);
 
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
@@ -236,4 +246,9 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
+{
+    qnr->ignoreSslErrors();
 }

@@ -9,7 +9,6 @@
 #include <QString>
 #include <QDateTime>
 #include <QDoubleValidator>
-#include <QFont>
 #include <QLineEdit>
 #include <QUrl>
 #include <QTextDocument> // For Qt::escape

@@ -63,12 +63,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>980</width>
+        <width>960</width>
         <height>30</height>
        </rect>
       </property>
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -103,13 +103,13 @@
        <property name="minimumSize">
         <size>
          <width>120</width>
-         <height>25</height>
+         <height>27</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>120</width>
-         <height>16777215</height>
+         <height>27</height>
         </size>
        </property>
        <property name="font">
@@ -155,13 +155,13 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="minimumSize">
         <size>
          <width>120</width>
-         <height>25</height>
+         <height>27</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>120</width>
-         <height>16777215</height>
+         <height>27</height>
         </size>
        </property>
        <property name="font">
@@ -207,13 +207,13 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="minimumSize">
         <size>
          <width>120</width>
-         <height>25</height>
+         <height>27</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>120</width>
-         <height>16777215</height>
+         <height>27</height>
         </size>
        </property>
        <property name="font">
@@ -259,13 +259,13 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="minimumSize">
         <size>
          <width>120</width>
-         <height>25</height>
+         <height>27</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>120</width>
-         <height>16777215</height>
+         <height>27</height>
         </size>
        </property>
        <property name="font">
@@ -302,7 +302,7 @@ QPushButton:pressed { background : #418BCA; }</string>
   <customwidget>
    <class>WebView</class>
    <extends>QWidget</extends>
-   <header>WebView</header>
+   <header>webview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

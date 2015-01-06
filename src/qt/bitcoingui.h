@@ -4,11 +4,13 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QWebFrame>
+#include <QResizeEvent>
 
 class TransactionTableModel;
 class ClientModel;
 class WalletModel;
 class TransactionView;
+class TransactionsPage;
 class OverviewPage;
 class AddressBookPage;
 class SendCoinsDialog;
@@ -62,6 +64,7 @@ protected:
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+    void resizeEvent(QResizeEvent *e);
 
 private:
     ClientModel *clientModel;
@@ -70,7 +73,8 @@ private:
     QStackedWidget *centralWidget;
 
     OverviewPage *overviewPage;
-    QWidget *transactionsPage;
+    TransactionsPage *transactionsPage;
+    TransactionView *transactionView;
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
@@ -125,7 +129,6 @@ private:
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
-    TransactionView *transactionView;
     RPCConsole *rpcConsole;
 
     QMovie *syncIconMovie;
