@@ -57,7 +57,6 @@ public:
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
-    void CheckForUpdate();
 
 protected:
     void changeEvent(QEvent *e);
@@ -167,6 +166,8 @@ public slots:
     void handleURI(QString strURI);
     void reloadBlockchainActionEnabled(bool enabled);
     void reloadBlockchain();
+    void checkForUpdateActionEnabled(bool enabled);
+    void checkForUpdate();
 
 private slots:
     /** Switch to overview (home) page */
@@ -225,8 +226,6 @@ private slots:
     void unlockWallet();
     /** Rescan the blockchain */
     void rescanBlockchain();
-    /** Check for wallet update */
-    void checkForUpdate();
     /** Check for wallet update from Help menu */
     void menuCheckForUpdate();
     /** Check for wallet update from timer */

@@ -1266,7 +1266,6 @@ boost::filesystem::path GetVersionFile()
     vf->setUrl(versionUrl);
     vf->setDest(boostPathToString(versionFile));
     vf->autoDownload = true;
-    vf->startDownload();
     vf->exec();
     if (vf->downloadFinished)
     {

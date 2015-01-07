@@ -38,7 +38,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="leftMargin">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="bottomMargin">
         <number>8</number>
@@ -102,6 +102,9 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="margin">
+        <number>2</number>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::LinksAccessibleByMouse</set>

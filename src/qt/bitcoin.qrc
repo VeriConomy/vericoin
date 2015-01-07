@@ -69,7 +69,16 @@
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
-        <file alias="headerOverview">res/images/header_Overview.png</file>
+        <file alias="headerOverview">res/images/headerOverview.png</file>
+        <file alias="headerSend">res/images/headerSend.png</file>
+        <file alias="headerReceive">res/images/headerReceive.png</file>
+        <file alias="headerHistory">res/images/headerHistory.png</file>
+        <file alias="headerAddress">res/images/headerAddress.png</file>
+        <file alias="headerVeriBit">res/images/headerVeriBit.png</file>
+        <file alias="headerGetVeriCoin">res/images/headerGetVeriCoin.png</file>
+        <file alias="headerNews">res/images/headerNews.png</file>
+        <file alias="headerChat">res/images/headerChat.png</file>
+        <file alias="headerSuperNET">res/images/headerSuperNET.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="update_spinner">res/movies/update_spinner.mng</file>

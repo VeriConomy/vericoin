@@ -107,17 +107,20 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
 
     QUrl statsUrl(QString(walletUrl).append("wallet/stats.html?v=1"));
     CookieJar *statsJar = new CookieJar;
     ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
+    ui->stats->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(ui->stats->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
     connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->stats->load(statsUrl);
 
     QUrl valueUrl(QString(walletUrl).append("wallet/chart.html?v=1"));
     CookieJar *valueJar = new CookieJar;
     ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
+    ui->value->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(ui->value->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
     connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->value->load(valueUrl);
 
@@ -125,6 +128,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
     CookieJar *tickerJar = new CookieJar;
     ui->ticker->page()->networkAccessManager()->setCookieJar(tickerJar);
     ui->ticker->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    ui->ticker->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(ui->ticker->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
     connect(ui->ticker->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->ticker->load(tickerUrl);
 
@@ -246,6 +251,11 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::myOpenUrl(QUrl url)
+{
+    QDesktopServices::openUrl(url);
 }
 
 void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)

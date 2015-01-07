@@ -49,6 +49,7 @@ private slots:
     void updateDisplayUnit();
     void updateDecimalPoints();
     void handleTransactionClicked(const QModelIndex &index);
+    void myOpenUrl(QUrl url);
     void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 

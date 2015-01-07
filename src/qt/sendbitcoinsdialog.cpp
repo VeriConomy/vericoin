@@ -113,7 +113,6 @@ void SendBitCoinsDialog::setModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(coinControlFeaturesChanged(bool)), this, SLOT(coinControlFeatureChanged(bool)));
         connect(model->getOptionsModel(), SIGNAL(transactionFeeChanged(qint64)), this, SLOT(coinControlUpdateLabels()));
         ui->frameCoinControl->setVisible(model->getOptionsModel()->getCoinControlFeatures());
-        ui->frameCoinControl->setStyleSheet("QToolTip { background-color: white; color: black; }");
         coinControlUpdateLabels();
     }
 }

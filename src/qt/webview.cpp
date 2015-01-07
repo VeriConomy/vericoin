@@ -36,20 +36,20 @@ void WebView::myReload()
 
 void WebView::myOpenUrl(QUrl url)
 {
-    try
+    if (isTrustedUrl(url))
     {
-        if (isTrustedUrl(url))
+        try
         {
             this->load(url);
         }
-        else
+        catch (...)
         {
-            QDesktopServices::openUrl(url);
+            printf("WebView: Error loading: %s\n", url.toString().toStdString().c_str());
         }
     }
-    catch (...)
+    else
     {
-        printf("WebView: Error loading: %s\n", url.toString().toStdString().c_str());
+        QDesktopServices::openUrl(url);
     }
 }
 

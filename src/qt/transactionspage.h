@@ -25,7 +25,6 @@ class TransactionsPage : public QWidget
 public:
     explicit TransactionsPage(QWidget *parent = 0);
     ~TransactionsPage();
-    //void setLayout(QVBoxLayout *vbox);
 
 private:
     Ui::TransactionsPage *ui;

@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
 
                 if (fNewVersion) // Prompt user for upgrade
                 {
-                    window.CheckForUpdate();
+                    window.checkForUpdate();
                 }
                 if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
                 {

@@ -14,7 +14,6 @@ TransactionsPage::TransactionsPage(QWidget *parent) :
     ui(new Ui::TransactionsPage)
 {
     ui->setupUi(this);
-    this->setStyleSheet("QToolTip { background-color: white; color: #444748; padding: 5px; }" + veriPushButtonStyleSheet + " " + veriDialogButtonBoxStyleSheet);
 
     this->setContentsMargins(0,0,0,0);
     ui->header->setMinimumSize(2048,HEADER_HEIGHT);
@@ -28,9 +27,3 @@ TransactionsPage::~TransactionsPage()
 {
     delete ui;
 }
-/*
-void TransactionsPage::setLayout(QVBoxLayout *vbox)
-{
-    this->setLayout(vbox);
-}
-*/

@@ -27,12 +27,25 @@ public:
     explicit Downloader(QWidget *parent = 0, WalletModel *walletModel = 0);
     ~Downloader();
 
+private:
+    void showEvent(QShowEvent *e);
+    WalletModel *walletModel;
+    void startRequest(QUrl url);
+    Ui::Downloader *ui;
+    QUrl url;
+    QFileInfo fileDest;
+    QNetworkAccessManager *manager;
+    QNetworkReply *reply;
+    QTimer *downloadTimer;
+    QFile *file;
+    qint64 downloadProgress;
+    qint64 fileSize;
+
 public:
     void setUrl(QUrl source);
     void setUrl(std::string source); // overload
     void setDest(QString dest);
     void setDest(std::string dest); // overload
-    void startDownload();
 
     // These will be set true when Cancel/Continue/Quit pressed
     bool httpRequestAborted;
@@ -42,6 +55,7 @@ public:
     // These are set by the class creating the Downloader object
     bool autoDownload;
     bool processBlockchain;
+    bool processUpdate;
 
 private slots:
     void on_downloadButton_clicked();
@@ -66,19 +80,7 @@ private slots:
     void networkError();
     void cancelDownload();
     void reloadBlockchain();
-
-private:
-    WalletModel *walletModel;
-    void startRequest(QUrl url);
-    Ui::Downloader *ui;
-    QUrl url;
-    QFileInfo fileDest;
-    QNetworkAccessManager *manager;
-    QNetworkReply *reply;
-    QTimer *downloadTimer;
-    QFile *file;
-    qint64 downloadProgress;
-    qint64 fileSize;
+    void checkForUpdate();
 };
 
 #endif // DOWNLOADER_H
