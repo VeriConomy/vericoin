@@ -9,7 +9,6 @@
 #include <QString>
 #include <QDateTime>
 #include <QDoubleValidator>
-#include <QFont>
 #include <QLineEdit>
 #include <QUrl>
 #include <QTextDocument> // For Qt::escape
@@ -481,17 +480,5 @@ QString boostPathToQString(const boost::filesystem::path &path)
     return QString::fromStdString(path.string());
 }
 #endif
-
-bool isTrustedUrl(QUrl url)
-{
-    QList<QString> trustedHosts;
-
-    trustedHosts << "www.vericoin.info" << "vericoin.info";
-
-    if (trustedHosts.contains(url.host()))
-        return true;
-    else
-        return false;
-}
 
 } // namespace GUIUtil

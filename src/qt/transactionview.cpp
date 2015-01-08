@@ -30,13 +30,14 @@
 #include <QClipboard>
 #include <QLabel>
 #include <QDateTimeEdit>
+#include <QGraphicsView>
 
 TransactionView::TransactionView(QWidget *parent) :
     QWidget(parent), model(0), transactionProxyModel(0),
     transactionView(0)
 {
-    // Build filter row
-    this->setStyleSheet("background-color: white; color: black;");
+    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
+    this->setFont(veriFont);
 
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -49,6 +50,7 @@ TransactionView::TransactionView(QWidget *parent) :
     hlayout->addSpacing(23);
 #endif
 
+    // Build filter row
     dateWidget = new QComboBox(this);
 #ifdef Q_OS_MAC
     dateWidget->setFixedWidth(151);
@@ -103,6 +105,10 @@ TransactionView::TransactionView(QWidget *parent) :
     vlayout->setSpacing(0);
 
     QTableView *view = new QTableView(this);
+    view->setFont(veriFont);
+    view->setMouseTracking(true);
+    view->viewport()->setAttribute(Qt::WA_Hover, true);
+    view->setStyleSheet("QTableView::item:hover { background-color: #EBEBEB; color: " + STRING_VERIFONT + "; }");
     vlayout->addLayout(hlayout);
     vlayout->addWidget(createDateRangeWidget());
     vlayout->addWidget(view);

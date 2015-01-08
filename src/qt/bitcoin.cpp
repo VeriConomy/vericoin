@@ -152,12 +152,6 @@ int main(int argc, char *argv[])
     }
     ReadConfigFile(mapArgs, mapMultiArgs);
 
-    ReadVersionFile();
-    if (mapArgs.count("-bootstrapturbo") && mapArgs.count("-vBootstrap") && !GetBoolArg("-vBootstrap"))
-    {
-        SetBoolArg("-bootstrapturbo", false); // This version does not require bootstrapping.
-    }
-
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)
     app.setOrganizationName("VeriCoin");
@@ -247,7 +241,6 @@ int main(int argc, char *argv[])
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
-                window.setFixedSize(900, 780);
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel);
 
@@ -264,13 +257,19 @@ int main(int argc, char *argv[])
                 // Place this here as guiref has to be defined if we don't want to lose URIs
                 ipcInit(argc, argv);
 
+                ReadVersionFile();
+                if (mapArgs.count("-bootstrapturbo") && mapArgs.count("-vBootstrap") && !GetBoolArg("-vBootstrap"))
+                {
+                    SetBoolArg("-bootstrapturbo", false); // This version does not require bootstrapping.
+                }
+
                 if (fNewVersion) // Prompt user for upgrade
                 {
-                    window.CheckForUpdate();
+                    window.checkForUpdate();
                 }
                 if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
                 {
-                    window.ReloadBlockchain();
+                    window.reloadBlockchain();
                 }
 
                 app.exec();

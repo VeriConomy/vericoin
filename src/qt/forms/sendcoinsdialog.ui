@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Send Coins</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="bottomMargin">
     <number>8</number>
@@ -236,7 +239,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -271,7 +274,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -325,7 +328,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -357,7 +360,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -411,7 +414,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -443,7 +446,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -497,7 +500,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -529,7 +532,7 @@ QPushButton:pressed { background : #418BCA; }
                  <property name="font">
                   <font>
                    <family>Monospace</family>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                   </font>
                  </property>
                  <property name="cursor">
@@ -646,6 +649,9 @@ QPushButton:pressed { background : #418BCA; }
         <height>782</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: white;</string>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
         <number>0</number>
@@ -696,7 +702,7 @@ QPushButton:pressed { background : #418BCA; }
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
@@ -741,7 +747,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
@@ -788,7 +794,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -807,7 +813,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -847,7 +853,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
@@ -892,7 +898,7 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">

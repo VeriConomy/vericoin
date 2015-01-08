@@ -28,6 +28,9 @@ public:
     /** Change unit used to display amount. */
     void setDisplayUnit(int unit);
 
+    /** Change decimals used to display amount. */
+    void setDisplayDecimals(int newDecimals);
+
     /** Make field empty and ready for new input. */
     void clear();
 

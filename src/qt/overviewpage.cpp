@@ -11,6 +11,7 @@
 #include "guiutil.h"
 #include "guiconstants.h"
 #include "bitcoingui.h"
+#include "webview.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
@@ -106,24 +107,41 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
 
-    QUrl statsUrl("http://www.vericoin.info/wallet/index.html");
+    QUrl statsUrl(QString(walletUrl).append("wallet/stats.html?v=1"));
     CookieJar *statsJar = new CookieJar;
     ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
+    ui->stats->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(ui->stats->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
+    connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->stats->load(statsUrl);
 
-    QUrl valueUrl("http://www.vericoin.info/wallet/chart.html");
+    QUrl valueUrl(QString(walletUrl).append("wallet/chart.html?v=1"));
     CookieJar *valueJar = new CookieJar;
     ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
+    ui->value->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(ui->value->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
+    connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->value->load(valueUrl);
+
+    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.html?v=1"));
+    CookieJar *tickerJar = new CookieJar;
+    ui->ticker->page()->networkAccessManager()->setCookieJar(tickerJar);
+    ui->ticker->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    ui->ticker->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(ui->ticker->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
+    connect(ui->ticker->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    ui->ticker->load(tickerUrl);
 
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
     ui->listTransactions->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE));
     ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 1));
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->listTransactions->setStyleSheet("QListView:hover { background : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #fafbfe, stop: 1 #ECF3FA); }");
+    ui->listTransactions->setMouseTracking(true);
+    ui->listTransactions->viewport()->setAttribute(Qt::WA_Hover, true);
+    ui->listTransactions->setStyleSheet("QListView { color: " + STRING_VERIFONT + "; } QListView::hover { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #fafbfe, stop: 1 #ECF3FA); }");
+    ui->listTransactions->setFont(veriFont);
 
     connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
 
@@ -184,7 +202,7 @@ void OverviewPage::setModel(WalletModel *model)
         filter->setDynamicSortFilter(true);
         filter->setSortRole(Qt::EditRole);
         filter->setShowInactive(false);
-        filter->sort(TransactionTableModel::Status, Qt::DescendingOrder);
+        filter->sort(TransactionTableModel::Date, Qt::DescendingOrder);
 
         ui->listTransactions->setModel(filter);
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
@@ -197,10 +215,13 @@ void OverviewPage::setModel(WalletModel *model)
         connect(model, SIGNAL(numTransactionsChanged(int)), this, SLOT(setNumTransactions(int)));
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
     }
 
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
+    // update the decimal points
+    updateDecimalPoints();
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -217,8 +238,27 @@ void OverviewPage::updateDisplayUnit()
     }
 }
 
+void OverviewPage::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        if(currentBalance != -1)
+            setBalance(currentBalance, model->getStake(), currentUnconfirmedBalance, currentImmatureBalance);
+    }
+}
+
 void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::myOpenUrl(QUrl url)
+{
+    QDesktopServices::openUrl(url);
+}
+
+void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
+{
+    qnr->ignoreSslErrors();
 }

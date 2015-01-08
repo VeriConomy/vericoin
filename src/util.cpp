@@ -77,9 +77,15 @@ using namespace std;
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
-const char *chatUrl = "https://kiwiirc.com/client/irc.freenode.net/#vericoin";
 const char *walletUrl = "https://www.vericoin.info/";
 const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
+const char *forumsUrl = "http://www.vericoinforums.com";
+bool fRestart = false;
+bool fRescan = false;
+bool fNewVersion = false;
+bool fMenuCheckForUpdate = false;
+bool fTimerCheckForUpdate = false;
+bool fBootstrapTurbo = false;
 #endif
 bool fDebug = false;
 bool fDebugNet = false;
@@ -87,10 +93,6 @@ bool fPrintToConsole = false;
 bool fPrintToDebugger = false;
 bool fRequestShutdown = false;
 bool fShutdown = false;
-bool fRestart = false;
-bool fRescan = false;
-bool fNewVersion = false;
-bool fBootstrapTurbo = false;
 bool fDaemon = false;
 bool fServer = false;
 bool fCommandLine = false;
@@ -1260,11 +1262,10 @@ boost::filesystem::path GetVersionFile()
     // Download the file.
     printf("Downloading version data...\n");
     Downloader * vf = new Downloader(NULL);
+    vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->setUrl(versionUrl);
     vf->setDest(boostPathToString(versionFile));
-    vf->setAutoDownload(true);
-    vf->setAttribute(Qt::WA_DontShowOnScreen);
-    vf->startDownload();
+    vf->autoDownload = true;
     vf->exec();
     if (vf->downloadFinished)
     {
@@ -1277,11 +1278,13 @@ boost::filesystem::path GetVersionFile()
         return boost::filesystem::path("");
     }
 }
+#endif // QT_GUI
 
+#ifdef QT_GUI
 // Reads the version file and maps it to the current configuration.
 void ReadVersionFile()
 {
-    if (fNewVersion)
+    if (fNewVersion && !fMenuCheckForUpdate)
         return; // New version data already loaded
 
     QString versionData;
@@ -1323,30 +1326,32 @@ void ReadVersionFile()
         SetBoolArg("-vBootstrap", vBootstrap);
 
         version = vVersion.toStdString();
+        int maj = 0;
+        int min = 0;
+        int rev = 0;
+        int bld = 0;
+        typedef vector<string> parts_type;
+        parts_type parts;
+        boost::split(parts, version, ::ispunct);
+        int i = 0;
+        for (vector<string>::iterator it = parts.begin(); it != parts.end() && i++ < parts.size(); ++it)
+        {
+            switch (i)
+                {
+                case 1: maj = atoi(*it); break;
+                case 2: min = atoi(*it); break;
+                case 3: rev = atoi(*it); break;
+                case 4: bld = atoi(*it); break;
+                }
+        }
+        version = itostr(maj) + "." + itostr(min) + "." + itostr(rev) + "." + itostr(bld);
         if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
         {
-            int maj = 0;
-            int min = 0;
-            int rev = 0;
-            int bld = 0;
-            typedef vector<string> parts_type;
-            parts_type parts;
-            boost::split(parts, version, ::ispunct);
-            int i = parts.size();
-            for (vector<string>::iterator it = parts.begin(); it != parts.end() && --i < 4; ++it)
-            {
-                switch (i)
-                {
-                case 3: maj = atoi(*it); break;
-                case 2: min = atoi(*it); break;
-                case 1: rev = atoi(*it); break;
-                case 0: bld = atoi(*it); break;
-                }
-            }
-            if (maj > CLIENT_VERSION_MAJOR || min > CLIENT_VERSION_MINOR || rev > CLIENT_VERSION_REVISION || bld > CLIENT_VERSION_BUILD)
-            {
-                fNewVersion = true;
-            }
+            fNewVersion = true;
+        }
+        else
+        {
+            fNewVersion = false;
         }
     }
     else

@@ -168,3 +168,8 @@ void BitcoinAmountField::setDisplayUnit(int newUnit)
 {
     unit->setValue(newUnit);
 }
+
+void BitcoinAmountField::setDisplayDecimals(int newDecimals)
+{
+    amount->setDecimals(newDecimals);
+}

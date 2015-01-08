@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/icons">
         <file alias="bitcoin">res/icons/vericoin-80.png</file>
+        <file alias="about-qt">res/icons/about-qt.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
         <file alias="quit">res/icons/quit.png</file>
         <file alias="send">res/icons/send.png</file>
@@ -63,11 +64,21 @@
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="supernet_white">res/icons/supernet-white.png</file>
         <file>res/icons/news_white.png</file>
+        <file>res/icons/forward.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
-        <file alias="headerOverview">res/images/header_Overview.png</file>
+        <file alias="headerOverview">res/images/headerOverview.png</file>
+        <file alias="headerSend">res/images/headerSend.png</file>
+        <file alias="headerReceive">res/images/headerReceive.png</file>
+        <file alias="headerHistory">res/images/headerHistory.png</file>
+        <file alias="headerAddress">res/images/headerAddress.png</file>
+        <file alias="headerVeriBit">res/images/headerVeriBit.png</file>
+        <file alias="headerGetVeriCoin">res/images/headerGetVeriCoin.png</file>
+        <file alias="headerNews">res/images/headerNews.png</file>
+        <file alias="headerChat">res/images/headerChat.png</file>
+        <file alias="headerSuperNET">res/images/headerSuperNET.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="update_spinner">res/movies/update_spinner.mng</file>

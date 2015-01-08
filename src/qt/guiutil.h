@@ -116,8 +116,6 @@ namespace GUIUtil
         QString uiOptions;
     };
 
-    bool isTrustedUrl(QUrl url);
-
     #if BOOST_FILESYSTEM_VERSION >= 3
     boost::filesystem::path qstringToBoostPath(const QString &path);
     QString boostPathToQString(const boost::filesystem::path &path);

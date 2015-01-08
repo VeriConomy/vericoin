@@ -1,6 +1,10 @@
 #ifndef GUICONSTANTS_H
 #define GUICONSTANTS_H
 
+#include <QString>
+#include <QTranslator>
+#include <QFont>
+
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 500;
 
@@ -22,11 +26,36 @@ static const int STATUSBAR_ICONSIZE = 16;
 /* Transaction list -- bare address (without label) */
 #define COLOR_BAREADDRESS QColor(140, 140, 140)
 
-/* Custom colors */
-#define COLOR_VERIBLUE QColor(010, 048, 087)
-#define STRING_VERIBLUE QString("#0a3057")
+/* Custom colors / fonts/ styles */
+//OLD#define COLOR_VERIBLUE QColor(010, 048, 087)
+//OLD#define STRING_VERIBLUE QString("#0a3057")
+#define COLOR_VERIBLUE QColor(000, 04A, 087)
+#define STRING_VERIBLUE QString("#003257")
 #define COLOR_VERIBLUE_LT QColor(065, 139, 202)
 #define STRING_VERIBLUE_LT QString("#418BCA")
+#define STRING_VERIFONT QString("#444748")
+
+static const int TOOLBAR_WIDTH = 100;
+static const int HEADER_WIDTH = 964;
+static const int HEADER_HEIGHT = 160;
+static const int BUTTON_WIDTH = 140;
+static const int BUTTON_HEIGHT = 27;
+
+static const int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
+#ifdef Q_OS_WIN
+static const int WINDOW_MIN_HEIGHT = 763;
+#else
+#ifdef Q_OS_MAC
+static const int WINDOW_MIN_HEIGHT = 763;
+#else
+static const int WINDOW_MIN_HEIGHT = 768;
+#endif
+#endif
+
+static const QFont veriFont("Lato", 11, QFont::Normal, false);
+static const QFont veriFontLarge("Lato", 14, QFont::Normal, false);
+static const QFont veriFontMedium("Lato", 10, QFont::Normal, false);
+static const QFont veriFontSmall("Lato", 9, QFont::Normal, false);
 
 /* Tooltips longer than this (in characters) are converted into rich text,
    so that they can be word-wrapped.

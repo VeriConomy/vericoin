@@ -7,6 +7,7 @@
 #include "editaddressdialog.h"
 #include "csvmodelwriter.h"
 #include "guiutil.h"
+#include "guiconstants.h"
 
 #include <QSortFilterProxyModel>
 #include <QClipboard>
@@ -26,7 +27,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     tab(tab)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF; color: black;");
+    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
     this->resize(800, 600);
 
 /*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
@@ -137,9 +138,9 @@ void AddressBookPage::setModel(AddressTableModel *model)
 
     // Set column widths
     ui->tableView->horizontalHeader()->resizeSection(
-            AddressTableModel::Address, 420);
+            AddressTableModel::Label, 400);
     ui->tableView->horizontalHeader()->setResizeMode(
-            AddressTableModel::Label, QHeaderView::Stretch);
+            AddressTableModel::Address, QHeaderView::Stretch);
 
     connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(selectionChanged()));

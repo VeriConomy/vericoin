@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>1024</height>
+    <width>2048</width>
+    <height>2048</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,25 +30,34 @@
     <rect>
      <x>0</x>
      <y>160</y>
-     <width>341</width>
+     <width>411</width>
      <height>191</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>4</number>
+    </property>
     <property name="verticalSpacing">
      <number>0</number>
     </property>
-    <item row="0" column="0">
+    <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>400</width>
+        <height>185</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>400</width>
         <height>185</height>
        </size>
       </property>
@@ -68,13 +77,13 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0">
        <property name="leftMargin">
-        <number>8</number>
+        <number>12</number>
        </property>
        <property name="topMargin">
         <number>10</number>
        </property>
        <property name="rightMargin">
-        <number>7</number>
+        <number>0</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -150,16 +159,19 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
          <property name="horizontalSpacing">
-          <number>12</number>
+          <number>16</number>
          </property>
          <property name="verticalSpacing">
           <number>12</number>
          </property>
          <property name="leftMargin">
-          <number>14</number>
+          <number>10</number>
          </property>
          <property name="topMargin">
           <number>9</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
          </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label">
@@ -175,49 +187,6 @@
            </property>
            <property name="text">
             <string>Spendable:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="labelBalance">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>195</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Lato</family>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-             <stylestrategy>PreferAntialias</stylestrategy>
-            </font>
-           </property>
-           <property name="cursor">
-            <cursorShape>IBeamCursor</cursorShape>
-           </property>
-           <property name="toolTip">
-            <string>Your current spendable balance</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QLabel {color: #444748}</string>
-           </property>
-           <property name="text">
-            <string notr="true">0 VRC</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
            </property>
           </widget>
          </item>
@@ -242,7 +211,7 @@
           <widget class="QLabel" name="labelStake">
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>270</width>
              <height>0</height>
             </size>
            </property>
@@ -277,6 +246,24 @@
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>91</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>71</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <family>Lato</family>
@@ -296,8 +283,14 @@
           <widget class="QLabel" name="labelUnconfirmed">
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>270</width>
              <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>228</width>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -352,7 +345,7 @@
           <widget class="QLabel" name="labelTotal">
            <property name="minimumSize">
             <size>
-             <width>195</width>
+             <width>270</width>
              <height>0</height>
             </size>
            </property>
@@ -370,6 +363,49 @@
            </property>
            <property name="toolTip">
             <string>Your current total balance</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel {color: #444748}</string>
+           </property>
+           <property name="text">
+            <string notr="true">0 VRC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="labelBalance">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>270</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Lato</family>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+             <stylestrategy>PreferAntialias</stylestrategy>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>IBeamCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string>Your current spendable balance</string>
            </property>
            <property name="styleSheet">
             <string notr="true">QLabel {color: #444748}</string>
@@ -408,25 +444,34 @@
   <widget class="QWidget" name="gridLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>410</x>
      <y>160</y>
-     <width>471</width>
+     <width>531</width>
      <height>191</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0">
+    <property name="spacing">
+     <number>6</number>
+    </property>
+    <item row="0" column="0" alignment="Qt::AlignTop">
      <widget class="QFrame" name="frame_2">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>525</width>
+        <height>185</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>185</height>
+        <height>16777215</height>
        </size>
       </property>
       <property name="font">
@@ -441,11 +486,14 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>30</number>
+       </property>
        <property name="topMargin">
         <number>10</number>
        </property>
        <property name="rightMargin">
-        <number>25</number>
+        <number>0</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -516,6 +564,7 @@
            <family>Lato</family>
            <pointsize>11</pointsize>
            <stylestrategy>PreferAntialias</stylestrategy>
+           <kerning>true</kerning>
           </font>
          </property>
          <property name="cursor" stdset="0">
@@ -525,7 +574,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">QListView { background: transparent; color: #444748 }</string>
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -536,8 +585,17 @@
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
+         <property name="autoScroll">
+          <bool>false</bool>
+         </property>
+         <property name="autoScrollMargin">
+          <number>16</number>
+         </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Fixed</enum>
          </property>
         </widget>
        </item>
@@ -551,22 +609,31 @@
     <rect>
      <x>0</x>
      <y>350</y>
-     <width>341</width>
+     <width>411</width>
      <height>301</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+    <property name="leftMargin">
+     <number>4</number>
+    </property>
+    <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
      <widget class="QFrame" name="frame_4">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>400</width>
+        <height>299</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>400</width>
         <height>16777215</height>
        </size>
       </property>
@@ -580,11 +647,14 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0">
+       <property name="leftMargin">
+        <number>11</number>
+       </property>
        <property name="topMargin">
         <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -648,13 +718,13 @@
           <set>Qt::AlignLeading</set>
          </property>
          <property name="horizontalSpacing">
-          <number>5</number>
+          <number>0</number>
          </property>
          <property name="verticalSpacing">
-          <number>5</number>
+          <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>8</number>
+          <number>10</number>
          </property>
          <property name="topMargin">
           <number>6</number>
@@ -663,14 +733,20 @@
           <number>0</number>
          </property>
          <item row="0" column="1">
-          <widget class="QWebView" name="stats">
+          <widget class="QWebView" name="stats" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="url">
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -700,9 +776,9 @@
   <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>410</x>
      <y>350</y>
-     <width>471</width>
+     <width>531</width>
      <height>301</height>
     </rect>
    </property>
@@ -710,10 +786,16 @@
     <item row="0" column="0">
      <widget class="QFrame" name="frame_5">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>525</width>
+        <height>299</height>
+       </size>
       </property>
       <property name="maximumSize">
        <size>
@@ -730,21 +812,21 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0,0">
        <property name="leftMargin">
-        <number>9</number>
+        <number>30</number>
        </property>
        <property name="topMargin">
         <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>3</number>
+        <number>1</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
          <property name="leftMargin">
           <number>3</number>
          </property>
@@ -772,7 +854,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_4">
+          <spacer name="horizontalSpacer_5">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -787,7 +869,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QFormLayout" name="formLayout_4">
+        <layout class="QFormLayout" name="formLayout_5">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
@@ -806,10 +888,13 @@
          <property name="leftMargin">
           <number>0</number>
          </property>
-         <item row="0" column="1">
-          <widget class="QWebView" name="value">
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QWebView" name="value" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -819,17 +904,20 @@
              <pointsize>10</pointsize>
             </font>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
+           </property>
+           <property name="zoomFactor" stdset="0">
+            <double>1.000000000000000</double>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_3">
+        <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -846,23 +934,111 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGraphicsView" name="graphicsView">
+  <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>-1</x>
-     <y>-1</y>
-     <width>1024</width>
+     <x>0</x>
+     <y>650</y>
+     <width>964</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMaximumSize</enum>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>6</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMaximumSize</enum>
+      </property>
+      <property name="horizontalSpacing">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0" colspan="2">
+       <widget class="QWebView" name="ticker" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>960</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="url" stdset="0">
+         <url>
+          <string>about:blank</string>
+         </url>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGraphicsView" name="header">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2048</width>
      <height>160</height>
     </rect>
    </property>
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>160</height>
+    </size>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <property name="styleSheet">
-    <string notr="true">QWidget {background : white url(:images/headerOverview) no-repeat 0px 0px; border: 0;}</string>
+    <string notr="true">QGraphicsView { background-color: #003257; }</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
    </property>
    <property name="frameShadow">
     <enum>QFrame::Plain</enum>
@@ -875,6 +1051,12 @@
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+   <property name="cacheMode">
+    <set>QGraphicsView::CacheBackground</set>
    </property>
   </widget>
  </widget>

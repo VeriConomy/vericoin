@@ -25,7 +25,7 @@
   <property name="font">
    <font>
     <family>Lato</family>
-    <pointsize>10</pointsize>
+    <pointsize>11</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -51,7 +51,7 @@
       <widget class="QLabel" name="passLabel1">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
@@ -63,7 +63,7 @@
       <widget class="QLineEdit" name="passEdit1">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="echoMode">
@@ -75,7 +75,7 @@
       <widget class="QLabel" name="passLabel2">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
@@ -87,7 +87,7 @@
       <widget class="QLineEdit" name="passEdit2">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="echoMode">
@@ -99,7 +99,7 @@
       <widget class="QLabel" name="passLabel3">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
@@ -111,7 +111,7 @@
       <widget class="QLineEdit" name="passEdit3">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="echoMode">

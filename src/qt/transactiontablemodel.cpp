@@ -232,6 +232,7 @@ TransactionTableModel::TransactionTableModel(CWallet* wallet, WalletModel *paren
     timer->start(MODEL_UPDATE_DELAY);
 
     connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+    connect(walletModel->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
 }
 
 TransactionTableModel::~TransactionTableModel()
@@ -618,6 +619,12 @@ QModelIndex TransactionTableModel::index(int row, int column, const QModelIndex 
 }
 
 void TransactionTableModel::updateDisplayUnit()
+{
+    // emit dataChanged to update Amount column with the current unit
+    emit dataChanged(index(0, Amount), index(priv->size()-1, Amount));
+}
+
+void TransactionTableModel::updateDecimalPoints()
 {
     // emit dataChanged to update Amount column with the current unit
     emit dataChanged(index(0, Amount), index(priv->size()-1, Amount));

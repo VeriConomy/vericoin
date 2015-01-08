@@ -71,7 +71,10 @@ void SendCoinsEntry::setModel(WalletModel *model)
     this->model = model;
 
     if(model && model->getOptionsModel())
+    {
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
+    }
 
     connect(ui->payAmount, SIGNAL(textChanged()), this, SIGNAL(payAmountChanged()));
 
@@ -91,6 +94,7 @@ void SendCoinsEntry::clear()
     ui->payTo->setFocus();
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
+    updateDecimalPoints();
 }
 
 void SendCoinsEntry::on_deleteButton_clicked()
@@ -173,5 +177,14 @@ void SendCoinsEntry::updateDisplayUnit()
     {
         // Update payAmount with the current unit
         ui->payAmount->setDisplayUnit(model->getOptionsModel()->getDisplayUnit());
+    }
+}
+
+void SendCoinsEntry::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        // Update payAmount with the current decimals
+        ui->payAmount->setDisplayDecimals(model->getOptionsModel()->getDecimalPoints());
     }
 }
