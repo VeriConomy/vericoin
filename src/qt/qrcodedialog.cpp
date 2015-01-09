@@ -88,7 +88,7 @@ void QRCodeDialog::genCode()
 
 QString QRCodeDialog::getURI()
 {
-    QString ret = QString("vericoin:%1").arg(address);
+    QString ret = QString("%1").arg(address);
     int paramCount = 0;
 
     ui->outUri->clear();
