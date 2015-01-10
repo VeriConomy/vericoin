@@ -1,6 +1,5 @@
 #include "sendbitcoinsdialog.h"
 #include "ui_sendbitcoinsdialog.h"
-#include "tooltip.h"
 
 #include "init.h"
 #include "walletmodel.h"
@@ -28,20 +27,22 @@
 #include <QNetworkRequest>
 #include <QByteArray>
 #include <QSignalMapper>
+#include <QGraphicsView>
+
+using namespace GUIUtil;
 
 SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SendBitCoinsDialog),
     model(0)
 {
-    ui->setupUi(this);
-    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
+    // Setup header and styles
+    GUIUtil::header(this, QString(":images/headerVeriBit"));
 
-/*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
-    ui->addButton->setIcon(QIcon());
-    ui->clearButton->setIcon(QIcon());
-    ui->veriBitSendButton->setIcon(QIcon());
-#endif*/
+    ui->setupUi(this);
+    this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */

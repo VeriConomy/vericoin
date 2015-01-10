@@ -5,6 +5,8 @@
 #include "guiutil.h"
 #include "guiconstants.h"
 
+using namespace GUIUtil;
+
 bool rescanAccepted = false;
 
 RescanDialog::RescanDialog(QWidget *parent) :
@@ -12,7 +14,7 @@ RescanDialog::RescanDialog(QWidget *parent) :
     ui(new Ui::RescanDialog)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
 
     ui->statusLabel->setFont(veriFont);

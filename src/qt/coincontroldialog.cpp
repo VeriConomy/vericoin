@@ -1,14 +1,13 @@
 #include "coincontroldialog.h"
 #include "ui_coincontroldialog.h"
-
+#include "guiutil.h"
+#include "guiconstants.h"
 #include "init.h"
 #include "bitcoinunits.h"
 #include "walletmodel.h"
 #include "addresstablemodel.h"
 #include "optionsmodel.h"
 #include "coincontrol.h"
-#include "tooltip.h"
-#include "guiconstants.h"
 
 #include <QApplication>
 #include <QCheckBox>
@@ -24,6 +23,8 @@
 #include <QTreeWidgetItem>
 
 using namespace std;
+using namespace GUIUtil;
+
 QList<qint64> CoinControlDialog::payAmounts;
 CCoinControl* CoinControlDialog::coinControl = new CCoinControl();
 
@@ -33,10 +34,10 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
-    _TOOLTIP_INIT_THIS
-
-    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
+    this->layout()->setGeometry(QRect(0,0,HEADER_WIDTH, 600));
 
     // context menu actions
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);

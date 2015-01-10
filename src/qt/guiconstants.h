@@ -27,10 +27,10 @@ static const int STATUSBAR_ICONSIZE = 16;
 #define COLOR_BAREADDRESS QColor(140, 140, 140)
 
 /* Custom colors / fonts/ styles */
-//OLD#define COLOR_VERIBLUE QColor(010, 048, 087)
-//OLD#define STRING_VERIBLUE QString("#0a3057")
-#define COLOR_VERIBLUE QColor(000, 04A, 087)
-#define STRING_VERIBLUE QString("#003257")
+#define COLOR_VERIBLUE QColor(010, 048, 087)
+#define STRING_VERIBLUE QString("#0a3057")
+//NEW#define COLOR_VERIBLUE QColor(000, 04A, 087)
+//NEW#define STRING_VERIBLUE QString("#003257")
 #define COLOR_VERIBLUE_LT QColor(065, 139, 202)
 #define STRING_VERIBLUE_LT QString("#418BCA")
 #define STRING_VERIFONT QString("#444748")
@@ -43,10 +43,10 @@ static const int BUTTON_HEIGHT = 27;
 
 static const int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
-static const int WINDOW_MIN_HEIGHT = 763;
+static const int WINDOW_MIN_HEIGHT = 768;
 #else
 #ifdef Q_OS_MAC
-static const int WINDOW_MIN_HEIGHT = 763;
+static const int WINDOW_MIN_HEIGHT = 768;
 #else
 static const int WINDOW_MIN_HEIGHT = 768;
 #endif

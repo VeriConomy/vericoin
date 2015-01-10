@@ -1,9 +1,7 @@
 #include "bitcoinamountfield.h"
 #include "qvaluecombobox.h"
 #include "bitcoinunits.h"
-
 #include "guiconstants.h"
-#include "tooltip.h"
 
 #include <QLabel>
 #include <QLineEdit>

@@ -1,12 +1,14 @@
 #include "askpassphrasedialog.h"
 #include "ui_askpassphrasedialog.h"
-
+#include "guiutil.h"
 #include "guiconstants.h"
 #include "walletmodel.h"
 
 #include <QMessageBox>
 #include <QPushButton>
 #include <QKeyEvent>
+
+using namespace GUIUtil;
 
 AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
     QDialog(parent),
@@ -16,7 +18,9 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
     fCapsLock(false)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
+
     ui->passEdit1->setMaxLength(MAX_PASSPHRASE_SIZE);
     ui->passEdit2->setMaxLength(MAX_PASSPHRASE_SIZE);
     ui->passEdit3->setMaxLength(MAX_PASSPHRASE_SIZE);

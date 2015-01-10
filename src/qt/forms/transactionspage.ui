@@ -23,7 +23,7 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget {background : white}</string>
+   <string notr="true"/>
   </property>
   <widget class="QGraphicsView" name="header">
    <property name="geometry">
@@ -50,7 +50,7 @@
     <bool>true</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">QGraphicsView { background-color: #003257; }</string>
+    <string notr="true"/>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>

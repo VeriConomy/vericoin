@@ -5,7 +5,8 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-#CONFIG += debug_and_release
+#CONFIG += debug
+CONFIG += release
 !win32{
 CONFIG += static
 }
@@ -206,7 +207,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
-    src/qt/tooltip.h \
     src/alert.h \
     src/addrman.h \
     src/base58.h \

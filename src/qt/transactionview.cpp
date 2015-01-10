@@ -12,7 +12,6 @@
 #include "optionsmodel.h"
 #include "guiutil.h"
 #include "guiconstants.h"
-#include "tooltip.h"
 
 #include <QScrollBar>
 #include <QComboBox>
@@ -32,11 +31,13 @@
 #include <QDateTimeEdit>
 #include <QGraphicsView>
 
+using namespace GUIUtil;
+
 TransactionView::TransactionView(QWidget *parent) :
     QWidget(parent), model(0), transactionProxyModel(0),
     transactionView(0)
 {
-    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
 
     setContentsMargins(0,0,0,0);
@@ -108,7 +109,6 @@ TransactionView::TransactionView(QWidget *parent) :
     view->setFont(veriFont);
     view->setMouseTracking(true);
     view->viewport()->setAttribute(Qt::WA_Hover, true);
-    view->setStyleSheet("QTableView::item:hover { background-color: #EBEBEB; color: " + STRING_VERIFONT + "; }");
     vlayout->addLayout(hlayout);
     vlayout->addWidget(createDateRangeWidget());
     vlayout->addWidget(view);

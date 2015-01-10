@@ -1,6 +1,6 @@
 #include "rpcconsole.h"
 #include "ui_rpcconsole.h"
-
+#include "guiconstants.h"
 #include "clientmodel.h"
 #include "bitcoinrpc.h"
 #include "guiutil.h"
@@ -12,8 +12,9 @@
 #include <QKeyEvent>
 #include <QUrl>
 #include <QScrollBar>
-
 #include <openssl/crypto.h>
+
+using namespace GUIUtil;
 
 // TODO: make it possible to filter out categories (esp debug messages when implemented)
 // TODO: receive errors and debug messages through ClientModel
@@ -191,7 +192,8 @@ RPCConsole::RPCConsole(QWidget *parent) :
     historyPtr(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 /*#ifndef Q_OS_MAC
     ui->openDebugLogfileButton->setIcon(QIcon(":/icons/export"));

@@ -1,9 +1,7 @@
 #include "veribitcoinamountfield.h"
 #include "qvaluecombobox.h"
 #include "veribitcoinunits.h"
-
 #include "guiconstants.h"
-#include "tooltip.h"
 
 #include <QLabel>
 #include <QLineEdit>

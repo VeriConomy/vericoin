@@ -18,6 +18,9 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QWebView>
+#include <QGraphicsView>
+
+using namespace GUIUtil;
 
 #define DECORATION_SIZE 46
 #define NUM_ITEMS 3
@@ -108,7 +111,10 @@ OverviewPage::OverviewPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QUrl statsUrl(QString(walletUrl).append("wallet/stats.html?v=1"));
+    // Setup header and styles
+    ui->header = GUIUtil::header(this, QString(":images/headerOverview"));
+
+    QUrl statsUrl(QString(walletUrl).append("wallet/stats.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
     CookieJar *statsJar = new CookieJar;
     ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
     ui->stats->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -116,7 +122,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->stats->load(statsUrl);
 
-    QUrl valueUrl(QString(walletUrl).append("wallet/chart.html?v=1"));
+    QUrl valueUrl(QString(walletUrl).append("wallet/chart.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
     CookieJar *valueJar = new CookieJar;
     ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
     ui->value->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -124,7 +130,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->value->load(valueUrl);
 
-    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.html?v=1"));
+    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
     CookieJar *tickerJar = new CookieJar;
     ui->ticker->page()->networkAccessManager()->setCookieJar(tickerJar);
     ui->ticker->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);

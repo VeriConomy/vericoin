@@ -7,6 +7,7 @@
 #include "guiconstants.h"
 
 #include <QString>
+#include <QTranslator>
 #include <QDateTime>
 #include <QDoubleValidator>
 #include <QLineEdit>
@@ -45,6 +46,49 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 #endif
 
 namespace GUIUtil {
+
+// Common stylesheets
+QString veriDialogStyleSheet = QString("QDialog { background: white; color: %1; } \
+                            QDialog::QPushButton { background: %2; width: %3px; height: %4px; border: none; color: white} \
+                            QDialog::QPushButton:disabled { background: #EBEBEB; color: #666666; } \
+                            QDialog::QPushButton:hover { background: %5; } \
+                            QDialog::QPushButton:pressed { background: %6; } ").arg(STRING_VERIFONT).arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
+;
+QString veriPushButtonStyleSheet = QString("QPushButton { background: %1; width: %2px; height: %3px; border: none; color: white} \
+                            QPushButton:disabled { background: #EBEBEB; color: #666666; } \
+                            QPushButton:hover { background: %4; } \
+                            QPushButton:pressed { background: %5; } ").arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
+;
+QString veriToolTipStyleSheet = QString("QToolTip { background: %1; color: white; border: 1px solid #EBEBEB; border-radius: 4px; padding: 4px; }").arg(STRING_VERIBLUE_LT);
+
+QString veriMiscStyleSheet = QString("QTableView::item:hover { background: #EBEBEB; color: %1; } ").arg(STRING_VERIFONT);
+
+QString veriStyleSheet = veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
+
+// Setup header and styles
+QGraphicsView *header(QWidget *parent, QString backgroundImage)
+{
+    QGraphicsView *h = new QGraphicsView(parent);
+    h->setStyleSheet("QGraphicsView { background: url(" + backgroundImage + ") no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
+    h->setObjectName(QStringLiteral("header"));
+    h->setGeometry(QRect(0, 0, 2048, HEADER_HEIGHT));
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(h->sizePolicy().hasHeightForWidth());
+    h->setSizePolicy(sizePolicy);
+    h->setMinimumSize(QSize(0, HEADER_HEIGHT));
+    h->setMaximumSize(QSize(16777215, HEADER_HEIGHT));
+    h->setAutoFillBackground(true);
+    h->setFrameShape(QFrame::NoFrame);
+    h->setFrameShadow(QFrame::Plain);
+    h->setLineWidth(0);
+    h->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    h->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    h->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
+    h->setCacheMode(QGraphicsView::CacheBackground);
+    return h;
+}
 
 QString dateTimeStr(const QDateTime &date)
 {
