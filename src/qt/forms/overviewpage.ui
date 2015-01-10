@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>968</width>
-    <height>769</height>
+    <width>964</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1164,8 +1164,8 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>964</width>
-           <height>48</height>
+           <width>960</width>
+           <height>47</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -1187,6 +1187,7 @@
    </item>
   </layout>
   <zorder>header</zorder>
+  <zorder></zorder>
   <zorder></zorder>
  </widget>
  <customwidgets>
