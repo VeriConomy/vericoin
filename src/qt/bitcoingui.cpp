@@ -167,7 +167,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Setup header and styles
     GUIUtil::header(fiatPage, QString(":images/headerGetVeriCoin"));
     fiat.setupUi(fiatPage);
-    fiatPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    fiatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 10);
     fiatPage->setStyleSheet(GUIUtil::veriStyleSheet);
     fiatPage->setFont(veriFont);
     fiat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -206,7 +206,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Setup header and styles
     GUIUtil::header(chatPage, QString(":images/headerChat"));
     chat.setupUi(chatPage);
-    chatPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    chatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 10);
     chatPage->setStyleSheet(GUIUtil::veriStyleSheet);
     chatPage->setFont(veriFont);
     chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -227,7 +227,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Setup header and styles
     GUIUtil::header(superNETPage, QString(":images/headerSuperNET"));
     superNET.setupUi(superNETPage);
-    superNETPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    superNETPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 10);
     superNETPage->setStyleSheet(GUIUtil::veriStyleSheet);
     superNETPage->setFont(veriFont);
     superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -279,7 +279,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
-    connectionsLabel->setFixedWidth(60);
+    connectionsLabel->setFixedWidth(80);
 
     QFrame *frameBlocks = new QFrame();
     frameBlocks->setContentsMargins(0,0,0,0);
