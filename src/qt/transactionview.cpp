@@ -190,7 +190,7 @@ void TransactionView::setModel(WalletModel *model)
         transactionView->horizontalHeader()->setResizeMode(
                 TransactionTableModel::ToAddress, QHeaderView::Stretch);
         transactionView->horizontalHeader()->resizeSection(
-                TransactionTableModel::Amount, 80 + (model->getOptionsModel()->getDecimalPoints() * 10));
+                TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
     }
 }
 

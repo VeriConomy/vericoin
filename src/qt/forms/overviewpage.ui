@@ -25,16 +25,7 @@
   <property name="styleSheet">
    <string notr="true">background: white;</string>
   </property>
-  <layout class="QFormLayout" name="formLayout_8">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-   </property>
-   <property name="horizontalSpacing">
-    <number>0</number>
-   </property>
-   <property name="verticalSpacing">
-    <number>0</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -45,6 +36,9 @@
     <number>0</number>
    </property>
    <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
     <number>0</number>
    </property>
    <item row="0" column="0" colspan="2">
@@ -102,7 +96,7 @@
       <number>30</number>
      </property>
      <property name="topMargin">
-      <number>30</number>
+      <number>20</number>
      </property>
      <property name="rightMargin">
       <number>0</number>
@@ -234,7 +228,7 @@
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
           <property name="horizontalSpacing">
-           <number>256</number>
+           <number>77</number>
           </property>
           <property name="verticalSpacing">
            <number>16</number>
@@ -313,7 +307,7 @@
            <widget class="QLabel" name="labelTotal">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>222</width>
               <height>0</height>
              </size>
             </property>
@@ -359,7 +353,7 @@
            <widget class="QLabel" name="labelStake">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>222</width>
               <height>0</height>
              </size>
             </property>
@@ -411,7 +405,7 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>222</width>
               <height>0</height>
              </size>
             </property>
@@ -505,7 +499,7 @@
            <widget class="QLabel" name="labelUnconfirmed">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>222</width>
               <height>0</height>
              </size>
             </property>
@@ -573,7 +567,7 @@
       <number>30</number>
      </property>
      <property name="topMargin">
-      <number>30</number>
+      <number>20</number>
      </property>
      <property name="rightMargin">
       <number>30</number>
@@ -783,7 +777,7 @@
       <number>30</number>
      </property>
      <property name="topMargin">
-      <number>10</number>
+      <number>0</number>
      </property>
      <item row="0" column="0">
       <widget class="QFrame" name="frame_4">
@@ -950,7 +944,7 @@
       <number>30</number>
      </property>
      <property name="topMargin">
-      <number>10</number>
+      <number>0</number>
      </property>
      <property name="rightMargin">
       <number>30</number>

@@ -90,7 +90,7 @@ private:
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
-    QLabel *progressBarLabel;
+    //QLabel *progressBarLabel;
     QLabel *stakingLabel;
     QLabel *connectionsLabel;
     QProgressBar *progressBar;

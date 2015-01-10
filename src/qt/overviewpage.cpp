@@ -110,6 +110,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
     // Setup header and styles
     ui->header = GUIUtil::header(this, QString(":images/headerOverview"));

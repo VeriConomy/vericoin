@@ -187,6 +187,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     GUIUtil::header(newsPage, QString(":images/headerNews"));
     news.setupUi(newsPage);
     newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    //newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
     newsPage->setStyleSheet(GUIUtil::veriStyleSheet);
     newsPage->setFont(veriFont);
     news.frame->setVisible(false); // Set to true to enable webView navigation buttons
@@ -206,7 +207,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Setup header and styles
     GUIUtil::header(chatPage, QString(":images/headerChat"));
     chat.setupUi(chatPage);
-    chatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 10);
+    chatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     chatPage->setStyleSheet(GUIUtil::veriStyleSheet);
     chatPage->setFont(veriFont);
     chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -227,7 +228,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Setup header and styles
     GUIUtil::header(superNETPage, QString(":images/headerSuperNET"));
     superNET.setupUi(superNETPage);
-    superNETPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 10);
+    superNETPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     superNETPage->setStyleSheet(GUIUtil::veriStyleSheet);
     superNETPage->setFont(veriFont);
     superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -319,13 +320,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     tCheckForUpdate->start(24 * 60 * 60 * 1000); // every 24 hours
 
     // Progress bar and label for blocks download
-    progressBarLabel = new QLabel();
-    progressBarLabel->setFont(veriFontSmall);
-    progressBarLabel->setVisible(false);
-    progressBarLabel->setFrameShape(QFrame::NoFrame);
-    progressBarLabel->setStyleSheet("QLabel { border-color: " + STRING_VERIBLUE + "; color: white; }");
+    //progressBarLabel = new QLabel();
+    //progressBarLabel->setFont(veriFontSmall);
+    //progressBarLabel->setVisible(false);
+    //progressBarLabel->setFrameShape(QFrame::NoFrame);
+    //progressBarLabel->setStyleSheet("QLabel { border-color: " + STRING_VERIBLUE + "; color: white; }");
     progressBar = new QProgressBar();
-    progressBar->setFixedWidth(300);
+    progressBar->setFixedWidth(400);
     progressBar->setFont(veriFontSmall);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
     progressBar->setAlignment(Qt::AlignCenter);
@@ -471,7 +472,7 @@ void BitcoinGUI::createActions()
     connect(superNETAction, SIGNAL(triggered()), this, SLOT(gotoSuperNETPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
-    quitAction->setToolTip(tr("Quit application"));
+    quitAction->setToolTip(tr("Quit Application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     aboutAction = new QAction(QIcon(":/icons/bitcoin"), tr("&About VeriCoin"), this);
@@ -781,7 +782,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // don't show / hide progress bar and its label if we have no connection to the network
     if (!clientModel || clientModel->getNumConnections() == 0)
     {
-        progressBarLabel->setVisible(false);
+        //progressBarLabel->setVisible(false);
         progressBar->setVisible(false);
 
         return;
@@ -797,9 +798,9 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBarLabel->setText(tr("Synchronizing..."));
-            progressBarLabel->setVisible(true);
-            progressBar->setFormat(tr("~%n block(s) remaining", "", nRemainingBlocks));
+            //progressBarLabel->setText(tr("Synchronizing..."));
+            //progressBarLabel->setVisible(true);
+            progressBar->setFormat(tr("Synchronizing: ~%n block(s) remaining", "", nRemainingBlocks));
             progressBar->setMaximum(nTotalBlocks);
             progressBar->setValue(count);
             progressBar->setVisible(true);
@@ -809,8 +810,8 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
     else
     {
-        if (strStatusBarWarnings.isEmpty())
-            progressBarLabel->setVisible(false);
+        //if (strStatusBarWarnings.isEmpty())
+        //    progressBarLabel->setVisible(false);
 
         progressBar->setVisible(false);
         tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
@@ -819,8 +820,8 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Override progressBarLabel text and hide progress bar, when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
     {
-        progressBarLabel->setText(strStatusBarWarnings);
-        progressBarLabel->setVisible(true);
+        //progressBarLabel->setText(strStatusBarWarnings);
+        //progressBarLabel->setVisible(true);
         progressBar->setVisible(false);
     }
 
@@ -879,7 +880,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     tooltip = QString("<nobr>") + tooltip + QString("</nobr>");
 
     labelBlocksIcon->setToolTip(tooltip);
-    progressBarLabel->setToolTip(tooltip);
+    //progressBarLabel->setToolTip(tooltip);
     progressBar->setToolTip(tooltip);
 }
 
@@ -1328,7 +1329,7 @@ void BitcoinGUI::updateStakingIcon()
     }
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-    progressBarLabel->setVisible(false);
+    //progressBarLabel->setVisible(false);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
     if (nLastCoinStakeSearchInterval && nWeight)

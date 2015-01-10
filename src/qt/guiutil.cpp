@@ -59,7 +59,7 @@ QString veriPushButtonStyleSheet = QString("QPushButton { background: %1; width:
                             QPushButton:hover { background: %4; } \
                             QPushButton:pressed { background: %5; } ").arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
 ;
-QString veriToolTipStyleSheet = QString("QToolTip { background: %1; color: white; border: 1px solid #EBEBEB; border-radius: 4px; padding: 4px; }").arg(STRING_VERIBLUE_LT);
+QString veriToolTipStyleSheet = QString("QToolTip { background-color: %1; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 6px; }").arg(STRING_VERIBLUE_LT);
 
 QString veriMiscStyleSheet = QString("QTableView::item:hover { background: #EBEBEB; color: %1; } ").arg(STRING_VERIFONT);
 
@@ -72,6 +72,7 @@ QGraphicsView *header(QWidget *parent, QString backgroundImage)
     h->setStyleSheet("QGraphicsView { background: url(" + backgroundImage + ") no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
     h->setObjectName(QStringLiteral("header"));
     h->setGeometry(QRect(0, 0, 2048, HEADER_HEIGHT));
+    h->setContentsMargins(0,0,0,0);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
