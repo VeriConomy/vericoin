@@ -1,6 +1,7 @@
 #include "sendcoinsentry.h"
 #include "ui_sendcoinsentry.h"
 #include "guiutil.h"
+#include "guiconstants.h"
 #include "bitcoinunits.h"
 #include "addressbookpage.h"
 #include "walletmodel.h"
@@ -10,13 +11,16 @@
 #include <QApplication>
 #include <QClipboard>
 
+using namespace GUIUtil;
+
 SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::SendCoinsEntry),
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 #ifdef Q_OS_MAC
     ui->payToLayout->setSpacing(4);
@@ -28,6 +32,9 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
 #endif
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->payTo);
+    ui->addressBookButton->setFixedSize(30,27);
+    ui->pasteButton->setFixedSize(30,27);
+    ui->deleteButton->setFixedSize(30,27);
 
     GUIUtil::setupAddressWidget(ui->payTo, this);
 }

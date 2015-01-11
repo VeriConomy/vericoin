@@ -90,7 +90,8 @@ private:
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
-    QLabel *progressBarLabel;
+    QLabel *labelVersionIcon;
+    QLabel *versionLabel;
     QLabel *stakingLabel;
     QLabel *connectionsLabel;
     QProgressBar *progressBar;
@@ -142,6 +143,8 @@ private:
     void createTrayIcon();
 
 public slots:
+    /** Set version icon good/bad */
+    void setVersionIcon(bool newVersion);
     /** Set number of connections shown in the UI */
     void setNumConnections(int count);
     /** Set number of blocks shown in the UI */

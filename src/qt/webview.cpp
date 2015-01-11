@@ -1,9 +1,19 @@
 #include "webview.h"
+#include "util.h"
 
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <stdarg.h>
+
+using namespace std;
+
+bool fTrustedUrlsSet = false;
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
 {
+    trustedUrls << "www.vericoin.info" << "vericoin.info";  // These will get appended to by the values in VERSION.json
 }
 
 WebView::~WebView()
@@ -36,6 +46,28 @@ void WebView::myReload()
 
 void WebView::myOpenUrl(QUrl url)
 {
+
+    if (!fTrustedUrlsSet)
+    {
+        if (!GetArg("-vTrustedUrls", "").empty())
+        {
+            std::string urls = GetArg("-vTrustedUrls", "");
+            typedef vector<string> parts_type;
+            parts_type parts;
+            boost::split(parts, urls, boost::is_any_of(",; "), boost::token_compress_on);
+            for (vector<string>::iterator it = parts.begin(); it != parts.end(); ++it)
+            {
+                QString url = QString::fromStdString(*it);
+                // Sanity check
+                if (url.contains(QChar('.')))
+                {
+                    trustedUrls << url;
+                }
+            }
+            fTrustedUrlsSet = true;
+        }
+    }
+
     if (isTrustedUrl(url))
     {
         try
@@ -55,11 +87,7 @@ void WebView::myOpenUrl(QUrl url)
 
 bool WebView::isTrustedUrl(QUrl url)
 {
-    QList<QString> trustedHosts;
-
-    trustedHosts << "www.vericoin.info" << "vericoin.info";
-
-    if (trustedHosts.contains(url.host()))
+    if (trustedUrls.contains(url.host()))
         return true;
     else
         return false;
@@ -67,9 +95,5 @@ bool WebView::isTrustedUrl(QUrl url)
 
 void WebView::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
 {
-    // Show list of all ssl errors
-    //foreach (QSslError err, errlist)
-    //    printf((QString("sslErrorHandler Url: %1 , Error: %2\n").arg(qnr->url().toString()).arg(err.errorString())).toAscii());
-
     qnr->ignoreSslErrors();
 }

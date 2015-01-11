@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2048</width>
-    <height>2048</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="font">
@@ -30,10 +30,13 @@
       <string>These are your VeriCoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</string>
      </property>
      <property name="textFormat">
-      <enum>Qt::PlainText</enum>
+      <enum>Qt::AutoText</enum>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::NoTextInteraction</set>
      </property>
     </widget>
    </item>
@@ -85,8 +88,7 @@
         <string>Create a new address</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;New Address</string>
@@ -121,8 +123,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Copy the currently selected address to the system clipboard</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Copy Address</string>
@@ -154,8 +155,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Show &amp;QR</string>
@@ -190,8 +190,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Sign a message to prove you own a VeriCoin address</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Sign &amp;Message</string>
@@ -226,8 +225,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Verify a message to ensure it was signed with a specified VeriCoin address</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Verify Message</string>
@@ -262,8 +260,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Delete the currently selected address from the list</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Delete</string>

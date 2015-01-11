@@ -19,9 +19,9 @@ Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     ui(new Ui::Downloader)
 {
     this->walletModel = walletModel;
-    this->setStyleSheet("QDialog { background-color: white; color: " + STRING_VERIFONT + "; }");
-    this->setFixedWidth(480);
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
+    this->setFixedWidth(480);
 
     ui->setupUi(this);
     ui->urlEdit->setStyleSheet("color: " + STRING_VERIFONT + ";");
@@ -31,11 +31,8 @@ Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     ui->statusLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
     ui->statusLabel->setFont(veriFont);
     ui->downloadButton->setAutoDefault(false);
-    ui->downloadButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
     ui->continueButton->setAutoDefault(false);
-    ui->continueButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
     ui->quitButton->setAutoDefault(false);
-    ui->quitButton->setStyleSheet("QPushButton { background : " + STRING_VERIBLUE + "; border : none; color: white} QPushButton:disabled { background : #EBEBEB; } QPushButton:hover { background : " + STRING_VERIBLUE_LT + "; } QPushButton:pressed { background : " + STRING_VERIBLUE_LT + "; }");
 
     // Progress bar and label for blockchain download/extract, and auto update
     ui->progressBarLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");

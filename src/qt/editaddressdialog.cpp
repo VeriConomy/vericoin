@@ -2,16 +2,19 @@
 #include "ui_editaddressdialog.h"
 #include "addresstablemodel.h"
 #include "guiutil.h"
-
+#include "guiconstants.h"
 #include <QDataWidgetMapper>
 #include <QMessageBox>
+
+using namespace GUIUtil;
 
 EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditAddressDialog), mapper(0), mode(mode), model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
     GUIUtil::setupAddressWidget(ui->addressEdit, this);
 

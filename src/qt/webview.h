@@ -31,6 +31,8 @@ public slots:
 
 private:
     Ui::WebView *ui;
+
+    QList<QString> trustedUrls;
 };
 
 #endif // WEBVIEW_H

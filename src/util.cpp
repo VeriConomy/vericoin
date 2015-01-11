@@ -8,7 +8,6 @@
 #include "strlcpy.h"
 #include "version.h"
 #include "ui_interface.h"
-#include <boost/algorithm/string/join.hpp>
 
 #ifdef QT_GUI
 #include "downloader.h"
@@ -33,6 +32,7 @@ namespace boost {
 #include <boost/foreach.hpp>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 #include <stdarg.h>
@@ -86,6 +86,7 @@ bool fNewVersion = false;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fBootstrapTurbo = false;
+bool fSuperNETInstalled = false;
 #endif
 bool fDebug = false;
 bool fDebugNet = false;
@@ -1318,12 +1319,14 @@ void ReadVersionFile()
 #endif
 #endif
         bool vBootstrap = versionObj.value(QString("bootstrap")).toBool();
+        QString vTrustedUrls = versionObj.value(QString("trustedUrls")).toString();
 
         SetArg("-vTitle", vTitle.toStdString());
         SetArg("-vDescription", vDescription.toStdString());
         SetArg("-vVersion", vVersion.toStdString());
         SetArg("-vFileName", vFileName.toStdString());
         SetBoolArg("-vBootstrap", vBootstrap);
+        SetArg("-vTrustedUrls", vTrustedUrls.toStdString());
 
         version = vVersion.toStdString();
         int maj = 0;
@@ -1332,7 +1335,7 @@ void ReadVersionFile()
         int bld = 0;
         typedef vector<string> parts_type;
         parts_type parts;
-        boost::split(parts, version, ::ispunct);
+        boost::split(parts, version, boost::is_any_of(".,"), boost::token_compress_on); // catch those fat-fingers ;)
         int i = 0;
         for (vector<string>::iterator it = parts.begin(); it != parts.end() && i++ < parts.size(); ++it)
         {

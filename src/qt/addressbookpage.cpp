@@ -18,6 +18,8 @@
 #include "qrcodedialog.h"
 #endif
 
+using namespace GUIUtil;
+
 AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddressBookPage),
@@ -26,15 +28,14 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     mode(mode),
     tab(tab)
 {
-    ui->setupUi(this);
-    this->setStyleSheet("background-color: white; color: " + STRING_VERIFONT + ";");
-    this->resize(800, 600);
+    // Setup header and styles
+    GUIUtil::header(this, QString(":images/headerAddress"));
 
-/*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
-    ui->newAddressButton->setIcon(QIcon());
-    ui->copyToClipboard->setIcon(QIcon());
-    ui->deleteButton->setIcon(QIcon());
-#endif*/
+    ui->setupUi(this);
+    this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    this->resize(HEADER_WIDTH, 600);
+
+    ui->tableView->viewport()->setAttribute(Qt::WA_Hover, true);
 
 #ifndef USE_QRCODE
     ui->showQRCode->setVisible(false);
@@ -59,6 +60,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
         ui->signMessage->setVisible(false);
         break;
     case ReceivingTab:
+        ui->labelExplanation->setVisible(true);
         ui->deleteButton->setVisible(false);
         ui->signMessage->setVisible(true);
         break;

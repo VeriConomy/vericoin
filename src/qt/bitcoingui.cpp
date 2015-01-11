@@ -33,7 +33,6 @@
 #include "ui_newspage.h"
 #include "ui_chatpage.h"
 #include "ui_supernetpage.h"
-#include "tooltip.h"
 #include "downloader.h"
 #include "updatedialog.h"
 #include "rescandialog.h"
@@ -93,10 +92,6 @@ bool fChatPageLoaded = false;
 bool fSuperNETPageLoaded = false;
 bool resizeGUICalled = false;
 
-// ProgressBar2 is just to the right of ProgressBar (available using extern pointers).
-QLabel *progressBar2Label;
-QProgressBar *progressBar2;
-
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
@@ -110,34 +105,19 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     notificator(0),
     rpcConsole(0)
 {
-    _TOOLTIP_INIT_QAPP
-
     setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
-    //setMaximumSize(2048, 2048);
     resizeGUI();
 
-    setWindowTitle(tr("VeriCoin Wallet - ") + tr(FormatVersion(CLIENT_VERSION).c_str()));
-    qApp->setWindowIcon(QIcon(":icons/bitcoin"));
-    qApp->setFont(veriFont);
+    setWindowTitle(tr("VeriCoin Wallet"));
     setWindowIcon(QIcon(":icons/bitcoin"));
-    qApp->setQuitOnLastWindowClosed(true);
+    qApp->setWindowIcon(QIcon(":icons/bitcoin"));
+    qApp->setStyleSheet(veriStyleSheet);
+    qApp->setFont(veriFont);
+
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
-
-    // Common stylesheets
-    QString veriPushButtonStyleSheet = tr("QPushButton { background: %1; width: %2px; height: %3px; border: none; color: white} \
-                                QPushButton:disabled { background : #EBEBEB; color: #666666; } \
-                                QPushButton:hover { background: %4; } \
-                                QPushButton:pressed { background: %5; } ").arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
-    ;
-    QString veriDialogButtonBoxStyleSheet = tr("QDialogButtonBox { background: %1; width: %2px; height: %3px; border: none; color: white} \
-                                QDialogButtonBox:disabled { background : #EBEBEB; color: #666666; } \
-                                QDialogButtonBox:hover { background: %4; } \
-                                QDialogButtonBox:pressed { background: %5; } ").arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
-    ;
-    QString veriToolTipStyleSheet = tr("QToolTip { background-color: %1; color: %2; padding: 5px; } ").arg("white").arg("STRING_VERIBLUE");
 
     // Accept D&D of URIs
     setAcceptDrops(true);
@@ -156,27 +136,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create Overview Page
     overviewPage = new OverviewPage();
-    // Set Header and styles
-    overviewPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerOverview) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    overviewPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
 
     // Create Send Page
     sendCoinsPage = new SendCoinsDialog(this);
-    // Set Header and styles
-    //sendCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerSend) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    sendCoinsPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
 
     // Create Receive Page
     receiveCoinsPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab);
-    // Set Header and styles
-    //receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerReceive) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    receiveCoinsPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
+    // Re-set Header and styles for Receive (Default is headerAddress)
+    receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet("QGraphicsView { background: url(:images/headerReceive) no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
 
     // Create History Page
     transactionsPage = new TransactionsPage();
-    // Set Header and styles
-    transactionsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerHistory) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    transactionsPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
 
     /* Build the transaction view then pass it to the transaction page to share */
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -187,24 +157,20 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create Address Page
     addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::SendingTab);
-    // Set Header and styles
-    //addressBookPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerAddress) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    addressBookPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
 
     // Create VeriBit Page
     sendBitCoinsPage = new SendBitCoinsDialog(this);
-    // Set Header and styles
-    //sendBitCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerVeriBit) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    sendBitCoinsPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
 
-    // Create Buy VRC Page
+    // Create Get VeriCoin Page
     fiatPage = new WebView(this); // extends QWebView
-    // Set Header and styles
-    //fiatPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerGetVeriCoin) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    fiatPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
-
     Ui::fiatPage fiat;
+    // Setup header and styles
+    GUIUtil::header(fiatPage, QString(":images/headerGetVeriCoin"));
     fiat.setupUi(fiatPage);
+    fiatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
+    fiatPage->setStyleSheet(GUIUtil::veriStyleSheet);
+    fiatPage->setFont(veriFont);
+    fiat.frame->setVisible(true); // Set to true to enable webView navigation buttons
     fiat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     fiat.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), fiatPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
@@ -217,12 +183,14 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create News Page
     newsPage = new WebView(this); // extends QWebView
-    // Set Header and styles
-    //newsPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerNews) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    newsPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
-
     Ui::newsPage news;
+    // Setup header and styles
+    GUIUtil::header(newsPage, QString(":images/headerNews"));
     news.setupUi(newsPage);
+    newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    //newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
+    newsPage->setStyleSheet(GUIUtil::veriStyleSheet);
+    newsPage->setFont(veriFont);
     news.frame->setVisible(false); // Set to true to enable webView navigation buttons
     news.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     news.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -236,12 +204,14 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create Chat Page
     chatPage = new WebView(this); // extends QWebView
-    // Set Header and styles
-    //chatPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerChat) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    chatPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
-
     Ui::chatPage chat;
+    // Setup header and styles
+    GUIUtil::header(chatPage, QString(":images/headerChat"));
     chat.setupUi(chatPage);
+    chatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
+    chatPage->setStyleSheet(GUIUtil::veriStyleSheet);
+    chatPage->setFont(veriFont);
+    chat.frame->setVisible(true); // Set to true to enable webView navigation buttons
     chat.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     chat.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), chatPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
@@ -253,13 +223,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(chat.reload, SIGNAL(clicked()), chat.webView, SLOT(myReload()));
 
     // Create SuperNET Page
+    if (!fSuperNETInstalled)
+    {
     superNETPage = new WebView(this);
-    // Set Header and styles
-    //superNETPage->findChild<QGraphicsView *>("header")->setStyleSheet(tr("QGraphicsView { background: url(:images/headerSuperNET) no-repeat 0px 0px; border: none; background-color: %1; }").arg(STRING_VERIBLUE));
-    superNETPage->setStyleSheet(veriToolTipStyleSheet + veriPushButtonStyleSheet + veriDialogButtonBoxStyleSheet);
-
     Ui::superNETPage superNET;
+    // Setup header and styles
+    GUIUtil::header(superNETPage, QString(":images/headerSuperNET"));
     superNET.setupUi(superNETPage);
+    superNETPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
+    superNETPage->setStyleSheet(GUIUtil::veriStyleSheet);
+    superNETPage->setFont(veriFont);
+    superNET.frame->setVisible(true); // Set to true to enable webView navigation buttons
     superNET.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     superNET.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), superNETPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
@@ -269,6 +243,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(superNET.home, SIGNAL(clicked()), superNET.webView, SLOT(myHome()));
     connect(superNET.forward, SIGNAL(clicked()), superNET.webView, SLOT(myForward()));
     connect(superNET.reload, SIGNAL(clicked()), superNET.webView, SLOT(myReload()));
+    }
+    else
+    {
+        // Place holder for SuperNET
+    }
 
     // Create Sign Message Dialog
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
@@ -278,7 +257,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(addressBookPage);
@@ -293,31 +272,53 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create status bar
     statusBar();
-    statusBar()->setContentsMargins(6,0,0,0);
-    statusBar()->setStyleSheet("QStatusBar { background-color: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
+    statusBar()->setContentsMargins(STATUSBAR_MARGIN,0,0,0);
+    statusBar()->setStyleSheet("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     statusBar()->setFont(veriFontSmall);
+
+    labelVersionIcon = new QLabel();
+    labelVersionIcon->setFont(veriFontSmall);
+    labelVersionIcon->setFixedWidth(STATUSBAR_ICONSIZE);
+    labelVersionIcon->setPixmap(QIcon(":/icons/versionGood").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+    versionLabel = new QLabel();
+    versionLabel->setFont(veriFontSmall);
+    versionLabel->setText(tr("Version %1").arg(FormatVersion(CLIENT_VERSION).c_str()));
+    versionLabel->setFixedWidth(HEADER_WIDTH - STATUSBAR_ICONSIZE - STATUSBAR_MARGIN);
+    versionLabel->setStyleSheet("QLabel { color: white; }");
+
+    QFrame *versionBlocks = new QFrame();
+    versionBlocks->setContentsMargins(0,0,0,0);
+    versionBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    QHBoxLayout *versionBlocksLayout = new QHBoxLayout(versionBlocks);
+    versionBlocksLayout->setContentsMargins(0,0,10,0);
+    versionBlocksLayout->setSpacing(0);
+    versionBlocksLayout->addWidget(labelVersionIcon);
+    versionBlocksLayout->addWidget(versionLabel);
 
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
+    stakingLabel->setFixedWidth(60);
+
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
+    connectionsLabel->setFixedWidth(80);
 
-    QFrame *frameBlocks = new QFrame();
-    frameBlocks->setContentsMargins(0,0,0,0);
-    frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    frameBlocks->setStyleSheet("color: white;");
-    QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
-
-    frameBlocksLayout->setContentsMargins(3,3,3,3);
-    frameBlocksLayout->setSpacing(10);
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
     labelConnectionsIcon->setFont(veriFontSmall);
     labelBlocksIcon = new QLabel();
     labelBlocksIcon->setVisible(true);
     labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+
+    QFrame *frameBlocks = new QFrame();
+    frameBlocks->setContentsMargins(0,0,0,0);
+    frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    frameBlocks->setStyleSheet("QFrame { color: white; }");
+    QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
+    frameBlocksLayout->setContentsMargins(23,3,3,3);
+    frameBlocksLayout->setSpacing(10);
 
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelStakingIcon);
@@ -327,6 +328,28 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addWidget(labelConnectionsIcon);
     frameBlocksLayout->addWidget(connectionsLabel);
     frameBlocksLayout->addStretch();
+
+    // Progress bar and label for blocks download
+    progressBar = new QProgressBar();
+    progressBar->setMinimumWidth(400);
+    progressBar->setFont(veriFontSmall);
+    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
+    progressBar->setAlignment(Qt::AlignCenter);
+    progressBar->setVisible(false);
+    // Override style sheet for progress bar for styles that have a segmented progress bar,
+    // as they make the text unreadable (workaround for issue #1071)
+    // See https://qt-project.org/doc/qt-4.8/gallery.html
+    QString curStyle = qApp->style()->metaObject()->className();
+    if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
+    {
+        progressBar->setStyleSheet("QProgressBar { background: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
+    }
+
+    statusBar()->addWidget(versionBlocks);
+    statusBar()->addWidget(progressBar);
+    statusBar()->addPermanentWidget(frameBlocks);
+
+    syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
 
     if (GetBoolArg("-staking", true))
     {
@@ -340,52 +363,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QTimer *tCheckForUpdate = new QTimer(this);
     connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
     tCheckForUpdate->start(24 * 60 * 60 * 1000); // every 24 hours
-
-    // Progress bar and label for blocks download
-    progressBarLabel = new QLabel();
-    progressBarLabel->setFont(veriFontSmall);
-    progressBarLabel->setVisible(false);
-    progressBarLabel->setFrameShape(QFrame::NoFrame);
-    progressBarLabel->setStyleSheet("border-color: " + STRING_VERIBLUE + "; color: white;");
-    progressBar = new QProgressBar();
-    progressBar->setFixedWidth(350);
-    progressBar->setFont(veriFontSmall);
-    progressBar->setStyleSheet("QProgressBar::chunk { background-color: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
-    progressBar->setAlignment(Qt::AlignCenter);
-    progressBar->setVisible(false);
-    // Override style sheet for progress bar for styles that have a segmented progress bar,
-    // as they make the text unreadable (workaround for issue #1071)
-    // See https://qt-project.org/doc/qt-4.8/gallery.html
-    QString curStyle = qApp->style()->metaObject()->className();
-    if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
-    {
-        progressBar->setStyleSheet("QProgressBar { background-color: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
-    }
-
-    // Progress bar and label for blockchain download/extract, and auto update
-    progressBar2Label = new QLabel();
-    progressBar2Label->setFont(veriFontSmall);
-    progressBar2Label->setVisible(false);
-    progressBar2Label->setFrameShape(QFrame::NoFrame);
-    progressBar2Label->setStyleSheet("border-color: " + STRING_VERIBLUE + "; color: white;");
-    progressBar2 = new QProgressBar();
-    progressBar2->setFixedWidth(100);
-    progressBar2->setFont(veriFontSmall);
-    progressBar2->setStyleSheet("QProgressBar::chunk { background-color: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
-    progressBar2->setAlignment(Qt::AlignCenter);
-    progressBar2->setVisible(false);
-    if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
-    {
-        progressBar2->setStyleSheet("QProgressBar { background-color: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
-    }
-
-    statusBar()->addWidget(progressBarLabel);
-    statusBar()->addWidget(progressBar);
-    statusBar()->addPermanentWidget(progressBar2Label);
-    statusBar()->addPermanentWidget(progressBar2);
-    statusBar()->addPermanentWidget(frameBlocks);
-
-    syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -513,7 +490,7 @@ void BitcoinGUI::createActions()
     connect(superNETAction, SIGNAL(triggered()), this, SLOT(gotoSuperNETPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
-    quitAction->setToolTip(tr("Quit application"));
+    quitAction->setToolTip(tr("Quit Application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     aboutAction = new QAction(QIcon(":/icons/bitcoin"), tr("&About VeriCoin"), this);
@@ -536,7 +513,7 @@ void BitcoinGUI::createActions()
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
-    accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
+    //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Blockchain..."), this);
@@ -564,7 +541,7 @@ void BitcoinGUI::createActions()
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
-    connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
+    //connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
@@ -591,8 +568,8 @@ void BitcoinGUI::createMenuBar()
     file->addSeparator();
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
-    file->addSeparator();
-    file->addAction(accessNxtInsideAction);
+    //file->addSeparator();
+    //file->addAction(accessNxtInsideAction);
     file->addSeparator();
     file->addAction(reloadBlockchainAction);
     file->addAction(rescanBlockchainAction);
@@ -634,10 +611,10 @@ void BitcoinGUI::createToolBars()
     toolbar->setFixedWidth(TOOLBAR_WIDTH);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     toolbar->setStyleSheet("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
-                           QToolButton { background-color: " + STRING_VERIBLUE + "; color: white; border: none; } \
-                           QToolButton:hover { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
-                           QToolButton:pressed { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
-                           QToolButton:checked { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: none; }");
+                           QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
+                           QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
+                           QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
+                           QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; }");
     toolbar->addAction(overviewAction);
     toolbar->addAction(sendCoinsAction);
     toolbar->addAction(receiveCoinsAction);
@@ -675,6 +652,10 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
             aboutAction->setIcon(QIcon(":/icons/toolbar_testnet"));
         }
 
+        /** Set version icon good/bad */
+        setVersionIcon(fNewVersion);
+        connect(clientModel, SIGNAL(versionChanged(bool)), this, SLOT(setVersionIcon(bool)));
+
         // Keep up to date with client
         setNumConnections(clientModel->getNumConnections());
         connect(clientModel, SIGNAL(numConnectionsChanged(int)), this, SLOT(setNumConnections(int)));
@@ -708,7 +689,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         sendCoinsPage->setModel(walletModel);
         sendBitCoinsPage->setModel(walletModel);
         signVerifyMessageDialog->setModel(walletModel);
-        accessNxtInsideDialog->setModel(walletModel);
+        //accessNxtInsideDialog->setModel(walletModel);
 
         setEncryptionStatus(walletModel->getEncryptionStatus());
         connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
@@ -750,7 +731,7 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu->addAction(signMessageAction);
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addSeparator();
-	trayIconMenu->addAction(accessNxtInsideAction);
+    //trayIconMenu->addAction(accessNxtInsideAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openRPCConsoleAction);
@@ -799,6 +780,19 @@ void BitcoinGUI::aboutClicked()
     dlg.exec();
 }
 
+void BitcoinGUI::setVersionIcon(bool newVersion)
+{
+    QString icon;
+    switch(newVersion)
+    {
+    case true: icon = ":/icons/versionBad"; versionLabel->setStyleSheet("QLabel {color: red;}"); break;
+    case false: icon = ":/icons/versionGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
+    default: icon = ":/icons/versionGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
+    }
+    labelVersionIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
+    labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date") : tr("You have the most current wallet"));
+}
+
 void BitcoinGUI::setNumConnections(int count)
 {
     QString icon;
@@ -811,7 +805,7 @@ void BitcoinGUI::setNumConnections(int count)
     default: icon = ":/icons/connect_4"; break;
     }
     QString connections = QString::number(count);
-    QString label = " connections";
+    QString label = " Connections";
     QString connectionlabel = connections + label;
     connectionsLabel->setText(QString(connectionlabel));
     labelConnectionsIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
@@ -820,10 +814,9 @@ void BitcoinGUI::setNumConnections(int count)
 
 void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 {
-    // don't show / hide progress bar and its label if we have no connection to the network
+    // don't show / hide progress bar if we have no connection to the network
     if (!clientModel || clientModel->getNumConnections() == 0)
     {
-        progressBarLabel->setVisible(false);
         progressBar->setVisible(false);
 
         return;
@@ -839,9 +832,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBarLabel->setText(tr("Synchronizing..."));
-            progressBarLabel->setVisible(true);
-            progressBar->setFormat(tr("~%n block(s) remaining", "", nRemainingBlocks));
+            progressBar->setFormat(tr("Synchronizing: ~%n block(s) remaining", "", nRemainingBlocks));
             progressBar->setMaximum(nTotalBlocks);
             progressBar->setValue(count);
             progressBar->setVisible(true);
@@ -851,18 +842,13 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
     else
     {
-        if (strStatusBarWarnings.isEmpty())
-            progressBarLabel->setVisible(false);
-
         progressBar->setVisible(false);
         tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
     }
 
-    // Override progressBarLabel text and hide progress bar, when we have warnings to display
+    // Override progressBar text and hide progress bar, when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
     {
-        progressBarLabel->setText(strStatusBarWarnings);
-        progressBarLabel->setVisible(true);
         progressBar->setVisible(false);
     }
 
@@ -921,7 +907,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     tooltip = QString("<nobr>") + tooltip + QString("</nobr>");
 
     labelBlocksIcon->setToolTip(tooltip);
-    progressBarLabel->setToolTip(tooltip);
     progressBar->setToolTip(tooltip);
 }
 
@@ -1023,7 +1008,7 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
 
@@ -1033,7 +1018,7 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -1043,7 +1028,7 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
 
@@ -1054,7 +1039,7 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
 
@@ -1065,7 +1050,7 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
@@ -1076,7 +1061,7 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
@@ -1086,11 +1071,11 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
 
     if (!fFiatPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/fiat.html"));
+        QUrl url(QString(walletUrl).append("wallet/fiat.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         fiatPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fFiatPageLoaded = true;
     }
@@ -1104,11 +1089,11 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: #EBEBEB; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: #EBEBEB; }");
 
     if (!fNewsPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/news.html"));
+        QUrl url(QString(walletUrl).append("wallet/news.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         newsPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fNewsPageLoaded = true;
     }
@@ -1122,11 +1107,11 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
 
     if (!fChatPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/chat.html"));
+        QUrl url(QString(walletUrl).append("wallet/chat.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         chatPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fChatPageLoaded = true;
     }
@@ -1140,11 +1125,11 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background-color: white; }");
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
 
     if (!fSuperNETPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/supernet.html"));
+        QUrl url(QString(walletUrl).append("wallet/supernet.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         superNETPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fSuperNETPageLoaded = true;
     }
@@ -1370,7 +1355,6 @@ void BitcoinGUI::updateStakingIcon()
     }
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-    progressBarLabel->setVisible(false);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
     if (nLastCoinStakeSearchInterval && nWeight)
@@ -1403,7 +1387,7 @@ void BitcoinGUI::updateStakingIcon()
     }
     else
     {
-        stakingLabel->setText(QString("In sync"));
+        stakingLabel->setText(QString("In Sync"));
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));

@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>1024</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Send Coins</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background: white;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="bottomMargin">
@@ -113,9 +113,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }
-</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>Inputs...</string>
@@ -125,7 +123,7 @@ QPushButton:pressed { background : #418BCA; }
           <item>
            <widget class="QLabel" name="labelCoinControlAutomaticallySelected">
             <property name="text">
-             <string>automatically selected</string>
+             <string>(automatically selected)</string>
             </property>
             <property name="margin">
              <number>5</number>
@@ -573,7 +571,7 @@ QPushButton:pressed { background : #418BCA; }
           <item>
            <widget class="QCheckBox" name="checkBoxCoinControlChange">
             <property name="text">
-             <string>custom change address</string>
+             <string>Custom Change Address</string>
             </property>
            </widget>
           </item>
@@ -646,11 +644,11 @@ QPushButton:pressed { background : #418BCA; }
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>782</height>
+        <height>539</height>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: white;</string>
+       <string notr="true">background: white;</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -709,8 +707,7 @@ QPushButton:pressed { background : #418BCA; }
         <string>Send to multiple recipients at once</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Add &amp;Recipient</string>
@@ -754,8 +751,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Remove all transaction fields</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Clear &amp;All</string>
@@ -860,8 +856,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Confirm the send action</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>VeriSend</string>
@@ -905,8 +900,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         <string>Confirm the send action</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Send</string>

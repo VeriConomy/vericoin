@@ -69,8 +69,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Download</string>
@@ -92,8 +91,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Next</string>
@@ -112,8 +110,7 @@ QPushButton:pressed { background : #418BCA; }</string>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Cancel</string>

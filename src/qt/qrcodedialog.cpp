@@ -1,3 +1,4 @@
+#include "guiconstants.h"
 #include "qrcodedialog.h"
 #include "ui_qrcodedialog.h"
 
@@ -8,8 +9,9 @@
 
 #include <QPixmap>
 #include <QUrl>
-
 #include <qrencode.h>
+
+using namespace GUIUtil;
 
 QRCodeDialog::QRCodeDialog(const QString &addr, const QString &label, bool enableReq, QWidget *parent) :
     QDialog(parent),
@@ -18,7 +20,9 @@ QRCodeDialog::QRCodeDialog(const QString &addr, const QString &label, bool enabl
     address(addr)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
+
     setWindowTitle(QString("%1").arg(address));
 
     ui->chkReqPayment->setVisible(enableReq);
@@ -88,7 +92,7 @@ void QRCodeDialog::genCode()
 
 QString QRCodeDialog::getURI()
 {
-    QString ret = QString("vericoin:%1").arg(address);
+    QString ret = QString("%1").arg(address);
     int paramCount = 0;
 
     ui->outUri->clear();

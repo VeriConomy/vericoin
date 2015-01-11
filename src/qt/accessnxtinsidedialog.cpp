@@ -3,6 +3,7 @@
 
 #include "addressbookpage.h"
 #include "base58.h"
+#include "guiconstants.h"
 #include "guiutil.h"
 #include "init.h"
 #include "main.h"
@@ -20,12 +21,16 @@
 #include <QString>
 #include <QUrlQuery>
 
+using namespace GUIUtil;
+
 AccessNxtInsideDialog::AccessNxtInsideDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AccessNxtInsideDialog),
     model(0)
 {
     ui->setupUi(this);
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 #if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */

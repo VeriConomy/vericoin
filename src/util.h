@@ -153,6 +153,7 @@ extern bool fNewVersion;
 extern bool fMenuCheckForUpdate;
 extern bool fTimerCheckForUpdate;
 extern bool fBootstrapTurbo;
+extern bool fSuperNETInstalled;
 #endif
 extern bool fDebug;
 extern bool fDebugNet;
