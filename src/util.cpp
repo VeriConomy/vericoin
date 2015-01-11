@@ -86,6 +86,7 @@ bool fNewVersion = false;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fBootstrapTurbo = false;
+bool fTrustedUrlsSet = false;
 bool fSuperNETInstalled = false;
 #endif
 bool fDebug = false;
