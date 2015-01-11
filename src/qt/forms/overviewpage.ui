@@ -1159,13 +1159,13 @@
          <property name="minimumSize">
           <size>
            <width>960</width>
-           <height>47</height>
+           <height>45</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>48</height>
+           <height>45</height>
           </size>
          </property>
          <property name="url">
