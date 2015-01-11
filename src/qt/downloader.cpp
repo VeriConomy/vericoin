@@ -1,19 +1,47 @@
 #include "downloader.h"
 #include "ui_downloader.h"
+#include "bitcoingui.h"
+#include "guiconstants.h"
+#include "guiutil.h"
+#include "util.h"
+#include "JlCompress.h"
 
-Downloader::Downloader(QWidget *parent) :
+#include <QLabel>
+#include <QProgressBar>
+#include <boost/version.hpp>
+#include <boost/filesystem.hpp>
+
+using namespace GUIUtil;
+
+Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     QDialog(parent),
+    walletModel(0),
     ui(new Ui::Downloader)
 {
+    this->walletModel = walletModel;
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
+    this->setFixedWidth(480);
+
     ui->setupUi(this);
+    ui->urlEdit->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->urlEdit->setFont(veriFont);
     ui->urlEdit->setText("");
     ui->statusLabel->setWordWrap(true);
+    ui->statusLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->statusLabel->setFont(veriFont);
     ui->downloadButton->setAutoDefault(false);
     ui->continueButton->setAutoDefault(false);
     ui->quitButton->setAutoDefault(false);
 
-    progressDialog = new QProgressDialog(this);
-    progressDialog->setCancelButton(NULL);
+    // Progress bar and label for blockchain download/extract, and auto update
+    ui->progressBarLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->progressBarLabel->setFont(veriFont);
+    ui->progressBarLabel->setText(tr("Status:"));
+    ui->progressBar->setStyleSheet("color: " + STRING_VERIFONT + ";");
+    ui->progressBar->setFont(veriFont);
+    ui->progressBar->setValue(0);
+
     // Create a timer to handle hung download requests
     downloadTimer = new QTimer(this);
     connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadProgress()));
@@ -21,12 +49,20 @@ Downloader::Downloader(QWidget *parent) :
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
     httpRequestAborted = false;
-    autoDownload = false;
     downloadFinished = false;
+
+    // These are set by the class creating the Downloader object
+    autoDownload = false;
+    processBlockchain = false;
+    processUpdate = false;
+
+    // Init these, or else
+    reply = 0;
+    file = 0;
+    manager = 0;
 
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
-    connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
 }
 
 Downloader::~Downloader()
@@ -34,47 +70,76 @@ Downloader::~Downloader()
     delete ui;
 }
 
-void Downloader::startDownload()
+void Downloader::showEvent(QShowEvent *e)
 {
     if (autoDownload)
     {
         ui->quitButton->setEnabled(false);
+        on_downloadButton_clicked();
     }
-    on_downloadButton_clicked();
 }
 
-void Downloader::on_continueButton_clicked()
+void Downloader::on_continueButton_clicked() // Next button
 {
-    downloadFinished = true;
-
-    this->close();
+    if (downloadFinished && processBlockchain)
+    {
+        reloadBlockchain();
+    }
+    if (downloadFinished && processUpdate)
+    {
+        checkForUpdate();
+    }
+    if (autoDownload || processBlockchain || processUpdate)
+    {
+        on_quitButton_clicked();
+    }
 }
 
-void Downloader::on_quitButton_clicked()
+void Downloader::on_quitButton_clicked() // Cancel button
 {
     downloaderQuit = true;
 
-    if (!downloadFinished && progressDialog->value() > 0)
+    if (!downloadFinished)
     {
-        // Clean up
+        // Clean-up
+        if (!httpRequestAborted)
+        {
+            if (reply)
+            {
+                reply->abort();
+                reply->deleteLater();
+            }
+        }
         httpRequestAborted = true;
-        reply->abort();
         downloaderFinished();
     }
 
-    downloadFinished = false;
+    if (processBlockchain)
+    {
+        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
+        p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
+        processBlockchain = false;
+    }
+    if (processUpdate)
+    {
+        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
+        p->checkForUpdateActionEnabled(true); // Set menu option back to true when dialog closes.
+        processUpdate = false;
+    }
 
     this->close();
 }
 
-void Downloader::on_urlEdit_returnPressed()
+// Network error ocurred. Download cancelled
+void Downloader::networkError()
 {
-    on_downloadButton_clicked();
-}
+    cancelDownload();
 
-void Downloader::enableDownloadButton()
-{
-    ui->downloadButton->setEnabled(!(ui->urlEdit->text()).isEmpty());
+    if (autoDownload)
+    {
+        MilliSleep(3000);
+        on_quitButton_clicked();
+    }
 }
 
 // During the download progress, it can be canceled
@@ -86,13 +151,25 @@ void Downloader::cancelDownload()
         downloadTimer->stop();
     }
 
+    if (!reply->errorString().isEmpty())
+    {
+        ui->statusLabel->setText(tr("The download was canceled.\n\n%1").arg(reply->errorString()));
+    }
+    else
+    {
+        ui->statusLabel->setText(tr("The download was canceled."));
+    }
     httpRequestAborted = true;
-    reply->abort();
+    if (reply)
+    {
+        reply->abort();
+        reply->deleteLater();
+    }
 
-    ui->statusLabel->setText(tr("Download canceled."));
     ui->downloadButton->setEnabled(true);
     ui->downloadButton->setDefault(true);
     ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(true);
 }
 
 void Downloader::on_downloadButton_clicked()
@@ -127,11 +204,14 @@ void Downloader::on_downloadButton_clicked()
         if (!autoDownload)
         {
             if (QMessageBox::question(this, tr("Downloader"),
-                tr("There already exists a file called %1. Overwrite?").arg(fileName),
+                tr("The file \"%1\" already exists. Overwrite it?").arg(fileName),
                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No)
                 == QMessageBox::No)
             {
                 ui->continueButton->setEnabled(true);
+                downloadFinished = true;
+                ui->progressBar->setMaximum(100);
+                ui->progressBar->setValue(100);
                 return;
             }
         }
@@ -146,7 +226,7 @@ void Downloader::on_downloadButton_clicked()
         if (!autoDownload)
         {
             QMessageBox::information(this, tr("Downloader"),
-                      tr("Unable to save the file %1: %2.")
+                      tr("Unable to save the file \"%1\": %2.")
                       .arg(fileName).arg(file->errorString()));
         }
         delete file;
@@ -159,9 +239,8 @@ void Downloader::on_downloadButton_clicked()
     downloaderQuit = false;
     httpRequestAborted = false;
 
-    progressDialog->setWindowTitle(tr("Downloader"));
-    progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
-    progressDialog->setValue(0);
+    ui->progressBarLabel->setText(tr("Downloading:"));
+    ui->progressBar->setValue(0);
 
     // download button disabled after requesting download.
     ui->downloadButton->setEnabled(false);
@@ -202,11 +281,11 @@ void Downloader::startRequest(QUrl url)
     connect(reply, SIGNAL(finished()),
             this, SLOT(downloaderFinished()));
 
-    ui->statusLabel->setText(tr("Downloading %1.").arg(url.url()));
-    if (this->isVisible())
-    {
-        progressDialog->show();
-    }
+    // Network error
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(networkError()));
+
+    ui->statusLabel->setText(tr("Please wait..."));
 }
 
 // When download finished or canceled, this will be called
@@ -228,16 +307,14 @@ void Downloader::downloaderFinished()
             delete file;
             file = 0;
         }
-        reply->deleteLater();
-        progressDialog->hide();
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);
         ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
         return;
     }
 
     // download finished normally
-    progressDialog->hide();
     file->flush();
     file->close();
 
@@ -274,7 +351,7 @@ void Downloader::downloaderFinished()
         }
         else
         {
-            ui->statusLabel->setText(tr("Downloaded %1.").arg(fileDest.filePath()));
+            ui->statusLabel->setText(tr("Download was successful.  Press 'Next' to continue."));
             ui->downloadButton->setEnabled(false);
             ui->continueButton->setEnabled(true);
             ui->continueButton->setDefault(true);
@@ -302,6 +379,16 @@ void Downloader::downloaderFinished()
     }
 }
 
+void Downloader::on_urlEdit_returnPressed()
+{
+    on_downloadButton_clicked();
+}
+
+void Downloader::enableDownloadButton()
+{
+    ui->downloadButton->setEnabled(!(ui->urlEdit->text()).isEmpty());
+}
+
 void Downloader::httpReadyRead()
 {
     // this slot gets called every time the QNetworkReply has new data.
@@ -317,18 +404,16 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
     if (httpRequestAborted)
         return;
 
-    progressDialog->setMaximum(totalBytes);
-    progressDialog->setValue(bytesRead);
-
-    progressDialog->raise();
+    ui->progressBar->setMaximum(totalBytes);
+    ui->progressBar->setValue(bytesRead);
 }
 
 // This is called during the download to check for a hung state
 void Downloader::timerCheckDownloadProgress()
 {
-    if (progressDialog->value() > downloadProgress)
+    if (ui->progressBar->value() > downloadProgress)
     {
-        downloadProgress = progressDialog->value();
+        downloadProgress = ui->progressBar->value();
         return;
     }
     else
@@ -341,7 +426,7 @@ void Downloader::timerCheckDownloadProgress()
     }
 }
 
-// This is called when the URL is already pre-defined and you want to bypass the dialog window (overloaded)
+// This is called when the URL is already pre-defined (overloaded)
 void Downloader::setUrl(std::string source)
 {
     QUrl u;
@@ -349,7 +434,7 @@ void Downloader::setUrl(std::string source)
     setUrl(u);
 }
 
-// This is called when the URL is already pre-defined and you want to bypass the dialog window
+// This is called when the URL is already pre-defined
 void Downloader::setUrl(QUrl source)
 {
     url = source;
@@ -358,30 +443,238 @@ void Downloader::setUrl(QUrl source)
     ui->urlEdit->setEnabled(false);
 }
 
-// This is called when the Destination is already pre-defined and you want to bypass the dialog window (overloaded)
+// This is called when the Destination is already pre-defined (overloaded)
 void Downloader::setDest(std::string dest)
 {
     QString d = QString::fromStdString(dest);
     setDest(d);
 }
 
-// This is called when the Destination is already pre-defined and you want to bypass the dialog window
+// This is called when the Destination is already pre-defined
 void Downloader::setDest(QString dest)
 {
     fileDest = QFileInfo(dest);
 
     if (fileDest.exists())
     {
-        ui->statusLabel->setText(tr("File: %1 exists.").arg(fileDest.filePath()));
+        ui->statusLabel->setText(tr("The file \"%1\" already exists.\n\nPress 'Next' to continue with this file, or 'Download' to get a new one.").arg(fileDest.filePath()));
         ui->continueButton->setEnabled(true);
+        downloadFinished = true;
+        ui->progressBar->setMaximum(100);
+        ui->progressBar->setValue(100);
     }
     else
     {
+        ui->statusLabel->setText(tr("Press 'Download' to get the file."));
         ui->continueButton->setEnabled(false);
     }
 }
 
-void Downloader::setAutoDownload(bool nogui)
+void Downloader::reloadBlockchain()
 {
-    autoDownload = nogui;
+    bool turbo = true;
+
+    ui->statusLabel->setText(tr("Please wait...."));
+    ui->downloadButton->setEnabled(false);
+    ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(false);
+    ui->downloadButton->setDefault(false);
+    ui->continueButton->setDefault(false);
+    ui->quitButton->setDefault(true);
+    this->raise();
+
+    ui->progressBarLabel->setText(tr("Extracting:"));
+    ui->progressBar->setValue(0);
+
+    if (boost::filesystem::exists(fileDest.filePath().toStdString()))
+    {
+        printf("Preparing for Blockchain Reload...\n");
+    }
+    else
+    {
+        printf("Download failed!\n");
+        ui->statusLabel->setText(tr("An error ocurred. The bootstrap file could not be found. Please try to download it again."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(true);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(false);
+        return;
+    }
+
+    if (turbo)
+    {
+        // Test the archive.
+        QStringList zlist = JlCompress::getFileList(fileDest.filePath(), 1);
+        if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
+        {
+            printf("Bootstrap structure is valid.\n");
+        }
+        else
+        {
+            printf("Bootstrap structure is invalid!\n");
+            ui->statusLabel->setText(tr("I'm sorry, the bootstrap file structure appears to be invalid."));
+            ui->downloadButton->setEnabled(true);
+            ui->continueButton->setEnabled(false);
+            ui->quitButton->setEnabled(true);
+            ui->downloadButton->setDefault(false);
+            ui->continueButton->setDefault(false);
+            ui->quitButton->setDefault(true);
+            return;
+        }
+
+        // Extract bootstrap.zip
+        QStringList zextracted = JlCompress::extractDir(this, fileDest.filePath(), fileDest.path(), ui->progressBarLabel, ui->progressBar);
+
+        if (!zextracted.isEmpty())
+        {
+            printf("Bootstrap extract successful.\n");
+        }
+        else
+        {
+            printf("Bootstrap extract failed!\n");
+            ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract failed."));
+            ui->downloadButton->setEnabled(true);
+            ui->continueButton->setEnabled(false);
+            ui->quitButton->setEnabled(true);
+            ui->downloadButton->setDefault(false);
+            ui->continueButton->setDefault(false);
+            ui->quitButton->setDefault(true);
+            return;
+        }
+
+        if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
+            !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
+        {
+            printf("Bootstrap extract is invalid!\n");
+            ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract was successful, but the contents are invalid."));
+            ui->downloadButton->setEnabled(true);
+            ui->continueButton->setEnabled(false);
+            ui->quitButton->setEnabled(true);
+            ui->downloadButton->setDefault(false);
+            ui->continueButton->setDefault(false);
+            ui->quitButton->setDefault(true);
+            return;
+        }
+    }
+
+    printf("Bootstrap extract successful!\n");
+    ui->statusLabel->setText(tr("Congratulations, the bootstrap extract was successful! Your wallet will now restart..."));
+    ui->downloadButton->setEnabled(false);
+    ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(true);
+    ui->downloadButton->setDefault(false);
+    ui->continueButton->setDefault(false);
+    ui->quitButton->setDefault(false);
+    ui->progressBar->setValue(0);
+    this->raise();
+    MilliSleep(3000);
+
+    if (this->walletModel)
+    {
+        if (!walletModel->reloadBlockchain(turbo))
+        {
+            QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
+        }
+    }
+}
+
+void Downloader::checkForUpdate()
+{
+    ui->statusLabel->setText(tr("Please wait...."));
+    ui->downloadButton->setEnabled(false);
+    ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(false);
+    ui->downloadButton->setDefault(false);
+    ui->continueButton->setDefault(false);
+    ui->quitButton->setDefault(true);
+    this->raise();
+
+    ui->progressBarLabel->setText(tr("Extracting:"));
+    ui->progressBar->setValue(0);
+
+#if !defined(WIN32) && !defined(MAC_OSX)
+    // If Linux, extract zip contents and make vericoin-qt executable then restart.
+    // Test the archive by looking for the version number that was in VERSION.json.
+    QStringList zlist = JlCompress::getFileList(fileDest.filePath(), -1);
+    if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","1.0.0.0").c_str()))
+    {
+        printf("Update structure is valid.\n");
+    }
+    else
+    {
+        printf("Update structure is invalid!\n");
+        ui->statusLabel->setText(tr("I'm sorry, the update file structure appears to be invalid."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(false);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(true);
+        return;
+    }
+    // Extract the Update
+    QStringList zextracted = JlCompress::extractDir(this, fileDest.filePath(), fileDest.path(), ui->progressBarLabel, ui->progressBar);
+    if (!zextracted.isEmpty())
+    {
+        printf("Update extract successful.\n");
+    }
+    else
+    {
+        printf("Update extract failed!\n");
+        ui->statusLabel->setText(tr("I'm sorry, the update extract failed."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(false);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(true);
+        return;
+    }
+
+    if (!boost::filesystem::exists(GetProgramDir() / zlist[0].toStdString().append("vericoin-qt")))
+    {
+        printf("Update extract is invalid!\n");
+        ui->statusLabel->setText(tr("I'm sorry, the update extract was successful, but the contents are invalid."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(false);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(true);
+        return;
+    }
+
+    // Rename the old and move in the new binary then make sure it's executable
+    boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
+    boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
+    boost::filesystem::permissions(boost::filesystem::path(GetArg("-programpath","vericoin-qt")), boost::filesystem::others_exe | boost::filesystem::owner_exe);
+    // Rename the old and move in the new config
+    boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
+    boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
+    // Get the README
+    boost::filesystem::rename(zlist[0].toStdString().append("README"), "README");
+    boost::filesystem::remove_all(zlist[0].toStdString());
+#endif // Linux
+
+    ui->statusLabel->setText(tr("Congratulations, the update was successful! Your wallet will now restart..."));
+    ui->downloadButton->setEnabled(false);
+    ui->continueButton->setEnabled(false);
+    ui->quitButton->setEnabled(true);
+    ui->downloadButton->setDefault(false);
+    ui->continueButton->setDefault(false);
+    ui->quitButton->setDefault(false);
+    ui->progressBar->setValue(0);
+    this->raise();
+    MilliSleep(3000);
+
+    // Restart with the executable.
+    if (this->walletModel)
+    {
+        if (!walletModel->checkForUpdate())
+        {
+            QMessageBox::warning(this, tr("Update Failed"), tr("There was an error trying to update the wallet."));
+        }
+    }
 }

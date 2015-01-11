@@ -1,7 +1,8 @@
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
-
+#include "guiutil.h"
 #include "bitcoinunits.h"
+#include "guiconstants.h"
 #include "monitoreddatamapper.h"
 #include "netbase.h"
 #include "optionsmodel.h"
@@ -13,6 +14,8 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 
+using namespace GUIUtil;
+
 OptionsDialog::OptionsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::OptionsDialog),
@@ -23,7 +26,8 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     fProxyIpValid(true)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF; color:#000000;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
     /* Network elements init */
 #ifndef USE_UPNP
@@ -117,7 +121,7 @@ void OptionsDialog::setModel(OptionsModel *model)
 
     /* update the display unit, to not use the default ("VRC") */
     updateDisplayUnit();
-
+    /* update the decimal points */
     updateDecimalPoints();
 
     /* warn only when language selection changes by user action (placed here so init via mapper doesn't trigger this) */

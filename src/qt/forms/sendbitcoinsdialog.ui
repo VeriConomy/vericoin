@@ -7,11 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>1024</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Send Coins</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: white;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="bottomMargin">
@@ -109,9 +112,14 @@
               <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>Lato</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>Inputs...</string>
@@ -121,7 +129,7 @@ QPushButton:pressed { background : #418BCA; }</string>
           <item>
            <widget class="QLabel" name="labelCoinControlAutomaticallySelected">
             <property name="text">
-             <string>automatically selected</string>
+             <string>(automatically selected)</string>
             </property>
             <property name="margin">
              <number>5</number>
@@ -224,7 +232,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlQuantityText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -269,7 +277,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlBytesText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -327,7 +335,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlAmountText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -369,7 +377,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlPriorityText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -427,7 +435,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlFeeText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -469,7 +477,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlLowOutputText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -527,7 +535,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlAfterFeeText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -569,7 +577,7 @@ QPushButton:pressed { background : #418BCA; }</string>
                 <widget class="QLabel" name="labelCoinControlChangeText">
                  <property name="font">
                   <font>
-                   <pointsize>10</pointsize>
+                   <pointsize>11</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
@@ -628,7 +636,7 @@ QPushButton:pressed { background : #418BCA; }</string>
           <item>
            <widget class="QCheckBox" name="checkBoxCoinControlChange">
             <property name="text">
-             <string>custom change address</string>
+             <string>Custom Change Address</string>
             </property>
            </widget>
           </item>
@@ -701,8 +709,11 @@ QPushButton:pressed { background : #418BCA; }</string>
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>782</height>
+        <height>537</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: white;</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -754,15 +765,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Send to multiple recipients at once</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Add &amp;Recipient</string>
@@ -799,15 +809,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Remove all transaction fields</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Clear &amp;All</string>
@@ -846,7 +855,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -865,7 +874,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -911,15 +920,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Confirm the send action</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Send</string>

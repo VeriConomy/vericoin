@@ -8,7 +8,6 @@
 #include "strlcpy.h"
 #include "version.h"
 #include "ui_interface.h"
-#include <boost/algorithm/string/join.hpp>
 
 #ifdef QT_GUI
 #include "downloader.h"
@@ -33,6 +32,7 @@ namespace boost {
 #include <boost/foreach.hpp>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 #include <stdarg.h>
@@ -77,9 +77,16 @@ using namespace std;
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
-const char *chatUrl = "https://kiwiirc.com/client/irc.freenode.net/#vericoin";
 const char *walletUrl = "https://www.vericoin.info/";
-const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";  // Don't set to https if the cert is invalid
+const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
+const char *forumsUrl = "http://www.vericoinforums.com";
+bool fRestart = false;
+bool fRescan = false;
+bool fNewVersion = false;
+bool fMenuCheckForUpdate = false;
+bool fTimerCheckForUpdate = false;
+bool fBootstrapTurbo = false;
+bool fSuperNETInstalled = false;
 #endif
 bool fDebug = false;
 bool fDebugNet = false;
@@ -87,10 +94,6 @@ bool fPrintToConsole = false;
 bool fPrintToDebugger = false;
 bool fRequestShutdown = false;
 bool fShutdown = false;
-bool fRestart = false;
-bool fRescan = false;
-bool fNewVersion = false;
-bool fBootstrapTurbo = false;
 bool fDaemon = false;
 bool fServer = false;
 bool fCommandLine = false;
@@ -1260,11 +1263,10 @@ boost::filesystem::path GetVersionFile()
     // Download the file.
     printf("Downloading version data...\n");
     Downloader * vf = new Downloader(NULL);
+    vf->setAttribute(Qt::WA_DontShowOnScreen);
     vf->setUrl(versionUrl);
     vf->setDest(boostPathToString(versionFile));
-    vf->setAutoDownload(true);
-    vf->setAttribute(Qt::WA_DontShowOnScreen);
-    vf->startDownload();
+    vf->autoDownload = true;
     vf->exec();
     if (vf->downloadFinished)
     {
@@ -1277,11 +1279,13 @@ boost::filesystem::path GetVersionFile()
         return boost::filesystem::path("");
     }
 }
+#endif // QT_GUI
 
+#ifdef QT_GUI
 // Reads the version file and maps it to the current configuration.
 void ReadVersionFile()
 {
-    if (fNewVersion)
+    if (fNewVersion && !fMenuCheckForUpdate)
         return; // New version data already loaded
 
     QString versionData;
@@ -1315,38 +1319,42 @@ void ReadVersionFile()
 #endif
 #endif
         bool vBootstrap = versionObj.value(QString("bootstrap")).toBool();
+        QString vTrustedUrls = versionObj.value(QString("trustedUrls")).toString();
 
         SetArg("-vTitle", vTitle.toStdString());
         SetArg("-vDescription", vDescription.toStdString());
         SetArg("-vVersion", vVersion.toStdString());
         SetArg("-vFileName", vFileName.toStdString());
         SetBoolArg("-vBootstrap", vBootstrap);
+        SetArg("-vTrustedUrls", vTrustedUrls.toStdString());
 
         version = vVersion.toStdString();
+        int maj = 0;
+        int min = 0;
+        int rev = 0;
+        int bld = 0;
+        typedef vector<string> parts_type;
+        parts_type parts;
+        boost::split(parts, version, boost::is_any_of(".,"), boost::token_compress_on); // catch those fat-fingers ;)
+        int i = 0;
+        for (vector<string>::iterator it = parts.begin(); it != parts.end() && i++ < parts.size(); ++it)
+        {
+            switch (i)
+                {
+                case 1: maj = atoi(*it); break;
+                case 2: min = atoi(*it); break;
+                case 3: rev = atoi(*it); break;
+                case 4: bld = atoi(*it); break;
+                }
+        }
+        version = itostr(maj) + "." + itostr(min) + "." + itostr(rev) + "." + itostr(bld);
         if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
         {
-            int maj = 0;
-            int min = 0;
-            int rev = 0;
-            int bld = 0;
-            typedef vector<string> parts_type;
-            parts_type parts;
-            boost::split(parts, version, ::ispunct);
-            int i = parts.size();
-            for (vector<string>::iterator it = parts.begin(); it != parts.end() && --i < 4; ++it)
-            {
-                switch (i)
-                {
-                case 3: maj = atoi(*it); break;
-                case 2: min = atoi(*it); break;
-                case 1: rev = atoi(*it); break;
-                case 0: bld = atoi(*it); break;
-                }
-            }
-            if (maj > CLIENT_VERSION_MAJOR || min > CLIENT_VERSION_MINOR || rev > CLIENT_VERSION_REVISION || bld > CLIENT_VERSION_BUILD)
-            {
-                fNewVersion = true;
-            }
+            fNewVersion = true;
+        }
+        else
+        {
+            fNewVersion = false;
         }
     }
     else

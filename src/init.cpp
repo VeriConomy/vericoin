@@ -91,14 +91,7 @@ void Shutdown(void* parg)
         bitdb.Flush(false);
         StopNode();
         bitdb.Flush(true);
-        boost::filesystem::remove(GetPidFile());
-        UnregisterWallet(pwalletMain);
-        delete pwalletMain;
-        NewThread(ExitTimeout, NULL);
 
-        MilliSleep(50);
-        printf("VeriCoin exited\n\n");
-        fExit = true;
 #ifdef QT_GUI
         if (fRestart)
         {
@@ -116,10 +109,18 @@ void Shutdown(void* parg)
                     printf("Bootstrapturbo filesystem error!\n");
                 }
             }
-
             RestartWallet((fRescan ? "-rescan" : NULL), true);
         }
-#else // !QT_GUI
+#endif
+        boost::filesystem::remove(GetPidFile());
+        UnregisterWallet(pwalletMain);
+        delete pwalletMain;
+        NewThread(ExitTimeout, NULL);
+        MilliSleep(50);
+        printf("VeriCoin exited\n\n");
+        fExit = true;
+
+#ifndef QT_GUI
         // ensure non-UI client gets exited here, but let Bitcoin-Qt reach 'return 0;' in bitcoin.cpp
         exit(0);
 #endif
@@ -140,7 +141,7 @@ void RestartWallet(const char *parm, bool fOldParms)
     QStringList newArgv(QApplication::instance()->arguments());
     QString command;
 
-    if (fNewVersion) // For Auto Update executable
+    if (fNewVersion && !fBootstrapTurbo && !fRescan) // For Auto Update executable
     {
 #ifdef WIN32
         // If Windows, replace argv[0] with the exe installer and restart.
@@ -160,7 +161,6 @@ void RestartWallet(const char *parm, bool fOldParms)
         parm = "-bootstrapturbo";
 #endif
 #endif
-
     }
     else
     {
@@ -326,7 +326,6 @@ std::string HelpMessage()
         "  -pid=<file>            " + _("Specify pid file (default: vericoind.pid)") + "\n" +
         "  -datadir=<dir>         " + _("Specify data directory") + "\n" +
         "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n" +
-        "  -bootstrapturbo        " + _("Force a reload of the turbo bootstrap file if flag is 'true' in version file.") + "\n" +
         "  -dbcache=<n>           " + _("Set database cache size in megabytes (default: 25)") + "\n" +
         "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n" +
         "  -timeout=<n>           " + _("Specify connection timeout in milliseconds (default: 5000)") + "\n" +
@@ -363,6 +362,7 @@ std::string HelpMessage()
         "  -paytxfee=<amt>        " + _("Fee per KB to add to transactions you send") + "\n" +
         "  -mininput=<amt>        " + _("When creating transactions, ignore inputs with value less than this (default: 0.01)") + "\n" +
 #ifdef QT_GUI
+        "  -bootstrapturbo        " + _("Force a reload of the turbo bootstrap file if flag is 'true' in version file.") + "\n" +
         "  -server                " + _("Accept command line and JSON-RPC commands") + "\n" +
 #endif
 #if !defined(WIN32) && !defined(QT_GUI)

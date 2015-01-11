@@ -4,12 +4,13 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QWebFrame>
-#include <QWebView>
+#include <QResizeEvent>
 
 class TransactionTableModel;
 class ClientModel;
 class WalletModel;
 class TransactionView;
+class TransactionsPage;
 class OverviewPage;
 class AddressBookPage;
 class SendCoinsDialog;
@@ -18,6 +19,12 @@ class SignVerifyMessageDialog;
 class AccessNxtInsideDialog;
 class Notificator;
 class RPCConsole;
+class Downloader;
+class WebView;
+class fiatPage;
+class newsPage;
+class chatPage;
+class superNETPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -50,14 +57,13 @@ public:
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
-    void ReloadBlockchain();
-    void CheckForUpdate();
 
 protected:
     void changeEvent(QEvent *e);
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+    void resizeEvent(QResizeEvent *e);
 
 private:
     ClientModel *clientModel;
@@ -66,7 +72,8 @@ private:
     QStackedWidget *centralWidget;
 
     OverviewPage *overviewPage;
-    QWidget *transactionsPage;
+    TransactionsPage *transactionsPage;
+    TransactionView *transactionView;
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
@@ -83,7 +90,8 @@ private:
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
-    QLabel *progressBarLabel;
+    QLabel *labelVersionIcon;
+    QLabel *versionLabel;
     QLabel *stakingLabel;
     QLabel *connectionsLabel;
     QProgressBar *progressBar;
@@ -121,7 +129,6 @@ private:
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
-    TransactionView *transactionView;
     RPCConsole *rpcConsole;
 
     QMovie *syncIconMovie;
@@ -136,6 +143,8 @@ private:
     void createTrayIcon();
 
 public slots:
+    /** Set version icon good/bad */
+    void setVersionIcon(bool newVersion);
     /** Set number of connections shown in the UI */
     void setNumConnections(int count);
     /** Set number of blocks shown in the UI */
@@ -158,7 +167,10 @@ public slots:
     */
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
-    void confirm(QString strMessage, bool *confirm);
+    void reloadBlockchainActionEnabled(bool enabled);
+    void reloadBlockchain();
+    void checkForUpdateActionEnabled(bool enabled);
+    void checkForUpdate();
 
 private slots:
     /** Switch to overview (home) page */
@@ -182,8 +194,6 @@ private slots:
     /** Switch to Fiat page */
     void gotoFiatPage();
     void resizeGUI();
-
-
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
@@ -217,12 +227,8 @@ private slots:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
-    /** Reload the blockchain from bootstrap turbo or classic */
-    void reloadBlockchain();
     /** Rescan the blockchain */
     void rescanBlockchain();
-    /** Check for wallet update */
-    void checkForUpdate();
     /** Check for wallet update from Help menu */
     void menuCheckForUpdate();
     /** Check for wallet update from timer */
@@ -234,8 +240,6 @@ private slots:
     void toggleHidden();
 
     void updateStakingIcon();
-    void openUrl(QUrl url);
-    void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 
 #endif

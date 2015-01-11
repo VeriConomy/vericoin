@@ -5,11 +5,12 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-#CONFIG += debug_and_release
+#CONFIG += debug
+CONFIG += release
 !win32{
 CONFIG += static
 }
-QT += network webkit
+QT += network webkit webkitwidgets
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += webkitwidgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
@@ -118,9 +119,7 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
-SOURCES += src/txdb-leveldb.cpp \
-    src/qt/cookiejar.cpp \
-    src/qt/autosaver.cpp
+SOURCES += src/txdb-leveldb.cpp
 !win32 {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
@@ -208,7 +207,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
-    src/qt/tooltip.h \
     src/alert.h \
     src/addrman.h \
     src/base58.h \
@@ -269,6 +267,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \
     src/qt/transactionview.h \
+    src/qt/transactionspage.h \
     src/qt/walletmodel.h \
     src/bitcoinrpc.h \
     src/qt/overviewpage.h \
@@ -293,7 +292,9 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/downloader.h \
     src/qt/updatedialog.h \
     src/qt/cookiejar.h \
-    src/qt/autosaver.h
+    src/qt/autosaver.h \
+    src/qt/rescandialog.h \
+    src/qt/webview.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
@@ -339,6 +340,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
     src/qt/transactionview.cpp \
+    src/qt/transactionspage.cpp \
     src/qt/walletmodel.cpp \
     src/bitcoinrpc.cpp \
     src/rpcdump.cpp \
@@ -363,6 +365,9 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/rpcconsole.cpp \
     src/qt/downloader.cpp \
     src/qt/updatedialog.cpp \
+    src/qt/rescandialog.cpp \
+    src/qt/cookiejar.cpp \
+    src/qt/autosaver.cpp \
     src/noui.cpp \
     src/kernel.cpp \
     src/scrypt-arm.S \
@@ -379,6 +384,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/zerocoin/Params.cpp \
     src/zerocoin/SerialNumberSignatureOfKnowledge.cpp \
     src/zerocoin/SpendMetaData.cpp \
+    src/qt/webview.cpp \
     src/zerocoin/ZeroTest.cpp
 
 RESOURCES += \
@@ -405,7 +411,9 @@ FORMS += \
     src/qt/forms/rpcconsole.ui \
     src/qt/forms/optionsdialog.ui \
     src/qt/forms/downloader.ui \
-    src/qt/forms/updatedialog.ui
+    src/qt/forms/updatedialog.ui \
+    src/qt/forms/rescandialog.ui \
+    src/qt/forms/transactionspage.ui
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h

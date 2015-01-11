@@ -1,6 +1,6 @@
 #include "signverifymessagedialog.h"
 #include "ui_signverifymessagedialog.h"
-
+#include "guiconstants.h"
 #include "addressbookpage.h"
 #include "base58.h"
 #include "guiutil.h"
@@ -12,8 +12,9 @@
 
 #include <string>
 #include <vector>
-
 #include <QClipboard>
+
+using namespace GUIUtil;
 
 SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     QDialog(parent),
@@ -21,7 +22,8 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 #if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
@@ -44,6 +46,11 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
 
     ui->signatureOut_SM->setFont(GUIUtil::bitcoinAddressFont());
     ui->signatureIn_VM->setFont(GUIUtil::bitcoinAddressFont());
+
+    ui->addressBookButton_SM->setFixedSize(30,27);
+    ui->addressBookButton_VM->setFixedSize(30,27);
+    ui->copySignatureButton_SM->setFixedSize(30,27);
+    ui->pasteButton_SM->setFixedSize(30,27);
 }
 
 SignVerifyMessageDialog::~SignVerifyMessageDialog()

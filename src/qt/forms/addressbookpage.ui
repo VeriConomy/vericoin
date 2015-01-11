@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>1024</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="font">
@@ -30,10 +30,13 @@
       <string>These are your VeriCoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</string>
      </property>
      <property name="textFormat">
-      <enum>Qt::PlainText</enum>
+      <enum>Qt::AutoText</enum>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::NoTextInteraction</set>
      </property>
     </widget>
    </item>
@@ -78,15 +81,14 @@
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Create a new address</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;New Address</string>
@@ -114,15 +116,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Copy the currently selected address to the system clipboard</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Copy Address</string>
@@ -150,12 +151,11 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Show &amp;QR</string>
@@ -183,15 +183,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Sign a message to prove you own a VeriCoin address</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Sign &amp;Message</string>
@@ -219,15 +218,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Verify a message to ensure it was signed with a specified VeriCoin address</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Verify Message</string>
@@ -255,15 +253,14 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="toolTip">
         <string>Delete the currently selected address from the list</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Delete</string>

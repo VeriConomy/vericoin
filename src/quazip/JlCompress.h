@@ -129,14 +129,14 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QWidget *parent, QString fileCompressed, QString dir = QString());
+    static QStringList extractDir(QWidget *parent, QString fileCompressed, QString dir = QString(), QLabel *progressBarLabel = 0, QProgressBar *progressBar = 0);
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the
       list of the entries, including both files and directories if they
       are present separately.
       */
-    static QStringList getFileList(QString fileCompressed);
+    static QStringList getFileList(QString fileCompressed, int i = -1); // i = num entries; -1 for all.
 };
 
 #endif /* JLCOMPRESSFOLDER_H_ */

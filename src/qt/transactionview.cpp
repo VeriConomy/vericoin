@@ -12,7 +12,6 @@
 #include "optionsmodel.h"
 #include "guiutil.h"
 #include "guiconstants.h"
-#include "tooltip.h"
 
 #include <QScrollBar>
 #include <QComboBox>
@@ -30,13 +29,16 @@
 #include <QClipboard>
 #include <QLabel>
 #include <QDateTimeEdit>
+#include <QGraphicsView>
+
+using namespace GUIUtil;
 
 TransactionView::TransactionView(QWidget *parent) :
     QWidget(parent), model(0), transactionProxyModel(0),
     transactionView(0)
 {
-    // Build filter row
-    this->setStyleSheet("background-color: white; color: black;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -49,11 +51,12 @@ TransactionView::TransactionView(QWidget *parent) :
     hlayout->addSpacing(23);
 #endif
 
+    // Build filter row
     dateWidget = new QComboBox(this);
 #ifdef Q_OS_MAC
-    dateWidget->setFixedWidth(121);
+    dateWidget->setFixedWidth(151);
 #else
-    dateWidget->setFixedWidth(120);
+    dateWidget->setFixedWidth(150);
 #endif
     dateWidget->addItem(tr("All"), All);
     dateWidget->addItem(tr("Today"), Today);
@@ -94,11 +97,7 @@ TransactionView::TransactionView(QWidget *parent) :
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
     amountWidget->setPlaceholderText(tr("Min amount"));
 #endif
-#ifdef Q_OS_MAC
-    amountWidget->setFixedWidth(97);
-#else
     amountWidget->setFixedWidth(100);
-#endif
     amountWidget->setValidator(new QDoubleValidator(0, 1e20, 8, this));
     hlayout->addWidget(amountWidget);
 
@@ -107,6 +106,9 @@ TransactionView::TransactionView(QWidget *parent) :
     vlayout->setSpacing(0);
 
     QTableView *view = new QTableView(this);
+    view->setFont(veriFont);
+    view->setMouseTracking(true);
+    view->viewport()->setAttribute(Qt::WA_Hover, true);
     vlayout->addLayout(hlayout);
     vlayout->addWidget(createDateRangeWidget());
     vlayout->addWidget(view);
@@ -182,7 +184,7 @@ void TransactionView::setModel(WalletModel *model)
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Status, 23);
         transactionView->horizontalHeader()->resizeSection(
-                TransactionTableModel::Date, 130);
+                TransactionTableModel::Date, 150);
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Type, 120);
         transactionView->horizontalHeader()->setResizeMode(

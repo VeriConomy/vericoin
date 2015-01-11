@@ -70,6 +70,11 @@ void ClientModel::updateTimer()
 
         emit numBlocksChanged(newNumBlocks, newNumBlocksOfPeers);
     }
+
+    if (fNewVersion)
+    {
+        emit versionChanged(fNewVersion);
+    }
 }
 
 void ClientModel::updateNumConnections(int numConnections)

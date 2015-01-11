@@ -232,6 +232,7 @@ TransactionTableModel::TransactionTableModel(CWallet* wallet, WalletModel *paren
     timer->start(MODEL_UPDATE_DELAY);
 
     connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+    connect(walletModel->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
 }
 
 TransactionTableModel::~TransactionTableModel()
@@ -339,7 +340,7 @@ QString TransactionTableModel::lookupAddress(const std::string &address, bool to
     }
     if(label.isEmpty() || walletModel->getOptionsModel()->getDisplayAddresses() || tooltip)
     {
-        description += QString("(") + QString::fromStdString(address) + QString(")");
+        description += QString::fromStdString(address);
     }
     return description;
 }
@@ -618,6 +619,12 @@ QModelIndex TransactionTableModel::index(int row, int column, const QModelIndex 
 }
 
 void TransactionTableModel::updateDisplayUnit()
+{
+    // emit dataChanged to update Amount column with the current unit
+    emit dataChanged(index(0, Amount), index(priv->size()-1, Amount));
+}
+
+void TransactionTableModel::updateDecimalPoints()
 {
     // emit dataChanged to update Amount column with the current unit
     emit dataChanged(index(0, Amount), index(priv->size()-1, Amount));

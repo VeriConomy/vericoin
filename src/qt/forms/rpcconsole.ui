@@ -19,7 +19,7 @@
      <property name="font">
       <font>
        <family>Lato</family>
-       <pointsize>10</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="currentIndex">
@@ -336,7 +336,7 @@
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="toolTip">
@@ -378,7 +378,7 @@ QPushButton:pressed { background : #418BCA; }</string>
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="toolTip">
@@ -477,8 +477,7 @@ QPushButton:pressed { background : #418BCA; }</string>
             <string>Clear console</string>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string/>

@@ -2,6 +2,7 @@
 #define OVERVIEWPAGE_H
 
 #include <QWidget>
+#include <QNetworkReply>
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -46,7 +47,10 @@ private:
 
 private slots:
     void updateDisplayUnit();
+    void updateDecimalPoints();
     void handleTransactionClicked(const QModelIndex &index);
+    void myOpenUrl(QUrl url);
+    void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
 };
 
 #endif // OVERVIEWPAGE_H

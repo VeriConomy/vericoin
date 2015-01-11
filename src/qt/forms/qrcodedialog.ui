@@ -70,7 +70,7 @@
     <widget class="QWidget" name="widget" native="true">
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -190,12 +190,11 @@
           <property name="font">
            <font>
             <family>Lato</family>
-            <pointsize>10</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>&amp;Save As...</string>

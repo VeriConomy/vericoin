@@ -1,9 +1,7 @@
 #include "veribitcoinamountfield.h"
 #include "qvaluecombobox.h"
 #include "veribitcoinunits.h"
-
 #include "guiconstants.h"
-#include "tooltip.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -167,4 +165,9 @@ void veriBitcoinAmountField::unitChanged(int idx)
 void veriBitcoinAmountField::setDisplayUnit(int newUnit)
 {
     unit->setValue(newUnit);
+}
+
+void veriBitcoinAmountField::setDisplayDecimals(int newDecimals)
+{
+    amount->setDecimals(newDecimals);
 }

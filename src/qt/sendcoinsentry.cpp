@@ -1,6 +1,7 @@
 #include "sendcoinsentry.h"
 #include "ui_sendcoinsentry.h"
 #include "guiutil.h"
+#include "guiconstants.h"
 #include "bitcoinunits.h"
 #include "addressbookpage.h"
 #include "walletmodel.h"
@@ -10,13 +11,16 @@
 #include <QApplication>
 #include <QClipboard>
 
+using namespace GUIUtil;
+
 SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::SendCoinsEntry),
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet("background-color: #FFFFFF;");
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 #ifdef Q_OS_MAC
     ui->payToLayout->setSpacing(4);
@@ -28,6 +32,9 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
 #endif
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->payTo);
+    ui->addressBookButton->setFixedSize(30,27);
+    ui->pasteButton->setFixedSize(30,27);
+    ui->deleteButton->setFixedSize(30,27);
 
     GUIUtil::setupAddressWidget(ui->payTo, this);
 }
@@ -71,7 +78,10 @@ void SendCoinsEntry::setModel(WalletModel *model)
     this->model = model;
 
     if(model && model->getOptionsModel())
+    {
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
+    }
 
     connect(ui->payAmount, SIGNAL(textChanged()), this, SIGNAL(payAmountChanged()));
 
@@ -91,6 +101,7 @@ void SendCoinsEntry::clear()
     ui->payTo->setFocus();
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
+    updateDecimalPoints();
 }
 
 void SendCoinsEntry::on_deleteButton_clicked()
@@ -173,5 +184,14 @@ void SendCoinsEntry::updateDisplayUnit()
     {
         // Update payAmount with the current unit
         ui->payAmount->setDisplayUnit(model->getOptionsModel()->getDisplayUnit());
+    }
+}
+
+void SendCoinsEntry::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        // Update payAmount with the current decimals
+        ui->payAmount->setDisplayDecimals(model->getOptionsModel()->getDecimalPoints());
     }
 }

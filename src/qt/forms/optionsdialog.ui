@@ -26,7 +26,7 @@
     <widget class="QTabWidget" name="veriSendOptions">
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="tabPosition">
@@ -44,7 +44,7 @@
         <widget class="QLabel" name="transactionFeeInfoLabel">
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -352,7 +352,7 @@
           <widget class="QLabel" name="langLabel">
            <property name="font">
             <font>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="text">
@@ -381,7 +381,7 @@
           <widget class="QLabel" name="unitLabel">
            <property name="font">
             <font>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="text">
@@ -446,7 +446,7 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="layoutDirection">
@@ -479,7 +479,7 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>10</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="toolTip">
@@ -505,7 +505,7 @@
         <widget class="QCheckBox" name="displayAddresses">
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="toolTip">
@@ -520,7 +520,7 @@
         <widget class="QCheckBox" name="coinControlFeatures">
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="toolTip">
@@ -660,12 +660,11 @@
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;OK</string>
@@ -683,12 +682,11 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Cancel</string>
@@ -709,12 +707,11 @@ QPushButton:pressed { background : #418BCA; }</string>
        <property name="font">
         <font>
          <family>Lato</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Apply</string>

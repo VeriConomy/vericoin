@@ -16,6 +16,7 @@ vericoin.includes
 vericoin-qt
 vericoin-qt.pro.*
 vericoin-qt.pro.user
+VERSION.json
 .*.swp
 *.*~*
 *.bak

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>512</height>
+    <width>964</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="font">
@@ -19,7 +19,7 @@
    <string>Coin Control</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: white; color: black;</string>
+   <string notr="true">background: white; color: black;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -59,7 +59,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -91,7 +91,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -139,7 +139,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -171,7 +171,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -219,7 +219,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -257,7 +257,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -305,7 +305,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -343,7 +343,7 @@
          <property name="font">
           <font>
            <family>Monospace</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="cursor">
@@ -402,12 +402,11 @@
          <property name="font">
           <font>
            <family>Lato</family>
-           <pointsize>10</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>Select All</string>
@@ -554,12 +553,15 @@ QPushButton:pressed { background : #418BCA; }</string>
      <property name="font">
       <font>
        <family>Lato</family>
+       <pointsize>10</pointsize>
        <kerning>true</kerning>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">QPushButton { background : #0a3057; width : 120; height : 25; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
-QPushButton:pressed { background : #418BCA; }</string>
+      <string notr="true">QPushButton { background : #0a3057; width: 140; height: 27; border : none; color: white} 
+QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }
+QPushButton:disabled { background : #EBEBEB;  color: #666666;}</string>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

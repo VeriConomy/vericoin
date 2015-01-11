@@ -4,6 +4,7 @@
 #include <QString>
 #include <QObject>
 #include <QMessageBox>
+#include <QGraphicsView>
 #include <boost/filesystem.hpp>
 
 QT_BEGIN_NAMESPACE
@@ -20,6 +21,10 @@ class SendCoinsRecipient;
  */
 namespace GUIUtil
 {
+    // Common stylesheets
+    extern QString veriStyleSheet;
+    extern QGraphicsView *header(QWidget *parent, QString backgroundImage);
+
     // Create human-readable string from date
     QString dateTimeStr(const QDateTime &datetime);
     QString dateTimeStr(qint64 nTime);
@@ -115,8 +120,6 @@ namespace GUIUtil
         QString coreOptions;
         QString uiOptions;
     };
-
-    bool isTrustedUrl(QUrl url);
 
     #if BOOST_FILESYSTEM_VERSION >= 3
     boost::filesystem::path qstringToBoostPath(const QString &path);

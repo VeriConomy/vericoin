@@ -1,9 +1,7 @@
 #include "bitcoinamountfield.h"
 #include "qvaluecombobox.h"
 #include "bitcoinunits.h"
-
 #include "guiconstants.h"
-#include "tooltip.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -167,4 +165,9 @@ void BitcoinAmountField::unitChanged(int idx)
 void BitcoinAmountField::setDisplayUnit(int newUnit)
 {
     unit->setValue(newUnit);
+}
+
+void BitcoinAmountField::setDisplayDecimals(int newDecimals)
+{
+    amount->setDecimals(newDecimals);
 }

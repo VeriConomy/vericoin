@@ -1,6 +1,5 @@
 #include "sendbitcoinsdialog.h"
 #include "ui_sendbitcoinsdialog.h"
-#include "tooltip.h"
 
 #include "init.h"
 #include "walletmodel.h"
@@ -13,6 +12,7 @@
 #include "optionsmodel.h"
 #include "sendbitcoinsentry.h"
 #include "guiutil.h"
+#include "guiconstants.h"
 #include "askpassphrasedialog.h"
 #include "coincontrol.h"
 #include "coincontroldialog.h"
@@ -27,21 +27,22 @@
 #include <QNetworkRequest>
 #include <QByteArray>
 #include <QSignalMapper>
+#include <QGraphicsView>
+
+using namespace GUIUtil;
 
 SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SendBitCoinsDialog),
     model(0)
 {
+    // Setup header and styles
+    GUIUtil::header(this, QString(":images/headerVeriBit"));
+
     ui->setupUi(this);
-
-    this->setStyleSheet("background-color: white; color: black;");
-
-/*#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
-    ui->addButton->setIcon(QIcon());
-    ui->clearButton->setIcon(QIcon());
-    ui->veriBitSendButton->setIcon(QIcon());
-#endif*/
+    this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    this->setStyleSheet(GUIUtil::veriStyleSheet);
+    this->setFont(veriFont);
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
@@ -105,13 +106,14 @@ void SendBitCoinsDialog::setModel(WalletModel *model)
         setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance(), model->getImmatureBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64, qint64)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
 
         // Coin Control
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(coinControlUpdateLabels()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(coinControlUpdateLabels()));
         connect(model->getOptionsModel(), SIGNAL(coinControlFeaturesChanged(bool)), this, SLOT(coinControlFeatureChanged(bool)));
         connect(model->getOptionsModel(), SIGNAL(transactionFeeChanged(qint64)), this, SLOT(coinControlUpdateLabels()));
         ui->frameCoinControl->setVisible(model->getOptionsModel()->getCoinControlFeatures());
-        ui->frameCoinControl->setStyleSheet("QToolTip { background-color: white; color: black; }");
         coinControlUpdateLabels();
     }
 }
@@ -263,6 +265,15 @@ void SendBitCoinsDialog::updateDisplayUnit()
     }
 }
 
+void SendBitCoinsDialog::updateDecimalPoints()
+{
+    if(model && model->getOptionsModel())
+    {
+        // Update labelBalance with the current balance and decimal points
+        updateDisplayUnit();
+    }
+}
+
 // Coin Control: copy label "Quantity" to clipboard
 void SendBitCoinsDialog::coinControlClipboardQuantity()
 {
@@ -352,7 +363,7 @@ void SendBitCoinsDialog::coinControlChangeEdited(const QString & text)
         CoinControlDialog::coinControl->destChange = CBitcoinAddress(text.toStdString()).Get();
 
         // label for the change address
-        ui->labelCoinControlChangeLabel->setStyleSheet("QLabel{color:black;}");
+        ui->labelCoinControlChangeLabel->setStyleSheet("QLabel{ color: " + STRING_VERIFONT + "; }");
         if (text.isEmpty())
             ui->labelCoinControlChangeLabel->setText("");
         else if (!CBitcoinAddress(text.toStdString()).IsValid())
