@@ -176,6 +176,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(fiat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), fiatPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     connect(fiat.webView->page(), SIGNAL(linkClicked(QUrl)), fiat.webView, SLOT(myOpenUrl(QUrl)));
     // fiat buttons
+    fiat.back->setDisabled(true);
+    fiat.home->setDisabled(true);
+    fiat.forward->setDisabled(true);
+    fiat.webView->sendButtons(fiat.back, fiat.home, fiat.forward);
     connect(fiat.back, SIGNAL(clicked()), fiat.webView, SLOT(myBack()));
     connect(fiat.home, SIGNAL(clicked()), fiat.webView, SLOT(myHome()));
     connect(fiat.forward, SIGNAL(clicked()), fiat.webView, SLOT(myForward()));
@@ -197,6 +201,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(news.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), newsPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     connect(news.webView->page(), SIGNAL(linkClicked(QUrl)), news.webView, SLOT(myOpenUrl(QUrl)));
     // news buttons
+    news.back->setDisabled(true);
+    news.home->setDisabled(true);
+    news.forward->setDisabled(true);
+    news.webView->sendButtons(news.back, news.home, news.forward);
     connect(news.back, SIGNAL(clicked()), news.webView, SLOT(myBack()));
     connect(news.home, SIGNAL(clicked()), news.webView, SLOT(myHome()));
     connect(news.forward, SIGNAL(clicked()), news.webView, SLOT(myForward()));
@@ -217,6 +225,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(chat.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), chatPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     connect(chat.webView->page(), SIGNAL(linkClicked(QUrl)), chat.webView, SLOT(myOpenUrl(QUrl)));
     // chat buttons
+    chat.back->setDisabled(true);
+    chat.home->setDisabled(true);
+    chat.forward->setDisabled(true);
+    chat.webView->sendButtons(chat.back, chat.home, chat.forward);
     connect(chat.back, SIGNAL(clicked()), chat.webView, SLOT(myBack()));
     connect(chat.home, SIGNAL(clicked()), chat.webView, SLOT(myHome()));
     connect(chat.forward, SIGNAL(clicked()), chat.webView, SLOT(myForward()));
@@ -239,6 +251,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(superNET.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), superNETPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     connect(superNET.webView->page(), SIGNAL(linkClicked(QUrl)), superNET.webView, SLOT(myOpenUrl(QUrl)));
     // superNET buttons
+    superNET.back->setDisabled(true);
+    superNET.home->setDisabled(true);
+    superNET.forward->setDisabled(true);
+    superNET.webView->sendButtons(superNET.back, superNET.home, superNET.forward);
     connect(superNET.back, SIGNAL(clicked()), superNET.webView, SLOT(myBack()));
     connect(superNET.home, SIGNAL(clicked()), superNET.webView, SLOT(myHome()));
     connect(superNET.forward, SIGNAL(clicked()), superNET.webView, SLOT(myForward()));
@@ -298,12 +314,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
-    stakingLabel->setFixedWidth(60);
+    stakingLabel->setFixedWidth(80);
 
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
-    connectionsLabel->setFixedWidth(80);
+    connectionsLabel->setFixedWidth(100);
 
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
@@ -317,7 +333,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     frameBlocks->setStyleSheet("QFrame { color: white; }");
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
-    frameBlocksLayout->setContentsMargins(23,3,3,3);
+    frameBlocksLayout->setContentsMargins(43,3,3,3);
     frameBlocksLayout->setSpacing(10);
 
     frameBlocksLayout->addStretch();
@@ -1492,6 +1508,7 @@ void BitcoinGUI::checkForUpdate()
     boost::filesystem::path fileName(GetProgramDir());
     QUrl url;
 
+    fTrustedUrlsSet = false;
     printf("Downloading and parsing version data...\n");
     ReadVersionFile();
 

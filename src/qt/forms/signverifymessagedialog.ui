@@ -30,6 +30,9 @@
        <family>Lato</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: white;</string>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
