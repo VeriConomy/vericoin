@@ -1542,6 +1542,8 @@ void BitcoinGUI::checkForUpdate()
     {
         if (fMenuCheckForUpdate)
         {
+            /** Set version icon good/bad */
+            setVersionIcon(fNewVersion);
             QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update required."));
         }
     }

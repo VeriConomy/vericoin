@@ -132,7 +132,7 @@
         <string>Choose address from address book</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
+        <string notr="true">QToolButton { background : #003257; border : none;} QToolButton:hover { background : #418BCA; } 
 QToolButton:pressed { background :#418BCA ; }
 </string>
        </property>
@@ -166,7 +166,7 @@ QToolButton:pressed { background :#418BCA ; }
         <string>Paste address from clipboard</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
+        <string notr="true">QToolButton { background : #003257; border : none;} QToolButton:hover { background : #418BCA; } 
 QToolButton:pressed { background :#418BCA ; }
 </string>
        </property>
@@ -200,7 +200,7 @@ QToolButton:pressed { background :#418BCA ; }
         <string>Remove this recipient</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
+        <string notr="true">QToolButton { background : #003257; border : none;} QToolButton:hover { background : #418BCA; } 
 QToolButton:pressed { background :#418BCA ; }
 </string>
        </property>
