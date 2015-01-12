@@ -257,6 +257,9 @@
               <stylestrategy>PreferAntialias</stylestrategy>
              </font>
             </property>
+            <property name="toolTip">
+             <string>Your current spendable balance</string>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
@@ -295,6 +298,9 @@
               <stylestrategy>PreferAntialias</stylestrategy>
              </font>
             </property>
+            <property name="toolTip">
+             <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
             </property>
@@ -330,7 +336,7 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="toolTip">
-             <string>Your current total balance</string>
+             <string/>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -376,7 +382,7 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="toolTip">
-             <string>Total of coins that was staked, and do not yet count toward the spendable balance.</string>
+             <string/>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -428,7 +434,7 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="toolTip">
-             <string>Your current spendable balance</string>
+             <string/>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -464,6 +470,9 @@
               <stylestrategy>PreferAntialias</stylestrategy>
              </font>
             </property>
+            <property name="toolTip">
+             <string>Your current total balance</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
             </property>
@@ -486,6 +495,9 @@
               <pointsize>11</pointsize>
               <stylestrategy>PreferAntialias</stylestrategy>
              </font>
+            </property>
+            <property name="toolTip">
+             <string>Total of coins that was staked, and do not yet count toward the spendable balance.</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
@@ -522,7 +534,7 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="toolTip">
-             <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
+             <string/>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -898,7 +910,7 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QWebView" name="stats">
+           <widget class="QWebView" name="stats" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -911,7 +923,7 @@
               <height>299</height>
              </size>
             </property>
-            <property name="url">
+            <property name="url" stdset="0">
              <url>
               <string>about:blank</string>
              </url>
@@ -1068,7 +1080,7 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QWebView" name="value">
+           <widget class="QWebView" name="value" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1081,7 +1093,7 @@
               <height>299</height>
              </size>
             </property>
-            <property name="url">
+            <property name="url" stdset="0">
              <url>
               <string>about:blank</string>
              </url>
@@ -1149,7 +1161,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0" colspan="2">
-        <widget class="QWebView" name="ticker">
+        <widget class="QWebView" name="ticker" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -1168,7 +1180,7 @@
            <height>45</height>
           </size>
          </property>
-         <property name="url">
+         <property name="url" stdset="0">
           <url>
            <string>about:blank</string>
           </url>

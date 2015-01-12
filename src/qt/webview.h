@@ -5,6 +5,7 @@
 #include <QWebHistory>
 #include <QDesktopServices>
 #include <QNetworkReply>
+#include <QPushButton>
 #include <QList>
 #include <QUrl>
 
@@ -20,6 +21,9 @@ public:
     explicit WebView(QWidget *parent = 0);
     ~WebView();
 
+    // Receives web nav buttons from parent webview
+    void sendButtons(QPushButton *bb, QPushButton *hb, QPushButton *fb);
+
 public slots:
     void myBack();
     void myHome();
@@ -31,6 +35,13 @@ public slots:
 
 private:
     Ui::WebView *ui;
+
+    QPushButton *backButton;
+    QPushButton *homeButton;
+    QPushButton *forwardButton;
+
+    // Set button enabled/disabled states
+    void setButtonStates(bool canGoBack, bool canGoHome, bool canGoForward);
 
     QList<QString> trustedUrls;
 };

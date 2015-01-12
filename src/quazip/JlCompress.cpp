@@ -470,16 +470,24 @@ QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QStr
         return QStringList();
     }
 
-    do {
-        QString name = zip.getCurrentFileName();
-        QString absFilePath = directory.absoluteFilePath(name);
-        progressBar->setValue(++progress);
-        if (!extractFile(&zip, "", absFilePath)) {
-            removeFile(extracted);
-            return QStringList();
-        }
-        extracted.append(absFilePath);
-    } while (zip.goToNextFile());
+    try
+    {
+        do {
+            QString name = zip.getCurrentFileName();
+            QString absFilePath = directory.absoluteFilePath(name);
+            progressBar->setValue(++progress);
+            if (!extractFile(&zip, "", absFilePath)) {
+                removeFile(extracted);
+                return QStringList();
+            }
+            extracted.append(absFilePath);
+        } while (zip.goToNextFile());
+    }
+    catch (...)
+    {
+        printf("JlCompress: Error extracting: %s\n", fileCompressed.toStdString().c_str());
+        return QStringList();
+    }
 
     // Chiudo il file zip
     zip.close();

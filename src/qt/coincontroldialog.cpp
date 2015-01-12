@@ -37,7 +37,7 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
 
-    this->layout()->setGeometry(QRect(0,0,HEADER_WIDTH, 600));
+    this->layout()->setGeometry(QRect(0,0,WINDOW_MIN_WIDTH, 600));
 
     // context menu actions
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);
@@ -112,11 +112,11 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     connect(ui->pushButtonSelectAll, SIGNAL(clicked()), this, SLOT(buttonSelectAllClicked()));
 
     ui->treeWidget->setColumnWidth(COLUMN_CHECKBOX, 84);
-    ui->treeWidget->setColumnWidth(COLUMN_AMOUNT, 100);
+    ui->treeWidget->setColumnWidth(COLUMN_AMOUNT, 180);
     ui->treeWidget->setColumnWidth(COLUMN_LABEL, 170);
-    ui->treeWidget->setColumnWidth(COLUMN_ADDRESS, 290);
-    ui->treeWidget->setColumnWidth(COLUMN_DATE, 110);
-    ui->treeWidget->setColumnWidth(COLUMN_CONFIRMATIONS, 100);
+    ui->treeWidget->setColumnWidth(COLUMN_ADDRESS, 360);
+    ui->treeWidget->setColumnWidth(COLUMN_DATE, 140);
+    ui->treeWidget->setColumnWidth(COLUMN_CONFIRMATIONS, 120);
     ui->treeWidget->setColumnWidth(COLUMN_PRIORITY, 100);
     ui->treeWidget->setColumnHidden(COLUMN_TXHASH, true);         // store transacton hash in this column, but dont show it
     ui->treeWidget->setColumnHidden(COLUMN_VOUT_INDEX, true);     // store vout index in this column, but dont show it
@@ -561,26 +561,26 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
     dialog->findChild<QLabel *>("labelCoinControlChange")       ->setEnabled(nPayAmount > 0);
     
     // stats
-    l1->setText(QString::number(nQuantity));                                 // Quantity        
-    l2->setText(bcu->formatWithUnit(nDisplayUnit, nAmount));        // Amount
-    l3->setText(bcu->formatWithUnit(nDisplayUnit, nPayFee));        // Fee
-    l4->setText(bcu->formatWithUnit(nDisplayUnit, nAfterFee));      // After Fee
-    l5->setText(((nBytes > 0) ? "~" : "") + QString::number(nBytes));                                    // Bytes
-    l6->setText(sPriorityLabel);                                             // Priority
-    l7->setText((fLowOutput ? (fDust ? tr("DUST") : tr("yes")) : tr("no"))); // Low Output / Dust
-    l8->setText(bcu->formatWithUnit(nDisplayUnit, nChange));        // Change
+    l1->setText(QString::number(nQuantity));                                                                  // Quantity
+    l2->setText(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, nAmount, bcu->maxdecimals(nDisplayUnit)));   // Amount
+    l3->setText(bcu->formatWithUnitFee(nDisplayUnit, nPayFee));                                               // Fee
+    l4->setText(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, nAfterFee, bcu->maxdecimals(nDisplayUnit))); // After Fee
+    l5->setText(((nBytes > 0) ? "~" : "") + QString::number(nBytes));                                         // Bytes
+    l6->setText(sPriorityLabel);                                                                              // Priority
+    l7->setText((fLowOutput ? (fDust ? tr("DUST") : tr("yes")) : tr("no")));                                  // Low Output / Dust
+    l8->setText(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, nChange, bcu->maxdecimals(nDisplayUnit)));   // Change
     
     // turn labels "red"
-    l5->setStyleSheet((nBytes >= 10000) ? "color:red;" : "");               // Bytes >= 10000
-    l6->setStyleSheet((dPriority <= 576000) ? "color:red;" : "");         // Priority < "medium"
-    l7->setStyleSheet((fLowOutput) ? "color:red;" : "");                    // Low Output = "yes"
-    l8->setStyleSheet((nChange > 0 && nChange < CENT) ? "color:red;" : ""); // Change < 0.01VRC
+    l5->setStyleSheet((nBytes >= 10000) ? "color:red;" : "");                // Bytes >= 10000
+    l6->setStyleSheet((dPriority <= 576000) ? "color:red;" : "");            // Priority < "medium"
+    l7->setStyleSheet((fLowOutput) ? "color:red;" : "");                     // Low Output = "yes"
+    l8->setStyleSheet((nChange > 0 && nChange < CENT) ? "color:red;" : "");  // Change < 0.01VRC
         
     // tool tips
-    l5->setToolTip(tr("This label turns red, if the transaction size is bigger than 10000 bytes.\n\n This means a fee of at least %1 per kb is required.\n\n Can vary +/- 1 Byte per input.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
-    l6->setToolTip(tr("Transactions with higher priority get more likely into a block.\n\nThis label turns red, if the priority is smaller than \"medium\".\n\n This means a fee of at least %1 per kb is required.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
-    l7->setToolTip(tr("This label turns red, if any recipient receives an amount smaller than %1.\n\n This means a fee of at least %2 is required. \n\n Amounts below 0.546 times the minimum relay fee are shown as DUST.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)).arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
-    l8->setToolTip(tr("This label turns red, if the change is smaller than %1.\n\n This means a fee of at least %2 is required.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)).arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
+    l5->setToolTip(tr("This label turns red, if the transaction size is bigger than 10000 bytes.\n\n This means a fee of at least %1 per kb is required.\n\n Can vary +/- 1 Byte per input.").arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
+    l6->setToolTip(tr("Transactions with higher priority get more likely into a block.\n\nThis label turns red, if the priority is smaller than \"medium\".\n\n This means a fee of at least %1 per kb is required.").arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
+    l7->setToolTip(tr("This label turns red, if any recipient receives an amount smaller than %1.\n\n This means a fee of at least %2 is required. \n\n Amounts below 0.546 times the minimum relay fee are shown as DUST.").arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)).arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
+    l8->setToolTip(tr("This label turns red, if the change is smaller than %1.\n\n This means a fee of at least %2 is required.").arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)).arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
     dialog->findChild<QLabel *>("labelCoinControlBytesText")    ->setToolTip(l5->toolTip());
     dialog->findChild<QLabel *>("labelCoinControlPriorityText") ->setToolTip(l6->toolTip());
     dialog->findChild<QLabel *>("labelCoinControlLowOutputText")->setToolTip(l7->toolTip());
@@ -691,7 +691,7 @@ void CoinControlDialog::updateView()
             }
 
             // amount
-            itemOutput->setText(COLUMN_AMOUNT, bcu->format(nDisplayUnit, out.tx->vout[out.i].nValue));
+            itemOutput->setText(COLUMN_AMOUNT, bcu->formatMaxDecimals(nDisplayUnit, out.tx->vout[out.i].nValue, bcu->maxdecimals(nDisplayUnit)));
             itemOutput->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(out.tx->vout[out.i].nValue), 15, " ")); // padding so that sorting works correctly
 
             // date
@@ -739,7 +739,7 @@ void CoinControlDialog::updateView()
         {
             dPrioritySum = dPrioritySum / (nInputSum + 78);
             itemWalletAddress->setText(COLUMN_CHECKBOX, "(" + QString::number(nChildren) + ")");
-            itemWalletAddress->setText(COLUMN_AMOUNT, bcu->format(nDisplayUnit, nSum));
+            itemWalletAddress->setText(COLUMN_AMOUNT, bcu->formatMaxDecimals(nDisplayUnit, nSum, bcu->maxdecimals(nDisplayUnit)));
             itemWalletAddress->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(nSum), 15, " "));
             itemWalletAddress->setText(COLUMN_PRIORITY, CoinControlDialog::getPriorityLabel(dPrioritySum));
             itemWalletAddress->setText(COLUMN_PRIORITY_INT64, strPad(QString::number((int64_t)dPrioritySum), 20, " "));

@@ -86,6 +86,7 @@ bool fNewVersion = false;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fBootstrapTurbo = false;
+bool fTrustedUrlsSet = false;
 bool fSuperNETInstalled = false;
 #endif
 bool fDebug = false;
@@ -1347,7 +1348,13 @@ void ReadVersionFile()
                 case 4: bld = atoi(*it); break;
                 }
         }
-        version = itostr(maj) + "." + itostr(min) + "." + itostr(rev) + "." + itostr(bld);
+        int nVersion = (1000000 * maj) + (10000 * min) + (100 * rev) + (1 * bld);
+        if (nVersion%10000 == 0)
+            version = itostr(maj) + "." + itostr(min);
+        else if (nVersion%100 == 0)
+            version = itostr(maj) + "." + itostr(min) + "." + itostr(rev);
+        else
+            version = itostr(maj) + "." + itostr(min) + "." + itostr(rev) + "." + itostr(bld);
         if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
         {
             fNewVersion = true;
@@ -1465,7 +1472,9 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime)
 
 string FormatVersion(int nVersion)
 {
-    if (nVersion%100 == 0)
+    if (nVersion%10000 == 0)
+        return strprintf("%d.%d", nVersion/1000000, (nVersion/10000)%100);
+    else if (nVersion%100 == 0)
         return strprintf("%d.%d.%d", nVersion/1000000, (nVersion/10000)%100, (nVersion/100)%100);
     else
         return strprintf("%d.%d.%d.%d", nVersion/1000000, (nVersion/10000)%100, (nVersion/100)%100, nVersion%100);

@@ -43,10 +43,18 @@ public:
     static int maxdecimals(int unit);
     //! Number of decimals from options left
     static int decimals(int unit);
-    //! Format as string
+    //! Format as string using decimal points defined in options
     static QString format(int unit, qint64 amount, bool plussign=false);
-    //! Format as string (with unit)
+    //! Format as string using specified decimal points
+    static QString formatMaxDecimals(int unit, qint64 n, int decimals, bool plussign=false);
+    //! Format as string using max fee decimal points
+    static QString formatFee(int unit, qint64 amount, bool plussign=false);
+    //! Format as string (with unit) using decimal points defined in options
     static QString formatWithUnit(int unit, qint64 amount, bool plussign=false);
+    //! Format as string (with unit) using specified decimal points
+    static QString formatWithUnitWithMaxDecimals(int unit, qint64 amount, int decimals, bool plussign=false);
+    //! Format as string (with unit) with max fee decimal points
+    static QString formatWithUnitFee(int unit, qint64 amount, bool plussign=false);
     //! Parse string to coin amount
     static bool parse(int unit, const QString &value, qint64 *val_out);
     ///@}

@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QTabWidget>
 
 using namespace GUIUtil;
 
@@ -28,6 +29,8 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
+
+    ui->veriSendOptions->setStyleSheet("QWidget { background-color: white; }");
 
     /* Network elements init */
 #ifndef USE_UPNP

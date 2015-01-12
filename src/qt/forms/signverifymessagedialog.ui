@@ -30,8 +30,11 @@
        <family>Lato</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabSignMessage">
       <attribute name="title">
@@ -95,7 +98,8 @@
             <string>Choose an address from the address book</string>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -130,7 +134,8 @@
             <string>Paste address from clipboard</string>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -192,7 +197,8 @@
             <string>Copy the current signature to the system clipboard</string>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string/>
@@ -233,7 +239,8 @@
             <string>Sign the message to prove you own this VeriCoin address</string>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>&amp;Sign Message</string>
@@ -270,7 +277,8 @@
             <string>Reset all sign message fields</string>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
+QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
@@ -449,7 +457,7 @@ QPushButton:pressed { background : #418BCA; }</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
 QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">
@@ -488,7 +496,7 @@ QPushButton:pressed { background : #418BCA; }</string>
             <string>Reset all verify message fields</string>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton { background : #0a3057; border : none; color: #FFFFFF} QPushButton:hover { background : #418BCA; } 
+            <string notr="true">QPushButton { background : #0a3057; border : none; color: white} QPushButton:hover { background : #418BCA; } 
 QPushButton:pressed { background : #418BCA; }</string>
            </property>
            <property name="text">

@@ -48,22 +48,28 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 namespace GUIUtil {
 
 // Common stylesheets
-QString veriDialogStyleSheet = QString("QDialog { background: white; color: %1; } \
-                            QDialog::QPushButton { background: %2; width: %3px; height: %4px; border: none; color: white} \
+QString veriDialogStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } \
+                            QDialog::QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
                             QDialog::QPushButton:disabled { background: #EBEBEB; color: #666666; } \
-                            QDialog::QPushButton:hover { background: %5; } \
-                            QDialog::QPushButton:pressed { background: %6; } ").arg(STRING_VERIFONT).arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
-;
-QString veriPushButtonStyleSheet = QString("QPushButton { background: %1; width: %2px; height: %3px; border: none; color: white} \
+                            QDialog::QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
+                            QDialog::QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
+
+QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
                             QPushButton:disabled { background: #EBEBEB; color: #666666; } \
-                            QPushButton:hover { background: %4; } \
-                            QPushButton:pressed { background: %5; } ").arg(STRING_VERIBLUE).arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT).arg(STRING_VERIBLUE_LT).arg(STRING_VERIBLUE_LT)
-;
-QString veriToolTipStyleSheet = QString("QToolTip { background-color: %1; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 6px; }").arg(STRING_VERIBLUE_LT);
+                            QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
+                            QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
 
-QString veriMiscStyleSheet = QString("QTableView::item:hover { background: #EBEBEB; color: %1; } ").arg(STRING_VERIFONT);
+QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
+                            QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
+                            QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
+                            QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
+                            QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; }");
 
-QString veriStyleSheet = veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
+QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 6px; }");
+
+QString veriMiscStyleSheet = QString("QTabWidget::pane { background-color: white; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
+
+QString veriStyleSheet = veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
 
 // Setup header and styles
 QGraphicsView *header(QWidget *parent, QString backgroundImage)

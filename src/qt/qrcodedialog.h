@@ -27,7 +27,6 @@ private slots:
     void on_chkReqPayment_toggled(bool fChecked);
 
     void updateDisplayUnit();
-    void updateDecimalPoints();
 
 private:
     Ui::QRCodeDialog *ui;
