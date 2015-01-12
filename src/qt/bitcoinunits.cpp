@@ -106,10 +106,10 @@ int BitcoinUnits::decimals(int unit)
 
 QString BitcoinUnits::format(int unit, qint64 n, bool fPlus)
 {
-    return formatWithDecimals(unit, n, decimals(unit), fPlus);
+    return formatMaxDecimals(unit, n, decimals(unit), fPlus);
 }
 
-QString BitcoinUnits::formatWithDecimals(int unit, qint64 n, int decimals, bool fPlus)
+QString BitcoinUnits::formatMaxDecimals(int unit, qint64 n, int decimals, bool fPlus)
 {
     // Note: not using straight sprintf here because we do NOT want
     // localized number formatting.
@@ -137,6 +137,36 @@ QString BitcoinUnits::formatWithDecimals(int unit, qint64 n, int decimals, bool 
         return quotient_str;
 }
 
+QString BitcoinUnits::formatFee(int unit, qint64 n, bool fPlus)
+{
+    // Note: not using straight sprintf here because we do NOT want
+    // localized number formatting.
+    if(!valid(unit))
+        return QString(); // Refuse to format invalid unit
+    qint64 coin = factor(unit);
+    qint64 n_abs = (n > 0 ? n : -n);
+    qint64 quotient = n_abs / coin;
+    qint64 remainder = n_abs % coin;
+    QString quotient_str = QString("%L1").arg(quotient);
+    QString remainder_str = QString::number(remainder).rightJustified(maxdecimals(unit), '0');
+
+    // Right-trim excess zeros after the decimal point
+    int nTrim = 0;
+    for (int i = remainder_str.size()-1; i>=2 && (remainder_str.at(i) == '0'); --i)
+        ++nTrim;
+    remainder_str.chop(nTrim);
+
+    if (n < 0)
+        quotient_str.insert(0, '-');
+    else if (fPlus && n > 0)
+        quotient_str.insert(0, '+');
+
+    if (remainder_str.size())
+        return quotient_str + QString(".") + remainder_str;
+    else
+        return quotient_str;
+}
+
 // Calling this function will return the maximum number of decimals based on the options setting.
 QString BitcoinUnits::formatWithUnit(int unit, qint64 amount, bool plussign)
 {
@@ -144,9 +174,15 @@ QString BitcoinUnits::formatWithUnit(int unit, qint64 amount, bool plussign)
 }
 
 // Calling this function with maxdecimals(unit) will return the maximum number of decimals.
-QString BitcoinUnits::formatWithUnitWithDecimals(int unit, qint64 amount, int decimals, bool plussign)
+QString BitcoinUnits::formatWithUnitWithMaxDecimals(int unit, qint64 amount, int decimals, bool plussign)
 {
-    return formatWithDecimals(unit, amount, decimals, plussign) + QString(" ") + name(unit);
+    return formatMaxDecimals(unit, amount, decimals, plussign) + QString(" ") + name(unit);
+}
+
+// Calling this function will return the maximum number of decimals for a fee.
+QString BitcoinUnits::formatWithUnitFee(int unit, qint64 amount, bool plussign)
+{
+    return formatFee(unit, amount, plussign) + QString(" ") + name(unit);
 }
 
 bool BitcoinUnits::parse(int unit, const QString &value, qint64 *val_out)

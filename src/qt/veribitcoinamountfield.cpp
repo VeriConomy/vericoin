@@ -128,7 +128,7 @@ qint64 veriBitcoinAmountField::value(bool *valid_out) const
 
 void veriBitcoinAmountField::setValue(qint64 value)
 {
-    setText(veriBitcoinUnits::format(currentUnit, value));
+    setText(veriBitcoinUnits::formatMaxDecimals(currentUnit, value, veriBitcoinUnits::maxdecimals(currentUnit)));
 }
 
 void veriBitcoinAmountField::unitChanged(int idx)

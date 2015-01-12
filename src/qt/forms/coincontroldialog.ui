@@ -558,7 +558,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">QPushButton { background : #003257; width: 140; height: 27; border : none; color: white} 
+      <string notr="true">QPushButton { background : #0a3057; width: 140; height: 27; border : none; color: white} 
 QPushButton:hover { background : #418BCA; } 
 QPushButton:pressed { background : #418BCA; }
 QPushButton:disabled { background : #EBEBEB;  color: #666666;}</string>

@@ -178,7 +178,7 @@ OverviewPage::~OverviewPage()
 void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance)
 {
     QString maxDecimalsTooltipText("\nUse Settings/Options/Display to hide decimals.");
-    int total = balance + stake + unconfirmedBalance + immatureBalance;
+    int total = balance + stake + unconfirmedBalance; // + immatureBalance;
 
     BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
     int unit = model->getOptionsModel()->getDisplayUnit();
@@ -193,17 +193,17 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
     currentImmatureBalance = immatureBalance;
 
     ui->labelBalance->setText(bcu->formatWithUnit(unit, balance));
-    ui->labelBalance->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithDecimals(unit, balance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    ui->labelBalance->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
     ui->labelStake->setText(bcu->formatWithUnit(unit, stake));
-    ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithDecimals(unit, stake, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, stake, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
     ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance));
-    ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
     //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance));
-    //ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    //ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
     //ui->labelImmature->setVisible(true);
     //ui->labelImmatureText->setVisible(true);
     ui->labelTotal->setText(bcu->formatWithUnit(unit, total));
-    ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithDecimals(unit, total, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
 
     delete bcu;
 }

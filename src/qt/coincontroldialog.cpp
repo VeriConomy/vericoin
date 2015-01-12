@@ -561,26 +561,26 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
     dialog->findChild<QLabel *>("labelCoinControlChange")       ->setEnabled(nPayAmount > 0);
     
     // stats
-    l1->setText(QString::number(nQuantity));                                 // Quantity        
-    l2->setText(bcu->formatWithUnit(nDisplayUnit, nAmount));        // Amount
-    l3->setText(bcu->formatWithUnit(nDisplayUnit, nPayFee));        // Fee
-    l4->setText(bcu->formatWithUnit(nDisplayUnit, nAfterFee));      // After Fee
-    l5->setText(((nBytes > 0) ? "~" : "") + QString::number(nBytes));                                    // Bytes
-    l6->setText(sPriorityLabel);                                             // Priority
-    l7->setText((fLowOutput ? (fDust ? tr("DUST") : tr("yes")) : tr("no"))); // Low Output / Dust
-    l8->setText(bcu->formatWithUnit(nDisplayUnit, nChange));        // Change
+    l1->setText(QString::number(nQuantity));                                                                  // Quantity
+    l2->setText(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, nAmount, bcu->maxdecimals(nDisplayUnit)));   // Amount
+    l3->setText(bcu->formatWithUnitFee(nDisplayUnit, nPayFee));                                               // Fee
+    l4->setText(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, nAfterFee, bcu->maxdecimals(nDisplayUnit))); // After Fee
+    l5->setText(((nBytes > 0) ? "~" : "") + QString::number(nBytes));                                         // Bytes
+    l6->setText(sPriorityLabel);                                                                              // Priority
+    l7->setText((fLowOutput ? (fDust ? tr("DUST") : tr("yes")) : tr("no")));                                  // Low Output / Dust
+    l8->setText(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, nChange, bcu->maxdecimals(nDisplayUnit)));   // Change
     
     // turn labels "red"
-    l5->setStyleSheet((nBytes >= 10000) ? "color:red;" : "");               // Bytes >= 10000
-    l6->setStyleSheet((dPriority <= 576000) ? "color:red;" : "");         // Priority < "medium"
-    l7->setStyleSheet((fLowOutput) ? "color:red;" : "");                    // Low Output = "yes"
-    l8->setStyleSheet((nChange > 0 && nChange < CENT) ? "color:red;" : ""); // Change < 0.01VRC
+    l5->setStyleSheet((nBytes >= 10000) ? "color:red;" : "");                // Bytes >= 10000
+    l6->setStyleSheet((dPriority <= 576000) ? "color:red;" : "");            // Priority < "medium"
+    l7->setStyleSheet((fLowOutput) ? "color:red;" : "");                     // Low Output = "yes"
+    l8->setStyleSheet((nChange > 0 && nChange < CENT) ? "color:red;" : "");  // Change < 0.01VRC
         
     // tool tips
-    l5->setToolTip(tr("This label turns red, if the transaction size is bigger than 10000 bytes.\n\n This means a fee of at least %1 per kb is required.\n\n Can vary +/- 1 Byte per input.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
-    l6->setToolTip(tr("Transactions with higher priority get more likely into a block.\n\nThis label turns red, if the priority is smaller than \"medium\".\n\n This means a fee of at least %1 per kb is required.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
-    l7->setToolTip(tr("This label turns red, if any recipient receives an amount smaller than %1.\n\n This means a fee of at least %2 is required. \n\n Amounts below 0.546 times the minimum relay fee are shown as DUST.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)).arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
-    l8->setToolTip(tr("This label turns red, if the change is smaller than %1.\n\n This means a fee of at least %2 is required.").arg(bcu->formatWithUnit(nDisplayUnit, CENT)).arg(bcu->formatWithUnit(nDisplayUnit, CENT)));
+    l5->setToolTip(tr("This label turns red, if the transaction size is bigger than 10000 bytes.\n\n This means a fee of at least %1 per kb is required.\n\n Can vary +/- 1 Byte per input.").arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
+    l6->setToolTip(tr("Transactions with higher priority get more likely into a block.\n\nThis label turns red, if the priority is smaller than \"medium\".\n\n This means a fee of at least %1 per kb is required.").arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
+    l7->setToolTip(tr("This label turns red, if any recipient receives an amount smaller than %1.\n\n This means a fee of at least %2 is required. \n\n Amounts below 0.546 times the minimum relay fee are shown as DUST.").arg(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, CENT, bcu->maxdecimals(nDisplayUnit))).arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
+    l8->setToolTip(tr("This label turns red, if the change is smaller than %1.\n\n This means a fee of at least %2 is required.").arg(bcu->formatWithUnitWithMaxDecimals(nDisplayUnit, CENT, bcu->maxdecimals(nDisplayUnit))).arg(bcu->formatWithUnitFee(nDisplayUnit, CENT)));
     dialog->findChild<QLabel *>("labelCoinControlBytesText")    ->setToolTip(l5->toolTip());
     dialog->findChild<QLabel *>("labelCoinControlPriorityText") ->setToolTip(l6->toolTip());
     dialog->findChild<QLabel *>("labelCoinControlLowOutputText")->setToolTip(l7->toolTip());

@@ -102,7 +102,7 @@ QString QRCodeDialog::getURI()
         if (ui->lnReqAmount->validate())
         {
             // even if we allow a non VRC unit input in lnReqAmount, we generate the URI with VRC as unit (as defined in BIP21)
-            ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::VRC, ui->lnReqAmount->value()));
+            ret += QString("?amount=%1").arg(BitcoinUnits::formatMaxDecimals(BitcoinUnits::VRC, ui->lnReqAmount->value(), BitcoinUnits::maxdecimals(BitcoinUnits::VRC)));
             paramCount++;
         }
         else

@@ -128,7 +128,7 @@ qint64 BitcoinAmountField::value(bool *valid_out) const
 
 void BitcoinAmountField::setValue(qint64 value)
 {
-    setText(BitcoinUnits::format(currentUnit, value));
+    setText(BitcoinUnits::formatMaxDecimals(currentUnit, value, BitcoinUnits::maxdecimals(currentUnit)));
 }
 
 void BitcoinAmountField::unitChanged(int idx)
