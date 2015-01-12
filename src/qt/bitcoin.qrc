@@ -5,6 +5,9 @@
         <file alias="address-book">res/icons/address-book.png</file>
         <file alias="quit">res/icons/quit.png</file>
         <file alias="send">res/icons/send.png</file>
+        <file alias="statusGood">res/icons/status_good.png</file>
+        <file alias="statusBad">res/icons/status_bad.png</file>
+        <file alias="statusWarn">res/icons/status_warn.png</file>
         <file alias="toolbar">res/icons/vericoin-16.png</file>
         <file alias="connect_0">res/icons/connect0_16.png</file>
         <file alias="connect_1">res/icons/connect1_16.png</file>

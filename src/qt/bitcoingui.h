@@ -143,6 +143,8 @@ private:
     void createTrayIcon();
 
 public slots:
+    /** Set balance in status bar */
+    void setBalanceLabel();
     /** Set version icon good/bad */
     void setVersionIcon(bool newVersion);
     /** Set number of connections shown in the UI */
