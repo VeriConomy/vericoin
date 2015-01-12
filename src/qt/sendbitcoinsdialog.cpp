@@ -106,7 +106,6 @@ void SendBitCoinsDialog::setModel(WalletModel *model)
         setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance(), model->getImmatureBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64, qint64)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
-        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
 
         // Coin Control
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(coinControlUpdateLabels()));
@@ -262,15 +261,6 @@ void SendBitCoinsDialog::updateDisplayUnit()
     {
         // Update labelBalance with the current balance and the current unit
         ui->labelBalance->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), model->getBalance(), BitcoinUnits::maxdecimals(model->getOptionsModel()->getDisplayUnit())));
-    }
-}
-
-void SendBitCoinsDialog::updateDecimalPoints()
-{
-    if(model && model->getOptionsModel())
-    {
-        // Update labelBalance with the current balance and decimal points
-        updateDisplayUnit();
     }
 }
 

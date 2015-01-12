@@ -47,7 +47,6 @@ private slots:
     void on_addressBookButton_clicked();
     void on_pasteButton_clicked();
     void updateDisplayUnit();
-    void updateDecimalPoints();
 
 private:
     Ui::SendCoinsEntry *ui;

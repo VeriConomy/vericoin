@@ -24,21 +24,17 @@ Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     this->setFixedWidth(480);
 
     ui->setupUi(this);
-    ui->urlEdit->setStyleSheet("color: " + STRING_VERIFONT + ";");
     ui->urlEdit->setFont(veriFont);
     ui->urlEdit->setText("");
     ui->statusLabel->setWordWrap(true);
-    ui->statusLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
     ui->statusLabel->setFont(veriFont);
     ui->downloadButton->setAutoDefault(false);
     ui->continueButton->setAutoDefault(false);
     ui->quitButton->setAutoDefault(false);
 
     // Progress bar and label for blockchain download/extract, and auto update
-    ui->progressBarLabel->setStyleSheet("color: " + STRING_VERIFONT + ";");
     ui->progressBarLabel->setFont(veriFont);
     ui->progressBarLabel->setText(tr("Status:"));
-    ui->progressBar->setStyleSheet("color: " + STRING_VERIFONT + ";");
     ui->progressBar->setFont(veriFont);
     ui->progressBar->setValue(0);
 
@@ -107,7 +103,6 @@ void Downloader::on_quitButton_clicked() // Cancel button
             if (reply)
             {
                 reply->abort();
-                reply->deleteLater();
             }
         }
         httpRequestAborted = true;
@@ -133,7 +128,8 @@ void Downloader::on_quitButton_clicked() // Cancel button
 // Network error ocurred. Download cancelled
 void Downloader::networkError()
 {
-    cancelDownload();
+    if (!downloaderQuit)
+        cancelDownload();
 
     if (autoDownload)
     {
@@ -159,12 +155,11 @@ void Downloader::cancelDownload()
     {
         ui->statusLabel->setText(tr("The download was canceled."));
     }
-    httpRequestAborted = true;
     if (reply)
     {
         reply->abort();
-        reply->deleteLater();
     }
+    httpRequestAborted = true;
 
     ui->downloadButton->setEnabled(true);
     ui->downloadButton->setDefault(true);
@@ -326,7 +321,7 @@ void Downloader::downloaderFinished()
         if (!autoDownload)
         {
             QMessageBox::information(this, tr("Downloader"),
-                                 tr("Download failed: %1.").arg(reply->errorString()));
+                                 tr("Download terminated: %1.").arg(reply->errorString()));
         }
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);

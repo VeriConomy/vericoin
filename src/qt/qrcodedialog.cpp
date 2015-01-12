@@ -48,13 +48,10 @@ void QRCodeDialog::setModel(OptionsModel *model)
     if (model)
     {
         connect(model, SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
-        connect(model, SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
     }
 
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
-    // update the decimal points
-    updateDecimalPoints();
 }
 
 void QRCodeDialog::genCode()
@@ -176,14 +173,5 @@ void QRCodeDialog::updateDisplayUnit()
     {
         // Update lnReqAmount with the current unit
         ui->lnReqAmount->setDisplayUnit(model->getDisplayUnit());
-    }
-}
-
-void QRCodeDialog::updateDecimalPoints()
-{
-    if (model)
-    {
-        // Update lnReqAmount with the current unit
-        ui->lnReqAmount->setDisplayDecimals(model->getDecimalPoints());
     }
 }

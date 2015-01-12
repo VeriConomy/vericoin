@@ -626,11 +626,12 @@ void BitcoinGUI::createToolBars()
     toolbar->setIconSize(QSize(TOOLBAR_WIDTH,38));
     toolbar->setFixedWidth(TOOLBAR_WIDTH);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    toolbar->setStyleSheet("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
+/*    toolbar->setStyleSheet("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
                            QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
                            QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                            QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                            QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; }");
+*/
     toolbar->addAction(overviewAction);
     toolbar->addAction(sendCoinsAction);
     toolbar->addAction(receiveCoinsAction);

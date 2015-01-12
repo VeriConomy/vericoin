@@ -31,10 +31,10 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: white;</string>
+      <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabSignMessage">
       <attribute name="title">

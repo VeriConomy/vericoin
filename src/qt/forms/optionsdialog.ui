@@ -30,13 +30,13 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: white;</string>
+      <string notr="true"/>
      </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabMain">
       <attribute name="title">

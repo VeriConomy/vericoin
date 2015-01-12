@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <QClipboard>
+#include <QTabWidget>
 
 using namespace GUIUtil;
 
@@ -24,6 +25,8 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
+
+    ui->tabWidget->setStyleSheet("QWidget { background-color: white; }");
 
 #if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
