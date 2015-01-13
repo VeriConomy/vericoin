@@ -634,6 +634,7 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
     return false;
 }
 
+#ifdef QT_GUI
 bool ReloadBlockchain(bool turbo)
 {
     fRestart = true;
@@ -662,6 +663,7 @@ bool CheckForUpdate()
 
     return true;
 }
+#endif // QT_GUI
 
 //
 // Try to (very carefully!) recover wallet.dat if there is a problem.
