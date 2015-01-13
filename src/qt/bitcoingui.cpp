@@ -385,10 +385,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Progress bar and label for blocks download
     progressBar = new QProgressBar();
-    progressBar->setContentsMargins(0,0,10,0);
-    progressBar->setMinimumWidth(300);
+    progressBar->setContentsMargins(0,0,0,0);
+    progressBar->setMinimumWidth(320);
     progressBar->setFont(veriFontSmall);
-    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
+    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 6px; margin-right: 10px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
@@ -912,7 +912,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("Synchronizing: ~%n block(s) remaining", "", nRemainingBlocks));
+            progressBar->setFormat(tr("~%n Block(s) Remaining", "", nRemainingBlocks));
             progressBar->setMaximum(nTotalBlocks);
             progressBar->setValue(count);
             progressBar->setVisible(true);

@@ -460,7 +460,7 @@ void Downloader::setDest(QString dest)
     }
     else
     {
-        ui->statusLabel->setText(tr("Press 'Download' to get the file."));
+        ui->statusLabel->setText(tr("Press 'Download' or 'Next' to begin."));
         ui->continueButton->setEnabled(false);
     }
 }
@@ -555,16 +555,13 @@ void Downloader::reloadBlockchain()
     }
 
     printf("Bootstrap extract successful!\n");
+    ui->progressBarLabel->setText(tr("Complete:"));
     ui->statusLabel->setText(tr("Congratulations, the bootstrap extract was successful! Your wallet will now restart..."));
     ui->downloadButton->setEnabled(false);
     ui->continueButton->setEnabled(false);
-    ui->quitButton->setEnabled(true);
-    ui->downloadButton->setDefault(false);
-    ui->continueButton->setDefault(false);
-    ui->quitButton->setDefault(false);
-    ui->progressBar->setValue(0);
+    ui->quitButton->setEnabled(false);
     this->raise();
-    MilliSleep(3000);
+    MilliSleep(5 * 1000);
 
     if (this->walletModel)
     {
