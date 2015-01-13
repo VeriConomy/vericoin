@@ -32,6 +32,7 @@
 #include "ui_fiatpage.h"
 #include "ui_newspage.h"
 #include "ui_chatpage.h"
+#include "ui_explorerpage.h"
 #include "ui_supernetpage.h"
 #include "downloader.h"
 #include "updatedialog.h"
@@ -90,6 +91,7 @@ bool blocksIcon = true;
 bool fFiatPageLoaded = false;
 bool fNewsPageLoaded = false;
 bool fChatPageLoaded = false;
+bool fExplorerPageLoaded = false;
 bool fSuperNETPageLoaded = false;
 bool resizeGUICalled = false;
 
@@ -241,6 +243,32 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(chat.forward, SIGNAL(clicked()), chat.webView, SLOT(myForward()));
     connect(chat.reload, SIGNAL(clicked()), chat.webView, SLOT(myReload()));
 
+    // Create explorer Page
+    explorerPage = new WebView(this); // extends QWebView
+    Ui::explorerPage explorer;
+    // Setup header and styles
+    GUIUtil::header(explorerPage, QString(":images/headerexplorer"));
+    explorer.setupUi(explorerPage);
+    explorerPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
+    explorerPage->setStyleSheet(GUIUtil::veriStyleSheet);
+    explorerPage->setFont(veriFont);
+    explorer.frame->setVisible(true); // Set to true to enable webView navigation buttons
+    CookieJar *explorerJar = new CookieJar;
+    explorer.webView->page()->networkAccessManager()->setCookieJar(explorerJar);
+    explorer.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    explorer.webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(explorer.webView->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), explorerPage->findChild<WebView *>("webView"), SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
+    connect(explorer.webView->page(), SIGNAL(linkClicked(QUrl)), explorer.webView, SLOT(myOpenUrl(QUrl)));
+    // explorer buttons
+    explorer.back->setDisabled(true);
+    explorer.home->setDisabled(true);
+    explorer.forward->setDisabled(true);
+    explorer.webView->sendButtons(explorer.back, explorer.home, explorer.forward);
+    connect(explorer.back, SIGNAL(clicked()), explorer.webView, SLOT(myBack()));
+    connect(explorer.home, SIGNAL(clicked()), explorer.webView, SLOT(myHome()));
+    connect(explorer.forward, SIGNAL(clicked()), explorer.webView, SLOT(myForward()));
+    connect(explorer.reload, SIGNAL(clicked()), explorer.webView, SLOT(myReload()));
+
     // Create SuperNET Page
     if (!fSuperNETInstalled)
     {
@@ -292,6 +320,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(fiatPage);
     centralWidget->addWidget(newsPage);
     centralWidget->addWidget(chatPage);
+    centralWidget->addWidget(explorerPage);
     centralWidget->addWidget(superNETPage);
     setCentralWidget(centralWidget);
 
@@ -487,11 +516,18 @@ void BitcoinGUI::createActions()
     chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
+    explorerAction = new QAction(QIcon(":/icons/explorer"), tr("Blockchain"), this);
+    explorerAction->setFont(veriFontSmall);
+    explorerAction->setToolTip(tr("Look at the VeriCoin blockchain"));
+    explorerAction->setCheckable(true);
+    explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
+    tabGroup->addAction(explorerAction);
+
     superNETAction = new QAction(QIcon(":/icons/supernet_white"), tr("SuperNET"), this);
     superNETAction->setFont(veriFontSmall);
     superNETAction->setToolTip(tr("Enter the SuperNET"));
     superNETAction->setCheckable(true);
-    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
+    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_0));
     tabGroup->addAction(superNETAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -512,6 +548,8 @@ void BitcoinGUI::createActions()
     connect(newsAction, SIGNAL(triggered()), this, SLOT(gotoNewsPage()));
     connect(chatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(chatAction, SIGNAL(triggered()), this, SLOT(gotoChatPage()));
+    connect(explorerAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(explorerAction, SIGNAL(triggered()), this, SLOT(gotoExplorerPage()));
     connect(superNETAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(superNETAction, SIGNAL(triggered()), this, SLOT(gotoSuperNETPage()));
 
@@ -653,6 +691,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(fiatAction);
     toolbar->addAction(newsAction);
     toolbar->addAction(chatAction);
+    toolbar->addAction(explorerAction);
     toolbar->addAction(superNETAction);
 }
 
@@ -1160,6 +1199,24 @@ void BitcoinGUI::gotoChatPage()
 
     chatAction->setChecked(true);
     centralWidget->setCurrentWidget(chatPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoExplorerPage()
+{
+    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
+
+    if (!fExplorerPageLoaded)
+    {
+        QUrl url(QString(walletUrl).append("wallet/explorer.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+        explorerPage->findChild<WebView *>("webView")->myOpenUrl(url);
+        fExplorerPageLoaded = true;
+    }
+
+    explorerAction->setChecked(true);
+    centralWidget->setCurrentWidget(explorerPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
