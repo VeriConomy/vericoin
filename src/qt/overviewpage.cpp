@@ -179,7 +179,7 @@ OverviewPage::~OverviewPage()
 void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance)
 {
     QString maxDecimalsTooltipText("\nUse Settings/Options/Display to hide decimals.");
-    int total = balance + stake + unconfirmedBalance + immatureBalance;
+    qint64 total = balance + stake + unconfirmedBalance + immatureBalance;
 
     BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
     int unit = model->getOptionsModel()->getDisplayUnit();
