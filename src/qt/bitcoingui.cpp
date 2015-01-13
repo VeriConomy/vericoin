@@ -247,7 +247,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     explorerPage = new WebView(this); // extends QWebView
     Ui::explorerPage explorer;
     // Setup header and styles
-    GUIUtil::header(explorerPage, QString(":images/headerexplorer"));
+    GUIUtil::header(explorerPage, QString(":images/headerExplorer"));
     explorer.setupUi(explorerPage);
     explorerPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     explorerPage->setStyleSheet(GUIUtil::veriStyleSheet);
