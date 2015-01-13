@@ -194,7 +194,7 @@ private slots:
     void gotoNewsPage();
     /** Switch to Chat page */
     void gotoChatPage();
-    /** Switch to Chat page */
+    /** Switch to Explorer page */
     void gotoExplorerPage();
     /** Switch to SuperNET page */
     void gotoSuperNETPage();

@@ -518,7 +518,7 @@ void BitcoinGUI::createActions()
 
     explorerAction = new QAction(QIcon(":/icons/explorer"), tr("Blockchain"), this);
     explorerAction->setFont(veriFontSmall);
-    explorerAction->setToolTip(tr("Look at the VeriCoin blockchain"));
+    explorerAction->setToolTip(tr("Explore the VeriCoin blockchain"));
     explorerAction->setCheckable(true);
     explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(explorerAction);
@@ -1594,7 +1594,9 @@ void BitcoinGUI::checkForUpdate()
     boost::filesystem::path fileName(GetProgramDir());
     QUrl url;
 
-    fTrustedUrlsSet = false; // Force a reload of the trusted URLs
+    if (fMenuCheckForUpdate)
+        fNewVersion = false; // Force a reload of the version file if the user requested a check and a new version was already found
+
     printf("Downloading and parsing version data...\n");
     ReadVersionFile();
 
