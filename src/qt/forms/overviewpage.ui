@@ -140,7 +140,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0">
         <property name="spacing">
-         <number>6</number>
+         <number>12</number>
         </property>
         <property name="leftMargin">
          <number>0</number>
@@ -237,7 +237,7 @@
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>9</number>
+           <number>0</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -822,7 +822,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0">
         <property name="spacing">
-         <number>6</number>
+         <number>12</number>
         </property>
         <property name="leftMargin">
          <number>0</number>
@@ -910,7 +910,7 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QWebView" name="stats" native="true">
+           <widget class="QWebView" name="stats">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -923,7 +923,7 @@
               <height>299</height>
              </size>
             </property>
-            <property name="url" stdset="0">
+            <property name="url">
              <url>
               <string>about:blank</string>
              </url>
@@ -994,6 +994,9 @@
         <enum>QFrame::Raised</enum>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0">
+        <property name="spacing">
+         <number>12</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -1080,7 +1083,7 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QWebView" name="value" native="true">
+           <widget class="QWebView" name="value">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1093,7 +1096,7 @@
               <height>299</height>
              </size>
             </property>
-            <property name="url" stdset="0">
+            <property name="url">
              <url>
               <string>about:blank</string>
              </url>
@@ -1161,7 +1164,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0" colspan="2">
-        <widget class="QWebView" name="ticker" native="true">
+        <widget class="QWebView" name="ticker">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -1180,7 +1183,7 @@
            <height>45</height>
           </size>
          </property>
-         <property name="url" stdset="0">
+         <property name="url">
           <url>
            <string>about:blank</string>
           </url>
