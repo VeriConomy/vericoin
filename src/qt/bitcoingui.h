@@ -24,6 +24,7 @@ class WebView;
 class fiatPage;
 class newsPage;
 class chatPage;
+class explorerPage;
 class superNETPage;
 
 QT_BEGIN_NAMESPACE
@@ -83,6 +84,7 @@ private:
     QWidget *fiatPage;
     QWidget *newsPage;
     QWidget *chatPage;
+    QWidget *explorerPage;
     QWidget *superNETPage;
     //QWidget *statsBox;
 
@@ -106,6 +108,7 @@ private:
     QAction *superNETAction;
     QAction *newsAction;
     QAction *chatAction;
+    QAction *explorerAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -191,6 +194,8 @@ private slots:
     void gotoNewsPage();
     /** Switch to Chat page */
     void gotoChatPage();
+    /** Switch to Chat page */
+    void gotoExplorerPage();
     /** Switch to SuperNET page */
     void gotoSuperNETPage();
     /** Switch to Fiat page */

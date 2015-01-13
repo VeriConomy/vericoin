@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = vericoin-qt
-VERSION = 1.4.1.5
+VERSION = 1.5
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
@@ -397,6 +397,7 @@ FORMS += \
     src/qt/forms/fiatpage.ui \
     src/qt/forms/newspage.ui \
     src/qt/forms/chatpage.ui \
+    src/qt/forms/explorerpage.ui \
     src/qt/forms/supernetpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
