@@ -582,8 +582,8 @@ void BitcoinGUI::createActions()
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Blockchain..."), this);
-    rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain."));
+    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet..."), this);
+    rescanBlockchainAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     checkForUpdateAction = new QAction(QIcon(":/icons/tx_inout"), tr("Check For &Update..."), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumsAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums..."), this);
@@ -866,9 +866,8 @@ void BitcoinGUI::setVersionIcon(bool newVersion)
     QString icon;
     switch(newVersion)
     {
-    case true: icon = ":/icons/statusBad"; versionLabel->setStyleSheet("QLabel {color: red;}"); break;
-    case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
-    default: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
+        case true: icon = ":/icons/statusBad"; versionLabel->setStyleSheet("QLabel {color: red;}"); break;
+        case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
     }
     labelVersionIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
     labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date!<br>Download the newest version in Help.") : tr("You have the most current wallet version."));
@@ -879,11 +878,11 @@ void BitcoinGUI::setNumConnections(int count)
     QString icon;
     switch(count)
     {
-    case 0: icon = ":/icons/connect_0"; break;
-    case 1: case 2: case 3: icon = ":/icons/connect_1"; break;
-    case 4: case 5: case 6: icon = ":/icons/connect_2"; break;
-    case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
-    default: icon = ":/icons/connect_4"; break;
+        case 0: icon = ":/icons/connect_0"; break;
+        case 1: case 2: case 3: icon = ":/icons/connect_1"; break;
+        case 4: case 5: case 6: icon = ":/icons/connect_2"; break;
+        case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
+        default: icon = ":/icons/connect_4"; break;
     }
     QString connections = QString::number(count);
     QString label = " Connections";
@@ -1244,7 +1243,7 @@ void BitcoinGUI::resizeEvent(QResizeEvent *e)
 {
     if (resizeGUICalled) return;  // Don't allow resizeEvent to be called twice
 
-    if (e->size().height() < WINDOW_MIN_HEIGHT + 50)
+    if (e->size().height() < WINDOW_MIN_HEIGHT + 50 && e->size().width() < WINDOW_MIN_WIDTH + 50)
     {
         resizeGUI(); // snap to normal size wallet if within 50 pixels
     }
@@ -1595,9 +1594,12 @@ void BitcoinGUI::checkForUpdate()
     boost::filesystem::path fileName(GetProgramDir());
     QUrl url;
 
-    fTrustedUrlsSet = false;
+    fTrustedUrlsSet = false; // Force a reload of the trusted URLs
     printf("Downloading and parsing version data...\n");
     ReadVersionFile();
+
+    // Set version icon good/bad
+    setVersionIcon(fNewVersion);
 
     if (fNewVersion)
     {
@@ -1629,8 +1631,6 @@ void BitcoinGUI::checkForUpdate()
     {
         if (fMenuCheckForUpdate)
         {
-            // Set version icon good/bad
-            setVersionIcon(fNewVersion);
             QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update is required."));
         }
     }

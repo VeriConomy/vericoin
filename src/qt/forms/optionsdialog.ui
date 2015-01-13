@@ -36,7 +36,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabMain">
       <attribute name="title">
@@ -456,7 +456,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="text">
-            <string>Choose how many decimal places you prefer in currencies:</string>
+            <string>Choose how many decimal places you prefer to display:</string>
            </property>
           </widget>
          </item>
@@ -486,7 +486,7 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>How many decimal places to display in currencies.</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many decimal places to display. Depending on the unit of currency, you may see fewer decimal places.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>

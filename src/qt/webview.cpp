@@ -93,6 +93,7 @@ void WebView::myOpenUrl(QUrl url)
         {
             printf("WebView: Error loading: %s\n", url.toString().toStdString().c_str());
         }
+        // This uses canGoBack() and currentItemIndex > 0 as opposed to currentItemIndex > 1 like the other setButtonStates calls.
         setButtonStates(this->history()->canGoBack(), (this->history()->currentItemIndex() > 0), this->history()->canGoForward());
     }
     else
