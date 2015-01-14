@@ -327,6 +327,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create status bar
     statusBar();
     statusBar()->setContentsMargins(STATUSBAR_MARGIN,0,0,0);
+    statusBar()->setFixedHeight(32);
     statusBar()->setStyleSheet("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     statusBar()->setFont(veriFontSmall);
 
@@ -388,7 +389,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setContentsMargins(0,0,0,0);
     progressBar->setMinimumWidth(320);
     progressBar->setFont(veriFontSmall);
-    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 6px; margin-right: 10px; border-width: 1px; border-style: solid; }");
+    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
@@ -497,7 +498,7 @@ void BitcoinGUI::createActions()
 
     fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Get VeriCoin"), this);
     fiatAction->setFont(veriFontSmall);
-    fiatAction->setToolTip(tr("Buy VeriCoin with Fiat"));
+    fiatAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
     fiatAction->setCheckable(true);
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
@@ -889,7 +890,7 @@ void BitcoinGUI::setNumConnections(int count)
     QString connectionlabel = connections + label;
     connectionsLabel->setText(QString(connectionlabel));
     labelConnectionsIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
-    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to the VeriCoin network", "", count));
+    labelConnectionsIcon->setToolTip(tr("%1 active connection%2 to the VeriCoin network").arg(count).arg(count == 1 ? "" : "s"));
 }
 
 void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
@@ -912,7 +913,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("~%n Block(s) Remaining", "", nRemainingBlocks));
+            progressBar->setFormat(tr("~%1 Block%2 Remaining").arg(nRemainingBlocks).arg(nRemainingBlocks == 1 ? "" : "s"));
             progressBar->setMaximum(nTotalBlocks);
             progressBar->setValue(count);
             progressBar->setVisible(true);

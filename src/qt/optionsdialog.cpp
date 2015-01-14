@@ -30,7 +30,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
 
-    ui->veriSendOptions->setStyleSheet("QWidget { background-color: white; }");
+    ui->veriSendOptions->setStyleSheet("QWidget { background: #f4f4f4; }");
 
     /* Network elements init */
 #ifndef USE_UPNP
