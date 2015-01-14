@@ -836,6 +836,8 @@ void BitcoinGUI::optionsClicked()
     // so we need to restore them to the user's desired option after we are model.
     emit clientModel->getOptionsModel()->decimalPointsChanged(clientModel->getOptionsModel()->getDecimalPoints());
     dlg.exec();
+
+    setBalanceLabel(); // force a balance update instead of waiting on timer
 }
 
 void BitcoinGUI::forumsClicked()
@@ -857,7 +859,7 @@ void BitcoinGUI::aboutClicked()
 
 void BitcoinGUI::setBalanceLabel()
 {
-    if (walletModel)
+    if (clientModel && walletModel)
     {
         qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
         stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total));
