@@ -832,6 +832,9 @@ void BitcoinGUI::optionsClicked()
         return;
     OptionsDialog dlg;
     dlg.setModel(clientModel->getOptionsModel());
+    // Bug fix: OptionModel->Init() initializes decimalpoints to maxdecimals (in non-model state),
+    // so we need to restore them to the user's desired option after we are model.
+    emit clientModel->getOptionsModel()->decimalPointsChanged(clientModel->getOptionsModel()->getDecimalPoints());
     dlg.exec();
 }
 
@@ -856,7 +859,8 @@ void BitcoinGUI::setBalanceLabel()
 {
     if (walletModel)
     {
-        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), walletModel->getBalance()));
+        qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
+        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total));
         int labelWidth = stakingLabel->text().length();
         stakingLabel->setFixedWidth(labelWidth * 7);
     }

@@ -244,8 +244,6 @@ void OverviewPage::setModel(WalletModel *model)
 
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
-    // update the decimal points
-    updateDecimalPoints();
 }
 
 void OverviewPage::updateDisplayUnit()
