@@ -1,6 +1,6 @@
 {
     "title":"A New Version of the VeriCoin Wallet is Available",
-    "description":"This update adds a number of new features to the wallet, including: New tabs for the SuperNET Gateway, in-wallet IRC Chat and News feed; Auto and manual checks for new versions of the wallet; A new method of quickly bootstrapping the blockchain; User friendly option to re-scan the wallet; Numerous UI tweaks, including the option to hide decimal places in currencies; wallet window resizing; A VeriCoin Ticker for news alerts; And the usual bug fix or two.\n\nNote: As soon as SuperNET v1 is launched, we will release a new version of the wallet that integrates the SuperNet fully.",
+    "description":"This update adds a number of new features to the wallet, including: New tabs for the SuperNET gateway, in-wallet IRC chat, blockchain explorer, and news feed; Auto and manual checks for new versions of the wallet; A new method of quickly bootstrapping the blockchain; User friendly option to re-scan the wallet; Numerous UI tweaks, including the option to hide decimal places in currencies; Wallet window resizing; A VeriCoin ticker for news alerts; And the usual bug fix or two.\n\nNote: As soon as SuperNET v1 is launched, we will release a new version of the wallet that integrates the SuperNet fully.",
     "prefix":"VeriCoin_",
     "version":"1.5",
     "arch32":"",
@@ -9,6 +9,6 @@
     "mac":".pkg",
     "linux":".zip",
     "bootstrap":false,
-    "trustedUrls":"www.bter.com, bter.com, www.litebit.eu, litebit.eu, www.bittrex.com, bittrex.com, www.cryptsy.com, cryptsy.com",
+    "trustedUrls":"www.bter.com, bter.com, www.litebit.eu, litebit.eu, www.bittrex.com, bittrex.com, www.cryptsy.com, cryptsy.com, chainz.cryptoid.info, sprnt.slack.com",
     "success":true
 }

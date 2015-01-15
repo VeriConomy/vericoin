@@ -13,6 +13,7 @@ WebView::WebView(QWidget *parent) :
     QWebView(parent)
 {
     trustedUrls << "www.vericoin.info" << "vericoin.info";  // These will get appended to by the values in VERSION.json
+    fTrustedUrlsSet = false;
 }
 
 WebView::~WebView()
@@ -64,22 +65,20 @@ void WebView::myOpenUrl(QUrl url)
 {
     if (!fTrustedUrlsSet)
     {
-        if (!GetArg("-vTrustedUrls", "").empty())
+        std::string urls = GetArg("-vTrustedUrls", "");
+        typedef vector<string> parts_type;
+        parts_type parts;
+        boost::split(parts, urls, boost::is_any_of(",; "), boost::token_compress_on);
+        for (vector<string>::iterator it = parts.begin(); it != parts.end(); ++it)
         {
-            std::string urls = GetArg("-vTrustedUrls", "");
-            typedef vector<string> parts_type;
-            parts_type parts;
-            boost::split(parts, urls, boost::is_any_of(",; "), boost::token_compress_on);
-            for (vector<string>::iterator it = parts.begin(); it != parts.end(); ++it)
+            QString url = QString::fromStdString(*it);
+            // Sanity check the url
+            if (url.contains(QChar('.')))
             {
-                QString url = QString::fromStdString(*it);
-                // Sanity check the url
-                if (url.contains(QChar('.')))
-                {
-                    trustedUrls << url;
-                }
+                trustedUrls << url;
+                if (!fTrustedUrlsSet)
+                    fTrustedUrlsSet = true;
             }
-            fTrustedUrlsSet = true;
         }
     }
 
@@ -93,6 +92,7 @@ void WebView::myOpenUrl(QUrl url)
         {
             printf("WebView: Error loading: %s\n", url.toString().toStdString().c_str());
         }
+        // This uses canGoBack() and currentItemIndex > 0 as opposed to currentItemIndex > 1 like the other setButtonStates calls.
         setButtonStates(this->history()->canGoBack(), (this->history()->currentItemIndex() > 0), this->history()->canGoForward());
     }
     else

@@ -36,6 +36,7 @@ public slots:
 private:
     Ui::WebView *ui;
 
+    bool fTrustedUrlsSet;
     QPushButton *backButton;
     QPushButton *homeButton;
     QPushButton *forwardButton;

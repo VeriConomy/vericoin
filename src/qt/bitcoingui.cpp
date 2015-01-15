@@ -247,7 +247,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     explorerPage = new WebView(this); // extends QWebView
     Ui::explorerPage explorer;
     // Setup header and styles
-    GUIUtil::header(explorerPage, QString(":images/headerexplorer"));
+    GUIUtil::header(explorerPage, QString(":images/headerExplorer"));
     explorer.setupUi(explorerPage);
     explorerPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     explorerPage->setStyleSheet(GUIUtil::veriStyleSheet);
@@ -327,6 +327,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create status bar
     statusBar();
     statusBar()->setContentsMargins(STATUSBAR_MARGIN,0,0,0);
+    statusBar()->setFixedHeight(32);
     statusBar()->setStyleSheet("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     statusBar()->setFont(veriFontSmall);
 
@@ -385,10 +386,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Progress bar and label for blocks download
     progressBar = new QProgressBar();
-    progressBar->setContentsMargins(0,0,10,0);
-    progressBar->setMinimumWidth(300);
+    progressBar->setContentsMargins(0,0,0,0);
+    progressBar->setMinimumWidth(320);
     progressBar->setFont(veriFontSmall);
-    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar {color: black; border-color: " + STRING_VERIBLUE + "; border-width: 2px; border-style: solid;}");
+    progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
@@ -497,7 +498,7 @@ void BitcoinGUI::createActions()
 
     fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Get VeriCoin"), this);
     fiatAction->setFont(veriFontSmall);
-    fiatAction->setToolTip(tr("Buy VeriCoin with Fiat"));
+    fiatAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
     fiatAction->setCheckable(true);
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
@@ -518,7 +519,7 @@ void BitcoinGUI::createActions()
 
     explorerAction = new QAction(QIcon(":/icons/explorer"), tr("Blockchain"), this);
     explorerAction->setFont(veriFontSmall);
-    explorerAction->setToolTip(tr("Look at the VeriCoin blockchain"));
+    explorerAction->setToolTip(tr("Explore the VeriCoin blockchain"));
     explorerAction->setCheckable(true);
     explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(explorerAction);
@@ -582,8 +583,8 @@ void BitcoinGUI::createActions()
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("&Reload Blockchain..."), this);
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Blockchain..."), this);
-    rescanBlockchainAction->setToolTip(tr("Restart and rescan the blockchain."));
+    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet..."), this);
+    rescanBlockchainAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     checkForUpdateAction = new QAction(QIcon(":/icons/tx_inout"), tr("Check For &Update..."), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumsAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums..."), this);
@@ -831,7 +832,12 @@ void BitcoinGUI::optionsClicked()
         return;
     OptionsDialog dlg;
     dlg.setModel(clientModel->getOptionsModel());
+    // Bug fix: OptionModel->Init() initializes decimalpoints to maxdecimals (in non-model state),
+    // so we need to restore them to the user's desired option after we are model.
+    emit clientModel->getOptionsModel()->decimalPointsChanged(clientModel->getOptionsModel()->getDecimalPoints());
     dlg.exec();
+
+    setBalanceLabel(); // force a balance update instead of waiting on timer
 }
 
 void BitcoinGUI::forumsClicked()
@@ -853,9 +859,10 @@ void BitcoinGUI::aboutClicked()
 
 void BitcoinGUI::setBalanceLabel()
 {
-    if (walletModel)
+    if (clientModel && walletModel)
     {
-        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), walletModel->getBalance()));
+        qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
+        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total));
         int labelWidth = stakingLabel->text().length();
         stakingLabel->setFixedWidth(labelWidth * 7);
     }
@@ -866,9 +873,8 @@ void BitcoinGUI::setVersionIcon(bool newVersion)
     QString icon;
     switch(newVersion)
     {
-    case true: icon = ":/icons/statusBad"; versionLabel->setStyleSheet("QLabel {color: red;}"); break;
-    case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
-    default: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
+        case true: icon = ":/icons/statusBad"; versionLabel->setStyleSheet("QLabel {color: red;}"); break;
+        case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
     }
     labelVersionIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
     labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date!<br>Download the newest version in Help.") : tr("You have the most current wallet version."));
@@ -879,18 +885,18 @@ void BitcoinGUI::setNumConnections(int count)
     QString icon;
     switch(count)
     {
-    case 0: icon = ":/icons/connect_0"; break;
-    case 1: case 2: case 3: icon = ":/icons/connect_1"; break;
-    case 4: case 5: case 6: icon = ":/icons/connect_2"; break;
-    case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
-    default: icon = ":/icons/connect_4"; break;
+        case 0: icon = ":/icons/connect_0"; break;
+        case 1: case 2: case 3: icon = ":/icons/connect_1"; break;
+        case 4: case 5: case 6: icon = ":/icons/connect_2"; break;
+        case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
+        default: icon = ":/icons/connect_4"; break;
     }
     QString connections = QString::number(count);
     QString label = " Connections";
     QString connectionlabel = connections + label;
     connectionsLabel->setText(QString(connectionlabel));
     labelConnectionsIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
-    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to the VeriCoin network", "", count));
+    labelConnectionsIcon->setToolTip(tr("%1 active connection%2 to the VeriCoin network").arg(count).arg(count == 1 ? "" : "s"));
 }
 
 void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
@@ -913,7 +919,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("Synchronizing: ~%n block(s) remaining", "", nRemainingBlocks));
+            progressBar->setFormat(tr("~%1 Block%2 Remaining").arg(nRemainingBlocks).arg(nRemainingBlocks == 1 ? "" : "s"));
             progressBar->setMaximum(nTotalBlocks);
             progressBar->setValue(count);
             progressBar->setVisible(true);
@@ -1244,7 +1250,7 @@ void BitcoinGUI::resizeEvent(QResizeEvent *e)
 {
     if (resizeGUICalled) return;  // Don't allow resizeEvent to be called twice
 
-    if (e->size().height() < WINDOW_MIN_HEIGHT + 50)
+    if (e->size().height() < WINDOW_MIN_HEIGHT + 50 && e->size().width() < WINDOW_MIN_WIDTH + 50)
     {
         resizeGUI(); // snap to normal size wallet if within 50 pixels
     }
@@ -1595,9 +1601,14 @@ void BitcoinGUI::checkForUpdate()
     boost::filesystem::path fileName(GetProgramDir());
     QUrl url;
 
-    fTrustedUrlsSet = false;
+    if (fMenuCheckForUpdate)
+        fNewVersion = false; // Force a reload of the version file if the user requested a check and a new version was already found
+
     printf("Downloading and parsing version data...\n");
     ReadVersionFile();
+
+    // Set version icon good/bad
+    setVersionIcon(fNewVersion);
 
     if (fNewVersion)
     {
@@ -1629,8 +1640,6 @@ void BitcoinGUI::checkForUpdate()
     {
         if (fMenuCheckForUpdate)
         {
-            // Set version icon good/bad
-            setVersionIcon(fNewVersion);
             QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update is required."));
         }
     }

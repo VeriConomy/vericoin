@@ -86,7 +86,6 @@ bool fNewVersion = false;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fBootstrapTurbo = false;
-bool fTrustedUrlsSet = false;
 bool fSuperNETInstalled = false;
 #endif
 bool fDebug = false;
@@ -1286,8 +1285,10 @@ boost::filesystem::path GetVersionFile()
 // Reads the version file and maps it to the current configuration.
 void ReadVersionFile()
 {
-    if (fNewVersion && !fMenuCheckForUpdate)
-        return; // New version data already loaded
+    if (fNewVersion)
+    {
+        return; // New version found already
+    }
 
     QString versionData;
     std::string line;
