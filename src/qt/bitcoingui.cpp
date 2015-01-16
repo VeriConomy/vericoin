@@ -247,7 +247,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     explorerPage = new WebView(this); // extends QWebView
     Ui::explorerPage explorer;
     // Setup header and styles
-    GUIUtil::header(explorerPage, QString(":images/headerExplorer"));
+    GUIUtil::header(explorerPage, QString(":images/headerBlockchain"));
     explorer.setupUi(explorerPage);
     explorerPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     explorerPage->setStyleSheet(GUIUtil::veriStyleSheet);
@@ -517,7 +517,7 @@ void BitcoinGUI::createActions()
     chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
-    explorerAction = new QAction(QIcon(":/icons/explorer"), tr("Blockchain"), this);
+    explorerAction = new QAction(QIcon(":/icons/explorer"), tr("BlockChain"), this);
     explorerAction->setFont(veriFontSmall);
     explorerAction->setToolTip(tr("Explore the VeriCoin blockchain"));
     explorerAction->setCheckable(true);

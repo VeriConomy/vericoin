@@ -82,7 +82,7 @@
         <file alias="headerGetVeriCoin">res/images/headerGetVeriCoin.png</file>
         <file alias="headerNews">res/images/headerNews.png</file>
         <file alias="headerChat">res/images/headerChat.png</file>
-        <file alias="headerExplorer">res/images/headerExplorer.png</file>
+        <file alias="headerBlockchain">res/images/headerBlockchain.png</file>
         <file alias="headerSuperNET">res/images/headerSuperNET.png</file>
     </qresource>
     <qresource prefix="/movies">
