@@ -31,7 +31,7 @@ git clone git@github.com:rat4/vericoin.git vericoin
 
 2.  Download and install MacPorts from http://www.macports.org/
 
-2a. (for 10.7 Lion)
+2a. (for 10.7 Lion or 10.9 Mavericks)
     Edit /opt/local/etc/macports/macports.conf and uncomment "build_arch i386"
 
 3.  Install dependencies from MacPorts
