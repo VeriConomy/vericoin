@@ -1,6 +1,6 @@
 VeriCoin 1.0 
 
-Copyright (c) 2015 VeriCoin Developers
+Copyright (c) 2014-2015 VeriCoin Developers
 Copyright (c) 2013 NovaCoin Developers
 Copyright (c) 2011-2013 PPCoin Developers
 Distributed under the MIT/X11 software license, see the accompanying

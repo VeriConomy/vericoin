@@ -10,7 +10,7 @@ CONFIG += release
 !win32{
 CONFIG += static
 }
-QT += network webkit webkitwidgets
+QT += network webkit
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += webkitwidgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
@@ -29,14 +29,15 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 # winbuild dependencies
 win32 {
-BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
+BOOST_LIB_SUFFIX=-mgw49-mt-s-1_55
+#BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
 BOOST_INCLUDE_PATH=C:/deps/boost_1_55_0
 BOOST_LIB_PATH=C:/deps/boost_1_55_0/stage/lib
 BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
 BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
 OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1i/include
 OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1i
-MINIUPNPC_INCLUDE_PATH=C:/deps/
+MINIUPNPC_INCLUDE_PATH=C:/deps
 MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
 QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
 QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs

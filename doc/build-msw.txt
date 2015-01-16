@@ -24,10 +24,10 @@ Dependencies
 Libraries you need to download separately and build:
 
                 default path               download
-OpenSSL         \openssl-1.0.1b-mgw        http://www.openssl.org/source/
+OpenSSL         \openssl-1.0.1i-mgw        http://www.openssl.org/source/
 Berkeley DB     \db-4.8.30.NC-mgw          http://www.oracle.com/technology/software/products/berkeley-db/index.html
-Boost           \boost-1.47.0-mgw          http://www.boost.org/users/download/
-miniupnpc       \miniupnpc-1.6-mgw         http://miniupnp.tuxfamily.org/files/
+Boost           \boost-1.55.0-mgw          http://www.boost.org/users/download/
+miniupnpc       \miniupnpc-1.9-mgw         http://miniupnp.tuxfamily.org/files/
 
 Their licenses:
 OpenSSL        Old BSD license with the problematic advertising requirement
@@ -36,49 +36,173 @@ Boost          MIT-like license
 miniupnpc      New (3-clause) BSD license
 
 Versions used in this release:
-OpenSSL      1.0.1b
+OpenSSL      1.0.1i
 Berkeley DB  4.8.30.NC
-Boost        1.47.0
-miniupnpc    1.6
+Boost        1.55.0
+miniupnpc    1.9
 
 
-OpenSSL
--------
-MSYS shell:
-un-tar sources with MSYS 'tar xfz' to avoid issue with symlinks (OpenSSL ticket 2377)
-change 'MAKE' env. variable from 'C:\MinGW32\bin\mingw32-make.exe' to '/c/MinGW32/bin/mingw32-make.exe'
+Copyright (c) 2009-2012 Bitcoin Developers
+Distributed under the MIT/X11 software license, see the accompanying
+file license.txt or http://www.opensource.org/licenses/mit-license.php.
+This product includes software developed by the OpenSSL Project for use in
+the OpenSSL Toolkit (http://www.openssl.org/).  This product includes
+cryptographic software written by Eric Young (eay@cryptsoft.com) and UPnP
+software written by Thomas Bernard.
 
-cd /c/openssl-1.0.1b-mgw
-./config
+
+See readme-qt.rst for instructions on building VeriCoin QT, the
+graphical user interface.
+
+WINDOWS BUILD NOTES
+===================
+
+Compilers Supported
+-------------------
+TODO: What works?
+Note: releases are cross-compiled using mingw running on Linux.
+
+
+Dependencies
+------------
+Libraries you need to download separately and build:
+
+                default path               download
+OpenSSL         \openssl-1.0.1i-mgw        http://www.openssl.org/source/
+Berkeley DB     \db-4.8.30.NC-mgw          http://www.oracle.com/technology/software/products/berkeley-db/index.html
+Boost           \boost-1.55.0-mgw          http://www.boost.org/users/download/
+miniupnpc       \miniupnpc-1.9-mgw         http://miniupnp.tuxfamily.org/files/
+
+Their licenses:
+OpenSSL        Old BSD license with the problematic advertising requirement
+Berkeley DB    New BSD license with additional requirement that linked software must be free open source
+Boost          MIT-like license
+miniupnpc      New (3-clause) BSD license
+
+Versions used in this release:
+OpenSSL      1.0.1i
+Berkeley DB  4.8.30.NC
+Boost        1.55.0
+miniupnpc    1.9
+
+
+# Initial Setup
+
+1. Install msys shell:
+http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download
+From MinGW installation manager -> All packages -> MSYS
+mark the following for installation:
+
+msys-base-bin
+msys-autoconf-bin
+msys-automake-bin
+msys-libtool-bin
+
+then click on Installation -> Apply changes
+
+Make sure no mingw packages are checked for installation or present from a previous install. Only the 
+above msys packages should be installed. Also make sure that msys-gcc and msys-w32api packages are 
+not installed.
+
+2. Download Qt 5.4 for Windows
+http://qt-project.org/downloads
+
+Install everything to the default paths.
+
+Add the following to your PATH:
+C:\Qt\Tools\mingw491_32\bin;C:\Qt\5.4\mingw491_32\bin;C:\Qt\Tools\mingw491_32\opt\bin
+
+Make sure the directory actually exists. If it doesn't, go to C:\Qt5\Tools and use the mingw version 
+there.
+
+3. Download, unpack, and build the following depenedencies. Save them in C:\deps.
+
+4. OpenSSL: http://www.openssl.org/source/openssl-1.0.1i.tar.gz
+From a MinGw shell (C:\MinGW\msys\1.0\msys.bat), unpack the source archive with tar (this will avoid 
+symlink issues) then configure and make:
+Code:
+cd /c/deps/
+tar xvfz openssl-1.0.1i.tar.gz
+cd openssl-1.0.1i
+Configure no-shared no-dso mingw
 make
 
-Berkeley DB
------------
-MSYS shell:
-cd /c/db-4.8.30.NC-mgw/build_unix
-sh ../dist/configure --enable-mingw --enable-cxx
+5. Berkeley DB: http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+We'll use version 4.8 to preserve binary wallet compatibility.
+From a MinGW shell unpack the source archive, configure and make:
+Code:
+cd /c/deps/
+tar xvfz db-4.8.30.NC.tar.gz
+cd db-4.8.30.NC/build_unix
+../dist/configure --enable-mingw --enable-cxx --disable-shared --disable-replication
 make
 
-Boost
------
-DOS prompt:
-downloaded boost jam 3.1.18
-cd \boost-1.47.0-mgw
-bjam toolset=gcc --build-type=complete stage
+6. Boost: http://sourceforge.net/projects/boost/files/boost/1.55.0/
+Download either the zip or the 7z archive, unpack boost inside your C:\deps folder, then bootstrap 
+and compile from a Windows command prompt:
+Code:
+cd C:\deps\boost_1_55_0\
+bootstrap.bat mingw
+b2 --build-type=complete --with-chrono --with-filesystem --with-program_options --with-system --
+with-thread toolset=gcc variant=release link=static threading=multi runtime-link=static stage
 
-MiniUPnPc
----------
-UPnP support is optional, make with USE_UPNP= to disable it.
+This will compile the required boost libraries and put them into the stage folder (C:\deps
+\boost_1_55_0\stage).
+Note: make sure you don't use tarballs, as unix EOL markers can break batch files.
 
-MSYS shell:
-cd /c/miniupnpc-1.6-mgw
-make -f Makefile.mingw
-mkdir miniupnpc
-cp *.h miniupnpc/
+7. Miniupnpc: http://miniupnp.free.fr/files/download.php?file=miniupnpc-1.9.tar.gz
+Unpack Miniupnpc to C:\deps
+Rename containing folder from "miniupnpc-1.9" to "miniupnpc" then from a Windows command prompt:
+Code:
+cd C:\deps\miniupnpc
+mingw32-make -f Makefile.mingw init upnpc-static
 
-VeriCoin
--------
-DOS prompt:
-cd \vericoin\src
-mingw32-make -f makefile.mingw
-strip vericoind.exe
+8. protoc and libprotobuf:
+Download and unpack http://protobuf.googlecode.com/files/protobuf-2.5.0.zip
+Then from msys shell
+Code:
+cd /c/deps/protobuf-2.5.0
+configure --disable-shared
+make
+
+9. qrencode:
+Download and unpack http://prdownloads.sourceforge.net/libpng/libpng-1.6.12.tar.gz?download inside 
+your deps folder then configure and make:
+Code:
+cd /c/deps/libpng-1.6.12
+configure --disable-shared
+make
+cp .libs/libpng16.a .libs/libpng.a
+
+Download and unpack http://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz inside your deps folder 
+then configure and make:
+Code:
+cd /c/deps/qrencode-3.4.4
+
+LIBS="../libpng-1.6.12/.libs/libpng.a ../../Qt/Tools/mingw491_32/i686-w64-mingw32/lib/libz.a" \
+png_CFLAGS="-I../libpng-1.6.12" \
+png_LIBS="-L../libpng-1.6.12/.libs" \
+configure --enable-static --disable-shared --without-tools
+
+make
+
+
+# Building VeriCoin:
+
+1. open mingw shell
+C:\MinGW\msys\1.0\msys.bat
+cd /c/Users/user/vericoin (or wherever your source lives)
+cd src/leveldb
+TARGET_OS=NATIVE_WINDOWS make clean
+TARGET_OS=NATIVE_WINDOWS make libleveldb.a libmemenv.a
+cd ../quazip
+qmake quazip.pro
+mingw33-make -f Makefile.Release clean
+mingw32-make -j6 -f Makefile.Release
+
+exit
+
+2. Then in a command prompt
+qmake "USE_QRCODE=1" "USE_UPNP=1" "USE_IPV6=1" vericoin-qt.pro
+mingw32-make -j6 -f Makefile.Release
+
