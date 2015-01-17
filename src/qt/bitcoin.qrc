@@ -43,6 +43,7 @@
         <file alias="key">res/icons/key.png</file>
         <file alias="filesave">res/icons/filesave.png</file>
         <file alias="blockchain">res/icons/blockchain.png</file>
+        <file alias="blockchain-dark">res/icons/blockchain-dark.png</file>
         <file alias="rescan">res/icons/rescan.png</file>
         <file alias="qrcode">res/icons/qrcode.png</file>
         <file alias="debugwindow">res/icons/debugwindow.png</file>
@@ -55,7 +56,6 @@
         <file alias="fiat">res/icons/fiat.png</file>
         <file alias="news">res/icons/news_white.png</file>
         <file alias="chat">res/icons/chat.png</file>
-        <file alias="explorer">res/icons/explorer.png</file>
         <file alias="sendButton">res/icons/sendButton.png</file>
         <file alias="editButton">res/icons/editButton.png</file>
         <file alias="home">res/icons/home.png</file>
