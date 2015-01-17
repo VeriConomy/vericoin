@@ -450,7 +450,7 @@ QStringList JlCompress::extractFiles(QString fileCompressed, QStringList files, 
  * * la compressione di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-QStringList JlCompress::extractDir(QWidget *parent, QString fileCompressed, QString dir, QLabel *progressBarLabel, QProgressBar *progressBar) {
+QStringList JlCompress::extractDir(QString fileCompressed, QString dir, QProgressBar *progressBar) {
 
     int progress = 0;
 

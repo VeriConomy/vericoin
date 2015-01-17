@@ -129,7 +129,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QWidget *parent, QString fileCompressed, QString dir = QString(), QLabel *progressBarLabel = 0, QProgressBar *progressBar = 0);
+    static QStringList extractDir(QString fileCompressed, QString dir = QString(), QProgressBar *progressBar = 0);
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the
