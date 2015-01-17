@@ -39,6 +39,7 @@ static const int HEADER_WIDTH = 964;
 static const int HEADER_HEIGHT = 160;
 static const int BUTTON_WIDTH = 140;
 static const int BUTTON_HEIGHT = 27;
+static const int FRAMEBLOCKS_LABEL_WIDTH = 100;
 
 static const int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN

@@ -353,12 +353,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
-    stakingLabel->setFixedWidth(100);
+    stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
-    connectionsLabel->setFixedWidth(110);
+    connectionsLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
@@ -861,11 +861,22 @@ void BitcoinGUI::setBalanceLabel()
 {
     if (clientModel && walletModel)
     {
-        qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
-        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
-        QFontMetrics fm(stakingLabel->font());
-        int labelWidth = fm.width(stakingLabel->text());
-        stakingLabel->setFixedWidth(labelWidth + 4);
+        if (!walletModel->getOptionsModel()->getHideAmounts())
+        {
+            qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
+            stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+            QFontMetrics fm(stakingLabel->font());
+            int labelWidth = fm.width(stakingLabel->text());
+            stakingLabel->setFixedWidth(labelWidth + 4);
+        }
+        else
+        {
+            if (stakingLabel->text().left(8).compare("Balance:") == 0)
+            {
+                stakingLabel->setText("Balance: ---.--");
+            }
+            stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 {
     "title":"A New Version of the VeriCoin Wallet is Available",
-    "description":"This update adds a number of new features to the wallet, including: New tabs for the SuperNET gateway, in-wallet IRC chat, blockchain explorer, and news feed; Auto and manual checks for new versions of the wallet; A new method of quickly bootstrapping the blockchain; A user friendly option to re-scan the wallet; A VeriCoin ticker for news alerts; Numerous UI tweaks, including the option to hide decimal places in currencies, wallet window resizing with compact mode; And the usual bug fix or two.\n\nNote: As soon as SuperNET v1 is launched, we will release a new version of the wallet that integrates the SuperNet fully.",
+    "description":"This update adds a number of new features to the wallet, including: New tabs for the SuperNET gateway, in-wallet IRC chat, blockchain explorer, and a news feed; Auto and manual checks for new versions of the wallet; A new method of quickly bootstrapping the blockchain; A user friendly method to re-scan the wallet; A VeriCoin ticker for news alerts; Numerous UI tweaks, including an option to hide decimal places in currencies, an option to hide amounts for privacy, and wallet window resizing with compact mode; And there's the usual bug fix or two.\n\nNote: As soon as SuperNET v1 is launched, we will release a new version of the wallet that integrates the SuperNet fully.",
     "prefix":"VeriCoin_",
     "version":"1.5",
     "arch32":"",
