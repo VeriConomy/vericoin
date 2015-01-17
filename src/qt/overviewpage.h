@@ -33,6 +33,9 @@ public slots:
 
 signals:
     void transactionClicked(const QModelIndex &index);
+    void displayUnitChanged(int unit);
+    void decimalPointsChanged(int decimals);
+    void hideAmountsChanged(bool hideamounts);
 
 private:
     Ui::OverviewPage *ui;
@@ -48,6 +51,7 @@ private:
 private slots:
     void updateDisplayUnit();
     void updateDecimalPoints();
+    void updateHideAmounts();
     void handleTransactionClicked(const QModelIndex &index);
     void myOpenUrl(QUrl url);
     void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);

@@ -535,6 +535,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="hideAmounts">
+         <property name="text">
+          <string>Hide amounts (---.--)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer_Display">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

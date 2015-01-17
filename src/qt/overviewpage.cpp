@@ -170,9 +170,6 @@ void OverviewPage::handleTransactionClicked(const QModelIndex &index)
 
 OverviewPage::~OverviewPage()
 {
-    delete ui->stats->page()->networkAccessManager()->cookieJar();
-    delete ui->value->page()->networkAccessManager()->cookieJar();
-
     delete ui;
 }
 
@@ -183,6 +180,7 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
 
     BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
     int unit = model->getOptionsModel()->getDisplayUnit();
+    bool hideAmounts = model->getOptionsModel()->getHideAmounts();
     if (model->getOptionsModel()->getDecimalPoints() < bcu->maxdecimals(unit))
     {
         maxDecimalsTooltipText = QString(""); // The user already knows about the option to set decimals
@@ -193,18 +191,18 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
     currentUnconfirmedBalance = unconfirmedBalance;
     currentImmatureBalance = immatureBalance;
 
-    ui->labelBalance->setText(bcu->formatWithUnit(unit, balance));
-    ui->labelBalance->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
-    ui->labelStake->setText(bcu->formatWithUnit(unit, stake));
-    ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, stake, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
-    ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance));
-    ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
-    //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance));
-    //ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    ui->labelBalance->setText(bcu->formatWithUnit(unit, balance, false, hideAmounts));
+    ui->labelBalance->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
+    ui->labelStake->setText(bcu->formatWithUnit(unit, stake, false, hideAmounts));
+    ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, stake, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
+    ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance, false, hideAmounts));
+    ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
+    //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance, false, hideAmounts));
+    //ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     //ui->labelImmature->setVisible(true);
     //ui->labelImmatureText->setVisible(true);
-    ui->labelTotal->setText(bcu->formatWithUnit(unit, total));
-    ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true)).arg(maxDecimalsTooltipText));
+    ui->labelTotal->setText(bcu->formatWithUnit(unit, total, false, hideAmounts));
+    ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
 
     delete bcu;
 }
@@ -240,6 +238,7 @@ void OverviewPage::setModel(WalletModel *model)
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
+        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
     }
 
     // update the display unit, to not use the default ("VRC")
@@ -262,11 +261,12 @@ void OverviewPage::updateDisplayUnit()
 
 void OverviewPage::updateDecimalPoints()
 {
-    if(model && model->getOptionsModel())
-    {
-        if(currentBalance != -1)
-            setBalance(currentBalance, model->getStake(), currentUnconfirmedBalance, currentImmatureBalance);
-    }
+    updateDisplayUnit();
+}
+
+void OverviewPage::updateHideAmounts()
+{
+    updateDisplayUnit();
 }
 
 void OverviewPage::showOutOfSyncWarning(bool fShow)

@@ -112,7 +112,7 @@ void Downloader::on_quitButton_clicked() // Cancel button
     if (processBlockchain)
     {
         BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
-        p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
+        p->reloadExplorerActionEnabled(true); // Set menu option back to true when dialog closes.
         processBlockchain = false;
     }
     if (processUpdate)

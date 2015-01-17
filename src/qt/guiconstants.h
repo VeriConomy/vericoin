@@ -13,7 +13,7 @@ static const int MAX_PASSPHRASE_SIZE = 1024;
 
 /* BitcoinGUI -- Size of icons and left margin in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
-static const int STATUSBAR_MARGIN = 8;
+static const int STATUSBAR_MARGIN = 10;
 
 /* Invalid field background style */
 #define STYLE_INVALID "background:#FF8080"
@@ -39,6 +39,7 @@ static const int HEADER_WIDTH = 964;
 static const int HEADER_HEIGHT = 160;
 static const int BUTTON_WIDTH = 140;
 static const int BUTTON_HEIGHT = 27;
+static const int FRAMEBLOCKS_LABEL_WIDTH = 100;
 
 static const int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
@@ -55,6 +56,7 @@ static const QFont veriFont("Lato", 11, QFont::Normal, false);
 static const QFont veriFontLarge("Lato", 14, QFont::Normal, false);
 static const QFont veriFontMedium("Lato", 10, QFont::Normal, false);
 static const QFont veriFontSmall("Lato", 9, QFont::Normal, false);
+static const QFont veriFontSmaller("Lato", 8, QFont::Normal, false);
 
 /* Tooltips longer than this (in characters) are converted into rich text,
    so that they can be word-wrapped.

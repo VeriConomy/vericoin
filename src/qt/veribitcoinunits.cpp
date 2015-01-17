@@ -94,12 +94,12 @@ int veriBitcoinUnits::decimals(int unit)
     return maxdecimals(unit);
 }
 
-QString veriBitcoinUnits::format(int unit, qint64 n, bool fPlus)
+QString veriBitcoinUnits::format(int unit, qint64 n, bool fPlus, bool fHideAmounts)
 {
-    return formatMaxDecimals(unit, n, decimals(unit), fPlus);
+    return formatMaxDecimals(unit, n, decimals(unit), fPlus, fHideAmounts);
 }
 
-QString veriBitcoinUnits::formatMaxDecimals(int unit, qint64 n, int decimals, bool fPlus)
+QString veriBitcoinUnits::formatMaxDecimals(int unit, qint64 n, int decimals, bool fPlus, bool fHideAmounts)
 {
     // Note: not using straight sprintf here because we do NOT want
     // localized number formatting.
@@ -115,6 +115,12 @@ QString veriBitcoinUnits::formatMaxDecimals(int unit, qint64 n, int decimals, bo
     // Pad zeros after remainder up to number of decimals
     for (int i = remainder_str.size(); i < decimals; ++i)
         remainder_str.append("0");
+
+    if(fHideAmounts)
+    {
+        quotient_str.replace(QRegExp("[0-9]"),"-");
+        remainder_str.replace(QRegExp("[0-9]"),"-");
+    }
 
     if (n < 0)
         quotient_str.insert(0, '-');
@@ -158,15 +164,15 @@ QString veriBitcoinUnits::formatFee(int unit, qint64 n, bool fPlus)
 }
 
 // Calling this function will return the maximum number of decimals based on the options setting.
-QString veriBitcoinUnits::formatWithUnit(int unit, qint64 amount, bool plussign)
+QString veriBitcoinUnits::formatWithUnit(int unit, qint64 amount, bool plussign, bool hideamounts)
 {
-    return format(unit, amount, plussign) + QString(" ") + name(unit);
+    return format(unit, amount, plussign, hideamounts) + QString(" ") + name(unit);
 }
 
 // Calling this function with maxdecimals(unit) will return the maximum number of decimals.
-QString veriBitcoinUnits::formatWithUnitWithMaxDecimals(int unit, qint64 amount, int decimals, bool plussign)
+QString veriBitcoinUnits::formatWithUnitWithMaxDecimals(int unit, qint64 amount, int decimals, bool plussign, bool hideamounts)
 {
-    return formatMaxDecimals(unit, amount, decimals, plussign) + QString(" ") + name(unit);
+    return formatMaxDecimals(unit, amount, decimals, plussign, hideamounts) + QString(" ") + name(unit);
 }
 
 // Calling this function will return the maximum number of decimals for a fee.

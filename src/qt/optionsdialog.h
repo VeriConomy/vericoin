@@ -44,6 +44,7 @@ private slots:
     void showRestartWarning_Lang();
     void updateDisplayUnit();
     void updateDecimalPoints();
+    void updateHideAmounts();
     void handleProxyIpValid(QValidatedLineEdit *object, bool fState);
 
 signals:

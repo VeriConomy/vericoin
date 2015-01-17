@@ -42,14 +42,15 @@ void OptionsModel::Init()
 
     // These are Qt-only settings:
     nDisplayUnit = settings.value("nDisplayUnit", BitcoinUnits::VRC).toInt();
+    nDecimalPoints = settings.value("nDecimalPoints", BitcoinUnits::decimals(BitcoinUnits::VRC)).toInt();
     bDisplayAddresses = settings.value("bDisplayAddresses", false).toBool();
+    fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
+    bHideAmounts = settings.value("bHideAmounts", false).toBool();
     fMinimizeToTray = settings.value("fMinimizeToTray", false).toBool();
     fMinimizeOnClose = settings.value("fMinimizeOnClose", false).toBool();
-    fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
     nTransactionFee = settings.value("nTransactionFee").toLongLong();
     nReserveBalance = settings.value("nReserveBalance").toLongLong();
     language = settings.value("language", "").toString();
-    nDecimalPoints = settings.value("nDecimalPoints", BitcoinUnits::decimals(BitcoinUnits::VRC)).toInt();
 
     // These are shared with core Bitcoin; we want
     // command-line options to override the GUI settings:
@@ -90,7 +91,7 @@ bool OptionsModel::Upgrade()
         }
     }
     QList<QString> boolOptions;
-    boolOptions << "bDisplayAddresses" << "fMinimizeToTray" << "fMinimizeOnClose" << "fUseProxy" << "fUseUPnP";
+    boolOptions << "bDisplayAddresses" << "bHideAmounts" << "fMinimizeToTray" << "fMinimizeOnClose" << "fUseProxy" << "fUseUPnP";
     foreach(QString key, boolOptions)
     {
         bool value = false;
@@ -172,6 +173,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return QVariant(nDisplayUnit);
         case DisplayAddresses:
             return QVariant(bDisplayAddresses);
+        case HideAmounts:
+            return QVariant(bHideAmounts);
         case DetachDatabases:
             return QVariant(bitdb.GetDetach());
         case Language:
@@ -265,6 +268,11 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             bDisplayAddresses = value.toBool();
             settings.setValue("bDisplayAddresses", bDisplayAddresses);
             break;
+        case HideAmounts:
+            bHideAmounts = value.toBool();
+            settings.setValue("bHideAmounts", bHideAmounts);
+            emit hideAmountsChanged(bHideAmounts);
+            break;
         case DetachDatabases: {
             bool fDetachDB = value.toBool();
             bitdb.SetDetach(fDetachDB);
@@ -332,4 +340,9 @@ int OptionsModel::getDecimalPoints()
 bool OptionsModel::getDisplayAddresses()
 {
     return bDisplayAddresses;
+}
+
+bool OptionsModel::getHideAmounts()
+{
+    return bHideAmounts;
 }
