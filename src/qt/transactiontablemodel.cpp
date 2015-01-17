@@ -233,6 +233,7 @@ TransactionTableModel::TransactionTableModel(CWallet* wallet, WalletModel *paren
 
     connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
     connect(walletModel->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
+    connect(walletModel->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
 }
 
 TransactionTableModel::~TransactionTableModel()
@@ -340,7 +341,7 @@ QString TransactionTableModel::lookupAddress(const std::string &address, bool to
     }
     if(label.isEmpty() || walletModel->getOptionsModel()->getDisplayAddresses() || tooltip)
     {
-        description += QString::fromStdString(address);
+        description += "- " + QString::fromStdString(address);
     }
     return description;
 }
@@ -425,7 +426,7 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord *wtx) const
 QString TransactionTableModel::formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed) const
 {
     BitcoinUnits *bcu = new BitcoinUnits((QObject *)this, walletModel);
-    QString str = bcu->format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit);
+    QString str = bcu->format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit, false, false);
     if(showUnconfirmed)
     {
         if(!wtx->status.countsForBalance)
@@ -625,6 +626,12 @@ void TransactionTableModel::updateDisplayUnit()
 }
 
 void TransactionTableModel::updateDecimalPoints()
+{
+    // emit dataChanged to update Amount column with the current unit
+    emit dataChanged(index(0, Amount), index(priv->size()-1, Amount));
+}
+
+void TransactionTableModel::updateHideAmounts()
 {
     // emit dataChanged to update Amount column with the current unit
     emit dataChanged(index(0, Amount), index(priv->size()-1, Amount));

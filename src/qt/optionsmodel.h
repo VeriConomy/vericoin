@@ -29,6 +29,7 @@ public:
         ReserveBalance,    // qint64
         DisplayUnit,       // BitcoinUnits::Unit
         DisplayAddresses,  // bool
+        HideAmounts,  // bool
         DetachDatabases,   // bool
         Language,          // QString
         CoinControlFeatures, // bool
@@ -53,6 +54,7 @@ public:
     int getDisplayUnit();
     int getDecimalPoints();
     bool getDisplayAddresses();
+    bool getHideAmounts();
     bool getCoinControlFeatures();
     QString getLanguage() { return language; }
 
@@ -60,6 +62,7 @@ private:
     int nDisplayUnit;
     int nDecimalPoints;
     bool bDisplayAddresses;
+    bool bHideAmounts;
     bool fMinimizeToTray;
     bool fMinimizeOnClose;
     bool fCoinControlFeatures;
@@ -67,7 +70,8 @@ private:
 
 signals:
     void displayUnitChanged(int unit);
-    void decimalPointsChanged(int unit);
+    void decimalPointsChanged(int decimals);
+    void hideAmountsChanged(bool hideamounts);
     void transactionFeeChanged(qint64);
     void reserveBalanceChanged(qint64);
     void coinControlFeaturesChanged(bool);

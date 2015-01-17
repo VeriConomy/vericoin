@@ -80,6 +80,7 @@ public slots:
     void updateConfirmations();
     void updateDisplayUnit();
     void updateDecimalPoints();
+    void updateHideAmounts();
 
     friend class TransactionTablePriv;
 };

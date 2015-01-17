@@ -353,7 +353,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
-    stakingLabel->setFixedWidth(140);
+    stakingLabel->setFixedWidth(100);
 
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
@@ -862,9 +862,10 @@ void BitcoinGUI::setBalanceLabel()
     if (clientModel && walletModel)
     {
         qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
-        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total));
-        int labelWidth = stakingLabel->text().length();
-        stakingLabel->setFixedWidth(labelWidth * 7);
+        stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+        QFontMetrics fm(stakingLabel->font());
+        int labelWidth = fm.width(stakingLabel->text());
+        stakingLabel->setFixedWidth(labelWidth + 4);
     }
 }
 
@@ -1162,7 +1163,7 @@ void BitcoinGUI::gotoFiatPage()
 
     if (!fFiatPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/fiat.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+        QUrl url(QString(walletUrl).append("wallet/getvericoin.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         fiatPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fFiatPageLoaded = true;
     }

@@ -116,6 +116,7 @@ void OptionsDialog::setModel(OptionsModel *model)
     {
         connect(model, SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model, SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
+        connect(model, SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
 
         mapper->setModel(model);
         setMapper();
@@ -126,6 +127,8 @@ void OptionsDialog::setModel(OptionsModel *model)
     updateDisplayUnit();
     /* update the decimal points */
     updateDecimalPoints();
+    /* update hide amounts */
+    updateHideAmounts();
 
     /* warn only when language selection changes by user action (placed here so init via mapper doesn't trigger this) */
     connect(ui->lang, SIGNAL(valueChanged()), this, SLOT(showRestartWarning_Lang()));
@@ -159,9 +162,10 @@ void OptionsDialog::setMapper()
     /* Display */
     mapper->addMapping(ui->lang, OptionsModel::Language);
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
+    mapper->addMapping(ui->decimalPoints, OptionsModel::DecimalPoints);
     mapper->addMapping(ui->displayAddresses, OptionsModel::DisplayAddresses);
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
-    mapper->addMapping(ui->decimalPoints, OptionsModel::DecimalPoints);
+    mapper->addMapping(ui->hideAmounts, OptionsModel::HideAmounts);
 }
 
 void OptionsDialog::enableApplyButton()
@@ -242,6 +246,15 @@ void OptionsDialog::updateDecimalPoints()
     {
         /* Update decimalPoints with the current value */
         ui->decimalPoints->setValue(model->getDecimalPoints());
+    }
+}
+
+void OptionsDialog::updateHideAmounts()
+{
+    if(model)
+    {
+        /* Update hideAmounts with the current value */
+        ui->hideAmounts->setChecked(model->getHideAmounts());
     }
 }
 
