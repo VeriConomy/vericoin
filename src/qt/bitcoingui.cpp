@@ -36,6 +36,7 @@
 #include "ui_supernetpage.h"
 #include "downloader.h"
 #include "updatedialog.h"
+#include "whatsnewdialog.h"
 #include "rescandialog.h"
 #include "cookiejar.h"
 #include "webview.h"
@@ -191,17 +192,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(fiat.forward, SIGNAL(clicked()), fiat.webView, SLOT(myForward()));
     connect(fiat.reload, SIGNAL(clicked()), fiat.webView, SLOT(myReload()));
 
-    // Create News Page
+    // Create News/Forums Page
     newsPage = new WebView(this); // extends QWebView
     Ui::newsPage news;
     // Setup header and styles
     GUIUtil::header(newsPage, QString(":images/headerNews"));
     news.setupUi(newsPage);
-    newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
-    //newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
+    //newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
     newsPage->setStyleSheet(GUIUtil::veriStyleSheet);
     newsPage->setFont(veriFont);
-    news.frame->setVisible(false); // Set to true to enable webView navigation buttons
+    news.frame->setVisible(true); // Set to true to enable webView navigation buttons
     CookieJar *newsJar = new CookieJar;
     news.webView->page()->networkAccessManager()->setCookieJar(newsJar);
     news.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -513,28 +514,28 @@ void BitcoinGUI::createActions()
 
     fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Get VeriCoin"), this);
     fiatAction->setFont(veriFontSmall);
-    fiatAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
+    fiatAction->setToolTip(tr("<nobr>Buy VeriCoin with Fiat or Bitcoin</nobr>"));
     fiatAction->setCheckable(true);
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
-    newsAction = new QAction(QIcon(":/icons/news"), tr("News"), this);
+    newsAction = new QAction(QIcon(":/icons/news"), tr("Forums"), this);
     newsAction->setFont(veriFontSmall);
-    newsAction->setToolTip(tr("Get the Latest VeriCoin News"));
+    newsAction->setToolTip(tr("<nobr>Join the VeriCoin Community</nobr><br><nobr>Get the Latest VeriCoin News</nobr>"));
     newsAction->setCheckable(true);
     newsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(newsAction);
 
     chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
     chatAction->setFont(veriFontSmall);
-    chatAction->setToolTip(tr("Join the VeriCoin Chat Room"));
+    chatAction->setToolTip(tr("<nobr>Join the VeriCoin Chat Room</nobr>"));
     chatAction->setCheckable(true);
     chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
     explorerAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
     explorerAction->setFont(veriFontSmall);
-    explorerAction->setToolTip(tr("Explore the VeriCoin blockchain"));
+    explorerAction->setToolTip(tr("<nobr>Explore the VeriCoin Blockchain</nobr>"));
     explorerAction->setCheckable(true);
     explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(explorerAction);
@@ -905,7 +906,7 @@ void BitcoinGUI::setVersionIcon(bool newVersion)
         case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
     }
     labelVersionIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
-    labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date!<br>Download the newest version in Help.") : tr("You have the most current wallet version."));
+    labelVersionIcon->setToolTip(newVersion ? tr("<nobr>Your wallet is out of date!</nobr><br><nobr>Download the newest version in Help.</nobr>") : tr("<nobr>You have the most current wallet version.</nobr>"));
 }
 
 void BitcoinGUI::setNumConnections(int count)
@@ -1128,7 +1129,6 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
 
@@ -1138,7 +1138,6 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -1148,7 +1147,6 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
 
@@ -1159,7 +1157,6 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
 
@@ -1170,7 +1167,6 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
@@ -1181,7 +1177,6 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
@@ -1191,8 +1186,6 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fFiatPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/getvericoin.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1209,11 +1202,9 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: #EBEBEB; }");
-
     if (!fNewsPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/news.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+        QUrl url(QString(walletUrl).append("wallet/forums.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         newsPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fNewsPageLoaded = true;
     }
@@ -1227,8 +1218,6 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fChatPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/chat.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1245,8 +1234,6 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoExplorerPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fExplorerPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/explorer.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1263,8 +1250,6 @@ void BitcoinGUI::gotoExplorerPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fSuperNETPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/supernet.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1673,7 +1658,10 @@ void BitcoinGUI::checkForUpdate()
     {
         if (fMenuCheckForUpdate)
         {
-            QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update is required."));
+            // No update required, show what's new.
+            WhatsNewDialog wn;
+            wn.setModel(clientModel);
+            wn.exec();
         }
     }
 }
