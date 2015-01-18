@@ -915,7 +915,12 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // don't show / hide progress bar if we have no connection to the network
     if (!clientModel || clientModel->getNumConnections() == 0)
     {
-        progressBar->setVisible(false);
+        //progressBar->setVisible(false);
+        progressBar->setFormat(tr("Waiting for a network connection..."));
+        progressBar->setMaximum(nTotalBlocks);
+        progressBar->setValue(0);
+        progressBar->setVisible(true);
+        progressBar->setToolTip(tr("Waiting on network"));
 
         return;
     }
