@@ -870,22 +870,11 @@ void BitcoinGUI::setBalanceLabel()
 {
     if (clientModel && walletModel)
     {
-        if (!walletModel->getOptionsModel()->getHideAmounts())
-        {
-            qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
-            balanceLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
-            QFontMetrics fm(balanceLabel->font());
-            int labelWidth = fm.width(balanceLabel->text());
-            balanceLabel->setFixedWidth(labelWidth + 20);
-        }
-        else
-        {
-            if (balanceLabel->text().left(8).compare("Balance:") == 0)
-            {
-                balanceLabel->setText("Balance: ***.**");
-            }
-            balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
-        }
+        qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
+        balanceLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+        QFontMetrics fm(balanceLabel->font());
+        int labelWidth = fm.width(balanceLabel->text());
+        balanceLabel->setFixedWidth(labelWidth + 20);
     }
 }
 
