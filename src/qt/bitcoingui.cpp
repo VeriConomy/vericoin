@@ -781,6 +781,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
 
         // Set balance in status bar
         connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel()));
+        setBalanceLabel();
     }
 }
 
