@@ -607,7 +607,7 @@ void Downloader::checkForUpdate()
         return;
     }
     // Extract the Update
-    QStringList zextracted = JlCompress::extractDir(this, fileDest.filePath(), fileDest.path(), ui->progressBarLabel, ui->progressBar);
+    QStringList zextracted = JlCompress::extractDir(fileDest.filePath(), fileDest.path(), ui->progressBar);
     if (!zextracted.isEmpty())
     {
         printf("Update extract successful.\n");
