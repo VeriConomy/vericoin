@@ -362,7 +362,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     stakingLabel->setText(QString("Syncing..."));
     QFontMetrics fm(stakingLabel->font());
     int labelWidth = fm.width(stakingLabel->text());
-    stakingLabel->setFixedWidth(labelWidth + 20);
+    stakingLabel->setFixedWidth(labelWidth + 10);
 
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
