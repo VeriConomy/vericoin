@@ -112,7 +112,7 @@ void Downloader::on_quitButton_clicked() // Cancel button
     if (processBlockchain)
     {
         BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
-        p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
+        p->reloadExplorerActionEnabled(true); // Set menu option back to true when dialog closes.
         processBlockchain = false;
     }
     if (processUpdate)
@@ -520,7 +520,7 @@ void Downloader::reloadBlockchain()
         }
 
         // Extract bootstrap.zip
-        QStringList zextracted = JlCompress::extractDir(this, fileDest.filePath(), fileDest.path(), ui->progressBarLabel, ui->progressBar);
+        QStringList zextracted = JlCompress::extractDir(fileDest.filePath(), fileDest.path(), ui->progressBar);
 
         if (!zextracted.isEmpty())
         {
@@ -607,7 +607,7 @@ void Downloader::checkForUpdate()
         return;
     }
     // Extract the Update
-    QStringList zextracted = JlCompress::extractDir(this, fileDest.filePath(), fileDest.path(), ui->progressBarLabel, ui->progressBar);
+    QStringList zextracted = JlCompress::extractDir(fileDest.filePath(), fileDest.path(), ui->progressBar);
     if (!zextracted.isEmpty())
     {
         printf("Update extract successful.\n");

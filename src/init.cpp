@@ -238,7 +238,7 @@ bool AppInit(int argc, char* argv[])
         if (mapArgs.count("-?") || mapArgs.count("--help"))
         {
             // First part of help message is specific to bitcoind / RPC client
-            std::string strUsage = _("VeriCoin version") + " " + FormatFullVersion() + "\n\n" +
+            std::string strUsage = _("VeriCoin Version") + " " + FormatFullVersion() + "\n\n" +
                 _("Usage:") + "\n" +
                   "  vericoind [options]                     " + "\n" +
                   "  vericoind [options] <command> [params]  " + _("Send command to -server or vericoind") + "\n" +
@@ -622,7 +622,7 @@ bool AppInit2()
     if (GetBoolArg("-shrinkdebugfile", !fDebug))
         ShrinkDebugFile();
     printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    printf("VeriCoin version %s (%s)\n", FormatFullVersion().c_str(), CLIENT_DATE.c_str());
+    printf("VeriCoin Version %s (%s)\n", FormatFullVersion().c_str(), CLIENT_DATE.c_str());
     printf("Using OpenSSL version %s\n", SSLeay_version(SSLEAY_VERSION));
     if (!fLogTimestamps)
         printf("Startup time: %s\n", DateTimeStrFormat("%x %H:%M:%S", GetTime()).c_str());

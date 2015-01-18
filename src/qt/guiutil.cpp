@@ -77,14 +77,13 @@ QGraphicsView *header(QWidget *parent, QString backgroundImage)
     QGraphicsView *h = new QGraphicsView(parent);
     h->setStyleSheet("QGraphicsView { background: url(" + backgroundImage + ") no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
     h->setObjectName(QStringLiteral("header"));
-    h->setGeometry(QRect(0, 0, 2048, HEADER_HEIGHT));
     h->setContentsMargins(0,0,0,0);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(h->sizePolicy().hasHeightForWidth());
     h->setSizePolicy(sizePolicy);
-    h->setMinimumSize(QSize(0, HEADER_HEIGHT));
+    h->setMinimumSize(QSize(16777215, HEADER_HEIGHT));
     h->setMaximumSize(QSize(16777215, HEADER_HEIGHT));
     h->setAutoFillBackground(true);
     h->setFrameShape(QFrame::NoFrame);

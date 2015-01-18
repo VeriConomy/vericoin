@@ -1053,7 +1053,7 @@ void ThreadMapPort2(void* parg)
             }
         }
 
-        string strDesc = "VeriCoin " + FormatFullVersion();
+        string strDesc = "VeriCoin Version " + FormatFullVersion();
 #ifndef UPNPDISCOVER_SUCCESS
         /* miniupnpc 1.5 */
         r = UPNP_AddPortMapping(urls.controlURL, data.first.servicetype,

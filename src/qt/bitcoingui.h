@@ -126,8 +126,8 @@ private:
     QAction *unlockWalletAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
-    QAction *reloadBlockchainAction;
-    QAction *rescanBlockchainAction;
+    QAction *reloadExplorerAction;
+    QAction *rescanExplorerAction;
     QAction *checkForUpdateAction;
 
     QSystemTrayIcon *trayIcon;
@@ -172,7 +172,7 @@ public slots:
     */
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
-    void reloadBlockchainActionEnabled(bool enabled);
+    void reloadExplorerActionEnabled(bool enabled);
     void reloadBlockchain();
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();

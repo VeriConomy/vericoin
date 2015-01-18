@@ -25,8 +25,11 @@ VERSION.json
 *.o
 *.a
 src/quazip/libquazip.a
+src/quazip/.qmake.stash
 *.patch
 .vericoin
+.qmake.stash
+VeriCoin-Qt.app
 #compilation and Qt preprocessor part
 *.qm
 Makefile
