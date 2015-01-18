@@ -352,17 +352,27 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     versionBlocksLayout->addWidget(labelVersionIcon);
     versionBlocksLayout->addWidget(versionLabel);
 
+    balanceLabel = new QLabel();
+    balanceLabel->setFont(veriFontSmall);
+    balanceLabel->setText(QString("Balance:"));
+    balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
-    stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+    QFontMetrics fm(stakingLabel->font());
+    int labelWidth = fm.width(stakingLabel->text());
+    stakingLabel->setFixedWidth(labelWidth + 20);
 
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
     connectionsLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
+    labelBalanceIcon = new QLabel();
+    labelBalanceIcon->setPixmap(QIcon(":/icons/balance").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
     labelStakingIcon = new QLabel();
+    labelStakingIcon->setVisible(false);
     labelConnectionsIcon = new QLabel();
     labelConnectionsIcon->setFont(veriFontSmall);
     labelBlocksIcon = new QLabel();
@@ -378,6 +388,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->setSpacing(10);
 
     frameBlocksLayout->addStretch();
+    frameBlocksLayout->addWidget(labelBalanceIcon);
+    frameBlocksLayout->addWidget(balanceLabel);
     frameBlocksLayout->addWidget(labelStakingIcon);
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addWidget(stakingLabel);
@@ -389,7 +401,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Progress bar and label for blocks download
     progressBar = new QProgressBar();
     progressBar->setContentsMargins(0,0,0,0);
-    progressBar->setMinimumWidth(500);
+    progressBar->setMinimumWidth(420);
     progressBar->setFont(veriFontSmall);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
@@ -861,18 +873,18 @@ void BitcoinGUI::setBalanceLabel()
         if (!walletModel->getOptionsModel()->getHideAmounts())
         {
             qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
-            stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
-            QFontMetrics fm(stakingLabel->font());
-            int labelWidth = fm.width(stakingLabel->text());
-            stakingLabel->setFixedWidth(labelWidth + 4);
+            balanceLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+            QFontMetrics fm(balanceLabel->font());
+            int labelWidth = fm.width(balanceLabel->text());
+            balanceLabel->setFixedWidth(labelWidth + 20);
         }
         else
         {
-            if (stakingLabel->text().left(8).compare("Balance:") == 0)
+            if (balanceLabel->text().left(8).compare("Balance:") == 0)
             {
-                stakingLabel->setText("Balance: ***.**");
+                balanceLabel->setText("Balance: ***.**");
             }
-            stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+            balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
         }
     }
 }
@@ -1513,8 +1525,8 @@ void BitcoinGUI::updateStakingIcon()
         else
             labelStakingIcon->setToolTip(tr("In sync at block %1<br>Not staking because you do not have mature coins.").arg(currentBlock));
     }
-    // Show balance in stakingLabel in 5 seconds
-    QTimer::singleShot(5 * 1000, this, SLOT(setBalanceLabel()));
+    // Update balance in balanceLabel
+    setBalanceLabel();
 }
 
 void BitcoinGUI::reloadExplorerActionEnabled(bool enabled)

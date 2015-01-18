@@ -89,11 +89,13 @@ private:
     //QWidget *statsBox;
 
     QLabel *labelEncryptionIcon;
+    QLabel *labelBalanceIcon;
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
     QLabel *labelVersionIcon;
     QLabel *versionLabel;
+    QLabel *balanceLabel;
     QLabel *stakingLabel;
     QLabel *connectionsLabel;
     QProgressBar *progressBar;
