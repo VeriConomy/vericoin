@@ -100,6 +100,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
     clientModel(0),
     walletModel(0),
+    currentTotal(-1),
     encryptWalletAction(0),
     changePassphraseAction(0),
     unlockWalletAction(0),
@@ -354,7 +355,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     balanceLabel = new QLabel();
     balanceLabel->setFont(veriFontSmall);
-    balanceLabel->setText(QString("Balance:"));
+    balanceLabel->setText(QString("Total:"));
     balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
     stakingLabel = new QLabel();
@@ -780,8 +781,8 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         connect(walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
 
         // Set balance in status bar
-        connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel()));
-        setBalanceLabel();
+        connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel(qint64,qint64,qint64,qint64)));
+        setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
     }
 }
 
@@ -847,7 +848,8 @@ void BitcoinGUI::optionsClicked()
     emit clientModel->getOptionsModel()->decimalPointsChanged(clientModel->getOptionsModel()->getDecimalPoints());
     dlg.exec();
 
-    setBalanceLabel(); // force a balance update instead of waiting on timer
+    // force a balance update instead of waiting on timer
+    setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 }
 
 void BitcoinGUI::forumsClicked()
@@ -867,15 +869,30 @@ void BitcoinGUI::aboutClicked()
     dlg.exec();
 }
 
-void BitcoinGUI::setBalanceLabel()
+void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature)
 {
     if (clientModel && walletModel)
     {
-        qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
-        balanceLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+        qint64 total = balance + stake + unconfirmed + immature;
+        QString balanceStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), balance, false, walletModel->getOptionsModel()->getHideAmounts());
+        QString stakeStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), stake, false, walletModel->getOptionsModel()->getHideAmounts());
+        QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
+        //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
+
+        balanceLabel->setText("Total: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+        labelBalanceIcon->setToolTip(tr("Spendable: %1<br>Staking: %2<br>Unconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
+        if (total != currentTotal)
+        {
+            balanceLabel->setStyleSheet("QLabel { color: green; }");
+            currentTotal = total;
+        }
+        else
+        {
+            balanceLabel->setStyleSheet("QLabel { color: white; }");
+        }
     }
 }
 
@@ -1521,7 +1538,7 @@ void BitcoinGUI::updateStakingIcon()
             labelStakingIcon->setToolTip(tr("In sync at block %1<br>Not staking because you do not have mature coins.").arg(currentBlock));
     }
     // Update balance in balanceLabel
-    setBalanceLabel();
+    setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 }
 
 void BitcoinGUI::reloadExplorerActionEnabled(bool enabled)

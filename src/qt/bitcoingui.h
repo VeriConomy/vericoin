@@ -138,6 +138,8 @@ private:
 
     QMovie *syncIconMovie;
 
+    qint64 currentTotal;
+
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
@@ -149,7 +151,7 @@ private:
 
 public slots:
     /** Set balance in status bar */
-    void setBalanceLabel();
+    void setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature);
     /** Set version icon good/bad */
     void setVersionIcon(bool newVersion);
     /** Set number of connections shown in the UI */
