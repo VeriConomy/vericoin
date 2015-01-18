@@ -405,7 +405,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setFont(veriFontSmall);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
-    progressBar->setVisible(false);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
     // as they make the text unreadable (workaround for issue #1071)
     // See https://qt-project.org/doc/qt-4.8/gallery.html
@@ -414,6 +413,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     {
         progressBar->setStyleSheet("QProgressBar { background: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
     }
+    progressBar->setVisible(true);
 
     statusBar()->addWidget(versionBlocks);
     statusBar()->addWidget(progressBar);
