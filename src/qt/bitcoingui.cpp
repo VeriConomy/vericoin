@@ -870,7 +870,7 @@ void BitcoinGUI::setBalanceLabel()
         {
             if (stakingLabel->text().left(8).compare("Balance:") == 0)
             {
-                stakingLabel->setText("Balance: ---.--");
+                stakingLabel->setText("Balance: ***.**");
             }
             stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
         }

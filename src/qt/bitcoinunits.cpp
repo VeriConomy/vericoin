@@ -128,8 +128,8 @@ QString BitcoinUnits::formatMaxDecimals(int unit, qint64 n, int decimals, bool f
 
     if(fHideAmounts)
     {
-        quotient_str.replace(QRegExp("[0-9]"),"-");
-        remainder_str.replace(QRegExp("[0-9]"),"-");
+        quotient_str.replace(QRegExp("[0-9]"),"*");
+        remainder_str.replace(QRegExp("[0-9]"),"*");
     }
 
     if (n < 0)

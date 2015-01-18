@@ -537,7 +537,7 @@
        <item>
         <widget class="QCheckBox" name="hideAmounts">
          <property name="text">
-          <string>Hide amounts (---.--)</string>
+          <string>Hide amounts for privacy (***.**)</string>
          </property>
         </widget>
        </item>
