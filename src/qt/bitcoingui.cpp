@@ -197,7 +197,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     newsPage = new WebView(this); // extends QWebView
     Ui::newsPage news;
     // Setup header and styles
-    GUIUtil::header(newsPage, QString(":images/headerNews"));
+    GUIUtil::header(newsPage, QString(":images/headerForums"));
     news.setupUi(newsPage);
     //newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
     newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons

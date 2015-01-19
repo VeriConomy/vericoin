@@ -76,7 +76,7 @@ public:
             foreground = COLOR_BAREADDRESS;
         }
         painter->setPen(foreground);
-        QString amountText =  BitcoinUnits::formatWithUnit(unit, amount, true);
+        QString amountText =  BitcoinUnits::formatWithUnit(unit, amount, true, hideAmounts);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
@@ -95,6 +95,7 @@ public:
     }
 
     int unit;
+    bool hideAmounts;
 
 };
 #include "overviewpage.moc"
@@ -260,6 +261,7 @@ void OverviewPage::updateDisplayUnit()
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
+        txdelegate->hideAmounts = model->getOptionsModel()->getHideAmounts();
 
         ui->listTransactions->update();
     }
