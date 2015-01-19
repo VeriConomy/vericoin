@@ -116,6 +116,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setWindowTitle(tr("VeriCoin Wallet"));
     setWindowIcon(QIcon(":icons/bitcoin"));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
+    GUIUtil::setFontPixelSizes();
     qApp->setStyleSheet(veriStyleSheet);
     qApp->setFont(veriFont);
 

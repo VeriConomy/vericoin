@@ -20,7 +20,15 @@ then execute the following:
 
 ::
 
-    qmake
+    cd src/leveldb
+    make libleveldb.a libmemenv.a
+
+    cd ../quazip
+    qmake quazip.pro
+    make
+
+    cd ../..
+    qmake vericoin-qt.pro
     make
 
 Alternatively, install Qt Creator and open the `vericoin-qt.pro` file.

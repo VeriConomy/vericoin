@@ -47,6 +47,23 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
+int pointsToPixels(int points) { return(points * 4 / 3); }
+
+void setFontPixelSize(QFont *font)
+{
+    font->setPixelSize(pointsToPixels(font->pointSize()));
+}
+
+void setFontPixelSizes()
+{
+    setFontPixelSize((QFont *)&veriFontSmaller);
+    setFontPixelSize((QFont *)&veriFontSmall);
+    setFontPixelSize((QFont *)&veriFontMedium);
+    setFontPixelSize((QFont *)&veriFont);
+    setFontPixelSize((QFont *)&veriFontLarge);
+    setFontPixelSize((QFont *)&veriFontLarger);
+}
+
 // Common stylesheets
 QString veriDialogStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } \
                             QDialog::QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
@@ -65,7 +82,7 @@ QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIB
                             QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; }");
 
-QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 6px; white-space: nowrap; }");
+QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; }");
 
 QString veriMiscStyleSheet = QString("QTabWidget::pane { background-color: white; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
 

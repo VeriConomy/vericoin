@@ -21,6 +21,10 @@ class SendCoinsRecipient;
  */
 namespace GUIUtil
 {
+    int pointsToPixels(int points);
+    void setFontPixelSize(QFont *font);
+    void setFontPixelSizes();
+
     // Common stylesheets
     extern QString veriStyleSheet;
     extern QGraphicsView *header(QWidget *parent, QString backgroundImage);
