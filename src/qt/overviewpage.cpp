@@ -116,6 +116,12 @@ OverviewPage::OverviewPage(QWidget *parent) :
     // Setup header and styles
     ui->header = GUIUtil::header(this, QString(":images/headerOverview"));
 
+    // Add icons to the Balance section
+    ui->labelBalanceText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
+    ui->labelStakeText->setText("<html><img src=':icons/staking' width=16 height=16 border=0 align='bottom'> Staking:</html>");
+    ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
+    ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
+
     QUrl statsUrl(QString(walletUrl).append("wallet/stats.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
     CookieJar *statsJar = new CookieJar;
     ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);

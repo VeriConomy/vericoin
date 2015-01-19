@@ -18,8 +18,8 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
     this->setFont(veriFont);
 
     std::string title = GetArg("-vTitle", "Update Available") + "\n";
-    std::string description = GetArg("-vDescription", "A new software update is available.").c_str();
-    std::string version = "NEW " + GetArg("-vVersion", "1.0.0.0");
+    std::string description = GetArg("-vDescription", "Lot's of new features.").c_str();
+    std::string version = "NEW IN " + GetArg("-vVersion", "1.0.0.0");
     std::string postreq = std::string("\n\nPost-Install Notes: ").append((GetBoolArg("-vBootstrap") ? "Auto Bootstrap will run after the installation." : "Bootstrapping is not required."));
     ui->setupUi(this);
 

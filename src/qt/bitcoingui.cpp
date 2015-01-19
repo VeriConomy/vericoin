@@ -36,6 +36,7 @@
 #include "ui_supernetpage.h"
 #include "downloader.h"
 #include "updatedialog.h"
+#include "whatsnewdialog.h"
 #include "rescandialog.h"
 #include "cookiejar.h"
 #include "webview.h"
@@ -100,6 +101,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
     clientModel(0),
     walletModel(0),
+    currentTotal(-1),
     encryptWalletAction(0),
     changePassphraseAction(0),
     unlockWalletAction(0),
@@ -114,6 +116,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setWindowTitle(tr("VeriCoin Wallet"));
     setWindowIcon(QIcon(":icons/bitcoin"));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
+    GUIUtil::setFontPixelSizes();
     qApp->setStyleSheet(veriStyleSheet);
     qApp->setFont(veriFont);
 
@@ -190,17 +193,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(fiat.forward, SIGNAL(clicked()), fiat.webView, SLOT(myForward()));
     connect(fiat.reload, SIGNAL(clicked()), fiat.webView, SLOT(myReload()));
 
-    // Create News Page
+    // Create News/Forums Page
     newsPage = new WebView(this); // extends QWebView
     Ui::newsPage news;
     // Setup header and styles
     GUIUtil::header(newsPage, QString(":images/headerNews"));
     news.setupUi(newsPage);
-    newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
-    //newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
+    //newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
     newsPage->setStyleSheet(GUIUtil::veriStyleSheet);
     newsPage->setFont(veriFont);
-    news.frame->setVisible(false); // Set to true to enable webView navigation buttons
+    news.frame->setVisible(true); // Set to true to enable webView navigation buttons
     CookieJar *newsJar = new CookieJar;
     news.webView->page()->networkAccessManager()->setCookieJar(newsJar);
     news.webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
@@ -352,17 +355,27 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     versionBlocksLayout->addWidget(labelVersionIcon);
     versionBlocksLayout->addWidget(versionLabel);
 
+    balanceLabel = new QLabel();
+    balanceLabel->setFont(veriFontSmall);
+    balanceLabel->setText(QString("Total:"));
+    balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+
     stakingLabel = new QLabel();
     stakingLabel->setFont(veriFontSmall);
     stakingLabel->setText(QString("Syncing..."));
-    stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+    QFontMetrics fm(stakingLabel->font());
+    int labelWidth = fm.width(stakingLabel->text());
+    stakingLabel->setFixedWidth(labelWidth + 10);
 
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(veriFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
     connectionsLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
+    labelBalanceIcon = new QLabel();
+    labelBalanceIcon->setPixmap(QIcon(":/icons/balance").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
     labelStakingIcon = new QLabel();
+    labelStakingIcon->setVisible(false);
     labelConnectionsIcon = new QLabel();
     labelConnectionsIcon->setFont(veriFontSmall);
     labelBlocksIcon = new QLabel();
@@ -378,6 +391,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->setSpacing(10);
 
     frameBlocksLayout->addStretch();
+    frameBlocksLayout->addWidget(labelBalanceIcon);
+    frameBlocksLayout->addWidget(balanceLabel);
     frameBlocksLayout->addWidget(labelStakingIcon);
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addWidget(stakingLabel);
@@ -389,11 +404,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Progress bar and label for blocks download
     progressBar = new QProgressBar();
     progressBar->setContentsMargins(0,0,0,0);
-    progressBar->setMinimumWidth(500);
+    progressBar->setMinimumWidth(420);
     progressBar->setFont(veriFontSmall);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
-    progressBar->setVisible(false);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
     // as they make the text unreadable (workaround for issue #1071)
     // See https://qt-project.org/doc/qt-4.8/gallery.html
@@ -402,6 +416,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     {
         progressBar->setStyleSheet("QProgressBar { background: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
     }
+    progressBar->setVisible(true);
 
     statusBar()->addWidget(versionBlocks);
     statusBar()->addWidget(progressBar);
@@ -505,9 +520,9 @@ void BitcoinGUI::createActions()
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
-    newsAction = new QAction(QIcon(":/icons/news"), tr("News"), this);
+    newsAction = new QAction(QIcon(":/icons/news"), tr("Forums"), this);
     newsAction->setFont(veriFontSmall);
-    newsAction->setToolTip(tr("Get the Latest VeriCoin News"));
+    newsAction->setToolTip(tr("Join the VeriCoin Community\nGet the Latest VeriCoin News"));
     newsAction->setCheckable(true);
     newsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(newsAction);
@@ -521,7 +536,7 @@ void BitcoinGUI::createActions()
 
     explorerAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
     explorerAction->setFont(veriFontSmall);
-    explorerAction->setToolTip(tr("Explore the VeriCoin blockchain"));
+    explorerAction->setToolTip(tr("Explore the VeriCoin Blockchain"));
     explorerAction->setCheckable(true);
     explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(explorerAction);
@@ -768,7 +783,8 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         connect(walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
 
         // Set balance in status bar
-        connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel()));
+        connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel(qint64,qint64,qint64,qint64)));
+        setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
     }
 }
 
@@ -834,7 +850,8 @@ void BitcoinGUI::optionsClicked()
     emit clientModel->getOptionsModel()->decimalPointsChanged(clientModel->getOptionsModel()->getDecimalPoints());
     dlg.exec();
 
-    setBalanceLabel(); // force a balance update instead of waiting on timer
+    // force a balance update instead of waiting on timer
+    setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 }
 
 void BitcoinGUI::forumsClicked()
@@ -854,25 +871,29 @@ void BitcoinGUI::aboutClicked()
     dlg.exec();
 }
 
-void BitcoinGUI::setBalanceLabel()
+void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature)
 {
     if (clientModel && walletModel)
     {
-        if (!walletModel->getOptionsModel()->getHideAmounts())
+        qint64 total = balance + stake + unconfirmed + immature;
+        QString balanceStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), balance, false, walletModel->getOptionsModel()->getHideAmounts());
+        QString stakeStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), stake, false, walletModel->getOptionsModel()->getHideAmounts());
+        QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
+        //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
+
+        balanceLabel->setText("Total: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+        labelBalanceIcon->setToolTip(tr("Spendable: %1\nStaking: %2\nUnconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
+        QFontMetrics fm(balanceLabel->font());
+        int labelWidth = fm.width(balanceLabel->text());
+        balanceLabel->setFixedWidth(labelWidth + 20);
+        if (total != currentTotal)
         {
-            qint64 total = walletModel->getBalance() + walletModel->getStake() + walletModel->getUnconfirmedBalance() + walletModel->getImmatureBalance();
-            stakingLabel->setText("Balance: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
-            QFontMetrics fm(stakingLabel->font());
-            int labelWidth = fm.width(stakingLabel->text());
-            stakingLabel->setFixedWidth(labelWidth + 4);
+            balanceLabel->setStyleSheet("QLabel { color: green; }");
+            currentTotal = total;
         }
         else
         {
-            if (stakingLabel->text().left(8).compare("Balance:") == 0)
-            {
-                stakingLabel->setText("Balance: ***.**");
-            }
-            stakingLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
+            balanceLabel->setStyleSheet("QLabel { color: white; }");
         }
     }
 }
@@ -886,7 +907,7 @@ void BitcoinGUI::setVersionIcon(bool newVersion)
         case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
     }
     labelVersionIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
-    labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date!<br>Download the newest version in Help.") : tr("You have the most current wallet version."));
+    labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date!\nDownload the newest version in Help.") : tr("You have the most current wallet version."));
 }
 
 void BitcoinGUI::setNumConnections(int count)
@@ -913,7 +934,12 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // don't show / hide progress bar if we have no connection to the network
     if (!clientModel || clientModel->getNumConnections() == 0)
     {
-        progressBar->setVisible(false);
+        //progressBar->setVisible(false);
+        progressBar->setFormat(tr("Waiting for a network connection..."));
+        progressBar->setMaximum(nTotalBlocks);
+        progressBar->setValue(0);
+        progressBar->setVisible(true);
+        progressBar->setToolTip(tr("Waiting on network"));
 
         return;
     }
@@ -977,7 +1003,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Set icon state: spinning if catching up, tick otherwise
     if(secs < 90*60 && count >= nTotalBlocks)
     {
-        //tooltip = tr("Up to date") + QString(".<br>") + tooltip;
+        //tooltip = tr("Up to date") + QString(".\n") + tooltip;
         //labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         //labelBlocksIcon->hide();
         overviewPage->showOutOfSyncWarning(false);
@@ -987,7 +1013,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         stakingLabel->setText(QString("Syncing..."));
         labelStakingIcon->hide();
         labelBlocksIcon->show();
-        tooltip = tr("Syncing") + QString(".<br>") + tooltip;
+        tooltip = tr("Syncing") + QString(".\n") + tooltip;
         labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
 
         overviewPage->showOutOfSyncWarning(true);
@@ -995,12 +1021,12 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
     if(!text.isEmpty())
     {
-        tooltip += QString("<br>");
+        tooltip += QString("\n");
         tooltip += tr("Last received block was generated %1.").arg(text);
     }
 
     // Don't word-wrap this (fixed-width) tooltip
-    tooltip = QString("<nobr>") + tooltip + QString("</nobr>");
+    tooltip = QString("") + tooltip + QString("");
 
     labelBlocksIcon->setToolTip(tooltip);
     progressBar->setToolTip(tooltip);
@@ -1104,7 +1130,6 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoOverviewPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     overviewAction->setChecked(true);
     centralWidget->setCurrentWidget(overviewPage);
 
@@ -1114,7 +1139,6 @@ void BitcoinGUI::gotoOverviewPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -1124,7 +1148,6 @@ void BitcoinGUI::gotoSendCoinsPage()
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     receiveCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(receiveCoinsPage);
 
@@ -1135,7 +1158,6 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoHistoryPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     historyAction->setChecked(true);
     centralWidget->setCurrentWidget(transactionsPage);
 
@@ -1146,7 +1168,6 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
@@ -1157,7 +1178,6 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
@@ -1167,8 +1187,6 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
 void BitcoinGUI::gotoFiatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fFiatPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/getvericoin.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1185,11 +1203,9 @@ void BitcoinGUI::gotoFiatPage()
 
 void BitcoinGUI::gotoNewsPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: #EBEBEB; }");
-
     if (!fNewsPageLoaded)
     {
-        QUrl url(QString(walletUrl).append("wallet/news.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+        QUrl url(QString(walletUrl).append("wallet/forums.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
         newsPage->findChild<WebView *>("webView")->myOpenUrl(url);
         fNewsPageLoaded = true;
     }
@@ -1203,8 +1219,6 @@ void BitcoinGUI::gotoNewsPage()
 
 void BitcoinGUI::gotoChatPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fChatPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/chat.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1221,8 +1235,6 @@ void BitcoinGUI::gotoChatPage()
 
 void BitcoinGUI::gotoExplorerPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fExplorerPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/explorer.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1239,8 +1251,6 @@ void BitcoinGUI::gotoExplorerPage()
 
 void BitcoinGUI::gotoSuperNETPage()
 {
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
-
     if (!fSuperNETPageLoaded)
     {
         QUrl url(QString(walletUrl).append("wallet/supernet.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
@@ -1498,7 +1508,7 @@ void BitcoinGUI::updateStakingIcon()
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("In sync and staking.<br>Block number %1<br>Expected time to earn interest is: %2").arg(currentBlock).arg(text));
+        labelStakingIcon->setToolTip(tr("In sync and staking.\nBlock number %1\nExpected time to earn interest is: %2").arg(currentBlock).arg(text));
     }
     else
     {
@@ -1507,14 +1517,14 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1<br>Not staking, the wallet is locked.<br>Unlock wallet in Settings.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, the wallet is locked.\nUnlock wallet in Settings.").arg(currentBlock));
         else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else
-            labelStakingIcon->setToolTip(tr("In sync at block %1<br>Not staking because you do not have mature coins.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking because you do not have mature coins.").arg(currentBlock));
     }
-    // Show balance in stakingLabel in 5 seconds
-    QTimer::singleShot(5 * 1000, this, SLOT(setBalanceLabel()));
+    // Update balance in balanceLabel
+    setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 }
 
 void BitcoinGUI::reloadExplorerActionEnabled(bool enabled)
@@ -1649,7 +1659,10 @@ void BitcoinGUI::checkForUpdate()
     {
         if (fMenuCheckForUpdate)
         {
-            QMessageBox::about(this, tr("Update Not Required"), tr("You have the most current wallet version. No update is required."));
+            // No update required, show what's new.
+            WhatsNewDialog wn;
+            wn.setModel(clientModel);
+            wn.exec();
         }
     }
 }
