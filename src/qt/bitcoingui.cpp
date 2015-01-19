@@ -514,28 +514,28 @@ void BitcoinGUI::createActions()
 
     fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Get VeriCoin"), this);
     fiatAction->setFont(veriFontSmall);
-    fiatAction->setToolTip(tr("<nobr>Buy VeriCoin with Fiat or Bitcoin</nobr>"));
+    fiatAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
     fiatAction->setCheckable(true);
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
     newsAction = new QAction(QIcon(":/icons/news"), tr("Forums"), this);
     newsAction->setFont(veriFontSmall);
-    newsAction->setToolTip(tr("<nobr>Join the VeriCoin Community</nobr><br><nobr>Get the Latest VeriCoin News</nobr>"));
+    newsAction->setToolTip(tr("Join the VeriCoin Community\nGet the Latest VeriCoin News"));
     newsAction->setCheckable(true);
     newsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(newsAction);
 
     chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
     chatAction->setFont(veriFontSmall);
-    chatAction->setToolTip(tr("<nobr>Join the VeriCoin Chat Room</nobr>"));
+    chatAction->setToolTip(tr("Join the VeriCoin Chat Room"));
     chatAction->setCheckable(true);
     chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
     explorerAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
     explorerAction->setFont(veriFontSmall);
-    explorerAction->setToolTip(tr("<nobr>Explore the VeriCoin Blockchain</nobr>"));
+    explorerAction->setToolTip(tr("Explore the VeriCoin Blockchain"));
     explorerAction->setCheckable(true);
     explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(explorerAction);
@@ -881,7 +881,7 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirme
         //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
 
         balanceLabel->setText("Total: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
-        labelBalanceIcon->setToolTip(tr("Spendable: %1<br>Staking: %2<br>Unconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
+        labelBalanceIcon->setToolTip(tr("Spendable: %1\nStaking: %2\nUnconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
@@ -906,7 +906,7 @@ void BitcoinGUI::setVersionIcon(bool newVersion)
         case false: icon = ":/icons/statusGood"; versionLabel->setStyleSheet("QLabel {color: white;}"); break;
     }
     labelVersionIcon->setPixmap(QIcon(icon).pixmap(72,STATUSBAR_ICONSIZE));
-    labelVersionIcon->setToolTip(newVersion ? tr("<nobr>Your wallet is out of date!</nobr><br><nobr>Download the newest version in Help.</nobr>") : tr("<nobr>You have the most current wallet version.</nobr>"));
+    labelVersionIcon->setToolTip(newVersion ? tr("Your wallet is out of date!\nDownload the newest version in Help.") : tr("You have the most current wallet version."));
 }
 
 void BitcoinGUI::setNumConnections(int count)
@@ -1002,7 +1002,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Set icon state: spinning if catching up, tick otherwise
     if(secs < 90*60 && count >= nTotalBlocks)
     {
-        //tooltip = tr("Up to date") + QString(".<br>") + tooltip;
+        //tooltip = tr("Up to date") + QString(".\n") + tooltip;
         //labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         //labelBlocksIcon->hide();
         overviewPage->showOutOfSyncWarning(false);
@@ -1012,7 +1012,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         stakingLabel->setText(QString("Syncing..."));
         labelStakingIcon->hide();
         labelBlocksIcon->show();
-        tooltip = tr("Syncing") + QString(".<br>") + tooltip;
+        tooltip = tr("Syncing") + QString(".\n") + tooltip;
         labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
 
         overviewPage->showOutOfSyncWarning(true);
@@ -1020,12 +1020,12 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
     if(!text.isEmpty())
     {
-        tooltip += QString("<br>");
+        tooltip += QString("\n");
         tooltip += tr("Last received block was generated %1.").arg(text);
     }
 
     // Don't word-wrap this (fixed-width) tooltip
-    tooltip = QString("<nobr>") + tooltip + QString("</nobr>");
+    tooltip = QString("") + tooltip + QString("");
 
     labelBlocksIcon->setToolTip(tooltip);
     progressBar->setToolTip(tooltip);
@@ -1507,7 +1507,7 @@ void BitcoinGUI::updateStakingIcon()
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("In sync and staking.<br>Block number %1<br>Expected time to earn interest is: %2").arg(currentBlock).arg(text));
+        labelStakingIcon->setToolTip(tr("In sync and staking.\nBlock number %1\nExpected time to earn interest is: %2").arg(currentBlock).arg(text));
     }
     else
     {
@@ -1516,11 +1516,11 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1<br>Not staking, the wallet is locked.<br>Unlock wallet in Settings.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, the wallet is locked.\nUnlock wallet in Settings.").arg(currentBlock));
         else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else
-            labelStakingIcon->setToolTip(tr("In sync at block %1<br>Not staking because you do not have mature coins.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking because you do not have mature coins.").arg(currentBlock));
     }
     // Update balance in balanceLabel
     setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
