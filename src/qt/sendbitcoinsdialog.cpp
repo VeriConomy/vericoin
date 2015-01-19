@@ -106,6 +106,7 @@ void SendBitCoinsDialog::setModel(WalletModel *model)
         setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance(), model->getImmatureBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64, qint64)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
 
         // Coin Control
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(coinControlUpdateLabels()));
@@ -252,7 +253,7 @@ void SendBitCoinsDialog::setBalance(qint64 balance, qint64 stake, qint64 unconfi
         return;
 
     int unit = model->getOptionsModel()->getDisplayUnit();
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(unit, balance, BitcoinUnits::maxdecimals(unit)));
+    ui->labelBalance->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(unit, balance, BitcoinUnits::maxdecimals(unit), false, model->getOptionsModel()->getHideAmounts()));
 }
 
 void SendBitCoinsDialog::updateDisplayUnit()
@@ -260,8 +261,13 @@ void SendBitCoinsDialog::updateDisplayUnit()
     if(model && model->getOptionsModel())
     {
         // Update labelBalance with the current balance and the current unit
-        ui->labelBalance->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), model->getBalance(), BitcoinUnits::maxdecimals(model->getOptionsModel()->getDisplayUnit())));
+        ui->labelBalance->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), model->getBalance(), BitcoinUnits::maxdecimals(model->getOptionsModel()->getDisplayUnit()), false, model->getOptionsModel()->getHideAmounts()));
     }
+}
+
+void SendBitCoinsDialog::updateHideAmounts()
+{
+    updateDisplayUnit();
 }
 
 // Coin Control: copy label "Quantity" to clipboard

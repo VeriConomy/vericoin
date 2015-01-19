@@ -709,7 +709,7 @@
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>537</height>
+        <height>522</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -860,6 +860,9 @@
          </property>
          <property name="text">
           <string>Balance:</string>
+         </property>
+         <property name="indent">
+          <number>8</number>
          </property>
         </widget>
        </item>
