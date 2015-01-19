@@ -886,15 +886,19 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirme
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
-        if (total != currentTotal)
+        if (total > currentTotal)
         {
-            balanceLabel->setStyleSheet("QLabel { color: green; }");
-            currentTotal = total;
+            balanceLabel->setStyleSheet("QLabel { color: #009966; }");
+        }
+        else if (total < currentTotal)
+        {
+            balanceLabel->setStyleSheet("QLabel { color: orange; }");
         }
         else
         {
             balanceLabel->setStyleSheet("QLabel { color: white; }");
         }
+        currentTotal = total;
     }
 }
 
