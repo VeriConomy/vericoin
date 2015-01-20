@@ -729,7 +729,6 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
                 trayIcon->setIcon(QIcon(":/icons/toolbar_testnet"));
                 toggleHideAction->setIcon(QIcon(":/icons/toolbar_testnet"));
             }
-
             aboutAction->setIcon(QIcon(":/icons/toolbar_testnet"));
         }
 
