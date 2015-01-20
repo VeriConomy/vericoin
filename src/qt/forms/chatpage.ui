@@ -98,6 +98,12 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <property name="horizontalSpacing">
+       <number>10</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="back">
         <property name="sizePolicy">
@@ -132,7 +138,7 @@
          <string>Back</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
         </property>
         <property name="iconSize">
@@ -177,7 +183,7 @@
          <string>Reload</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/reload</normaloff>:/icons/reload</iconset>
         </property>
         <property name="iconSize">
@@ -222,7 +228,7 @@
          <string>Home</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/home</normaloff>:/icons/home</iconset>
         </property>
         <property name="iconSize">
@@ -267,7 +273,7 @@
          <string>Forward</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/res/icons/forward.png</normaloff>:/icons/res/icons/forward.png</iconset>
         </property>
         <property name="iconSize">
@@ -290,6 +296,8 @@
    <header>webview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../bitcoin.qrc"/>
+ </resources>
  <connections/>
 </ui>
