@@ -67,7 +67,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>45</height>
+       <height>40</height>
       </size>
      </property>
      <property name="layoutDirection">
@@ -86,6 +86,18 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="back">
         <property name="sizePolicy">
@@ -120,7 +132,7 @@
          <string>Back</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
         </property>
         <property name="iconSize">
@@ -165,7 +177,7 @@
          <string>Reload</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/reload</normaloff>:/icons/reload</iconset>
         </property>
         <property name="iconSize">
@@ -210,7 +222,7 @@
          <string>Home</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/home</normaloff>:/icons/home</iconset>
         </property>
         <property name="iconSize">
@@ -255,7 +267,7 @@
          <string>Forward</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/res/icons/forward.png</normaloff>:/icons/res/icons/forward.png</iconset>
         </property>
         <property name="iconSize">
@@ -278,8 +290,6 @@
    <header>webview.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../bitcoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
