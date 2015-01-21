@@ -197,7 +197,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     newsPage = new WebView(this); // extends QWebView
     Ui::newsPage news;
     // Setup header and styles
-    GUIUtil::header(newsPage, QString(":images/headerNews"));
+    GUIUtil::header(newsPage, QString(":images/headerForums"));
     news.setupUi(newsPage);
     //newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
     newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
@@ -729,7 +729,6 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
                 trayIcon->setIcon(QIcon(":/icons/toolbar_testnet"));
                 toggleHideAction->setIcon(QIcon(":/icons/toolbar_testnet"));
             }
-
             aboutAction->setIcon(QIcon(":/icons/toolbar_testnet"));
         }
 
@@ -886,15 +885,19 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirme
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
-        if (total != currentTotal)
+        if (total > currentTotal)
         {
-            balanceLabel->setStyleSheet("QLabel { color: green; }");
-            currentTotal = total;
+            balanceLabel->setStyleSheet("QLabel { color: #009966; }");
+        }
+        else if (total < currentTotal)
+        {
+            balanceLabel->setStyleSheet("QLabel { color: orange; }");
         }
         else
         {
             balanceLabel->setStyleSheet("QLabel { color: white; }");
         }
+        currentTotal = total;
     }
 }
 

@@ -56,6 +56,7 @@ private:
 private slots:
     void removeEntry(SendBitCoinsEntry* entry);
     void updateDisplayUnit();
+    void updateHideAmounts();
     void coinControlFeatureChanged(bool);
     void coinControlButtonClicked();
     void coinControlChangeChecked(int);

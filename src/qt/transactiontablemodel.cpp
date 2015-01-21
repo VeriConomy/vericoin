@@ -426,7 +426,7 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord *wtx) const
 QString TransactionTableModel::formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed) const
 {
     BitcoinUnits *bcu = new BitcoinUnits((QObject *)this, walletModel);
-    QString str = bcu->format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit, false, false);
+    QString str = bcu->format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit, false, walletModel->getOptionsModel()->getHideAmounts());
     if(showUnconfirmed)
     {
         if(!wtx->status.countsForBalance)

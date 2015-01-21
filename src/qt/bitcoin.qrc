@@ -86,6 +86,7 @@
         <file alias="headerVeriBit">res/images/headerVeriBit.png</file>
         <file alias="headerGetVeriCoin">res/images/headerGetVeriCoin.png</file>
         <file alias="headerNews">res/images/headerNews.png</file>
+        <file alias="headerForums">res/images/headerForums.png</file>
         <file alias="headerChat">res/images/headerChat.png</file>
         <file alias="headerBlockchain">res/images/headerBlockchain.png</file>
         <file alias="headerSuperNET">res/images/headerSuperNET.png</file>

@@ -109,6 +109,7 @@ TransactionView::TransactionView(QWidget *parent) :
     view->setFont(veriFont);
     view->setMouseTracking(true);
     view->viewport()->setAttribute(Qt::WA_Hover, true);
+    view->horizontalHeader()->setHighlightSections(false);
     vlayout->addLayout(hlayout);
     vlayout->addWidget(createDateRangeWidget());
     vlayout->addWidget(view);
