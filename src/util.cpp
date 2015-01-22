@@ -1250,6 +1250,12 @@ void ShrinkDebugFile()
     }
 }
 
+int GetArchitecture()
+{
+    int *i;
+    return sizeof(i) * 8; // 8 bits/byte
+}
+
 #ifdef QT_GUI
 // Downloads the latest version info and returns the path to it.
 boost::filesystem::path GetVersionFile()
@@ -1307,11 +1313,16 @@ void ReadVersionFile()
         QJsonObject versionObj = versionDoc.object();
         QString vTitle = versionObj.value(QString("title")).toString();
         QString vDescription = versionObj.value(QString("description")).toString();
-        QString vVersion = versionObj.value(QString("version")).toString();
         QString vFileName = versionObj.value(QString("prefix")).toString();
+        QString vVersion = versionObj.value(QString("version")).toString();
         vFileName.append(vVersion);
+        QString vArch("");
+        if (GetArchitecture() == 64)
+            vArch = versionObj.value(QString("arch64")).toString();
+        else
+            vArch = versionObj.value(QString("arch32")).toString();
+        vFileName.append(vArch);
 #ifdef WIN32
-        vFileName.append(versionObj.value(QString("arch32")).toString());
         vFileName.append(versionObj.value(QString("windows")).toString());
 #else
 #ifdef MAC_OSX
@@ -1325,8 +1336,9 @@ void ReadVersionFile()
 
         SetArg("-vTitle", vTitle.toStdString());
         SetArg("-vDescription", vDescription.toStdString());
-        SetArg("-vVersion", vVersion.toStdString());
         SetArg("-vFileName", vFileName.toStdString());
+        SetArg("-vVersion", vVersion.toStdString());
+        SetArg("-vArch", vArch.toStdString());
         SetBoolArg("-vBootstrap", vBootstrap);
         SetArg("-vTrustedUrls", vTrustedUrls.toStdString());
 
