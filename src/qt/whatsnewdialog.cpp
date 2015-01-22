@@ -32,7 +32,7 @@ void WhatsNewDialog::setModel(ClientModel *model)
 {
     if(model)
     {
-        ui->versionLabel->setText(model->formatFullVersion());
+        ui->versionLabel->setText(model->formatFullVersion().append(GetArg("-vArch", "").c_str()));
     }
 }
 

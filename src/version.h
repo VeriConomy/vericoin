@@ -11,6 +11,8 @@
 // client versioning
 //
 
+static const int CLIENT_VERSION_OLD = 1160109; // 1.4.1.3 Temporary fix until CLIENT_VERSION goes to 1.5.1. Then, remove CLIENT_VERSION_OLD in 1.5.1
+
 static const int CLIENT_VERSION =
                            1000000 * CLIENT_VERSION_MAJOR
                          +   10000 * CLIENT_VERSION_MINOR
