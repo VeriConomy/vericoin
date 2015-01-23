@@ -27,24 +27,6 @@ static const int STATUSBAR_MARGIN = 8;
 /* Transaction list -- bare address (without label) */
 #define COLOR_BAREADDRESS QColor(140, 140, 140)
 
-static const int TOOLBAR_WIDTH = 100;
-static const int HEADER_WIDTH = 964;
-static const int HEADER_HEIGHT = 160;
-static const int BUTTON_WIDTH = 140;
-static const int BUTTON_HEIGHT = 27;
-static const int FRAMEBLOCKS_LABEL_WIDTH = 100;
-
-static const int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
-#ifdef Q_OS_WIN
-static const int WINDOW_MIN_HEIGHT = 768;
-#else
-#ifdef Q_OS_MAC
-static const int WINDOW_MIN_HEIGHT = 768;
-#else
-static const int WINDOW_MIN_HEIGHT = 768;
-#endif
-#endif
-
 /* Custom colors / fonts */
 #define STRING_VERIBLUE QString("#0a3057")
 #define STRING_VERIBLUE_LT QString("#418BCA")

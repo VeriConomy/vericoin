@@ -53,6 +53,7 @@
 #endif
 
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
@@ -110,6 +111,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     notificator(0),
     rpcConsole(0)
 {
+    QDesktopWidget desktop;
+    QRect screenSize = desktop.availableGeometry(desktop.primaryScreen());
+    //QRect screenSize = QRect(0, 0, 1024, 768); // SDW DEBUG
+    if (screenSize.height() <= 768)
+    {
+        GUIUtil::refactorGUI(screenSize);
+    }
     setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
     resizeGUI();
 
@@ -691,7 +699,7 @@ void BitcoinGUI::createToolBars()
     toolbar->setFont(veriFontSmall);
     toolbar->setContentsMargins(0,0,0,0);
     toolbar->setOrientation(Qt::Vertical);
-    toolbar->setIconSize(QSize(TOOLBAR_WIDTH,41));
+    toolbar->setIconSize(QSize(TOOLBAR_ICON_WIDTH,TOOLBAR_ICON_HEIGHT));
     toolbar->setFixedWidth(TOOLBAR_WIDTH);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 

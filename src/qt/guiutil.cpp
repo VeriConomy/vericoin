@@ -47,6 +47,66 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
+int TOOLBAR_WIDTH = 100;
+int TOOLBAR_ICON_WIDTH = 100;
+int TOOLBAR_ICON_HEIGHT = 41;
+int HEADER_WIDTH = 964;
+int HEADER_HEIGHT = 160;
+int BUTTON_WIDTH = 140;
+int BUTTON_HEIGHT = 27;
+int FRAMEBLOCKS_LABEL_WIDTH = 100;
+int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
+#ifdef Q_OS_WIN
+int WINDOW_MIN_HEIGHT = 768;
+#else
+#ifdef Q_OS_MAC
+int WINDOW_MIN_HEIGHT = 768;
+#else
+int WINDOW_MIN_HEIGHT = 768;
+#endif
+#endif
+
+void refactorGUI(QRect screenSize)
+{
+    // Set the new geometry
+    int newHeight = screenSize.height() - 25;
+    int newWidth = WINDOW_MIN_WIDTH;
+    if (screenSize.width() < newWidth - 2)
+    {
+        newWidth = screenSize.width() - 2;
+    }
+    // These are not really constant, but they are defined in guiconstants.h
+    TOOLBAR_WIDTH = 90;
+    TOOLBAR_ICON_WIDTH = 90;
+    TOOLBAR_ICON_HEIGHT = 38;
+    HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
+    HEADER_HEIGHT = 100;
+
+    WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
+    #ifdef Q_OS_WIN
+    WINDOW_MIN_HEIGHT = newHeight;
+    #else
+    #ifdef Q_OS_MAC
+    WINDOW_MIN_HEIGHT = newHeight;
+    #else
+    WINDOW_MIN_HEIGHT = newHeight;
+    #endif
+    #endif
+
+/*
+    static int BUTTON_WIDTH = 140;
+    static int BUTTON_HEIGHT = 27;
+    static int FRAMEBLOCKS_LABEL_WIDTH = 100;
+
+    static QFont veriFontSmaller("Lato", 8, QFont::Normal, false);
+    static QFont veriFontSmall("Lato", 9, QFont::Normal, false);
+    static QFont veriFontMedium("Lato", 10, QFont::Normal, false);
+    static QFont veriFont("Lato", 11, QFont::Normal, false);
+    static QFont veriFontLarge("Lato", 12, QFont::Normal, false);
+    static QFont veriFontLarger("Lato", 14, QFont::Normal, false);
+*/
+}
+
 int pointsToPixels(int points) { return(points * 4 / 3); }
 
 void setFontPixelSize(QFont *font)
