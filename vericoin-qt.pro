@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = vericoin-qt
 VERSION = 1.5
+USE_QRCODE = 1
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
