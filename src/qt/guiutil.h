@@ -31,6 +31,8 @@ namespace GUIUtil
     extern int FRAMEBLOCKS_LABEL_WIDTH;
     extern int WINDOW_MIN_WIDTH;
     extern int WINDOW_MIN_HEIGHT;
+    extern int STATUSBAR_ICONSIZE;
+    extern int STATUSBAR_MARGIN;
 
     void refactorGUI(QRect screenSize);
     int pointsToPixels(int points);

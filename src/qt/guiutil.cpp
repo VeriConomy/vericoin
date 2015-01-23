@@ -65,6 +65,8 @@ int WINDOW_MIN_HEIGHT = 768;
 int WINDOW_MIN_HEIGHT = 768;
 #endif
 #endif
+int STATUSBAR_ICONSIZE = 16;
+int STATUSBAR_MARGIN = 8;
 
 void refactorGUI(QRect screenSize)
 {
@@ -76,11 +78,11 @@ void refactorGUI(QRect screenSize)
         newWidth = screenSize.width() - 2;
     }
     // These are not really constant, but they are defined in guiconstants.h
-    TOOLBAR_WIDTH = 90;
-    TOOLBAR_ICON_WIDTH = 90;
+    TOOLBAR_WIDTH = 80;
+    TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
     TOOLBAR_ICON_HEIGHT = 38;
     HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
-    HEADER_HEIGHT = 100;
+    HEADER_HEIGHT = 135;
 
     WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
     #ifdef Q_OS_WIN
@@ -92,19 +94,7 @@ void refactorGUI(QRect screenSize)
     WINDOW_MIN_HEIGHT = newHeight;
     #endif
     #endif
-
-/*
-    static int BUTTON_WIDTH = 140;
-    static int BUTTON_HEIGHT = 27;
-    static int FRAMEBLOCKS_LABEL_WIDTH = 100;
-
-    static QFont veriFontSmaller("Lato", 8, QFont::Normal, false);
-    static QFont veriFontSmall("Lato", 9, QFont::Normal, false);
-    static QFont veriFontMedium("Lato", 10, QFont::Normal, false);
-    static QFont veriFont("Lato", 11, QFont::Normal, false);
-    static QFont veriFontLarge("Lato", 12, QFont::Normal, false);
-    static QFont veriFontLarger("Lato", 14, QFont::Normal, false);
-*/
+    STATUSBAR_MARGIN = 2;
 }
 
 int pointsToPixels(int points) { return(points * 4 / 3); }
