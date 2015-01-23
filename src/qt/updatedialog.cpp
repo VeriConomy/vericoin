@@ -33,7 +33,7 @@ void UpdateDialog::setModel(ClientModel *model)
 {
     if(model)
     {
-        ui->versionLabel->setText(model->formatFullVersion().append(GetArg("-vArch", "").c_str()));
+        ui->versionLabel->setText(model->formatFullVersion().append(" ").append(GetArg("-vArch", "").c_str()));
     }
 }
 

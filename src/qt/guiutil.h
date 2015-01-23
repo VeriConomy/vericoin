@@ -21,6 +21,22 @@ class SendCoinsRecipient;
  */
 namespace GUIUtil
 {
+    extern bool fNoHeaders;
+    extern bool fSmallHeaders;
+    extern int TOOLBAR_WIDTH;
+    extern int TOOLBAR_ICON_WIDTH;
+    extern int TOOLBAR_ICON_HEIGHT;
+    extern int HEADER_WIDTH;
+    extern int HEADER_HEIGHT;
+    extern int BUTTON_WIDTH;
+    extern int BUTTON_HEIGHT;
+    extern int FRAMEBLOCKS_LABEL_WIDTH;
+    extern int WINDOW_MIN_WIDTH;
+    extern int WINDOW_MIN_HEIGHT;
+    extern int STATUSBAR_ICONSIZE;
+    extern int STATUSBAR_MARGIN;
+
+    void refactorGUI(QRect screenSize);
     int pointsToPixels(int points);
     void setFontPixelSize(QFont *font);
     void setFontPixelSizes();

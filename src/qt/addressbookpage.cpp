@@ -29,7 +29,12 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     tab(tab)
 {
     // Setup header and styles
-    GUIUtil::header(this, QString(":images/headerAddress"));
+    if (fNoHeaders)
+        GUIUtil::header(this, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(this, QString(":images/headerAddressSmall"));
+    else
+        GUIUtil::header(this, QString(":images/headerAddress"));
 
     ui->setupUi(this);
     this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);

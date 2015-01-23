@@ -110,12 +110,18 @@ OverviewPage::OverviewPage(QWidget *parent) :
     txdelegate(new TxViewDelegate()),
     filter(0)
 {
+    // Setup header and styles
+    if (fNoHeaders)
+        GUIUtil::header(this, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(this, QString(":images/headerOverviewSmall"));
+    else
+        GUIUtil::header(this, QString(":images/headerOverview"));
+
     ui->setupUi(this);
+    this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);
     this->setStyleSheet(GUIUtil::veriStyleSheet);
     this->setFont(veriFont);
-
-    // Setup header and styles
-    ui->header = GUIUtil::header(this, QString(":images/headerOverview"));
 
     // Add icons to the Balance section
     ui->labelBalanceText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");

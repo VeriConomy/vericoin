@@ -47,6 +47,82 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
+bool fNoHeaders = false;
+bool fSmallHeaders = false;
+int TOOLBAR_WIDTH = 100;
+int TOOLBAR_ICON_WIDTH = 100;
+int TOOLBAR_ICON_HEIGHT = 41;
+int HEADER_WIDTH = 964;
+int HEADER_HEIGHT = 160;
+int BUTTON_WIDTH = 140;
+int BUTTON_HEIGHT = 27;
+int FRAMEBLOCKS_LABEL_WIDTH = 100;
+int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
+#ifdef Q_OS_WIN
+int WINDOW_MIN_HEIGHT = 768;
+#else
+#ifdef Q_OS_MAC
+int WINDOW_MIN_HEIGHT = 768;
+#else
+int WINDOW_MIN_HEIGHT = 768;
+#endif
+#endif
+int STATUSBAR_ICONSIZE = 16;
+int STATUSBAR_MARGIN = 8;
+
+void refactorGUI(QRect screenSize)
+{
+    // Set the new geometry
+#ifdef Q_OS_WIN
+    int newHeight = screenSize.height() - 40;
+#else
+#ifdef Q_OS_MAC
+    int newHeight = screenSize.height() - 30;
+#else
+    int newHeight = screenSize.height() - 25;
+#endif
+#endif
+    int newWidth = WINDOW_MIN_WIDTH;
+    if (screenSize.width() < newWidth - 2)
+    {
+        newWidth = screenSize.width() - 2;
+    }
+    // These are not really constant, but they are defined in guiconstants.h
+    TOOLBAR_WIDTH = 80;
+    TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
+    HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
+    if (screenSize.height() <= 600)
+    {
+        TOOLBAR_ICON_HEIGHT = 32;
+        HEADER_HEIGHT = 0;
+        fNoHeaders = true;
+    }
+    else if (screenSize.height() < 728) // 728px if OS taskbar is not hidden
+    {
+        TOOLBAR_ICON_HEIGHT = 32;
+        HEADER_HEIGHT = 32;
+        fNoHeaders = true;
+    }
+    else // Default small wallet at 728px to 768px
+    {
+        TOOLBAR_ICON_HEIGHT = 34;
+        HEADER_HEIGHT = 85;
+        fSmallHeaders = true;
+    }
+
+    WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
+    #ifdef Q_OS_WIN
+    WINDOW_MIN_HEIGHT = newHeight;
+    #else
+    #ifdef Q_OS_MAC
+    WINDOW_MIN_HEIGHT = newHeight;
+    #else
+    WINDOW_MIN_HEIGHT = newHeight;
+    #endif
+    #endif
+    STATUSBAR_MARGIN = 2;
+}
+
 int pointsToPixels(int points) { return(points * 4 / 3); }
 
 void setFontPixelSize(QFont *font)
