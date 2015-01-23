@@ -158,6 +158,11 @@ void QRCodeDialog::on_btnSaveAs_clicked()
         myImage.scaled(EXPORT_IMAGE_SIZE, EXPORT_IMAGE_SIZE).save(fn);
 }
 
+void QRCodeDialog::on_btnCancel_clicked()
+{
+    this->close();
+}
+
 void QRCodeDialog::on_chkReqPayment_toggled(bool fChecked)
 {
     if (!fChecked)

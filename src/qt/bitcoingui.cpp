@@ -1413,14 +1413,22 @@ void BitcoinGUI::encryptWallet(bool status)
 
 void BitcoinGUI::backupWallet()
 {
-    //QString saveDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
     QString saveDir = GetDataDir().string().c_str();
-    QString filename = QFileDialog::getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (*.dat)"));
-    if(!filename.isEmpty()) {
-        if(!walletModel->backupWallet(filename)) {
+    QFileDialog *dlg = new QFileDialog;
+    dlg->selectFile(QString(saveDir + tr("/wallet-backup.dat")));
+    QString filename = dlg->getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (wallet*.dat)"));
+    if(!filename.isEmpty())
+    {
+        if (filename.contains("wallet.dat"))
+        {
+            QMessageBox::warning(this, tr("Backup Not Allowed"), tr("Please choose a different name for your wallet backup.\nExample: wallet-backup.dat"));
+        }
+        else if(!walletModel->backupWallet(filename))
+        {
             QMessageBox::warning(this, tr("Backup Failed"), tr("There was an error trying to save the wallet data to the new location."));
         }
     }
+    delete dlg;
 }
 
 void BitcoinGUI::changePassphrase()
