@@ -16,7 +16,12 @@ TransactionsPage::TransactionsPage(QWidget *parent) :
 {
     ui->setupUi(this);
     // Setup header and styles
-    ui->header = GUIUtil::header(this, QString(":images/headerHistory"));
+    if (fNoHeaders)
+        ui->header = GUIUtil::header(this, QString(""));
+    else if (fSmallHeaders)
+        ui->header = GUIUtil::header(this, QString(":images/headerHistorySmall"));
+    else
+        ui->header = GUIUtil::header(this, QString(":images/headerHistory"));
 }
 
 TransactionsPage::~TransactionsPage()

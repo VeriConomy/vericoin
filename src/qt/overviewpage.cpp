@@ -111,7 +111,12 @@ OverviewPage::OverviewPage(QWidget *parent) :
     filter(0)
 {
     // Setup header and styles
-    GUIUtil::header(this, QString(":images/headerOverview"));
+    if (fNoHeaders)
+        GUIUtil::header(this, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(this, QString(":images/headerOverviewSmall"));
+    else
+        GUIUtil::header(this, QString(":images/headerOverview"));
 
     ui->setupUi(this);
     this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);

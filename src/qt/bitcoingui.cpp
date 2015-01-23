@@ -113,7 +113,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     QDesktopWidget desktop;
     QRect screenSize = desktop.availableGeometry(desktop.primaryScreen());
-    //QRect screenSize = QRect(0, 0, 1024, 768); // SDW DEBUG
+    //QRect screenSize = QRect(0, 0, 1024, 728); // SDW DEBUG
     if (screenSize.height() <= 768)
     {
         GUIUtil::refactorGUI(screenSize);
@@ -157,7 +157,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create Receive Page
     receiveCoinsPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab);
     // Re-set Header and styles for Receive (Default is headerAddress)
-    receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet("QGraphicsView { background: url(:images/headerReceive) no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
+    if (fNoHeaders)
+        receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet("QGraphicsView { background-color: " + STRING_VERIBLUE + "; }");
+    else if (fSmallHeaders)
+        receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet("QGraphicsView { background: url(:images/headerReceiveSmall) no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
+    else
+        receiveCoinsPage->findChild<QGraphicsView *>("header")->setStyleSheet("QGraphicsView { background: url(:images/headerReceive) no-repeat 0px 0px; border: none; background-color: " + STRING_VERIBLUE + "; }");
 
     // Create History Page
     transactionsPage = new TransactionsPage();
@@ -179,7 +184,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     fiatPage = new WebView(this); // extends QWebView
     Ui::fiatPage fiat;
     // Setup header and styles
-    GUIUtil::header(fiatPage, QString(":images/headerGetVeriCoin"));
+    if (fNoHeaders)
+        GUIUtil::header(fiatPage, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(fiatPage, QString(":images/headerGetVeriCoinSmall"));
+    else
+        GUIUtil::header(fiatPage, QString(":images/headerGetVeriCoin"));
     fiat.setupUi(fiatPage);
     fiatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     fiatPage->setStyleSheet(GUIUtil::veriStyleSheet);
@@ -205,7 +215,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     newsPage = new WebView(this); // extends QWebView
     Ui::newsPage news;
     // Setup header and styles
-    GUIUtil::header(newsPage, QString(":images/headerForums"));
+    if (fNoHeaders)
+        GUIUtil::header(newsPage, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(newsPage, QString(":images/headerForumsSmall"));
+    else
+        GUIUtil::header(newsPage, QString(":images/headerForums"));
     news.setupUi(newsPage);
     //newsPage->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
     newsPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0); // Use this if you enable nav buttons
@@ -232,7 +247,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     chatPage = new WebView(this); // extends QWebView
     Ui::chatPage chat;
     // Setup header and styles
-    GUIUtil::header(chatPage, QString(":images/headerChat"));
+    if (fNoHeaders)
+        GUIUtil::header(chatPage, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(chatPage, QString(":images/headerChatSmall"));
+    else
+        GUIUtil::header(chatPage, QString(":images/headerChat"));
     chat.setupUi(chatPage);
     chatPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     chatPage->setStyleSheet(GUIUtil::veriStyleSheet);
@@ -258,7 +278,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     explorerPage = new WebView(this); // extends QWebView
     Ui::explorerPage explorer;
     // Setup header and styles
-    GUIUtil::header(explorerPage, QString(":images/headerBlockchain"));
+    if (fNoHeaders)
+        GUIUtil::header(explorerPage, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(explorerPage, QString(":images/headerBlockchainSmall"));
+    else
+        GUIUtil::header(explorerPage, QString(":images/headerBlockchain"));
     explorer.setupUi(explorerPage);
     explorerPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     explorerPage->setStyleSheet(GUIUtil::veriStyleSheet);
@@ -286,7 +311,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     superNETPage = new WebView(this);
     Ui::superNETPage superNET;
     // Setup header and styles
-    GUIUtil::header(superNETPage, QString(":images/headerSuperNET"));
+    if (fNoHeaders)
+        GUIUtil::header(superNETPage, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(superNETPage, QString(":images/headerSuperNETSmall"));
+    else
+        GUIUtil::header(superNETPage, QString(":images/headerSuperNET"));
     superNET.setupUi(superNETPage);
     superNETPage->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
     superNETPage->setStyleSheet(GUIUtil::veriStyleSheet);
@@ -310,7 +340,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     }
     else
     {
-        // Place holder for SuperNET gateway
+        ; // Place holder for SuperNET gateway
     }
 
     // Create Sign Message Dialog
