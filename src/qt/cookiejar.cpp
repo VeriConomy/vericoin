@@ -51,11 +51,11 @@
 #include <QtCore/QSettings>
 #include <QtCore/QUrl>
 
-#include <QtWidgets/QCompleter>
+#include <QCompleter>
 #include <QtGui/QDesktopServices>
 #include <QtGui/QFont>
 #include <QtGui/QFontMetrics>
-#include <QtWidgets/QHeaderView>
+#include <QHeaderView>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QSortFilterProxyModel>
 #include <QtNetwork/QNetworkCookie>
