@@ -19,7 +19,6 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QString>
-#include <QUrlQuery>
 
 using namespace GUIUtil;
 
@@ -131,14 +130,12 @@ void AccessNxtInsideDialog::on_accessNxtInsideButton_AN_clicked()
 	std::string rpcPort = mapArgs["-rpcport"];
 
 	QUrl url = QUrl("http://localhost:7876");
-    QUrlQuery urlQuery;
-    urlQuery.addQueryItem(QString("address"), QString::fromStdString(vrc));
-    urlQuery.addQueryItem(QString("rpcuser"), QString::fromStdString(rpcUser));
-    urlQuery.addQueryItem(QString("rpcpassword"), QString::fromStdString(rpcPassword));
-    urlQuery.addQueryItem(QString("rpcport"), QString::fromStdString(rpcPort));
-    url.setQuery(urlQuery);
+    url.addQueryItem(QString("address"), QString::fromStdString(vrc));
+    url.addQueryItem(QString("rpcuser"), QString::fromStdString(rpcUser));
+    url.addQueryItem(QString("rpcpassword"), QString::fromStdString(rpcPassword));
+    url.addQueryItem(QString("rpcport"), QString::fromStdString(rpcPort));
 
-	QDesktopServices::openUrl(url);
+    QDesktopServices::openUrl(url);
 	ui->statusLabel_AN->setStyleSheet("QLabel { color: green; }");
 	ui->statusLabel_AN->setText(QString("<nobr>") + tr("Entering SuperNET...") + QString("</nobr>"));
 }
