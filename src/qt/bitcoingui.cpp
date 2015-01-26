@@ -882,9 +882,6 @@ void BitcoinGUI::optionsClicked()
         return;
     OptionsDialog dlg;
     dlg.setModel(clientModel->getOptionsModel());
-    // Bug fix: OptionModel->Init() initializes decimalpoints to maxdecimals (in non-model state),
-    // so we need to restore them to the user's desired option after we are model.
-    emit clientModel->getOptionsModel()->decimalPointsChanged(clientModel->getOptionsModel()->getDecimalPoints());
     dlg.exec();
 
     // force a balance update instead of waiting on timer
@@ -917,8 +914,7 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirme
         QString stakeStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), stake, false, walletModel->getOptionsModel()->getHideAmounts());
         QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
         //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
-
-        balanceLabel->setText("Total: " + BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), total, false, walletModel->getOptionsModel()->getHideAmounts()));
+        balanceLabel->setText("Total: " + BitcoinUnits::formatMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
         labelBalanceIcon->setToolTip(tr("Spendable: %1\nStaking: %2\nUnconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());

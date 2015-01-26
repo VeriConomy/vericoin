@@ -33,6 +33,10 @@ then execute the following:
 
 Alternatively, install Qt Creator and open the `vericoin-qt.pro` file.
 
+   You may need to install libGL in some Linux environments:
+
+   sudo apt-get install libglu1-mesa-dev -y
+
 An executable named `vericoin-qt` will be built.
 
 

@@ -48,8 +48,8 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QStringList>
 
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QTableView>
+#include <QDialog>
+#include <QTableView>
 
 class QSortFilterProxyModel;
 class QKeyEvent;

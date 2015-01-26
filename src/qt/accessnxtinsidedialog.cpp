@@ -131,10 +131,12 @@ void AccessNxtInsideDialog::on_accessNxtInsideButton_AN_clicked()
 	std::string rpcPort = mapArgs["-rpcport"];
 
 	QUrl url = QUrl("http://localhost:7876");
-	url.addQueryItem(QString("address"), QString::fromStdString(vrc)); 
-	url.addQueryItem(QString("rpcuser"), QString::fromStdString(rpcUser));
-	url.addQueryItem(QString("rpcpassword"), QString::fromStdString(rpcPassword));
-	url.addQueryItem(QString("rpcport"), QString::fromStdString(rpcPort));
+    QUrlQuery urlQuery;
+    urlQuery.addQueryItem(QString("address"), QString::fromStdString(vrc));
+    urlQuery.addQueryItem(QString("rpcuser"), QString::fromStdString(rpcUser));
+    urlQuery.addQueryItem(QString("rpcpassword"), QString::fromStdString(rpcPassword));
+    urlQuery.addQueryItem(QString("rpcport"), QString::fromStdString(rpcPort));
+    url.setQuery(urlQuery);
 
 	QDesktopServices::openUrl(url);
 	ui->statusLabel_AN->setStyleSheet("QLabel { color: green; }");
