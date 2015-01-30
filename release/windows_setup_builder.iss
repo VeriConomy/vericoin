@@ -12,7 +12,7 @@
 #define ProgramName "VeriCoin"
 
 ; Enter the Version Number of your binaries
-#define VersionNumber "1.4.1"
+#define VersionNumber "1.5"
 
 ; Enter the Name of the Folder created in \Appdata\Roaming where your binaries will place the user files, including wallet, conf file, blockchain info etc.
 #define RoamingName "VeriCoin"
@@ -44,15 +44,20 @@ SolidCompression=yes
 OutputDir=SETUP
 
 [Dirs]
+; lib must be rpath'd in the project file.
+Name: "lib";
 Name: "imageformats";
 Name: "platforms";
+Name: "fonts";
 
 [Files]
-Source: "*"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
+Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
+Source: "*.dll"; DestDir: "{app}\lib"; Components: main; Excludes: "*.iss"
+Source: "*.ttf"; DestDir: "{app}\fonts"; Components: main; Excludes: "*.iss"
 Source: "imageformats\*"; DestDir: "{app}\imageformats"; Components: main;
 Source: "platforms\*"; DestDir: "{app}\platforms"; Components: main;
 Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
-Source: "Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "fonts\Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
 
 
 [Icons]
