@@ -31,8 +31,6 @@
 ; Enter the Name of the bootstrap file you wish to include                 
 #define bootstrapfile "bootstrap.dat"
 
-
-
 [Setup]
 AppName={#ProgramName}
 AppVersion={#VersionNumber}
@@ -52,13 +50,12 @@ Name: "fonts";
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
-Source: "*.dll"; DestDir: "{app}\lib"; Components: main; Excludes: "*.iss"
-Source: "*.ttf"; DestDir: "{app}\fonts"; Components: main; Excludes: "*.iss"
+Source: "lib\*.dll"; DestDir: "{app}\lib"; Components: main; Excludes: "*.iss"
+Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main; Excludes: "*.iss"
 Source: "imageformats\*"; DestDir: "{app}\imageformats"; Components: main;
 Source: "platforms\*"; DestDir: "{app}\platforms"; Components: main;
 Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
 Source: "fonts\Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
-
 
 [Icons]
 Name: "{group}\{#ProgramName}"; Filename: "{app}\{#QTexe}"
@@ -111,6 +108,67 @@ begin
   if CurPageID = wpFinished then
      Result := WalletImport;
 end;
+
+/////////////////////////////////////////////////////////////////////
+// UNINSTALL PREVIOUS VERSION ///////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppName")}_is1');
+  if sUnInstPath = '' then
+    begin
+      sUnInstPath := ExpandConstant('Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppName")}_is1');
+    end;
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+      UnInstallOldVersion();
+    end;
+  end;
+end;
+/////////////////////////////////////////////////////////////////////
 
 [Run]
 Filename: "{app}\{#QTexe}"; Flags: postinstall skipifsilent nowait
