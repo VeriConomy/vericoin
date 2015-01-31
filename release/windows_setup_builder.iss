@@ -42,15 +42,13 @@ SolidCompression=yes
 OutputDir=SETUP
 
 [Dirs]
-; lib must be rpath'd in the project file.
-Name: "lib";
 Name: "imageformats";
 Name: "platforms";
 Name: "fonts";
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
-Source: "lib\*.dll"; DestDir: "{app}\lib"; Components: main; Excludes: "*.iss"
+Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
 Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main; Excludes: "*.iss"
 Source: "imageformats\*"; DestDir: "{app}\imageformats"; Components: main;
 Source: "platforms\*"; DestDir: "{app}\platforms"; Components: main;
