@@ -49,7 +49,7 @@ Name: "fonts";
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
 Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
-Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main; Excludes: "*.iss"
+Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main;
 Source: "imageformats\*"; DestDir: "{app}\imageformats"; Components: main;
 Source: "platforms\*"; DestDir: "{app}\platforms"; Components: main;
 Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
@@ -107,9 +107,7 @@ begin
      Result := WalletImport;
 end;
 
-/////////////////////////////////////////////////////////////////////
-// UNINSTALL PREVIOUS VERSION ///////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
+// UNINSTALL PREVIOUS VERSION //
 function GetUninstallString(): String;
 var
   sUnInstPath: String;
@@ -166,7 +164,7 @@ begin
     end;
   end;
 end;
-/////////////////////////////////////////////////////////////////////
+////////////////////////////////
 
 [Run]
 Filename: "{app}\{#QTexe}"; Flags: postinstall skipifsilent nowait
