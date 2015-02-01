@@ -30,11 +30,11 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 # win build dependencies
 win32 {
-lessThan(QT_VERSION, 5.4) {
-BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
-} else {
-BOOST_LIB_SUFFIX=-mgw49-mt-s-1_55
-}
+  lessThan(QT_VERSION, 5.4) {
+  BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
+  } else {
+  BOOST_LIB_SUFFIX=-mgw49-mt-s-1_55
+  }
 BOOST_INCLUDE_PATH=C:/deps/boost_1_55_0
 BOOST_LIB_PATH=C:/deps/boost_1_55_0/stage/lib
 BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
@@ -45,6 +45,13 @@ MINIUPNPC_INCLUDE_PATH=C:/deps
 MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
 QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
 QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
+}
+# TODO: Need ifdef for linux i386
+unix: {
+BOOST_INCLUDE_PATH = /usr/local/include
+BOOST_LIB_PATH = /usr/local/lib
+MINIUPNPC_INCLUDE_PATH = /usr/include
+MINIUPNPC_LIB_PATH = /usr/lib
 }
 
 # mac build dependencies
@@ -82,7 +89,7 @@ contains(RELEASE, 1) {
 !win32 {
 # for extra security against potential buffer overflows: enable GCCs Stack Smashing Protection
 QMAKE_CXXFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
-QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
+QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./lib
 # We need to exclude this for Windows cross compile with MinGW 4.2.x, as it will result in a non-working executable!
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
@@ -111,7 +118,7 @@ contains(USE_UPNP, -) {
     }
     DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
     INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
-    LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
+    LIBS += $$MINIUPNPC_LIB_PATH/libminiupnpc.a
     win32:LIBS += -liphlpapi
 }
 
