@@ -28,7 +28,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 #    BDB_LIB_PATH, OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
 
 
-# winbuild dependencies
+# win build dependencies
 win32 {
   lessThan(QT_VERSION, 5.4) {
   BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
@@ -48,10 +48,25 @@ QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
 }
 # TODO: Need ifdef for linux i386
 unix: {
-BOOST_INCLUDE_PATH = /usr/local/include
-BOOST_LIB_PATH = /usr/local/lib
-MINIUPNPC_INCLUDE_PATH = /usr/include
-MINIUPNPC_LIB_PATH = /usr/lib
+#BOOST_INCLUDE_PATH = /usr/local/include
+#BOOST_LIB_PATH = /usr/local/lib
+#MINIUPNPC_INCLUDE_PATH = /usr/include
+#MINIUPNPC_LIB_PATH = /usr/lib
+}
+
+# mac build dependencies
+macx {
+BOOST_INCLUDE_PATH=/opt/local/include
+BOOST_LIB_PATH=/opt/local/lib
+BDB_LIB_SUFFIX=-4.8
+BDB_INCLUDE_PATH=/opt/local/include/db48
+BDB_LIB_PATH=/opt/local/lib
+OPENSSL_INCLUDE_PATH=/opt/local/include/openssl
+OPENSSL_LIB_PATH=/opt/local/lib
+QRENCODE_INCLUDE_PATH=/opt/local/include/qrencode
+QRENCODE_LIB_PATH=/opt/local/lib
+MINIUPNPC_INCLUDE_PATH=/opt/local/include/miniupnpc
+MINIUPNPC_LIB_PATH=/opt/local/lib
 }
 
 OBJECTS_DIR = build
@@ -61,8 +76,10 @@ UI_DIR = build
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
     # Mac: compile for maximum compatibility (10.5, 32-bit)
+    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.6 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk
     macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.5 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.5.sdk
-
+    macx:QMAKE_CFLAGS += -mmacosx-version-min=10.6 -arch i386 -isysroot  /Developer/SDKs/MacOSX10.6.sdk
+    macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.6 -arch i386 -isysroot  /Developer/SDKs/MacOSX10.6.sdk
     !windows:!macx {
         # Linux: static link
         LIBS += -Wl,-Bstatic
@@ -101,7 +118,7 @@ contains(USE_UPNP, -) {
     }
     DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
     INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
-    LIBS += $$MINIUPNPC_LIB_PATH/libminiupnpc.a
+    LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
     win32:LIBS += -liphlpapi
 }
 
@@ -519,16 +536,20 @@ macx:TARGET = "VeriCoin-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread
+macx:QMAKE_INFO_PLIST = share/qt/Info.plist
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
 LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
+!macx {
 LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
+}
+macx:LIBS += -lssl -lcrypto $$BDB_LIB_PATH/db48/libdb_cxx-4.8.a
 # -lgdi32 has to happen after -lcrypto (see  #681)
 windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
 LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
-macx:QMAKE_INFO_PLIST = share/qt/Info.plist
+
 
 contains(RELEASE, 1) {
     !windows:!macx {
