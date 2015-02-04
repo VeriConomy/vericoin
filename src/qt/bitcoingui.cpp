@@ -1008,7 +1008,8 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Override progressBar text and hide progress bar, when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
     {
-        progressBar->setVisible(false);
+        //progressBar->setVisible(false);
+        progressBar->setFormat(tr(strStatusBarWarnings));
     }
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
