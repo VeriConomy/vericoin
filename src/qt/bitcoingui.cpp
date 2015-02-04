@@ -1009,7 +1009,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     if (!strStatusBarWarnings.isEmpty())
     {
         //progressBar->setVisible(false);
-        progressBar->setFormat(tr(strStatusBarWarnings));
+        progressBar->setFormat(strStatusBarWarnings);
     }
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
