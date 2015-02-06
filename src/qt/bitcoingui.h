@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
-#include <QWebFrame>
 #include <QResizeEvent>
 
 class TransactionTableModel;
@@ -21,11 +20,11 @@ class Notificator;
 class RPCConsole;
 class Downloader;
 class WebView;
-class fiatPage;
-class newsPage;
-class chatPage;
-class explorerPage;
-class superNETPage;
+class GetVeriCoinPage;
+class ForumsPage;
+class ChatPage;
+class BlockchainPage;
+class SuperNETPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -72,6 +71,8 @@ private:
 
     QStackedWidget *centralWidget;
 
+    SignVerifyMessageDialog *signVerifyMessageDialog;
+    AccessNxtInsideDialog *accessNxtInsideDialog;
     OverviewPage *overviewPage;
     TransactionsPage *transactionsPage;
     TransactionView *transactionView;
@@ -79,14 +80,11 @@ private:
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     SendBitCoinsDialog *sendBitCoinsPage;
-    SignVerifyMessageDialog *signVerifyMessageDialog;
-    AccessNxtInsideDialog *accessNxtInsideDialog;
-    QWidget *fiatPage;
-    QWidget *newsPage;
-    QWidget *chatPage;
-    QWidget *explorerPage;
-    QWidget *superNETPage;
-    //QWidget *statsBox;
+    GetVeriCoinPage *getVeriCoinPage;
+    ForumsPage *forumsPage;
+    ChatPage *chatPage;
+    BlockchainPage *blockchainPage;
+    SuperNETPage *superNETPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelBalanceIcon;
@@ -106,11 +104,11 @@ private:
     QAction *quitAction;
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
-    QAction *fiatAction;
-    QAction *superNETAction;
-    QAction *newsAction;
+    QAction *getVeriCoinAction;
+    QAction *forumsAction;
     QAction *chatAction;
-    QAction *explorerAction;
+    QAction *blockchainAction;
+    QAction *superNETAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -118,7 +116,7 @@ private:
     QAction *aboutAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
-    QAction *forumsAction;
+    QAction *forumAction;
     QAction *webAction;
     QAction *toggleHideAction;
     QAction *exportAction;
@@ -128,8 +126,8 @@ private:
     QAction *unlockWalletAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
-    QAction *reloadExplorerAction;
-    QAction *rescanExplorerAction;
+    QAction *reloadBlockchainAction;
+    QAction *rescanBlockchainAction;
     QAction *checkForUpdateAction;
 
     QSystemTrayIcon *trayIcon;
@@ -176,7 +174,7 @@ public slots:
     */
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
-    void reloadExplorerActionEnabled(bool enabled);
+    void reloadBlockchainActionEnabled(bool enabled);
     void reloadBlockchain();
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();
@@ -194,16 +192,16 @@ private slots:
     void gotoSendCoinsPage();
     /** Switch to send coins page */
     void gotoSendBitCoinsPage();
-    /** Switch to News page */
-    void gotoNewsPage();
+    /** Switch to Forums page */
+    void gotoForumsPage();
     /** Switch to Chat page */
     void gotoChatPage();
-    /** Switch to Explorer page */
-    void gotoExplorerPage();
+    /** Switch to Blockchain page */
+    void gotoBlockchainPage();
     /** Switch to SuperNET page */
     void gotoSuperNETPage();
-    /** Switch to Fiat page */
-    void gotoFiatPage();
+    /** Switch to GetVeriCoin page */
+    void gotoGetVeriCoinPage();
     void resizeGUI();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
@@ -216,7 +214,7 @@ private slots:
     /** Show configuration dialog */
     void optionsClicked();
     /** Show forums page */
-    void forumsClicked();
+    void forumClicked();
     /** Show web page */
     void webClicked();
     /** Show about dialog */

@@ -2,6 +2,7 @@
 #define WEBVIEW_H
 
 #include <QWebView>
+#include <QWebFrame>
 #include <QWebHistory>
 #include <QDesktopServices>
 #include <QNetworkReply>

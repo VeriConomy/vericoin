@@ -58,22 +58,21 @@
         <file alias="veriSend">res/icons/veriSend.png</file>
         <file alias="veriBit">res/icons/veriBit.png</file>
         <file alias="notsynced">res/icons/notsynced.png</file>
-        <file alias="fiat">res/icons/fiat.png</file>
-        <file alias="news">res/icons/news_white.png</file>
+        <file alias="getvericoin">res/icons/getvericoin.png</file>
+        <file alias="forums">res/icons/forums.png</file>
         <file alias="chat">res/icons/chat.png</file>
         <file alias="sendButton">res/icons/sendButton.png</file>
         <file alias="editButton">res/icons/editButton.png</file>
-        <file alias="home">res/icons/home.png</file>
         <file alias="forum">res/icons/forum.png</file>
         <file alias="verifyButton">res/icons/verifyButton.png</file>
         <file alias="veriBitButton">res/icons/veriBitButton.png</file>
         <file alias="back">res/icons/back.png</file>
+        <file alias="home">res/icons/home.png</file>
+        <file alias="forward">res/icons/forward.png</file>
         <file alias="reload">res/icons/reload.png</file>
         <file alias="maximize">res/icons/maximize.png</file>
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="supernet_white">res/icons/supernet-white.png</file>
-        <file>res/icons/news_white.png</file>
-        <file>res/icons/forward.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
@@ -92,8 +91,8 @@
         <file alias="headerVeriBitSmall">res/images/headerVeriBitSmall.png</file>
         <file alias="headerGetVeriCoin">res/images/headerGetVeriCoin.png</file>
         <file alias="headerGetVeriCoinSmall">res/images/headerGetVeriCoinSmall.png</file>
-        <file alias="headerNews">res/images/headerNews.png</file>
-        <file alias="headerNewsSmall">res/images/headerNewsSmall.png</file>
+        <file alias="headerForums">res/images/headerForums.png</file>
+        <file alias="headerForumsSmall">res/images/headerForumsSmall.png</file>
         <file alias="headerForums">res/images/headerForums.png</file>
         <file alias="headerForumsSmall">res/images/headerForumsSmall.png</file>
         <file alias="headerChat">res/images/headerChat.png</file>
