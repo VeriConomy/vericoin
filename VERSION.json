@@ -1,15 +1,15 @@
 {
-    "title":"A New Version of the VeriCoin Wallet is Available",
-    "description":"This update adds a number of new features to the wallet, including: New tabs for the SuperNET gateway, in-wallet Forums and IRC chat, and a blockchain explorer; Auto and manual checks for new versions of the wallet; A new method of quickly bootstrapping the blockchain; A user friendly method to re-scan the wallet; A VeriCoin ticker for news alerts; Numerous UI tweaks, including an option to hide decimal places in currencies, an option to hide amounts for privacy, and wallet window resizing with compact mode for small screens; And there's the usual bug fix or two.\n\nNote: As soon as SuperNET v1 is launched, we will release a new version of the wallet that integrates the SuperNet fully.",
-    "instructions":"https://www.vericoinforums.com/threads/mandatory-wallet-update-1-4-1-5.593/",
-    "prefix":"VeriCoin_",
-    "version":"1.5",
-    "arch32":"_32bit",
-    "arch64":"_64bit",
-    "windows":".exe",
-    "mac":".pkg",
-    "linux":".zip",
-    "bootstrap":false,
-    "trustedUrls":"www.vericoinforums.com, vericoinforums.com, www.bter.com, bter.com, www.litebit.eu, litebit.eu, www.bittrex.com, bittrex.com, www.cryptsy.com, cryptsy.com, chainz.cryptoid.info, sprnt.slack.com",
-    "success":true
+    "title": "A New Version of the VeriCoin Wallet is Available",
+    "description": "This update adds a number of new features to the wallet, including: New tabs for the SuperNET gateway, in-wallet Forums and IRC chat, and a blockchain explorer; Auto and manual checks for new versions of the wallet; A new method of quickly bootstrapping the blockchain; A user friendly method to re-scan the wallet; A VeriCoin ticker for news alerts; Numerous UI tweaks, including an option to hide decimal places in currencies, an option to hide amounts for privacy, and wallet window resizing with compact mode for small screens; And there's the usual bug fix or two.\n\nNote: As soon as SuperNET v1 is launched, we will release a new version of the wallet that integrates the SuperNet fully.",
+    "instructions": "https:\/\/www.vericoinforums.com\/threads\/mandatory-wallet-update-1-4-1-5.593\/",
+    "prefix": "VeriCoin_",
+    "version": "1.5",
+    "arch32": "_32bit",
+    "arch64": "_64bit",
+    "windows": ".exe",
+    "mac": ".pkg",
+    "linux": ".zip",
+    "bootstrap": false,
+    "trustedUrls": "www.vericoinforums.com, vericoinforums.com, www.bter.com, bter.com, www.litebit.eu, litebit.eu, www.bittrex.com, bittrex.com, www.cryptsy.com, cryptsy.com, chainz.cryptoid.info, sprnt.slack.com",
+    "success": true
 }
