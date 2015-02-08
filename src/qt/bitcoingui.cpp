@@ -510,77 +510,66 @@ void BitcoinGUI::createActions()
     QActionGroup *tabGroup = new QActionGroup(this);
 
     overviewAction = new QAction(QIcon(":/icons/overview"), tr("Overview"), this);
-    overviewAction->setFont(veriFontSmall);
     overviewAction->setToolTip(tr("Wallet Overview"));
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("Send"), this);
-    sendCoinsAction->setFont(veriFontSmall);
     sendCoinsAction->setToolTip(tr("Send VeriCoin"));
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendCoinsAction);
 
     sendBitCoinsAction = new QAction(QIcon(":/icons/veriBit"), tr("VeriBit"), this);
-    sendBitCoinsAction->setFont(veriFontSmall);
     sendBitCoinsAction->setToolTip(tr("Send Bitcoin"));
     sendBitCoinsAction->setCheckable(true);
     sendBitCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendBitCoinsAction);
 
     receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("Receive"), this);
-    receiveCoinsAction->setFont(veriFontSmall);
     receiveCoinsAction->setToolTip(tr("Receive Addresses"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
     tabGroup->addAction(receiveCoinsAction);
 
     historyAction = new QAction(QIcon(":/icons/history"), tr("History"), this);
-    historyAction->setFont(veriFontSmall);
     historyAction->setToolTip(tr("Transaction History"));
     historyAction->setCheckable(true);
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
     addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("Address"), this);
-    addressBookAction->setFont(veriFontSmall);
     addressBookAction->setToolTip(tr("Saved Addresses"));
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
 
     fiatAction = new QAction(QIcon(":/icons/fiat"), tr("Get VeriCoin"), this);
-    fiatAction->setFont(veriFontSmall);
     fiatAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
     fiatAction->setCheckable(true);
     fiatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(fiatAction);
 
     newsAction = new QAction(QIcon(":/icons/news"), tr("Forums"), this);
-    newsAction->setFont(veriFontSmall);
     newsAction->setToolTip(tr("Join the VeriCoin Community\nGet the Latest VeriCoin News"));
     newsAction->setCheckable(true);
     newsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(newsAction);
 
     chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
-    chatAction->setFont(veriFontSmall);
     chatAction->setToolTip(tr("Join the VeriCoin Chat Room"));
     chatAction->setCheckable(true);
     chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(chatAction);
 
     explorerAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
-    explorerAction->setFont(veriFontSmall);
     explorerAction->setToolTip(tr("Explore the VeriCoin Blockchain"));
     explorerAction->setCheckable(true);
     explorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(explorerAction);
 
     superNETAction = new QAction(QIcon(":/icons/supernet_white"), tr("SuperNET"), this);
-    superNETAction->setFont(veriFontSmall);
     superNETAction->setToolTip(tr("Enter the SuperNET"));
     superNETAction->setCheckable(true);
     superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_0));
@@ -680,7 +669,7 @@ void BitcoinGUI::createMenuBar()
     // Get the main window's menu bar on other platforms
     appMenuBar = menuBar();
 #endif
-    appMenuBar->setFont(veriFont);
+	appMenuBar->setFont(veriFont);
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
