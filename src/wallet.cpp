@@ -111,7 +111,11 @@ bool CWallet::AddCScript(const CScript& redeemScript)
 }
 
 // optional setting to unlock wallet for staking only
+#ifdef QT_GUI
+bool fWalletUnlockStakingOnly = true;
+#else
 bool fWalletUnlockStakingOnly = false;
+#endif
 
 bool CWallet::Unlock(const SecureString& strWalletPassphrase)
 {
