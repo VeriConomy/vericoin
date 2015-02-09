@@ -64,6 +64,6 @@ void SuperNETPage::setModel(WalletModel *model)
 {
     this->walletModel = model;
 
-    QUrl url(QString(walletUrl).append("wallet/supernet.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+    QUrl url(QString(walletUrl).append("wallet/supernet.php?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
     ui->webView->myOpenUrl(url);
 }

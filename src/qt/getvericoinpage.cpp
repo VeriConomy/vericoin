@@ -64,6 +64,6 @@ void GetVeriCoinPage::setModel(WalletModel *model)
 {
     this->walletModel = model;
 
-    QUrl url(QString(walletUrl).append("wallet/getvericoin.html?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+    QUrl url(QString(walletUrl).append("wallet/getvericoin.php?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
     ui->webView->myOpenUrl(url);
 }
