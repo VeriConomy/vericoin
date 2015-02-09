@@ -575,7 +575,6 @@ void BitcoinGUI::createToolBars()
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
-    toolbar->setFont(veriFontSmall);
     toolbar->setContentsMargins(0,0,0,0);
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setIconSize(QSize(TOOLBAR_ICON_WIDTH,TOOLBAR_ICON_HEIGHT));
