@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>explorerPage</class>
- <widget class="QWidget" name="explorerPage">
+ <class>ForumsPage</class>
+ <widget class="QWidget" name="ForumsPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -138,7 +138,7 @@
          <string>Back</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
         </property>
         <property name="iconSize">
@@ -183,7 +183,7 @@
          <string>Reload</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/reload</normaloff>:/icons/reload</iconset>
         </property>
         <property name="iconSize">
@@ -228,7 +228,7 @@
          <string>Home</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/home</normaloff>:/icons/home</iconset>
         </property>
         <property name="iconSize">
@@ -273,7 +273,7 @@
          <string>Forward</string>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/res/icons/forward.png</normaloff>:/icons/res/icons/forward.png</iconset>
         </property>
         <property name="iconSize">
@@ -296,8 +296,6 @@
    <header>webview.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../bitcoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
