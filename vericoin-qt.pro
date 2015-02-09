@@ -164,7 +164,7 @@ genleveldb.depends = FORCE
 PRE_TARGETDEPS += $$PWD/src/leveldb/libleveldb.a
 QMAKE_EXTRA_TARGETS += genleveldb
 # Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
-QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) clean
+#QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) clean
 
 # QuaZip Begin
 INCLUDEPATH += $$PWD/src/quazip
@@ -189,7 +189,7 @@ genquazip.commands = cd $$PWD/src/quazip && $(MAKE)
 genquazip.target = $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a
 genquazip.depends = FORCE
 QMAKE_EXTRA_TARGETS += genquazip
-QMAKE_CLEAN += $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a; cd $$PWD/src/quazip ; $(MAKE) clean
+#QMAKE_CLEAN += $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a; cd $$PWD/src/quazip ; $(MAKE) clean
 # QuaZip End
 
 # regenerate src/build.h
@@ -299,6 +299,11 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/walletmodel.h \
     src/bitcoinrpc.h \
     src/qt/overviewpage.h \
+    src/qt/getvericoinpage.h \
+    src/qt/forumspage.h \
+    src/qt/chatpage.h \
+    src/qt/blockchainpage.h \
+    src/qt/supernetpage.h \
     src/qt/csvmodelwriter.h \
     src/crypter.h \
     src/qt/sendcoinsentry.h \
@@ -379,6 +384,11 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \
     src/qt/overviewpage.cpp \
+    src/qt/getvericoinpage.cpp \
+    src/qt/forumspage.cpp \
+    src/qt/chatpage.cpp \
+    src/qt/blockchainpage.cpp \
+    src/qt/supernetpage.cpp \
     src/qt/csvmodelwriter.cpp \
     src/crypter.cpp \
     src/qt/sendcoinsentry.cpp \
@@ -424,10 +434,10 @@ FORMS += \
     src/qt/forms/coincontroldialog.ui \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
-    src/qt/forms/fiatpage.ui \
-    src/qt/forms/newspage.ui \
+    src/qt/forms/getvericoinpage.ui \
+    src/qt/forms/forumspage.ui \
     src/qt/forms/chatpage.ui \
-    src/qt/forms/explorerpage.ui \
+    src/qt/forms/blockchainpage.ui \
     src/qt/forms/supernetpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
