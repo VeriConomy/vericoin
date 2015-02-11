@@ -2,7 +2,7 @@
 
 # Note: The structure of this package depends on the -rpath,./lib to be set at compile/link time.
 
-version="1.5"
+version="1.5.1"
 arch=`uname -i`
 QtLIBPATH="${HOME}/Qt/5.4/gcc"
 
