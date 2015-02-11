@@ -106,6 +106,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     currentTotal(-1),
     encryptWalletAction(0),
     changePassphraseAction(0),
+    lockWalletAction(0),
     unlockWalletAction(0),
     aboutQtAction(0),
     trayIcon(0),
@@ -395,6 +396,7 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
     encryptWalletAction->setEnabled(lock == false);
     backupWalletAction->setEnabled(lock == false);
     changePassphraseAction->setEnabled(lock == false);
+    lockWalletAction->setEnabled(lock == false);
     unlockWalletAction->setEnabled(lock == false);
     signMessageAction->setEnabled(lock == false);
     verifyMessageAction->setEnabled(lock == false);
@@ -536,6 +538,8 @@ void BitcoinGUI::createActions()
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password..."), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
+    lockWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Lock Wallet..."), this);
+    lockWalletAction->setToolTip(tr("Lock wallet and turn staking off"));
     unlockWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("&Unlock Wallet for Staking..."), this);
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message..."), this);
@@ -565,6 +569,7 @@ void BitcoinGUI::createActions()
     connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
+    connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
@@ -608,6 +613,7 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
     settings->addSeparator();
+    settings->addAction(lockWalletAction);
     settings->addAction(unlockWalletAction);
     settings->addSeparator();
     settings->addAction(optionsAction);
@@ -1307,6 +1313,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>"));
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
+        lockWalletAction->setEnabled(true);
         unlockWalletAction->setEnabled(false);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         break;
@@ -1315,6 +1322,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
+        lockWalletAction->setEnabled(false);
         unlockWalletAction->setEnabled(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         break;
@@ -1360,12 +1368,26 @@ void BitcoinGUI::changePassphrase()
     dlg.exec();
 }
 
+void BitcoinGUI::lockWallet()
+{
+    if (!walletModel)
+        return;
+    // Lock wallet when requested by wallet model
+    if (walletModel->getEncryptionStatus() == WalletModel::Unlocked)
+    {
+        AskPassphraseDialog dlg(AskPassphraseDialog::Lock, this);
+        dlg.setModel(walletModel);
+        dlg.exec();
+        stakingLabel->setText("Staking...");
+    }
+}
+
 void BitcoinGUI::unlockWallet()
 {
-    if(!walletModel)
+    if (!walletModel)
         return;
     // Unlock wallet when requested by wallet model
-    if(walletModel->getEncryptionStatus() == WalletModel::Locked)
+    if (walletModel->getEncryptionStatus() == WalletModel::Locked)
     {
         AskPassphraseDialog dlg(AskPassphraseDialog::Unlock, this);
         dlg.setModel(walletModel);
@@ -1407,7 +1429,7 @@ void BitcoinGUI::updateStakingIcon()
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     int64_t currentBlock = clientModel->getNumBlocks();
     int peerBlock = clientModel->getNumBlocksOfPeers();
-    if((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
+    if ((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
     {
         return;
     }
@@ -1415,7 +1437,7 @@ void BitcoinGUI::updateStakingIcon()
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
-    if (nLastCoinStakeSearchInterval && nWeight)
+    if (walletModel->getEncryptionStatus() == WalletModel::Unlocked && nLastCoinStakeSearchInterval && nWeight)
     {
         uint64_t nNetworkWeight = GetPoSKernelPS();
         unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;

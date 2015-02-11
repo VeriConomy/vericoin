@@ -17,7 +17,8 @@ class AskPassphrasePage : public QWidget
 
 public:
     enum Mode {
-        Unlock     /** Ask passphrase and unlock */
+        Lock,       /**< Ask passphrase and lock */
+        Unlock      /**< Ask passphrase and unlock */
     };
 
     explicit AskPassphrasePage(Mode mode, QWidget *parent = 0);

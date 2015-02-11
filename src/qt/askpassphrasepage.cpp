@@ -40,6 +40,9 @@ AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
 
     switch(mode)
     {
+        case Lock: // Ask passphrase
+            ui->warningLabel->setText(tr("Plese enter your passphrase to lock the wallet."));
+            break;
         case Unlock: // Ask passphrase
             ui->warningLabel->setText(tr("Plese enter your passphrase to unlock the wallet."));
             break;
@@ -75,7 +78,20 @@ void AskPassphrasePage::ok_clicked()
 
     switch(mode)
     {
-    case Unlock:
+    case Lock: // Turn off staking
+        if(!model->setWalletLocked(true, oldpass))
+        {
+            ui->warningLabel->setText(tr("The passphrase entered for the wallet is incorrect."));
+        }
+        else
+        {
+            ui->warningLabel->clear();
+            // Attempt to overwrite text so that they do not linger around in memory
+            ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
+            emit unlockWalletFeatures();
+        }
+        break;
+    case Unlock: // Turn on staking
         if(!model->setWalletLocked(false, oldpass))
         {
             ui->warningLabel->setText(tr("The passphrase entered for the wallet is incorrect."));
@@ -85,7 +101,6 @@ void AskPassphrasePage::ok_clicked()
             ui->warningLabel->clear();
             // Attempt to overwrite text so that they do not linger around in memory
             ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
-
             emit unlockWalletFeatures();
         }
         break;
@@ -98,6 +113,8 @@ void AskPassphrasePage::textChanged()
     bool acceptable = true;
     switch(mode)
     {
+    case Lock: // Old passphrase x1
+        break;
     case Unlock: // Old passphrase x1
         break;
     }
