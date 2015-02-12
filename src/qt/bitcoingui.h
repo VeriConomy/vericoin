@@ -10,6 +10,7 @@ class ClientModel;
 class WalletModel;
 class TransactionView;
 class TransactionsPage;
+class AskPassphrasePage;
 class OverviewPage;
 class AddressBookPage;
 class SendCoinsDialog;
@@ -73,6 +74,7 @@ private:
 
     SignVerifyMessageDialog *signVerifyMessageDialog;
     AccessNxtInsideDialog *accessNxtInsideDialog;
+    AskPassphrasePage *askPassphrasePage;
     OverviewPage *overviewPage;
     TransactionsPage *transactionsPage;
     TransactionView *transactionView;
@@ -123,6 +125,7 @@ private:
     QAction *encryptWalletAction;
     QAction *backupWalletAction;
     QAction *changePassphraseAction;
+    QAction *lockWalletAction;
     QAction *unlockWalletAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
@@ -148,6 +151,8 @@ private:
     void createTrayIcon();
 
 public slots:
+    /** Lock/Unlock Wallet features until/when passphrase is entered */
+    void lockWalletFeatures(bool lock);
     /** Set balance in status bar */
     void setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature);
     /** Set version icon good/bad */
@@ -180,6 +185,8 @@ public slots:
     void checkForUpdate();
 
 private slots:
+    /** Switch to askpassphrase page */
+    void gotoAskPassphrasePage();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
@@ -203,6 +210,7 @@ private slots:
     /** Switch to GetVeriCoin page */
     void gotoGetVeriCoinPage();
     void resizeGUI();
+    void unlockWalletFeatures();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
@@ -234,6 +242,8 @@ private slots:
     void backupWallet();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
+    /** Ask for passphrase to lock wallet temporarily */
+    void lockWallet();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
     /** Rescan the blockchain */

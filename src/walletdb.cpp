@@ -523,8 +523,7 @@ DBErrors CWalletDB::LoadWallet(CWallet* pwallet)
     if (wss.fIsEncrypted && (wss.nFileVersion == 40000 || wss.nFileVersion == 50000))
         return DB_NEED_REWRITE;
 
-    //if (wss.nFileVersion < CLIENT_VERSION) // Update
-    if (wss.nFileVersion >= CLIENT_VERSION_OLD || wss.nFileVersion < CLIENT_VERSION) // Temporary fix until CLIENT_VERSION goes to 1.5.1
+    if (wss.nFileVersion < CLIENT_VERSION) // Update
         WriteVersion(CLIENT_VERSION);
 
     if (wss.fAnyUnordered)

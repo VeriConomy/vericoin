@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = vericoin-qt
-VERSION = 1.5
+VERSION = 1.5.1
 USE_QRCODE = 1
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
@@ -313,6 +313,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/veribitcoinunits.h \
     src/qt/qvaluecombobox.h \
     src/qt/askpassphrasedialog.h \
+    src/qt/askpassphrasepage.h \
     src/protocol.h \
     src/qt/notificator.h \
     src/qt/qtipcserver.h \
@@ -398,6 +399,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/veribitcoinunits.cpp \
     src/qt/qvaluecombobox.cpp \
     src/qt/askpassphrasedialog.cpp \
+    src/qt/askpassphrasepage.cpp \
     src/protocol.cpp \
     src/qt/notificator.cpp \
     src/qt/qtipcserver.cpp \
@@ -449,6 +451,7 @@ FORMS += \
     src/qt/forms/sendcoinsentry.ui \
     src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \
+    src/qt/forms/askpassphrasepage.ui \
     src/qt/forms/rpcconsole.ui \
     src/qt/forms/optionsdialog.ui \
     src/qt/forms/downloader.ui \
