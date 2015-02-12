@@ -20,8 +20,6 @@ QRCodeDialog::QRCodeDialog(const QString &addr, const QString &label, bool enabl
     address(addr)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     setWindowTitle(QString("%1").arg(address));
 

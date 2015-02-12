@@ -14,8 +14,6 @@ RescanDialog::RescanDialog(QWidget *parent) :
     ui(new Ui::RescanDialog)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     ui->statusLabel->setFont(veriFont);
     ui->statusLabel->setText("Please confirm rescanning the blockchain for your wallet transactions. This process may take as much as 10 to 20 minutes to complete.\n\nYour wallet will restart to begin scanning.");

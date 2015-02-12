@@ -22,9 +22,6 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
-  </property>
   <widget class="QGraphicsView" name="header">
    <property name="geometry">
     <rect>
@@ -48,9 +45,6 @@
    </property>
    <property name="autoFillBackground">
     <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>

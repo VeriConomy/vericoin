@@ -19,8 +19,6 @@ Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     ui(new Ui::Downloader)
 {
     this->walletModel = walletModel;
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
     this->setFixedWidth(480);
 
     ui->setupUi(this);

@@ -37,10 +37,6 @@
        <family>Lato</family>
       </font>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QButton{ background : #0a3057; border : none; color: #FFFFFF} QButton:hover { background : #418BCA; } 
-QButton:pressed { background : #418BCA; }</string>
-     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>

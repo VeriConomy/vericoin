@@ -1,7 +1,7 @@
 #ifndef ASKPASSPHRASEPAGE_H
 #define ASKPASSPHRASEPAGE_H
 
-#include <QWidget>
+#include <QDialog>
 
 namespace Ui {
     class AskPassphrasePage;
@@ -11,7 +11,7 @@ class WalletModel;
 
 /** Ask for passphrase. Used for unlocking at startup.
  */
-class AskPassphrasePage : public QWidget
+class AskPassphrasePage : public QDialog
 {
     Q_OBJECT
 
@@ -33,7 +33,7 @@ private:
     bool fCapsLock;
 
 private slots:
-    void ok_clicked();
+    void accept();
     void textChanged();
     bool event(QEvent *event);
     bool eventFilter(QObject *, QEvent *event);

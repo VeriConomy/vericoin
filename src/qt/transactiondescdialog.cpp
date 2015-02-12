@@ -13,8 +13,6 @@ TransactionDescDialog::TransactionDescDialog(const QModelIndex &idx, QWidget *pa
     ui(new Ui::TransactionDescDialog)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     QString desc = idx.data(TransactionTableModel::LongDescriptionRole).toString();
     ui->detailText->setHtml(desc);

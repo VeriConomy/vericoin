@@ -14,9 +14,6 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::UpdateDialog)
 {
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
-
     std::string title = GetArg("-vTitle", "Update Available") + "\n";
     std::string description = GetArg("-vDescription", "Lot's of new features.").c_str();
     std::string version = "NEW IN " + GetArg("-vVersion", "1.0.0.0");

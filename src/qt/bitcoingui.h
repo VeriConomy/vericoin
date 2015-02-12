@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QResizeEvent>
+#include <QToolBar>
 
 class TransactionTableModel;
 class ClientModel;
@@ -70,6 +71,7 @@ private:
     ClientModel *clientModel;
     WalletModel *walletModel;
 
+    QToolBar *toolbar;
     QStackedWidget *centralWidget;
 
     SignVerifyMessageDialog *signVerifyMessageDialog;

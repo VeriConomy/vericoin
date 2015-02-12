@@ -66,7 +66,6 @@
 #include <QIcon>
 #include <QTabWidget>
 #include <QVBoxLayout>
-#include <QToolBar>
 #include <QStatusBar>
 #include <QLabel>
 #include <QLineEdit>
@@ -216,7 +215,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     centralWidget->addWidget(askPassphrasePage);
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
@@ -380,38 +378,9 @@ void BitcoinGUI::unlockWalletFeatures()
 
 void BitcoinGUI::lockWalletFeatures(bool lock)
 {
-    overviewAction->setEnabled(lock == false);
-    sendCoinsAction->setEnabled(lock == false);
-    sendBitCoinsAction->setEnabled(lock == false);
-    receiveCoinsAction->setEnabled(lock == false);
-    historyAction->setEnabled(lock == false);
-    addressBookAction->setEnabled(lock == false);
-    getVeriCoinAction->setEnabled(lock == false);
-    forumsAction->setEnabled(lock == false);
-    chatAction->setEnabled(lock == false);
-    blockchainAction->setEnabled(lock == false);
-    superNETAction->setEnabled(lock == false);
-
-    optionsAction->setEnabled(lock == false);
-    encryptWalletAction->setEnabled(lock == false);
-    backupWalletAction->setEnabled(lock == false);
-    changePassphraseAction->setEnabled(lock == false);
-    lockWalletAction->setEnabled(lock == false);
-    unlockWalletAction->setEnabled(lock == false);
-    signMessageAction->setEnabled(lock == false);
-    verifyMessageAction->setEnabled(lock == false);
-    //accessNxtInsideAction->setEnabled(lock == false);
-    reloadBlockchainAction->setEnabled(lock == false);
-    rescanBlockchainAction->setEnabled(lock == false);
-    openRPCConsoleAction->setEnabled(lock == false);
-    checkForUpdateAction->setEnabled(lock == false);
-    forumAction->setEnabled(lock == false);
-    webAction->setEnabled(lock == false);
-
-    exportAction->setEnabled(lock == false);
-
-    labelBalanceIcon->setVisible(lock == false);
-    balanceLabel->setVisible(lock == false);
+    appMenuBar->setVisible(lock == false);
+    toolbar->setVisible(lock == false);
+    statusBar()->setVisible(lock == false);
 
     if (lock)
     {
@@ -633,7 +602,7 @@ void BitcoinGUI::createMenuBar()
 
 void BitcoinGUI::createToolBars()
 {
-    QToolBar *toolbar = addToolBar(tr("Tabs Toolbar"));
+    toolbar = addToolBar(tr("Tabs Toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
@@ -1090,6 +1059,9 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoAskPassphrasePage()
 {
+    overviewAction->setChecked(false);
+    centralWidget->setCurrentWidget(askPassphrasePage);
+
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
