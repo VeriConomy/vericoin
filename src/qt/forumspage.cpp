@@ -15,8 +15,6 @@
 
 using namespace GUIUtil;
 
-#include "forumspage.moc"
-
 ForumsPage::ForumsPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ForumsPage),

@@ -15,8 +15,6 @@
 
 using namespace GUIUtil;
 
-#include "getvericoinpage.moc"
-
 GetVeriCoinPage::GetVeriCoinPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GetVeriCoinPage),

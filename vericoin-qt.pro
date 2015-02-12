@@ -164,7 +164,7 @@ genleveldb.depends = FORCE
 PRE_TARGETDEPS += $$PWD/src/leveldb/libleveldb.a
 QMAKE_EXTRA_TARGETS += genleveldb
 # Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
-#QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) clean
+QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) clean
 
 # QuaZip Begin
 INCLUDEPATH += $$PWD/src/quazip
@@ -186,10 +186,10 @@ else:win32:CONFIG(debug, debug|release): QUAZIPLIB=debug
 else: QUAZIPLIB=
 
 genquazip.commands = cd $$PWD/src/quazip && $(MAKE)
-genquazip.target = $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a
+genquazip.target = $$PWD/src/quazip/libquazip.a
 genquazip.depends = FORCE
 QMAKE_EXTRA_TARGETS += genquazip
-#QMAKE_CLEAN += $$PWD/src/quazip/$$QUAZIPLIB/libquazip.a; cd $$PWD/src/quazip ; $(MAKE) clean
+QMAKE_CLEAN += $$PWD/src/quazip/libquazip.a; cd $$PWD/src/quazip; $(MAKE) clean
 # QuaZip End
 
 # regenerate src/build.h
@@ -299,11 +299,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/walletmodel.h \
     src/bitcoinrpc.h \
     src/qt/overviewpage.h \
-    src/qt/getvericoinpage.h \
-    src/qt/forumspage.h \
-    src/qt/chatpage.h \
-    src/qt/blockchainpage.h \
-    src/qt/supernetpage.h \
     src/qt/csvmodelwriter.h \
     src/crypter.h \
     src/qt/sendcoinsentry.h \
@@ -314,6 +309,11 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/qvaluecombobox.h \
     src/qt/askpassphrasedialog.h \
     src/qt/askpassphrasepage.h \
+    src/qt/getvericoinpage.h \
+    src/qt/forumspage.h \
+    src/qt/chatpage.h \
+    src/qt/blockchainpage.h \
+    src/qt/supernetpage.h \
     src/protocol.h \
     src/qt/notificator.h \
     src/qt/qtipcserver.h \
@@ -385,11 +385,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \
     src/qt/overviewpage.cpp \
-    src/qt/getvericoinpage.cpp \
-    src/qt/forumspage.cpp \
-    src/qt/chatpage.cpp \
-    src/qt/blockchainpage.cpp \
-    src/qt/supernetpage.cpp \
     src/qt/csvmodelwriter.cpp \
     src/crypter.cpp \
     src/qt/sendcoinsentry.cpp \
@@ -409,6 +404,11 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/rescandialog.cpp \
     src/qt/cookiejar.cpp \
     src/qt/autosaver.cpp \
+    src/qt/getvericoinpage.cpp \
+    src/qt/forumspage.cpp \
+    src/qt/chatpage.cpp \
+    src/qt/blockchainpage.cpp \
+    src/qt/supernetpage.cpp \
     src/noui.cpp \
     src/kernel.cpp \
     src/scrypt-arm.S \
@@ -436,7 +436,6 @@ FORMS += \
     src/qt/forms/coincontroldialog.ui \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
-    src/qt/forms/getvericoinpage.ui \
     src/qt/forms/forumspage.ui \
     src/qt/forms/chatpage.ui \
     src/qt/forms/blockchainpage.ui \
@@ -448,6 +447,7 @@ FORMS += \
     src/qt/forms/editaddressdialog.ui \
     src/qt/forms/transactiondescdialog.ui \
     src/qt/forms/overviewpage.ui \
+    src/qt/forms/getvericoinpage.ui \
     src/qt/forms/sendcoinsentry.ui \
     src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \

@@ -15,8 +15,6 @@
 
 using namespace GUIUtil;
 
-#include "chatpage.moc"
-
 ChatPage::ChatPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChatPage),
