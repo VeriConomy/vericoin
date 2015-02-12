@@ -1362,13 +1362,7 @@ void ReadVersionFile()
                 }
         }
         int nVersion = (1000000 * maj) + (10000 * min) + (100 * rev) + (1 * bld);
-        if (nVersion%10000 == 0)
-            version = itostr(maj) + "." + itostr(min);
-        else if (nVersion%100 == 0)
-            version = itostr(maj) + "." + itostr(min) + "." + itostr(rev);
-        else
-            version = itostr(maj) + "." + itostr(min) + "." + itostr(rev) + "." + itostr(bld);
-        if (!boost::iequals(FormatVersion(CLIENT_VERSION), version))
+        if (nVersion > CLIENT_VERSION)
         {
             fNewVersion = true;
         }

@@ -15,8 +15,6 @@
 
 using namespace GUIUtil;
 
-#include "supernetpage.moc"
-
 SuperNETPage::SuperNETPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SuperNETPage),

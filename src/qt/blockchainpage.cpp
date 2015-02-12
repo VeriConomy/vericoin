@@ -15,8 +15,6 @@
 
 using namespace GUIUtil;
 
-#include "blockchainpage.moc"
-
 BlockchainPage::BlockchainPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::BlockchainPage),
