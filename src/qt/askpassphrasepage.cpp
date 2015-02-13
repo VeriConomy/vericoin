@@ -21,7 +21,6 @@ AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
 {
     ui->setupUi(this);
     this->layout()->setContentsMargins(0, 0, 0, 0);
-
     this->setStyleSheet(GUIUtil::veriAskPassphrasePageStyleSheet);
 
     ui->passEdit1->setMaxLength(MAX_PASSPHRASE_SIZE);
@@ -77,10 +76,12 @@ void AskPassphrasePage::accept()
         }
         else
         {
-            ui->warningLabel->clear();
             // Attempt to overwrite text so that they do not linger around in memory
             ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
+            ui->passEdit1->setText(QString(""));
+            ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             emit unlockWalletFeatures();
+            ui->warningLabel->setText(tr("Plese enter your passphrase to lock the wallet."));
         }
         break;
     case Unlock: // Turn on staking
@@ -90,10 +91,12 @@ void AskPassphrasePage::accept()
         }
         else
         {
-            ui->warningLabel->clear();
             // Attempt to overwrite text so that they do not linger around in memory
             ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
+            ui->passEdit1->setText(QString(""));
+            ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             emit unlockWalletFeatures();
+            ui->warningLabel->setText(tr("Plese enter your passphrase to unlock the wallet."));
         }
         break;
     }
