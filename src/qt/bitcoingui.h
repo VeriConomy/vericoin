@@ -71,6 +71,7 @@ private:
     ClientModel *clientModel;
     WalletModel *walletModel;
 
+    QMenu *trayIconMenu;
     QToolBar *toolbar;
     QStackedWidget *centralWidget;
 
