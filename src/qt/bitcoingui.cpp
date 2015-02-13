@@ -389,22 +389,12 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
     toolbar->setVisible(lock == false);
     statusBar()->setVisible(lock == false);
 
+    // Hide/Show every action in tray but Exit
     QList<QAction *> trayActionItems = trayIconMenu->actions();
     foreach (QAction* ai, trayActionItems) {
-        // Hide/Show everything but Exit
-        if (ai->objectName().compare("quitAction"))
-            ai->setVisible(lock == false);
+        ai->setVisible(lock == false);
     }
-    delete trayActionItems;
-
-    trayIconMenu->addAction(sendCoinsAction);
-    trayIconMenu->addAction(receiveCoinsAction);
-    trayIconMenu->addAction(signMessageAction);
-    trayIconMenu->addAction(verifyMessageAction);
-    //trayIconMenu->addAction(accessNxtInsideAction);
-    trayIconMenu->addAction(optionsAction);
-    trayIconMenu->addAction(openRPCConsoleAction);
-    trayIconMenu->addAction(logoutAction);
+    quitAction->setVisible(true);
 
     if (lock)
     {
