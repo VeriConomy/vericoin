@@ -358,8 +358,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Clicking on "Access Nxt Inside" in the receive coins page sends you to access Nxt inside tab
 	connect(receiveCoinsPage, SIGNAL(accessNxt(QString)), this, SLOT(gotoAccessNxtInsideTab(QString)));
-
-    //gotoOverviewPage();
 }
 
 BitcoinGUI::~BitcoinGUI()
@@ -731,6 +729,10 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         if (!walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
         {
             lockWalletFeatures(true); // Lock features
+        }
+        else
+        {
+            gotoOverviewPage();
         }
     }
 }
