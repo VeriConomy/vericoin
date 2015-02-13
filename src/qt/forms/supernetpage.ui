@@ -16,9 +16,6 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QWidget {background : white}</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -76,9 +73,6 @@
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -131,9 +125,6 @@
           <stylestrategy>PreferAntialias</stylestrategy>
          </font>
         </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
         <property name="text">
          <string>Back</string>
         </property>
@@ -175,9 +166,6 @@
           <pointsize>11</pointsize>
           <stylestrategy>PreferAntialias</stylestrategy>
          </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
         </property>
         <property name="text">
          <string>Reload</string>
@@ -221,9 +209,6 @@
           <stylestrategy>PreferAntialias</stylestrategy>
          </font>
         </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
         <property name="text">
          <string>Home</string>
         </property>
@@ -265,9 +250,6 @@
           <pointsize>11</pointsize>
           <stylestrategy>PreferAntialias</stylestrategy>
          </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
         </property>
         <property name="text">
          <string>Forward</string>

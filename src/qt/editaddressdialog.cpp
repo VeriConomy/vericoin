@@ -13,8 +13,6 @@ EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
     ui(new Ui::EditAddressDialog), mapper(0), mode(mode), model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     GUIUtil::setupAddressWidget(ui->addressEdit, this);
 

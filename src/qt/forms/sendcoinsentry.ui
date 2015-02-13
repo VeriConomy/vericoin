@@ -18,9 +18,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background: white;</string>
-  </property>
   <property name="frameShape">
    <enum>QFrame::NoFrame</enum>
   </property>
@@ -134,11 +131,6 @@
        <property name="toolTip">
         <string>Choose address from address book</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
-QToolButton:pressed { background :#418BCA ; }
-</string>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -168,11 +160,6 @@ QToolButton:pressed { background :#418BCA ; }
        <property name="toolTip">
         <string>Paste address from clipboard</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
-QToolButton:pressed { background :#418BCA ; }
-</string>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -201,11 +188,6 @@ QToolButton:pressed { background :#418BCA ; }
        </property>
        <property name="toolTip">
         <string>Remove this recipient</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QToolButton { background : #0a3057; border : none;} QToolButton:hover { background : #418BCA; } 
-QToolButton:pressed { background :#418BCA ; }
-</string>
        </property>
        <property name="text">
         <string/>

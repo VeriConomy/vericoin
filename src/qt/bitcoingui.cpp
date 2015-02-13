@@ -66,7 +66,6 @@
 #include <QIcon>
 #include <QTabWidget>
 #include <QVBoxLayout>
-#include <QToolBar>
 #include <QStatusBar>
 #include <QLabel>
 #include <QLineEdit>
@@ -216,7 +215,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
-    centralWidget->setStyleSheet("QStackedWidget { background: white; }");
     centralWidget->addWidget(askPassphrasePage);
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
@@ -372,6 +370,13 @@ BitcoinGUI::~BitcoinGUI()
     delete appMenuBar;
 #endif
 }
+
+void BitcoinGUI::logout()
+{
+    lockWallet();
+    lockWalletFeatures(true);
+}
+
 // Signal emitted from AskPassphrasePage
 void BitcoinGUI::unlockWalletFeatures()
 {
@@ -380,38 +385,9 @@ void BitcoinGUI::unlockWalletFeatures()
 
 void BitcoinGUI::lockWalletFeatures(bool lock)
 {
-    overviewAction->setEnabled(lock == false);
-    sendCoinsAction->setEnabled(lock == false);
-    sendBitCoinsAction->setEnabled(lock == false);
-    receiveCoinsAction->setEnabled(lock == false);
-    historyAction->setEnabled(lock == false);
-    addressBookAction->setEnabled(lock == false);
-    getVeriCoinAction->setEnabled(lock == false);
-    forumsAction->setEnabled(lock == false);
-    chatAction->setEnabled(lock == false);
-    blockchainAction->setEnabled(lock == false);
-    superNETAction->setEnabled(lock == false);
-
-    optionsAction->setEnabled(lock == false);
-    encryptWalletAction->setEnabled(lock == false);
-    backupWalletAction->setEnabled(lock == false);
-    changePassphraseAction->setEnabled(lock == false);
-    lockWalletAction->setEnabled(lock == false);
-    unlockWalletAction->setEnabled(lock == false);
-    signMessageAction->setEnabled(lock == false);
-    verifyMessageAction->setEnabled(lock == false);
-    //accessNxtInsideAction->setEnabled(lock == false);
-    reloadBlockchainAction->setEnabled(lock == false);
-    rescanBlockchainAction->setEnabled(lock == false);
-    openRPCConsoleAction->setEnabled(lock == false);
-    checkForUpdateAction->setEnabled(lock == false);
-    forumAction->setEnabled(lock == false);
-    webAction->setEnabled(lock == false);
-
-    exportAction->setEnabled(lock == false);
-
-    labelBalanceIcon->setVisible(lock == false);
-    balanceLabel->setVisible(lock == false);
+    appMenuBar->setVisible(lock == false);
+    toolbar->setVisible(lock == false);
+    statusBar()->setVisible(lock == false);
 
     if (lock)
     {
@@ -520,6 +496,9 @@ void BitcoinGUI::createActions()
     quitAction->setToolTip(tr("Quit Application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
+    logoutAction = new QAction(QIcon(":/icons/logout"), tr("&Logout"), this);
+    logoutAction->setToolTip(tr("Logout and Stop Staking"));
+    logoutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
     aboutAction = new QAction(QIcon(":/icons/bitcoin"), tr("&About VeriCoin"), this);
     aboutAction->setToolTip(tr("Show information about VeriCoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
@@ -562,6 +541,7 @@ void BitcoinGUI::createActions()
     openRPCConsoleAction->setToolTip(tr("Open debugging and diagnostic console"));
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(logoutAction, SIGNAL(triggered()), this, SLOT(logout()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
@@ -606,6 +586,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(reloadBlockchainAction);
     file->addAction(rescanBlockchainAction);
     file->addSeparator();
+    file->addAction(logoutAction);
     file->addAction(quitAction);
 
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
@@ -633,7 +614,7 @@ void BitcoinGUI::createMenuBar()
 
 void BitcoinGUI::createToolBars()
 {
-    QToolBar *toolbar = addToolBar(tr("Tabs Toolbar"));
+    toolbar = addToolBar(tr("Tabs Toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
@@ -779,8 +760,9 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openRPCConsoleAction);
-#ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
+    trayIconMenu->addAction(logoutAction);
+#ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addAction(quitAction);
 #endif
 
@@ -1090,6 +1072,9 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 
 void BitcoinGUI::gotoAskPassphrasePage()
 {
+    overviewAction->setChecked(false);
+    centralWidget->setCurrentWidget(askPassphrasePage);
+
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
@@ -1305,6 +1290,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
     case WalletModel::Unencrypted:
         encryptWalletAction->setChecked(false);
         changePassphraseAction->setEnabled(false);
+        logoutAction->setEnabled(false);
         unlockWalletAction->setEnabled(false);
         encryptWalletAction->setEnabled(true);
         break;
@@ -1313,6 +1299,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>"));
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
+        logoutAction->setEnabled(true);
         lockWalletAction->setEnabled(true);
         unlockWalletAction->setEnabled(false);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
@@ -1322,6 +1309,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
+        logoutAction->setEnabled(true);
         lockWalletAction->setEnabled(false);
         unlockWalletAction->setEnabled(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported

@@ -94,9 +94,6 @@
        <property name="cursor">
         <cursorShape>IBeamCursor</cursorShape>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>You Have the Most Current VeriCoin Wallet</string>
        </property>

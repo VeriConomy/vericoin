@@ -66,6 +66,12 @@
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="capsLabel">
+       <property name="minimumSize">
+        <size>
+         <width>480</width>
+         <height>20</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <weight>75</weight>
@@ -127,22 +133,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>AskPassphrasePage</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
      <y>274</y>
     </hint>
    </hints>

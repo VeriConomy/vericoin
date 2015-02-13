@@ -37,9 +37,6 @@ TransactionView::TransactionView(QWidget *parent) :
     QWidget(parent), model(0), transactionProxyModel(0),
     transactionView(0)
 {
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
-
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0,0,0,0);
@@ -128,6 +125,15 @@ TransactionView::TransactionView(QWidget *parent) :
 
     transactionView = view;
 
+    totalWidget = new QLabel(this);
+    totalWidget->setFont(veriFont);
+    totalWidget->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    totalWidget->setLayoutDirection(Qt::RightToLeft);
+    totalWidget->setFixedHeight(30);
+    totalWidget->setFixedWidth(300);
+    totalWidget->setText(tr("Total Volume: "));
+    vlayout->addWidget(totalWidget);
+
     // Actions
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);
     QAction *copyLabelAction = new QAction(tr("Copy label"), this);
@@ -192,6 +198,9 @@ void TransactionView::setModel(WalletModel *model)
                 TransactionTableModel::ToAddress, QHeaderView::Stretch);
         transactionView->horizontalHeader()->resizeSection(
                 TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
+        amountWidget->setFixedWidth(100 + (model->getOptionsModel()->getDecimalPoints() * 10));
+
+        totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), model->getTransactionTableModel()->amountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
     }
 }
 

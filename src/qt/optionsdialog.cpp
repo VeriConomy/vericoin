@@ -27,10 +27,6 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     fProxyIpValid(true)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
-
-    ui->veriSendOptions->setStyleSheet("QWidget { background: #f4f4f4; }");
 
     /* Network elements init */
 #ifndef USE_UPNP

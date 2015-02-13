@@ -94,9 +94,6 @@
        <property name="cursor">
         <cursorShape>IBeamCursor</cursorShape>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>A New Version of the Software is Available</string>
        </property>

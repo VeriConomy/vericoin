@@ -28,8 +28,6 @@ AccessNxtInsideDialog::AccessNxtInsideDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
 #if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */

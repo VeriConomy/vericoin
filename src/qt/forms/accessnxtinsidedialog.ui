@@ -66,9 +66,6 @@
            <property name="toolTip">
             <string>Choose an address from the address book</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
            <property name="text">
             <string/>
            </property>
@@ -100,9 +97,6 @@
            </property>
            <property name="toolTip">
             <string>Paste address from clipboard</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
            </property>
            <property name="text">
             <string/>
@@ -140,9 +134,6 @@
            <property name="toolTip">
             <string>Enter SuperNET</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
            <property name="text">
             <string>Enter &amp;SuperNET</string>
            </property>
@@ -165,9 +156,6 @@
            </property>
            <property name="toolTip">
             <string>Reset all fields</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
            </property>
            <property name="text">
             <string>Clear &amp;All</string>

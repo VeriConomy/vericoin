@@ -23,10 +23,6 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
-
-    ui->tabWidget->setStyleSheet("QWidget { background: #f4f4f4; }");
 
 #if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */

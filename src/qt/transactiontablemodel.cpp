@@ -28,6 +28,8 @@ static int column_alignments[] = {
         Qt::AlignRight|Qt::AlignVCenter
     };
 
+static qint64 nAmountTotal = 0;
+
 // Comparison operator for sort/binary search of model tx list
 struct TxLessThan
 {
@@ -69,12 +71,17 @@ public:
     {
         OutputDebugStringF("refreshWallet\n");
         cachedWallet.clear();
+        nAmountTotal = 0;
         {
             LOCK(wallet->cs_wallet);
             for(std::map<uint256, CWalletTx>::iterator it = wallet->mapWallet.begin(); it != wallet->mapWallet.end(); ++it)
             {
                 if(TransactionRecord::showTransaction(it->second))
+                {
                     cachedWallet.append(TransactionRecord::decomposeTransaction(wallet, it->second));
+                    nAmountTotal += cachedWallet.last().credit;
+                    nAmountTotal -= cachedWallet.last().debit;
+                }
             }
         }
     }
@@ -143,6 +150,8 @@ public:
                         {
                             cachedWallet.insert(insert_idx, rec);
                             insert_idx += 1;
+                            nAmountTotal += cachedWallet.at(insert_idx).credit;
+                            nAmountTotal -= cachedWallet.at(insert_idx).debit;
                         }
                         parent->endInsertRows();
                     }
@@ -261,6 +270,11 @@ void TransactionTableModel::updateConfirmations()
         emit dataChanged(index(0, Status), index(priv->size()-1, Status));
         emit dataChanged(index(0, ToAddress), index(priv->size()-1, ToAddress));
     }
+}
+
+qint64 TransactionTableModel::amountTotal()
+{
+    return nAmountTotal;
 }
 
 int TransactionTableModel::rowCount(const QModelIndex &parent) const

@@ -13,24 +13,15 @@
 using namespace GUIUtil;
 
 AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::AskPassphrasePage),
     mode(mode),
     model(0),
     fCapsLock(false)
 {
-    // Setup header and styles
-    if (fNoHeaders)
-        GUIUtil::header(this, QString(""));
-    else if (fSmallHeaders)
-        GUIUtil::header(this, QString(":images/headerOverviewSmall"));
-    else
-        GUIUtil::header(this, QString(":images/headerOverview"));
-
     ui->setupUi(this);
-    this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
+    this->layout()->setContentsMargins(0, 0, 0, 0);
+    this->setStyleSheet(GUIUtil::veriAskPassphrasePageStyleSheet);
 
     ui->passEdit1->setMaxLength(MAX_PASSPHRASE_SIZE);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
@@ -49,8 +40,8 @@ AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
     }
 
     connect(ui->passEdit1, SIGNAL(textChanged(QString)), this, SLOT(textChanged()));
-    connect(ui->passEdit1, SIGNAL(returnPressed()), this, SLOT(ok_clicked()));
-    connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(ok_clicked()));
+    connect(ui->passEdit1, SIGNAL(returnPressed()), this, SLOT(accept()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(accept()));
 }
 
 AskPassphrasePage::~AskPassphrasePage()
@@ -65,7 +56,7 @@ void AskPassphrasePage::setModel(WalletModel *model)
     this->model = model;
 }
 
-void AskPassphrasePage::ok_clicked()
+void AskPassphrasePage::accept()
 {
     SecureString oldpass;
     if(!model)
@@ -85,10 +76,12 @@ void AskPassphrasePage::ok_clicked()
         }
         else
         {
-            ui->warningLabel->clear();
             // Attempt to overwrite text so that they do not linger around in memory
             ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
+            ui->passEdit1->setText(QString(""));
+            ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             emit unlockWalletFeatures();
+            ui->warningLabel->setText(tr("Plese enter your passphrase to lock the wallet."));
         }
         break;
     case Unlock: // Turn on staking
@@ -98,10 +91,12 @@ void AskPassphrasePage::ok_clicked()
         }
         else
         {
-            ui->warningLabel->clear();
             // Attempt to overwrite text so that they do not linger around in memory
             ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
+            ui->passEdit1->setText(QString(""));
+            ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             emit unlockWalletFeatures();
+            ui->warningLabel->setText(tr("Plese enter your passphrase to unlock the wallet."));
         }
         break;
     }

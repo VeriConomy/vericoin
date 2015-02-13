@@ -206,9 +206,6 @@
             <pointsize>11</pointsize>
            </font>
           </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
           <property name="text">
            <string>&amp;Save As...</string>
           </property>

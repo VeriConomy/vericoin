@@ -13,9 +13,6 @@
   <property name="windowTitle">
    <string>Send Coins</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background: white;</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="bottomMargin">
     <number>8</number>
@@ -86,9 +83,6 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">font-weight:bold;</string>
-            </property>
             <property name="text">
              <string>Coin Control Features</string>
             </property>
@@ -118,9 +112,6 @@
               <pointsize>11</pointsize>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
              <string>Inputs...</string>
             </property>
@@ -143,9 +134,6 @@
               <weight>75</weight>
               <bold>true</bold>
              </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">color:red;font-weight:bold;</string>
             </property>
             <property name="text">
              <string>Insufficient funds!</string>
@@ -183,9 +171,6 @@
             <width>0</width>
             <height>0</height>
            </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayoutCoinControl5">
            <property name="leftMargin">
@@ -237,9 +222,6 @@
                    <bold>true</bold>
                   </font>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Quantity:</string>
                  </property>
@@ -281,9 +263,6 @@
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
                  </property>
                  <property name="text">
                   <string>Bytes:</string>
@@ -340,9 +319,6 @@
                    <bold>true</bold>
                   </font>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Amount:</string>
                  </property>
@@ -381,9 +357,6 @@
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
                  </property>
                  <property name="text">
                   <string>Priority:</string>
@@ -440,9 +413,6 @@
                    <bold>true</bold>
                   </font>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Fee:</string>
                  </property>
@@ -481,9 +451,6 @@
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
                  </property>
                  <property name="text">
                   <string>Low Output:</string>
@@ -540,9 +507,6 @@
                    <bold>true</bold>
                   </font>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>After Fee:</string>
                  </property>
@@ -581,9 +545,6 @@
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
                  </property>
                  <property name="text">
                   <string>Change</string>
@@ -712,9 +673,6 @@
         <height>522</height>
        </rect>
       </property>
-      <property name="styleSheet">
-       <string notr="true">background: white;</string>
-      </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
         <number>0</number>
@@ -771,9 +729,6 @@
        <property name="toolTip">
         <string>Send to multiple recipients at once</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>Add &amp;Recipient</string>
        </property>
@@ -814,9 +769,6 @@
        </property>
        <property name="toolTip">
         <string>Remove all transaction fields</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>Clear &amp;All</string>
@@ -928,9 +880,6 @@
        </property>
        <property name="toolTip">
         <string>Confirm the send action</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>Send</string>
