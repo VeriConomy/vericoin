@@ -389,6 +389,13 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
     toolbar->setVisible(lock == false);
     statusBar()->setVisible(lock == false);
 
+    // Hide/Show every action in tray but Exit
+    QList<QAction *> trayActionItems = trayIconMenu->actions();
+    foreach (QAction* ai, trayActionItems) {
+        ai->setVisible(lock == false);
+    }
+    quitAction->setVisible(true);
+
     if (lock)
     {
         gotoAskPassphrasePage();
@@ -730,7 +737,6 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
 
 void BitcoinGUI::createTrayIcon()
 {
-    QMenu *trayIconMenu;
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
     trayIconMenu = new QMenu(this);
