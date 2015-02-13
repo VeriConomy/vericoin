@@ -121,8 +121,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     ui->setupUi(this);
     this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     // Add icons to the Balance section
     ui->labelBalanceText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");

@@ -2,6 +2,7 @@
 #define TRANSACTIONVIEW_H
 
 #include <QWidget>
+#include <QLabel>
 
 class WalletModel;
 class TransactionFilterProxy;
@@ -48,6 +49,7 @@ private:
     QComboBox *typeWidget;
     QLineEdit *addressWidget;
     QLineEdit *amountWidget;
+    QLabel *totalWidget;
 
     QMenu *contextMenu;
 

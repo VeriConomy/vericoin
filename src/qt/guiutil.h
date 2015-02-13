@@ -43,6 +43,7 @@ namespace GUIUtil
 
     // Common stylesheets
     extern QString veriStyleSheet;
+    extern QString veriAskPassphrasePageStyleSheet;
     extern QGraphicsView *header(QWidget *parent, QString backgroundImage);
 
     // Create human-readable string from date

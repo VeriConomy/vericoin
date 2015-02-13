@@ -34,9 +34,6 @@
   <property name="windowTitle">
    <string>Rescan Blockchain</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>10</number>
@@ -62,9 +59,6 @@
        </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string/>

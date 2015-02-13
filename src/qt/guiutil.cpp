@@ -140,12 +140,16 @@ void setFontPixelSizes()
     setFontPixelSize((QFont *)&veriFontLarger);
 }
 
-// Common stylesheets
+// Common VeriCoin stylesheets
+QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; } ");
+
 QString veriDialogStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } \
                             QDialog::QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
                             QDialog::QPushButton:disabled { background: #EBEBEB; color: #666666; } \
                             QDialog::QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
                             QDialog::QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
+
+QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STRING_VERIFONT + "; border: 1px; }");
 
 QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
                             QPushButton:disabled { background: #EBEBEB; color: #666666; } \
@@ -156,13 +160,23 @@ QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIB
                             QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-size: 12px; } \
                             QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
-                            QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; }");
+                            QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } ");
 
-QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; }");
+QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; } ");
 
-QString veriMiscStyleSheet = QString("QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
+QString veriMiscStyleSheet = QString("QScrollArea::QWidget { background: white; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
 
-QString veriStyleSheet = veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
+// Put them all together
+QString veriStyleSheet = veriCentralWidgetStyleSheet + veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
+
+
+// Special styling for AskPassphrasePage
+QString veriAskPassphrasePushButtonStyleSheet = QString("QPushButton { background: " + STRING_VERIBLUE_LT + "; width: %1px; height: %2px; border: none; color: white} \
+                            QPushButton:disabled { background: #EBEBEB; color: #666666; } \
+                            QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
+                            QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
+
+QString veriAskPassphrasePageStyleSheet = QString("QDialog { background: " + STRING_VERIBLUE + "; color: white; } QLabel { background: " + STRING_VERIBLUE + "; color: white; } QLineEdit { background: white; color: " + STRING_VERIBLUE + "; } ") + veriAskPassphrasePushButtonStyleSheet + veriToolTipStyleSheet;
 
 // Setup header and styles
 QGraphicsView *header(QWidget *parent, QString backgroundImage)

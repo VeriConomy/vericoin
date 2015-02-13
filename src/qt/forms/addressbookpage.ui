@@ -93,9 +93,6 @@
        <property name="toolTip">
         <string>Create a new address</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>&amp;New Address</string>
        </property>
@@ -128,9 +125,6 @@
        <property name="toolTip">
         <string>Copy the currently selected address to the system clipboard</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>&amp;Copy Address</string>
        </property>
@@ -159,9 +153,6 @@
          <family>Lato</family>
          <pointsize>11</pointsize>
         </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>Show &amp;QR</string>
@@ -195,9 +186,6 @@
        <property name="toolTip">
         <string>Sign a message to prove you own a VeriCoin address</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>Sign &amp;Message</string>
        </property>
@@ -230,9 +218,6 @@
        <property name="toolTip">
         <string>Verify a message to ensure it was signed with a specified VeriCoin address</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>&amp;Verify Message</string>
        </property>
@@ -264,9 +249,6 @@
        </property>
        <property name="toolTip">
         <string>Delete the currently selected address from the list</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Delete</string>

@@ -29,9 +29,6 @@
        <pointsize>11</pointsize>
       </font>
      </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
@@ -673,9 +670,6 @@
          <pointsize>11</pointsize>
         </font>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>&amp;OK</string>
        </property>
@@ -694,9 +688,6 @@
          <family>Lato</family>
          <pointsize>11</pointsize>
         </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Cancel</string>
@@ -719,9 +710,6 @@
          <family>Lato</family>
          <pointsize>11</pointsize>
         </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>&amp;Apply</string>

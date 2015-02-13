@@ -3,10 +3,6 @@
 
 #include "clientmodel.h"
 #include "walletmodel.h"
-#include "bitcoinunits.h"
-#include "optionsmodel.h"
-#include "transactiontablemodel.h"
-#include "transactionfilterproxy.h"
 #include "guiutil.h"
 #include "guiconstants.h"
 #include "util.h"
@@ -30,8 +26,6 @@ SuperNETPage::SuperNETPage(QWidget *parent) :
     else
         GUIUtil::header(this, QString(":images/headerSuperNET"));
     this->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     CookieJar *superNETJar = new CookieJar;
     ui->webView->page()->networkAccessManager()->setCookieJar(superNETJar);

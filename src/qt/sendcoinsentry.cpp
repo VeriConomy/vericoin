@@ -19,8 +19,6 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
 #ifdef Q_OS_MAC
     ui->payToLayout->setSpacing(4);

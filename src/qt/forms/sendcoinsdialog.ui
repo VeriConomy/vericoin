@@ -13,9 +13,6 @@
   <property name="windowTitle">
    <string>Send Coins</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background: white;</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="bottomMargin">
     <number>8</number>
@@ -86,9 +83,6 @@
               <bold>true</bold>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">font-weight:bold;</string>
-            </property>
             <property name="text">
              <string>Coin Control Features</string>
             </property>
@@ -112,9 +106,6 @@
               <height>25</height>
              </size>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
              <string>Inputs...</string>
             </property>
@@ -137,9 +128,6 @@
               <weight>75</weight>
               <bold>true</bold>
              </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">color:red;font-weight:bold;</string>
             </property>
             <property name="text">
              <string>Insufficient funds!</string>
@@ -221,9 +209,6 @@
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="labelCoinControlQuantityText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Quantity:</string>
                  </property>
@@ -259,9 +244,6 @@
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelCoinControlBytesText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Bytes:</string>
                  </property>
@@ -310,9 +292,6 @@
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="labelCoinControlAmountText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Amount:</string>
                  </property>
@@ -345,9 +324,6 @@
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelCoinControlPriorityText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Priority:</string>
                  </property>
@@ -396,9 +372,6 @@
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="labelCoinControlFeeText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Fee:</string>
                  </property>
@@ -431,9 +404,6 @@
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelCoinControlLowOutputText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Low Output:</string>
                  </property>
@@ -482,9 +452,6 @@
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="labelCoinControlAfterFeeText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>After Fee:</string>
                  </property>
@@ -517,9 +484,6 @@
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelCoinControlChangeText">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight:bold;</string>
-                 </property>
                  <property name="text">
                   <string>Change</string>
                  </property>
@@ -644,11 +608,8 @@
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>522</height>
+        <height>536</height>
        </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: white;</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -706,9 +667,6 @@
        <property name="toolTip">
         <string>Send to multiple recipients at once</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>Add &amp;Recipient</string>
        </property>
@@ -749,9 +707,6 @@
        </property>
        <property name="toolTip">
         <string>Remove all transaction fields</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>Clear &amp;All</string>
@@ -858,9 +813,6 @@
        <property name="toolTip">
         <string>Confirm the send action</string>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string>VeriSend</string>
        </property>
@@ -901,9 +853,6 @@
        </property>
        <property name="toolTip">
         <string>Confirm the send action</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string>Send</string>

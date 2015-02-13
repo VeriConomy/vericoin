@@ -34,8 +34,6 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    this->setStyleSheet(GUIUtil::veriStyleSheet);
-    this->setFont(veriFont);
 
     this->layout()->setGeometry(QRect(0,0,WINDOW_MIN_WIDTH, 600));
 

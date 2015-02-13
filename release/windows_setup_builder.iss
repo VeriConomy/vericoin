@@ -75,29 +75,31 @@ var
   ImportWalletFileName: String;
   Targetfile: String;
 
-
 function WalletImport: Boolean;
 begin
-
   Targetfile := ExpandConstant('{userappdata}\{#RoamingName}\wallet.dat');
   if not FileExists(Targetfile) then 
-  begin
-    if MsgBox('No Wallet has been found. Would you like to import an existing wallet? If you skip this step a wallet will be created once {#ProgramName} is started.',mbConfirmation,MB_YESNO) = IDYES then
+    begin
+      Targetfile := ExpandConstant('{app}\wallet.dat');
+      if not FileExists(Targetfile) then 
         begin
-          ImportWalletFileName := '';
-          if GetOpenFileName('', ImportWalletFileName, '', 'wallet files (*.dat)|*.dat|All Files|*.*', 'dat') then
-           begin
-            if not FileExists(Targetfile) then
-              begin
-                FileCopy (expandconstant(ImportWalletFileName), Targetfile, false);
-              end
-              else
-              begin
-                MsgBox('Wallet already exists, skipping import', mbInformation, MB_OK);
-              end;
+          if MsgBox('No Wallet has been found. Would you like to import an existing wallet? If you skip this step a wallet will be created once {#ProgramName} is started.',mbConfirmation,MB_YESNO) = IDYES then
+            begin
+              ImportWalletFileName := '';
+              if GetOpenFileName('', ImportWalletFileName, '', 'wallet files (*.dat)|*.dat|All Files|*.*', 'dat') then
+                begin
+                  if not FileExists(Targetfile) then
+                    begin
+                      FileCopy (expandconstant(ImportWalletFileName), Targetfile, false);
+                    end
+                  else
+                    begin
+                      MsgBox('Wallet already exists, skipping import', mbInformation, MB_OK);
+                    end;
+                end;
             end;
         end;
-  end;
+    end;
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;

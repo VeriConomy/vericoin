@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QResizeEvent>
+#include <QToolBar>
 
 class TransactionTableModel;
 class ClientModel;
@@ -70,6 +71,8 @@ private:
     ClientModel *clientModel;
     WalletModel *walletModel;
 
+    QMenu *trayIconMenu;
+    QToolBar *toolbar;
     QStackedWidget *centralWidget;
 
     SignVerifyMessageDialog *signVerifyMessageDialog;
@@ -104,6 +107,7 @@ private:
     QAction *overviewAction;
     QAction *historyAction;
     QAction *quitAction;
+    QAction *logoutAction;
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
     QAction *getVeriCoinAction;
@@ -210,6 +214,7 @@ private slots:
     /** Switch to GetVeriCoin page */
     void gotoGetVeriCoinPage();
     void resizeGUI();
+    void logout();
     void unlockWalletFeatures();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
