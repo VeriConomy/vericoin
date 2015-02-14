@@ -396,15 +396,13 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
 
     if (lock)
     {
-        this->setWindowState(Qt::WindowNoState);
-        if (this->width() > WINDOW_MIN_WIDTH || this->height() > WINDOW_MIN_HEIGHT)
-        {
-            resizeGUI();
-        }
+        this->setWindowState(Qt::WindowNoState); // Fix for window maximized state
+        setMaximumSize(WINDOW_MIN_WIDTH + 1, WINDOW_MIN_HEIGHT + 1);
         gotoAskPassphrasePage();
     }
     else
     {
+        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         gotoOverviewPage();
     }
 }

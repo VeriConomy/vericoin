@@ -74,7 +74,7 @@
         <file alias="maximize">res/icons/maximize.png</file>
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="supernet_white">res/icons/supernet-white.png</file>
-        <file alias="passphraseIcon">res/icons/vericoin-128.png</file>
+        <file alias="passphraseIcon">res/icons/vericoin-128-trans.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="passphraseBackground">res/images/askpassphrasepage-background.png</file>
