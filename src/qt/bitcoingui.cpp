@@ -121,6 +121,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     }
     setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
     resizeGUI();
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
+
 
     setWindowTitle(tr("VeriCoin Wallet"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -625,6 +627,7 @@ void BitcoinGUI::createMenuBar()
 void BitcoinGUI::createToolBars()
 {
     toolbar = addToolBar(tr("Tabs Toolbar"));
+    toolbar->setObjectName(QStringLiteral("tabstoolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
