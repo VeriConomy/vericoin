@@ -32,10 +32,10 @@ AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
     switch(mode)
     {
         case Lock: // Ask passphrase
-            ui->warningLabel->setText(tr("Plese enter your passphrase to lock the wallet."));
+            ui->warningLabel->setText(tr("Please enter your passphrase to lock the wallet."));
             break;
         case Unlock: // Ask passphrase
-            ui->warningLabel->setText(tr("Plese enter your passphrase to unlock the wallet."));
+            ui->warningLabel->setText(tr("Please enter your passphrase to unlock the wallet."));
             break;
     }
 
@@ -81,7 +81,7 @@ void AskPassphrasePage::accept()
             ui->passEdit1->setText(QString(""));
             ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             emit unlockWalletFeatures();
-            ui->warningLabel->setText(tr("Plese enter your passphrase to lock the wallet."));
+            ui->warningLabel->setText(tr("Please enter your passphrase to lock the wallet."));
         }
         break;
     case Unlock: // Turn on staking
@@ -96,7 +96,7 @@ void AskPassphrasePage::accept()
             ui->passEdit1->setText(QString(""));
             ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             emit unlockWalletFeatures();
-            ui->warningLabel->setText(tr("Plese enter your passphrase to unlock the wallet."));
+            ui->warningLabel->setText(tr("Please enter your passphrase to unlock the wallet."));
         }
         break;
     }

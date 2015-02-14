@@ -121,6 +121,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     }
     setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
     resizeGUI();
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
+
 
     setWindowTitle(tr("VeriCoin Wallet"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -372,7 +374,10 @@ BitcoinGUI::~BitcoinGUI()
 void BitcoinGUI::logout()
 {
     lockWallet();
-    lockWalletFeatures(true);
+    if (walletModel->getEncryptionStatus() == WalletModel::Locked)
+    {
+        lockWalletFeatures(true);
+    }
 }
 
 // Signal emitted from AskPassphrasePage
@@ -383,9 +388,29 @@ void BitcoinGUI::unlockWalletFeatures()
 
 void BitcoinGUI::lockWalletFeatures(bool lock)
 {
-    appMenuBar->setVisible(lock == false);
-    toolbar->setVisible(lock == false);
-    statusBar()->setVisible(lock == false);
+    if (lock)
+    {
+        appMenuBar->setVisible(false);
+        toolbar->setVisible(false);
+        statusBar()->setVisible(false);
+
+        this->setWindowState(Qt::WindowNoState); // Fix for window maximized state
+        resizeGUI();
+
+        gotoAskPassphrasePage();
+    }
+    else
+    {
+        gotoOverviewPage();
+
+        QSettings settings("VeriCoin", "VeriCoin-Qt");
+        restoreGeometry(settings.value("geometry").toByteArray());
+        restoreState(settings.value("windowState").toByteArray());
+
+        appMenuBar->setVisible(true);
+        toolbar->setVisible(true);
+        statusBar()->setVisible(true);
+    }
 
     // Hide/Show every action in tray but Exit
     QList<QAction *> trayActionItems = trayIconMenu->actions();
@@ -393,20 +418,6 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
         ai->setVisible(lock == false);
     }
     quitAction->setVisible(true);
-
-    if (lock)
-    {
-        this->setWindowState(Qt::WindowNoState);
-        if (this->width() > WINDOW_MIN_WIDTH || this->height() > WINDOW_MIN_HEIGHT)
-        {
-            resizeGUI();
-        }
-        gotoAskPassphrasePage();
-    }
-    else
-    {
-        gotoOverviewPage();
-    }
 }
 
 void BitcoinGUI::createActions()
@@ -625,6 +636,7 @@ void BitcoinGUI::createMenuBar()
 void BitcoinGUI::createToolBars()
 {
     toolbar = addToolBar(tr("Tabs Toolbar"));
+    toolbar->setObjectName(QStringLiteral("toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
@@ -731,13 +743,13 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 
         // Passphrase required if wallet is encrypted.
-        if (!walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
+        if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
         {
-            lockWalletFeatures(true); // Lock features
+            gotoOverviewPage();
         }
         else
         {
-            gotoOverviewPage();
+            lockWalletFeatures(true); // Lock features
         }
     }
 }
@@ -1021,6 +1033,9 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 {
     if(clientModel)
     {
+        QSettings settings("VeriCoin", "VeriCoin-Qt");
+        settings.setValue("geometry", saveGeometry());
+        settings.setValue("windowState", saveState());
 #ifndef Q_OS_MAC // Ignored on Mac
         if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
            !clientModel->getOptionsModel()->getMinimizeOnClose())
@@ -1387,6 +1402,7 @@ void BitcoinGUI::unlockWallet()
 {
     if (!walletModel)
         return;
+
     // Unlock wallet when requested by wallet model
     if (walletModel->getEncryptionStatus() == WalletModel::Locked)
     {
@@ -1426,6 +1442,9 @@ void BitcoinGUI::toggleHidden()
 
 void BitcoinGUI::updateStakingIcon()
 {
+    if (!walletModel)
+        return;
+
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     int64_t currentBlock = clientModel->getNumBlocks();

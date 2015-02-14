@@ -36,11 +36,11 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
         case Encrypt: // Ask passphrase x2
             ui->passLabel1->hide();
             ui->passEdit1->hide();
-            ui->warningLabel->setText(tr("Enter the new passphrase to the wallet.<br/>Please use a passphrase of <b>10 or more random characters</b>, or <b>eight or more words</b>."));
+            ui->warningLabel->setText(tr("Enter a new passphrase for the wallet.<br/>Please use a passphrase of <b>10 or more random characters</b>, or <b>eight or more words</b>."));
             setWindowTitle(tr("Encrypt Wallet"));
             break;
         case Lock: // Ask passphrase
-            ui->warningLabel->setText(tr("This operation needs your wallet passphrase to lock the wallet."));
+            ui->warningLabel->setText(tr("Enter your wallet passphrase to lock the wallet. (Staking will be turned off.)"));
             ui->passLabel2->hide();
             ui->passEdit2->hide();
             ui->passLabel3->hide();
@@ -48,7 +48,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             setWindowTitle(tr("Lock Wallet"));
             break;
         case Unlock: // Ask passphrase
-            ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
+            ui->warningLabel->setText(tr("Enter your wallet passphrase to unlock the wallet. (Staking will be turned on.)"));
             ui->passLabel2->hide();
             ui->passEdit2->hide();
             ui->passLabel3->hide();
@@ -56,7 +56,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             setWindowTitle(tr("Unlock Wallet"));
             break;
         case Decrypt:   // Ask passphrase
-            ui->warningLabel->setText(tr("This operation needs your wallet passphrase to decrypt the wallet."));
+            ui->warningLabel->setText(tr("Enter your wallet passphrase to decrypt the wallet."));
             ui->passLabel2->hide();
             ui->passEdit2->hide();
             ui->passLabel3->hide();
