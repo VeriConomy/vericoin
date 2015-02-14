@@ -210,13 +210,6 @@
               <height>0</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
             <property name="toolTip">
              <string>Your current spendable balance</string>
             </property>
@@ -251,15 +244,6 @@
               <height>16777215</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
             <property name="cursor">
              <cursorShape>IBeamCursor</cursorShape>
             </property>
@@ -291,13 +275,6 @@
               <height>0</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
             <property name="toolTip">
              <string>Total of coins that was staked, and do not yet count toward the spendable balance.</string>
             </property>
@@ -322,15 +299,6 @@
               <width>200</width>
               <height>16777215</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
             </property>
             <property name="cursor">
              <cursorShape>IBeamCursor</cursorShape>
@@ -375,13 +343,6 @@
               <height>16777215</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
             <property name="toolTip">
              <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
             </property>
@@ -406,15 +367,6 @@
               <width>200</width>
               <height>16777215</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
             </property>
             <property name="cursor">
              <cursorShape>IBeamCursor</cursorShape>
@@ -447,15 +399,6 @@
               <height>0</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
             <property name="toolTip">
              <string>Your current total balance</string>
             </property>
@@ -480,15 +423,6 @@
               <width>200</width>
               <height>16777215</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
             </property>
             <property name="cursor">
              <cursorShape>IBeamCursor</cursorShape>
@@ -679,14 +613,6 @@
             <height>126</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <family>Lato</family>
-            <pointsize>11</pointsize>
-            <stylestrategy>PreferAntialias</stylestrategy>
-            <kerning>true</kerning>
-           </font>
-          </property>
           <property name="cursor" stdset="0">
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
@@ -775,7 +701,7 @@
         <number>0</number>
        </property>
        <item row="1" column="0" colspan="2">
-        <widget class="QWebView" name="ticker" native="true">
+        <widget class="QWebView" name="ticker">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -794,7 +720,7 @@
            <height>45</height>
           </size>
          </property>
-         <property name="url" stdset="0">
+         <property name="url">
           <url>
            <string>about:blank</string>
           </url>
@@ -941,7 +867,7 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QWebView" name="stats" native="true">
+           <widget class="QWebView" name="stats">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -954,7 +880,7 @@
               <height>299</height>
              </size>
             </property>
-            <property name="url" stdset="0">
+            <property name="url">
              <url>
               <string>about:blank</string>
              </url>
@@ -1114,7 +1040,7 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QWebView" name="value" native="true">
+           <widget class="QWebView" name="value">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1127,7 +1053,7 @@
               <height>299</height>
              </size>
             </property>
-            <property name="url" stdset="0">
+            <property name="url">
              <url>
               <string>about:blank</string>
              </url>

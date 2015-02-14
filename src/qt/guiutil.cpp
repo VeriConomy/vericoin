@@ -164,7 +164,7 @@ QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIB
 
 QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; } ");
 
-QString veriMiscStyleSheet = QString("QScrollArea::QWidget { background: white; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
+QString veriMiscStyleSheet = QString("QScrollArea::QWidget { background: white; } QComboBox::item:selected { background: " + STRING_VERIBLUE_LT + "; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
 
 // Put them all together
 QString veriStyleSheet = veriCentralWidgetStyleSheet + veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
