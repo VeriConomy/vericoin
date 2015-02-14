@@ -403,6 +403,9 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
     else
     {
         gotoOverviewPage();
+        QSettings settings("VeriCoin", "VeriCoin-Qt");
+        restoreGeometry(settings.value("geometry").toByteArray());
+        restoreState(settings.value("windowState").toByteArray());
     }
 }
 
@@ -1018,6 +1021,9 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 {
     if(clientModel)
     {
+        QSettings settings("VeriCoin", "VeriCoin-Qt");
+        settings.setValue("geometry", saveGeometry());
+        settings.setValue("windowState", saveState());
 #ifndef Q_OS_MAC // Ignored on Mac
         if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
            !clientModel->getOptionsModel()->getMinimizeOnClose())
