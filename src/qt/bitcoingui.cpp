@@ -743,13 +743,13 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 
         // Passphrase required if wallet is encrypted.
-        if (!walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
+        if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
         {
-            lockWalletFeatures(true); // Lock features
+            gotoOverviewPage();
         }
         else
         {
-            gotoOverviewPage();
+            lockWalletFeatures(true); // Lock features
         }
     }
 }
@@ -1402,6 +1402,7 @@ void BitcoinGUI::unlockWallet()
 {
     if (!walletModel)
         return;
+
     // Unlock wallet when requested by wallet model
     if (walletModel->getEncryptionStatus() == WalletModel::Locked)
     {
@@ -1441,6 +1442,9 @@ void BitcoinGUI::toggleHidden()
 
 void BitcoinGUI::updateStakingIcon()
 {
+    if (!walletModel)
+        return;
+
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     int64_t currentBlock = clientModel->getNumBlocks();
