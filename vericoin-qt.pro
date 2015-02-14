@@ -185,7 +185,7 @@ win32:CONFIG(release, debug|release): QUAZIPLIB=release
 else:win32:CONFIG(debug, debug|release): QUAZIPLIB=debug
 else: QUAZIPLIB=
 
-genquazip.commands = cd $$PWD/src/quazip && $(MAKE)
+genquazip.commands = cd $$PWD/src/quazip && qmake quazip.pro && $(MAKE)
 genquazip.target = $$PWD/src/quazip/libquazip.a
 genquazip.depends = FORCE
 QMAKE_EXTRA_TARGETS += genquazip

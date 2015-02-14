@@ -62,6 +62,11 @@
         <layout class="QHBoxLayout" name="horizontalLayoutFee">
          <item>
           <widget class="QLabel" name="transactionFeeLabel">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Pay transaction &amp;fee</string>
            </property>
@@ -93,6 +98,11 @@
        </item>
        <item>
         <widget class="QLabel" name="reserveBalanceInfoLabel">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Reserved amount does not participate in staking and is therefore spendable at any time.</string>
          </property>
@@ -108,6 +118,11 @@
         <layout class="QHBoxLayout" name="horizontalLayoutReserveBalance">
          <item>
           <widget class="QLabel" name="reserveBalanceLabel">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Reserve</string>
            </property>
@@ -139,6 +154,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Automatically start VeriCoin after logging in to the system.</string>
          </property>
@@ -149,6 +169,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="detachDatabases">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Detach block and address databases at shutdown. This means they can be moved to another data directory, but it slows down shutdown. The wallet is always detached.</string>
          </property>
@@ -179,6 +204,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_Network">
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Automatically open the VeriCoin client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
@@ -189,6 +219,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="connectSocks">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Connect to the VeriCoin network through a SOCKS proxy (e.g. when connecting through Tor).</string>
          </property>
@@ -201,6 +236,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_Network">
          <item>
           <widget class="QLabel" name="proxyIpLabel">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Proxy &amp;IP:</string>
            </property>
@@ -227,6 +267,11 @@
          </item>
          <item>
           <widget class="QLabel" name="proxyPortLabel">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>&amp;Port:</string>
            </property>
@@ -253,6 +298,11 @@
          </item>
          <item>
           <widget class="QLabel" name="socksVersionLabel">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>SOCKS &amp;Version:</string>
            </property>
@@ -308,6 +358,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_Window">
        <item>
         <widget class="QCheckBox" name="minimizeToTray">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Show only a tray icon after minimizing the window.</string>
          </property>
@@ -318,6 +373,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="minimizeOnClose">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Quit in the menu.</string>
          </property>
@@ -533,6 +593,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="hideAmounts">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Hide amounts for privacy (***.**)</string>
          </property>
@@ -566,8 +631,14 @@
          <height>27</height>
         </rect>
        </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
        <property name="maximum">
         <number>15</number>
+       </property>
+       <property name="value">
+        <number>1</number>
        </property>
       </widget>
       <widget class="QLabel" name="veriSendMixLabel">
@@ -578,6 +649,11 @@
          <width>141</width>
          <height>17</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>VeriSend Mix Cycles:</string>
@@ -591,6 +667,11 @@
          <width>471</width>
          <height>17</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>VeriSend Entry Ring Node IP address (VeriCoin Ring Node is Default):</string>

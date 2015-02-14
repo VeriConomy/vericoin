@@ -28,12 +28,21 @@ static const int MAX_PASSPHRASE_SIZE = 1024;
 #define STRING_VERIBLUE_LT QString("#418BCA")
 #define STRING_VERIFONT QString("#444748")
 
+#ifdef Q_OS_MAC
+static const QFont veriFontSmaller("Lato", 11, QFont::Normal, false);
+static const QFont veriFontSmall("Lato", 12, QFont::Normal, false);
+static const QFont veriFontMedium("Lato", 13, QFont::Normal, false);
+static const QFont veriFont("Lato", 16, QFont::Normal, false);
+static const QFont veriFontLarge("Lato", 16, QFont::Normal, false);
+static const QFont veriFontLarger("Lato", 16, QFont::Normal, false);
+#else
 static const QFont veriFontSmaller("Lato", 8, QFont::Normal, false);
 static const QFont veriFontSmall("Lato", 9, QFont::Normal, false);
 static const QFont veriFontMedium("Lato", 10, QFont::Normal, false);
 static const QFont veriFont("Lato", 11, QFont::Normal, false);
 static const QFont veriFontLarge("Lato", 12, QFont::Normal, false);
 static const QFont veriFontLarger("Lato", 14, QFont::Normal, false);
+#endif
 
 /* Tooltips longer than this (in characters) are converted into rich text,
    so that they can be word-wrapped.
