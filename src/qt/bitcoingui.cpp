@@ -388,9 +388,29 @@ void BitcoinGUI::unlockWalletFeatures()
 
 void BitcoinGUI::lockWalletFeatures(bool lock)
 {
-    appMenuBar->setVisible(lock == false);
-    toolbar->setVisible(lock == false);
-    statusBar()->setVisible(lock == false);
+    if (lock)
+    {
+        appMenuBar->setVisible(false);
+        toolbar->setVisible(false);
+        statusBar()->setVisible(false);
+
+        this->setWindowState(Qt::WindowNoState); // Fix for window maximized state
+        resizeGUI();
+
+        gotoAskPassphrasePage();
+    }
+    else
+    {
+        gotoOverviewPage();
+
+        QSettings settings("VeriCoin", "VeriCoin-Qt");
+        restoreGeometry(settings.value("geometry").toByteArray());
+        restoreState(settings.value("windowState").toByteArray());
+
+        appMenuBar->setVisible(true);
+        toolbar->setVisible(true);
+        statusBar()->setVisible(true);
+    }
 
     // Hide/Show every action in tray but Exit
     QList<QAction *> trayActionItems = trayIconMenu->actions();
@@ -398,20 +418,6 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
         ai->setVisible(lock == false);
     }
     quitAction->setVisible(true);
-
-    if (lock)
-    {
-        this->setWindowState(Qt::WindowNoState); // Fix for window maximized state
-        resizeGUI();
-        gotoAskPassphrasePage();
-    }
-    else
-    {
-        gotoOverviewPage();
-        QSettings settings("VeriCoin", "VeriCoin-Qt");
-        restoreGeometry(settings.value("geometry").toByteArray());
-        restoreState(settings.value("windowState").toByteArray());
-    }
 }
 
 void BitcoinGUI::createActions()
