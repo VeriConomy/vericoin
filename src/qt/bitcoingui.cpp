@@ -396,6 +396,11 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
 
     if (lock)
     {
+        this->setWindowState(Qt::WindowNoState);
+        if (this->width() > WINDOW_MIN_WIDTH || this->height() > WINDOW_MIN_HEIGHT)
+        {
+            resizeGUI();
+        }
         gotoAskPassphrasePage();
     }
     else
