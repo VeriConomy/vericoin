@@ -374,7 +374,10 @@ BitcoinGUI::~BitcoinGUI()
 void BitcoinGUI::logout()
 {
     lockWallet();
-    lockWalletFeatures(true);
+    if (walletModel->getEncryptionStatus() == WalletModel::Locked)
+    {
+        lockWalletFeatures(true);
+    }
 }
 
 // Signal emitted from AskPassphrasePage
@@ -627,7 +630,7 @@ void BitcoinGUI::createMenuBar()
 void BitcoinGUI::createToolBars()
 {
     toolbar = addToolBar(tr("Tabs Toolbar"));
-    toolbar->setObjectName(QStringLiteral("tabstoolbar"));
+    toolbar->setObjectName(QStringLiteral("toolbar"));
     addToolBar(Qt::LeftToolBarArea, toolbar);
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
