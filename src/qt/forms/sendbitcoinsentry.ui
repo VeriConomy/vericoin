@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>SendBitCoinsEntry</class>
- <widget class="QFrame" name="SendBitCoinsEntry">
+ <widget class="QDialog" name="SendBitCoinsEntry">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -19,12 +19,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="frameShape">
-   <enum>QFrame::NoFrame</enum>
-  </property>
-  <property name="frameShadow">
-   <enum>QFrame::Sunken</enum>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="bottomMargin">
     <number>12</number>
@@ -35,7 +29,7 @@
    <item row="3" column="1">
     <layout class="QHBoxLayout" name="payToLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QValidatedLineEdit" name="payTo">
@@ -48,11 +42,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="addressBookButton">
+      <widget class="QPushButton" name="addressBookButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>25</width>
-         <height>25</height>
+         <width>38</width>
+         <height>27</height>
         </size>
        </property>
        <property name="toolTip">
@@ -77,11 +77,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="pasteButton">
+      <widget class="QPushButton" name="pasteButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>25</width>
-         <height>25</height>
+         <width>38</width>
+         <height>27</height>
         </size>
        </property>
        <property name="toolTip">
@@ -106,11 +112,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="deleteButton">
+      <widget class="QPushButton" name="deleteButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>25</width>
-         <height>25</height>
+         <width>38</width>
+         <height>27</height>
         </size>
        </property>
        <property name="toolTip">
@@ -151,6 +163,23 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QValidatedLineEdit" name="addAsLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Enter a label for this address to add it to your address book</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_2">
      <property name="font">
@@ -169,6 +198,13 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="veriBitcoinAmountField" name="payAmount"/>
+     </item>
+    </layout>
+   </item>
    <item row="5" column="0">
     <widget class="QLabel" name="label">
      <property name="font">
@@ -186,26 +222,6 @@
       <cstring>payAmount</cstring>
      </property>
     </widget>
-   </item>
-   <item row="4" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QValidatedLineEdit" name="addAsLabel">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="toolTip">
-        <string>Enter a label for this address to add it to your address book</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="1">
-    <widget class="veriBitcoinAmountField" name="payAmount"/>
    </item>
   </layout>
  </widget>

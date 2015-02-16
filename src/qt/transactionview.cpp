@@ -40,6 +40,7 @@ TransactionView::TransactionView(QWidget *parent) :
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0,0,0,0);
+
 #ifdef Q_OS_MAC
     hlayout->setSpacing(5);
     hlayout->addSpacing(26);
@@ -129,7 +130,7 @@ TransactionView::TransactionView(QWidget *parent) :
     totalWidget->setFont(veriFont);
     totalWidget->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     totalWidget->setLayoutDirection(Qt::RightToLeft);
-    totalWidget->setFixedHeight(30);
+    totalWidget->setFixedHeight(27);
     totalWidget->setFixedWidth(300);
     totalWidget->setText(tr("Total: "));
     vlayout->addWidget(totalWidget);
@@ -453,24 +454,29 @@ QWidget *TransactionView::createDateRangeWidget()
 {
     dateRangeWidget = new QFrame();
     dateRangeWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    dateRangeWidget->setContentsMargins(1,1,1,1);
+    dateRangeWidget->setContentsMargins(0,1,0,1);
+    dateRangeWidget->setMinimumHeight(30);
     QHBoxLayout *layout = new QHBoxLayout(dateRangeWidget);
     layout->setContentsMargins(0,0,0,0);
-    layout->addSpacing(23);
+#ifdef Q_OS_MAC
+    layout->addSpacing(30);
+#else
+    layout->addSpacing(29);
+#endif
     layout->addWidget(new QLabel(tr("Range:")));
 
     dateFrom = new QDateTimeEdit(this);
-    dateFrom->setDisplayFormat("dd/MM/yy");
+    dateFrom->setDisplayFormat("dd/MM/yyyy");
     dateFrom->setCalendarPopup(true);
-    dateFrom->setMinimumWidth(100);
+    dateFrom->setMinimumWidth(130);
     dateFrom->setDate(QDate::currentDate().addDays(-7));
     layout->addWidget(dateFrom);
     layout->addWidget(new QLabel(tr("to")));
 
     dateTo = new QDateTimeEdit(this);
-    dateTo->setDisplayFormat("dd/MM/yy");
+    dateTo->setDisplayFormat("dd/MM/yyyy");
     dateTo->setCalendarPopup(true);
-    dateTo->setMinimumWidth(100);
+    dateTo->setMinimumWidth(130);
     dateTo->setDate(QDate::currentDate());
     layout->addWidget(dateTo);
     layout->addStretch();

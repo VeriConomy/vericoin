@@ -40,7 +40,9 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             setWindowTitle(tr("Encrypt Wallet"));
             break;
         case Lock: // Ask passphrase
-            ui->warningLabel->setText(tr("Enter your wallet passphrase to lock the wallet. (Staking will be turned off.)"));
+            ui->warningLabel->setText(tr("Click OK to lock the wallet. (Staking will be turned off.)"));
+            ui->passLabel1->hide();
+            ui->passEdit1->hide();
             ui->passLabel2->hide();
             ui->passEdit2->hide();
             ui->passLabel3->hide();
@@ -86,6 +88,21 @@ AskPassphraseDialog::~AskPassphraseDialog()
 void AskPassphraseDialog::setModel(WalletModel *model)
 {
     this->model = model;
+
+    switch(mode)
+    {
+        case Encrypt: // Ask passphrase x2
+            break;
+        case Lock: // Ask passphrase
+            ui->passEdit1->setText("password"); // Real password not required to Lock.
+            break;
+        case Unlock: // Ask passphrase
+            break;
+        case Decrypt:   // Ask passphrase
+            break;
+        case ChangePass: // Ask old passphrase + new passphrase x2
+            break;
+    }
 }
 
 void AskPassphraseDialog::accept()

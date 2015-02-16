@@ -14,7 +14,7 @@
 using namespace GUIUtil;
 
 SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
-    QFrame(parent),
+    QDialog(parent),
     ui(new Ui::SendCoinsEntry),
     model(0)
 {
@@ -30,9 +30,9 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
 #endif
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->payTo);
-    ui->addressBookButton->setFixedSize(30,27);
-    ui->pasteButton->setFixedSize(30,27);
-    ui->deleteButton->setFixedSize(30,27);
+    ui->addressBookButton->setFixedSize(38,27);
+    ui->pasteButton->setFixedSize(38,27);
+    ui->deleteButton->setFixedSize(38,27);
 
     GUIUtil::setupAddressWidget(ui->payTo, this);
 }
