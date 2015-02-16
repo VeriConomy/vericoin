@@ -111,15 +111,7 @@ void refactorGUI(QRect screenSize)
     }
 
     WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
-    #ifdef Q_OS_WIN
     WINDOW_MIN_HEIGHT = newHeight;
-    #else
-    #ifdef Q_OS_MAC
-    WINDOW_MIN_HEIGHT = newHeight;
-    #else
-    WINDOW_MIN_HEIGHT = newHeight;
-    #endif
-    #endif
     STATUSBAR_MARGIN = 2;
 }
 
