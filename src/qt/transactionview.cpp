@@ -131,7 +131,7 @@ TransactionView::TransactionView(QWidget *parent) :
     totalWidget->setLayoutDirection(Qt::RightToLeft);
     totalWidget->setFixedHeight(30);
     totalWidget->setFixedWidth(300);
-    totalWidget->setText(tr("Total Volume: "));
+    totalWidget->setText(tr("Total: "));
     vlayout->addWidget(totalWidget);
 
     // Actions
@@ -200,7 +200,12 @@ void TransactionView::setModel(WalletModel *model)
                 TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
         amountWidget->setFixedWidth(100 + (model->getOptionsModel()->getDecimalPoints() * 10));
 
-        totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
+        // Bug Fix - grrr
+        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(refreshTotalAmount()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(refreshTotalAmount()));
+        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(refreshTotalAmount()));
+
+        showTotalAmount();
     }
 }
 
@@ -209,9 +214,11 @@ void TransactionView::chooseDate(int idx)
     if(!transactionProxyModel)
         return;
 
-    transactionProxyModel->setAmountTotal(0);
+    resetTotalAmount();
+
     QDate current = QDate::currentDate();
     dateRangeWidget->setVisible(false);
+    dateWidget->setVisible(true);
     switch(dateWidget->itemData(idx).toInt())
     {
     case All:
@@ -253,7 +260,7 @@ void TransactionView::chooseDate(int idx)
         break;
     }
 
-    totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
+    showTotalAmount();
 }
 
 void TransactionView::chooseType(int idx)
@@ -261,11 +268,12 @@ void TransactionView::chooseType(int idx)
     if(!transactionProxyModel)
         return;
 
-    transactionProxyModel->setAmountTotal(0);
+    resetTotalAmount();
+
     transactionProxyModel->setTypeFilter(
         typeWidget->itemData(idx).toInt());
 
-    totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
+    showTotalAmount();
 }
 
 void TransactionView::changedPrefix(const QString &prefix)
@@ -273,10 +281,11 @@ void TransactionView::changedPrefix(const QString &prefix)
     if(!transactionProxyModel)
         return;
 
-    transactionProxyModel->setAmountTotal(0);
+    resetTotalAmount();
+
     transactionProxyModel->setAddressPrefix(prefix);
 
-    totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
+    showTotalAmount();
 }
 
 void TransactionView::changedAmount(const QString &amount)
@@ -284,7 +293,8 @@ void TransactionView::changedAmount(const QString &amount)
     if(!transactionProxyModel)
         return;
 
-    transactionProxyModel->setAmountTotal(0);
+    resetTotalAmount();
+
     qint64 amount_parsed = 0;
     if(BitcoinUnits::parse(model->getOptionsModel()->getDisplayUnit(), amount, &amount_parsed))
     {
@@ -295,7 +305,32 @@ void TransactionView::changedAmount(const QString &amount)
         transactionProxyModel->setMinAmount(0);
     }
 
-    totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
+    showTotalAmount();
+}
+
+void TransactionView::showTotalAmount()
+{
+    if(!transactionProxyModel)
+        return;
+
+    totalWidget->setText(tr("Total: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, model->getOptionsModel()->getHideAmounts()))));
+}
+
+void TransactionView::resetTotalAmount()
+{
+    if(!transactionProxyModel)
+        return;
+
+    transactionProxyModel->setAmountTotal(0);
+}
+
+void TransactionView::refreshTotalAmount()
+{
+    if(!transactionProxyModel)
+        return;
+
+    // Force a refresh using the date widget
+    chooseDate(dateWidget->currentIndex());
 }
 
 void TransactionView::exportClicked()

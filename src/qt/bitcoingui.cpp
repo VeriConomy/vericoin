@@ -261,7 +261,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     balanceLabel = new QLabel();
     balanceLabel->setFont(veriFontSmall);
-    balanceLabel->setText(QString("Total:"));
+    balanceLabel->setText(QString(""));
     balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
     stakingLabel = new QLabel();
@@ -843,7 +843,7 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirme
         QString stakeStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), stake, false, walletModel->getOptionsModel()->getHideAmounts());
         QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
         //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
-        balanceLabel->setText("Total: " + BitcoinUnits::formatMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
+        balanceLabel->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
         labelBalanceIcon->setToolTip(tr("Spendable: %1\nStaking: %2\nUnconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());

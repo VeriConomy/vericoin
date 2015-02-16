@@ -24,6 +24,7 @@ TransactionFilterProxy::TransactionFilterProxy(QObject *parent) :
     limitRows(-1),
     showInactive(true)
 {
+    nAmountTotal = 0;
 }
 
 bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -35,7 +36,7 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex &
     QString address = index.data(TransactionTableModel::AddressRole).toString();
     QString label = index.data(TransactionTableModel::LabelRole).toString();
     qint64 amount = llabs(index.data(TransactionTableModel::AmountRole).toLongLong());
-    qint64 sAmount = index.data(TransactionTableModel::AmountRole).toLongLong();
+    qint64 nAmount = index.data(TransactionTableModel::AmountRole).toLongLong();
     int status = index.data(TransactionTableModel::StatusRole).toInt();
 
     if(!showInactive && (status == TransactionStatus::Conflicted || status == TransactionStatus::NotAccepted))
@@ -51,7 +52,7 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex &
 
     if (!(status == TransactionStatus::Conflicted || status == TransactionStatus::NotAccepted))
     {
-        nAmountTotal += sAmount;
+        nAmountTotal += nAmount;
     }
 
     return true;
