@@ -341,7 +341,7 @@ QString TransactionTableModel::lookupAddress(const std::string &address, bool to
     {
         if (walletModel->getOptionsModel()->getHideAmounts())
         {
-            description += label.replace(QRegExp("[a-ZA-Z0-9]"),"V") + QString(" ");
+            description += label.replace(QRegExp("[a-zA-Z0-9]"),"V") + QString(" ");
         }
         else
         {
@@ -352,7 +352,7 @@ QString TransactionTableModel::lookupAddress(const std::string &address, bool to
     {
         if (walletModel->getOptionsModel()->getHideAmounts())
         {
-            description += QString::fromStdString(address).replace(QRegExp("[a-ZA-Z0-9]"),"V");
+            description += QString::fromStdString(address).replace(QRegExp("[a-zA-Z0-9]"),"V");
         }
         else
         {
