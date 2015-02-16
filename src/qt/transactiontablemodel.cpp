@@ -339,11 +339,25 @@ QString TransactionTableModel::lookupAddress(const std::string &address, bool to
     QString description;
     if(!label.isEmpty())
     {
-        description += label + QString(" ");
+        if (walletModel->getOptionsModel()->getHideAmounts())
+        {
+            description += label.replace(QRegExp("[a-ZA-Z0-9]"),"V") + QString(" ");
+        }
+        else
+        {
+            description += label + QString(" ");
+        }
     }
     if(label.isEmpty() || walletModel->getOptionsModel()->getDisplayAddresses() || tooltip)
     {
-        description += QString::fromStdString(address);
+        if (walletModel->getOptionsModel()->getHideAmounts())
+        {
+            description += QString::fromStdString(address).replace(QRegExp("[a-ZA-Z0-9]"),"V");
+        }
+        else
+        {
+            description += QString::fromStdString(address);
+        }
     }
     return description;
 }
