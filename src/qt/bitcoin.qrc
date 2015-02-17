@@ -96,8 +96,6 @@
         <file alias="headerGetVeriCoinSmall">res/images/headerGetVeriCoinSmall.png</file>
         <file alias="headerForums">res/images/headerForums.png</file>
         <file alias="headerForumsSmall">res/images/headerForumsSmall.png</file>
-        <file alias="headerForums">res/images/headerForums.png</file>
-        <file alias="headerForumsSmall">res/images/headerForumsSmall.png</file>
         <file alias="headerChat">res/images/headerChat.png</file>
         <file alias="headerChatSmall">res/images/headerChatSmall.png</file>
         <file alias="headerBlockchain">res/images/headerBlockchain.png</file>
