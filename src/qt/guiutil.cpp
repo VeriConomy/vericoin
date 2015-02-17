@@ -111,15 +111,7 @@ void refactorGUI(QRect screenSize)
     }
 
     WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
-    #ifdef Q_OS_WIN
     WINDOW_MIN_HEIGHT = newHeight;
-    #else
-    #ifdef Q_OS_MAC
-    WINDOW_MIN_HEIGHT = newHeight;
-    #else
-    WINDOW_MIN_HEIGHT = newHeight;
-    #endif
-    #endif
     STATUSBAR_MARGIN = 2;
 }
 
@@ -142,13 +134,13 @@ void setFontPixelSizes()
 
 // Common VeriCoin stylesheets
 QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; } ");
-
+/*
 QString veriDialogStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } \
                             QDialog::QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
                             QDialog::QPushButton:disabled { background: #EBEBEB; color: #666666; } \
                             QDialog::QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
                             QDialog::QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
-
+*/
 QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STRING_VERIFONT + "; border: 1px; }");
 
 QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
@@ -164,10 +156,10 @@ QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIB
 
 QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; } ");
 
-QString veriMiscStyleSheet = QString("QScrollArea::QWidget { background: white; } QComboBox::item:selected { background: " + STRING_VERIBLUE_LT + "; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } QMenu::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
+QString veriMiscStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
 
 // Put them all together
-QString veriStyleSheet = veriCentralWidgetStyleSheet + veriDialogStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
+QString veriStyleSheet = veriCentralWidgetStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;
 
 
 // Special styling for AskPassphrasePage

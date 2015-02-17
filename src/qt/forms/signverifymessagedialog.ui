@@ -60,7 +60,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_1_SM">
          <property name="spacing">
-          <number>0</number>
+          <number>2</number>
          </property>
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_SM">
@@ -159,7 +159,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2_SM">
          <property name="spacing">
-          <number>0</number>
+          <number>2</number>
          </property>
          <item>
           <widget class="QLineEdit" name="signatureOut_SM">
@@ -350,7 +350,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_1_VM">
          <property name="spacing">
-          <number>0</number>
+          <number>2</number>
          </property>
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_VM">

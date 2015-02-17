@@ -68,6 +68,8 @@ private slots:
     void copyLabel();
     void copyAmount();
     void copyTxID();
+    void showTotalAmount();
+    void resetTotalAmount();
 
 signals:
     void doubleClicked(const QModelIndex&);
@@ -79,6 +81,7 @@ public slots:
     void changedAmount(const QString &amount);
     void exportClicked();
     void focusTransaction(const QModelIndex&);
+    void refreshTotalAmount();
 
 };
 

@@ -40,6 +40,7 @@ TransactionView::TransactionView(QWidget *parent) :
     setContentsMargins(0,0,0,0);
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0,0,0,0);
+
 #ifdef Q_OS_MAC
     hlayout->setSpacing(5);
     hlayout->addSpacing(26);
@@ -129,9 +130,9 @@ TransactionView::TransactionView(QWidget *parent) :
     totalWidget->setFont(veriFont);
     totalWidget->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     totalWidget->setLayoutDirection(Qt::RightToLeft);
-    totalWidget->setFixedHeight(30);
+    totalWidget->setFixedHeight(27);
     totalWidget->setFixedWidth(300);
-    totalWidget->setText(tr("Total Volume: "));
+    totalWidget->setText(tr("Total: "));
     vlayout->addWidget(totalWidget);
 
     // Actions
@@ -200,7 +201,12 @@ void TransactionView::setModel(WalletModel *model)
                 TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
         amountWidget->setFixedWidth(100 + (model->getOptionsModel()->getDecimalPoints() * 10));
 
-        totalWidget->setText(tr("Total Volume: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), model->getTransactionTableModel()->amountTotal(), model->getOptionsModel()->getDecimalPoints(), true, false))));
+        // Bug Fix - grrr
+        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(refreshTotalAmount()));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(refreshTotalAmount()));
+        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(refreshTotalAmount()));
+
+        showTotalAmount();
     }
 }
 
@@ -208,8 +214,12 @@ void TransactionView::chooseDate(int idx)
 {
     if(!transactionProxyModel)
         return;
+
+    resetTotalAmount();
+
     QDate current = QDate::currentDate();
     dateRangeWidget->setVisible(false);
+    dateWidget->setVisible(true);
     switch(dateWidget->itemData(idx).toInt())
     {
     case All:
@@ -250,27 +260,42 @@ void TransactionView::chooseDate(int idx)
         dateRangeChanged();
         break;
     }
+
+    showTotalAmount();
 }
 
 void TransactionView::chooseType(int idx)
 {
     if(!transactionProxyModel)
         return;
+
+    resetTotalAmount();
+
     transactionProxyModel->setTypeFilter(
         typeWidget->itemData(idx).toInt());
+
+    showTotalAmount();
 }
 
 void TransactionView::changedPrefix(const QString &prefix)
 {
     if(!transactionProxyModel)
         return;
+
+    resetTotalAmount();
+
     transactionProxyModel->setAddressPrefix(prefix);
+
+    showTotalAmount();
 }
 
 void TransactionView::changedAmount(const QString &amount)
 {
     if(!transactionProxyModel)
         return;
+
+    resetTotalAmount();
+
     qint64 amount_parsed = 0;
     if(BitcoinUnits::parse(model->getOptionsModel()->getDisplayUnit(), amount, &amount_parsed))
     {
@@ -280,6 +305,33 @@ void TransactionView::changedAmount(const QString &amount)
     {
         transactionProxyModel->setMinAmount(0);
     }
+
+    showTotalAmount();
+}
+
+void TransactionView::showTotalAmount()
+{
+    if(!transactionProxyModel)
+        return;
+
+    totalWidget->setText(tr("Total: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, model->getOptionsModel()->getHideAmounts()))));
+}
+
+void TransactionView::resetTotalAmount()
+{
+    if(!transactionProxyModel)
+        return;
+
+    transactionProxyModel->setAmountTotal(0);
+}
+
+void TransactionView::refreshTotalAmount()
+{
+    if(!transactionProxyModel)
+        return;
+
+    // Force a refresh using the date widget
+    chooseDate(dateWidget->currentIndex());
 }
 
 void TransactionView::exportClicked()
@@ -402,24 +454,29 @@ QWidget *TransactionView::createDateRangeWidget()
 {
     dateRangeWidget = new QFrame();
     dateRangeWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    dateRangeWidget->setContentsMargins(1,1,1,1);
+    dateRangeWidget->setContentsMargins(0,1,0,1);
+    dateRangeWidget->setMinimumHeight(30);
     QHBoxLayout *layout = new QHBoxLayout(dateRangeWidget);
     layout->setContentsMargins(0,0,0,0);
-    layout->addSpacing(23);
+#ifdef Q_OS_MAC
+    layout->addSpacing(30);
+#else
+    layout->addSpacing(29);
+#endif
     layout->addWidget(new QLabel(tr("Range:")));
 
     dateFrom = new QDateTimeEdit(this);
-    dateFrom->setDisplayFormat("dd/MM/yy");
+    dateFrom->setDisplayFormat("dd/MM/yyyy");
     dateFrom->setCalendarPopup(true);
-    dateFrom->setMinimumWidth(100);
+    dateFrom->setMinimumWidth(130);
     dateFrom->setDate(QDate::currentDate().addDays(-7));
     layout->addWidget(dateFrom);
     layout->addWidget(new QLabel(tr("to")));
 
     dateTo = new QDateTimeEdit(this);
-    dateTo->setDisplayFormat("dd/MM/yy");
+    dateTo->setDisplayFormat("dd/MM/yyyy");
     dateTo->setCalendarPopup(true);
-    dateTo->setMinimumWidth(100);
+    dateTo->setMinimumWidth(130);
     dateTo->setDate(QDate::currentDate());
     layout->addWidget(dateTo);
     layout->addStretch();
@@ -438,6 +495,7 @@ void TransactionView::dateRangeChanged()
 {
     if(!transactionProxyModel)
         return;
+
     transactionProxyModel->setDateRange(
             QDateTime(dateFrom->date()),
             QDateTime(dateTo->date()).addDays(1));

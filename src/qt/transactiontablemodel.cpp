@@ -28,8 +28,6 @@ static int column_alignments[] = {
         Qt::AlignRight|Qt::AlignVCenter
     };
 
-static qint64 nAmountTotal = 0;
-
 // Comparison operator for sort/binary search of model tx list
 struct TxLessThan
 {
@@ -71,7 +69,6 @@ public:
     {
         OutputDebugStringF("refreshWallet\n");
         cachedWallet.clear();
-        nAmountTotal = 0;
         {
             LOCK(wallet->cs_wallet);
             for(std::map<uint256, CWalletTx>::iterator it = wallet->mapWallet.begin(); it != wallet->mapWallet.end(); ++it)
@@ -79,8 +76,6 @@ public:
                 if(TransactionRecord::showTransaction(it->second))
                 {
                     cachedWallet.append(TransactionRecord::decomposeTransaction(wallet, it->second));
-                    nAmountTotal += cachedWallet.last().credit;
-                    nAmountTotal -= cachedWallet.last().debit;
                 }
             }
         }
@@ -150,8 +145,6 @@ public:
                         {
                             cachedWallet.insert(insert_idx, rec);
                             insert_idx += 1;
-                            nAmountTotal += cachedWallet.at(insert_idx).credit;
-                            nAmountTotal -= cachedWallet.at(insert_idx).debit;
                         }
                         parent->endInsertRows();
                     }
@@ -272,11 +265,6 @@ void TransactionTableModel::updateConfirmations()
     }
 }
 
-qint64 TransactionTableModel::amountTotal()
-{
-    return nAmountTotal;
-}
-
 int TransactionTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
@@ -351,11 +339,25 @@ QString TransactionTableModel::lookupAddress(const std::string &address, bool to
     QString description;
     if(!label.isEmpty())
     {
-        description += label + QString(" ");
+        if (walletModel->getOptionsModel()->getHideAmounts())
+        {
+            description += label.replace(QRegExp("[a-zA-Z0-9]"),"V") + QString(" ");
+        }
+        else
+        {
+            description += label + QString(" ");
+        }
     }
     if(label.isEmpty() || walletModel->getOptionsModel()->getDisplayAddresses() || tooltip)
     {
-        description += QString::fromStdString(address);
+        if (walletModel->getOptionsModel()->getHideAmounts())
+        {
+            description += QString::fromStdString(address).replace(QRegExp("[a-zA-Z0-9]"),"V");
+        }
+        else
+        {
+            description += QString::fromStdString(address);
+        }
     }
     return description;
 }

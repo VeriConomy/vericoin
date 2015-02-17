@@ -1,7 +1,7 @@
 #ifndef SENDBITCOINSENTRY_H
 #define SENDBITCOINSENTRY_H
 
-#include <QFrame>
+#include <QDialog>
 
 namespace Ui {
     class SendBitCoinsEntry;
@@ -10,7 +10,7 @@ class WalletModel;
 class SendCoinsRecipient;
 
 /** A single entry in the dialog for sending bitcoins. */
-class SendBitCoinsEntry : public QFrame
+class SendBitCoinsEntry : public QDialog
 {
     Q_OBJECT
 
