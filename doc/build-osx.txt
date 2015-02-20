@@ -24,7 +24,9 @@ You need to install XCode with all the options checked so that the compiler and
 everything is available in /usr not just /Developer I think it comes on the DVD
 but you can get the current version from http://developer.apple.com
 
-0. Download and install xcode from the app store. Then run 'sudo xcode-select --install' to install the command line tools.
+0.  Download and install xcode from the app store.
+0a. If Xcode 5.X, go to Xcode->Preferences->Downloads and install Comand Line Tools.
+    Otherwise, run 'sudo xcode-select --install' to install the command line tools.
 
 1.  Download and install MacPorts from http://www.macports.org/
 
@@ -37,6 +39,8 @@ sudo port install boost db48 openssl miniupnpc qt5-mac gcc49 wget
 
 Optionally install qrencode (and set USE_QRCODE=1):
 sudo port install qrencode
+
+2a. You may also need to copy the qt5 makespec folder for macx-g++42 to macx-g++49 if it does not exist, then set the compilers in qmake.conf to gcc-mp-4.9 and g++-mp-4.9.
 
 3.  Clone the github tree to get the source code:
 
