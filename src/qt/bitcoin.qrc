@@ -111,6 +111,7 @@
         <file alias="ru">locale/bitcoin_ru.qm</file>
     </qresource>
     <qresource prefix="/fonts">
-        <file alias="Lato-Regular">res/fonts/Lato-Regular.ttf</file>
+        <file alias="Lato-Bold">res/fonts/Lato2OFL/Lato-Bold.ttf</file>
+        <file alias="Lato-Regular">res/fonts/Lato2OFL/Lato-Regular.ttf</file>
     </qresource>
 </RCC>

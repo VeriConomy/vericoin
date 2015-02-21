@@ -32,15 +32,15 @@ static const int MAX_PASSPHRASE_SIZE = 1024;
 static const QFont veriFontSmaller("Lato", 11, QFont::Normal, false);
 static const QFont veriFontSmall("Lato", 12, QFont::Normal, false);
 static const QFont veriFontMedium("Lato", 13, QFont::Normal, false);
-static const QFont veriFont("Lato", 16, QFont::Normal, false);
-static const QFont veriFontLarge("Lato", 16, QFont::Normal, false);
+static const QFont veriFont("Lato", 14, QFont::Normal, false);
+static const QFont veriFontLarge("Lato", 15, QFont::Normal, false);
 static const QFont veriFontLarger("Lato", 16, QFont::Normal, false);
 #else
-static const QFont veriFontSmaller("Lato", 8, QFont::Normal, false);
-static const QFont veriFontSmall("Lato", 9, QFont::Normal, false);
-static const QFont veriFontMedium("Lato", 10, QFont::Normal, false);
-static const QFont veriFont("Lato", 11, QFont::Normal, false);
-static const QFont veriFontLarge("Lato", 12, QFont::Normal, false);
+static const QFont veriFontSmaller("Lato", 9, QFont::Normal, false);
+static const QFont veriFontSmall("Lato", 10, QFont::Normal, false);
+static const QFont veriFontMedium("Lato", 11, QFont::Normal, false);
+static const QFont veriFont("Lato", 12, QFont::Normal, false);
+static const QFont veriFontLarge("Lato", 13, QFont::Normal, false);
 static const QFont veriFontLarger("Lato", 14, QFont::Normal, false);
 #endif
 

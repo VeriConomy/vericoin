@@ -51,7 +51,7 @@ bool fNoHeaders = false;
 bool fSmallHeaders = false;
 int TOOLBAR_WIDTH = 100;
 int TOOLBAR_ICON_WIDTH = 100;
-int TOOLBAR_ICON_HEIGHT = 41;
+int TOOLBAR_ICON_HEIGHT = 42;
 int HEADER_WIDTH = 964;
 int HEADER_HEIGHT = 160;
 int BUTTON_WIDTH = 140;
@@ -64,7 +64,7 @@ int WINDOW_MIN_HEIGHT = 768;
 #ifdef Q_OS_MAC
 int WINDOW_MIN_HEIGHT = 745;
 #else
-int WINDOW_MIN_HEIGHT = 770;
+int WINDOW_MIN_HEIGHT = 772;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
@@ -142,7 +142,7 @@ QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING
                             QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
 
 QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
-                            QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-size: 12px; } \
+                            QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
                             QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } ");
