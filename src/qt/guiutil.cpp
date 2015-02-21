@@ -62,9 +62,9 @@ int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 int WINDOW_MIN_HEIGHT = 768;
 #else
 #ifdef Q_OS_MAC
-int WINDOW_MIN_HEIGHT = 768;
+int WINDOW_MIN_HEIGHT = 745;
 #else
-int WINDOW_MIN_HEIGHT = 768;
+int WINDOW_MIN_HEIGHT = 770;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
@@ -134,13 +134,6 @@ void setFontPixelSizes()
 
 // Common VeriCoin stylesheets
 QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; } ");
-/*
-QString veriDialogStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } \
-                            QDialog::QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
-                            QDialog::QPushButton:disabled { background: #EBEBEB; color: #666666; } \
-                            QDialog::QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
-                            QDialog::QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
-*/
 QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STRING_VERIFONT + "; border: 1px; }");
 
 QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
