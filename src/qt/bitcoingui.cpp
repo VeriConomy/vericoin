@@ -123,7 +123,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     resizeGUI();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
 
-    //QFontDatabase::addApplicationFont(":fonts/Lato-Bold");
+    QFontDatabase::addApplicationFont(":fonts/Lato-Bold");
     QFontDatabase::addApplicationFont(":fonts/Lato-Regular");
     GUIUtil::setFontPixelSizes();
     qApp->setFont(veriFont);
