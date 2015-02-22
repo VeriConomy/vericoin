@@ -129,6 +129,11 @@ void setFontPixelSizes()
     setFontPixelSize((QFont *)&veriFont);
     setFontPixelSize((QFont *)&veriFontLarge);
     setFontPixelSize((QFont *)&veriFontLarger);
+    setFontPixelSize((QFont *)&veriFontSmallerBold);
+    setFontPixelSize((QFont *)&veriFontSmallBold);
+    setFontPixelSize((QFont *)&veriFontBold);
+    setFontPixelSize((QFont *)&veriFontLargeBold);
+    setFontPixelSize((QFont *)&veriFontLargerBold);
 }
 
 // Common VeriCoin stylesheets

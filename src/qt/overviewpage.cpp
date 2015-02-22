@@ -122,10 +122,10 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->setupUi(this);
     this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);
 
-    ui->labelBalance->setFont(veriFontLarger);
-    ui->labelTransactions->setFont(veriFontLarger);
-    ui->labelNetwork->setFont(veriFontLarger);
-    ui->labelValue->setFont(veriFontLarger);
+    ui->labelBalance->setFont(veriFontLargerBold);
+    ui->labelTransactions->setFont(veriFontLargerBold);
+    ui->labelNetwork->setFont(veriFontLargerBold);
+    ui->labelValue->setFont(veriFontLargerBold);
 
     ui->labelSpendableText->setFont(veriFont);
     ui->labelSpendable->setFont(veriFont);

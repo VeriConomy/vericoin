@@ -34,12 +34,22 @@ static const QFont veriFontSmall("Lato", 13, QFont::Normal, false);
 static const QFont veriFont("Lato", 15, QFont::Normal, false);
 static const QFont veriFontLarge("Lato", 17, QFont::Normal, false);
 static const QFont veriFontLarger("Lato", 19, QFont::Normal, false);
+static const QFont veriFontSmallerBold("Lato", 11, QFont::Bold, false);
+static const QFont veriFontSmallBold("Lato", 13, QFont::Bold, false);
+static const QFont veriFontBold("Lato", 15, QFont::Bold, false);
+static const QFont veriFontLargeBold("Lato", 17, QFont::Bold, false);
+static const QFont veriFontLargerBold("Lato", 19, QFont::Bold, false);
 #else
 static const QFont veriFontSmaller("Lato", 9, QFont::Normal, false);
 static const QFont veriFontSmall("Lato", 10, QFont::Normal, false);
 static const QFont veriFont("Lato", 11, QFont::Normal, false);
 static const QFont veriFontLarge("Lato", 12, QFont::Normal, false);
 static const QFont veriFontLarger("Lato", 14, QFont::Normal, false);
+static const QFont veriFontSmallerBold("Lato", 9, QFont::Bold, false);
+static const QFont veriFontSmallBold("Lato", 10, QFont::Bold, false);
+static const QFont veriFontBold("Lato", 11, QFont::Bold, false);
+static const QFont veriFontLargeBold("Lato", 12, QFont::Bold, false);
+static const QFont veriFontLargerBold("Lato", 14, QFont::Bold, false);
 #endif
 
 /* Tooltips longer than this (in characters) are converted into rich text,
