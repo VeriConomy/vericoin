@@ -25,12 +25,6 @@
     <height>0</height>
    </size>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-    <pointsize>11</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Rescan Blockchain</string>
   </property>
@@ -51,12 +45,6 @@
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QLabel" name="statusLabel">
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>

@@ -10,12 +10,6 @@
     <height>380</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-    <pointsize>11</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Signatures - Sign / Verify a Message</string>
   </property>
@@ -25,11 +19,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
-     <property name="font">
-      <font>
-       <family>Lato</family>
-      </font>
-     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -40,12 +29,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_SM">
        <item>
         <widget class="QLabel" name="infoLabel_SM">
-         <property name="font">
-          <font>
-           <family>Lato</family>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="text">
           <string>You can sign messages with your addresses to prove you own them. Be careful not to sign anything vague, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</string>
          </property>
@@ -64,11 +47,6 @@
          </property>
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_SM">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
            <property name="toolTip">
             <string>The address to sign the message with (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)</string>
            </property>
@@ -84,12 +62,6 @@
              <width>25</width>
              <height>25</height>
             </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Lato</family>
-             <pointsize>6</pointsize>
-            </font>
            </property>
            <property name="toolTip">
             <string>Choose an address from the address book</string>
@@ -163,12 +135,6 @@
          </property>
          <item>
           <widget class="QLineEdit" name="signatureOut_SM">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-             <italic>true</italic>
-            </font>
-           </property>
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -215,11 +181,6 @@
              <height>25</height>
             </size>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="toolTip">
             <string>Sign the message to prove you own this VeriCoin address</string>
            </property>
@@ -248,11 +209,6 @@
              <width>120</width>
              <height>25</height>
             </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
            </property>
            <property name="toolTip">
             <string>Reset all sign message fields</string>
@@ -290,12 +246,6 @@
          </item>
          <item>
           <widget class="QLabel" name="statusLabel_SM">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
            <property name="text">
             <string/>
            </property>
@@ -328,11 +278,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_VM">
        <item>
         <widget class="QLabel" name="infoLabel_VM">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="text">
           <string>Enter the signing address, message (ensure you copy line breaks, spaces, tabs, etc. exactly) and signature below to verify the message. Be careful not to read more into the signature than what is in the signed message itself, to avoid being tricked by a man-in-the-middle attack.</string>
          </property>
@@ -354,11 +299,6 @@
          </property>
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_VM">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
            <property name="toolTip">
             <string>The address the message was signed with (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)</string>
            </property>
@@ -400,11 +340,6 @@
        </item>
        <item>
         <widget class="QValidatedLineEdit" name="signatureIn_VM">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
         </widget>
        </item>
        <item>
@@ -416,12 +351,6 @@
              <width>125</width>
              <height>25</height>
             </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Lato</family>
-             <pointsize>11</pointsize>
-            </font>
            </property>
            <property name="toolTip">
             <string>Verify the message to ensure it was signed with the specified VeriCoin address</string>
@@ -454,12 +383,6 @@
              <width>125</width>
              <height>25</height>
             </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Lato</family>
-             <pointsize>11</pointsize>
-            </font>
            </property>
            <property name="toolTip">
             <string>Reset all verify message fields</string>
@@ -497,12 +420,6 @@
          </item>
          <item>
           <widget class="QLabel" name="statusLabel_VM">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
            <property name="text">
             <string/>
            </property>

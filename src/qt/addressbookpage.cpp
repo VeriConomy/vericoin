@@ -41,6 +41,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     this->resize(HEADER_WIDTH, 600);
 
     ui->tableView->viewport()->setAttribute(Qt::WA_Hover, true);
+    ui->labelExplanation->setFont(veriFontSmaller);
 
 #ifndef USE_QRCODE
     ui->showQRCode->setVisible(false);

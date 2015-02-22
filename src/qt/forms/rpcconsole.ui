@@ -16,12 +16,6 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tabWidget">
-     <property name="font">
-      <font>
-       <family>Lato</family>
-       <pointsize>11</pointsize>
-      </font>
-     </property>
      <property name="currentIndex">
       <number>1</number>
      </property>
@@ -35,12 +29,6 @@
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_9">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
          <property name="text">
           <string>VeriCoin Core</string>
          </property>
@@ -166,12 +154,6 @@
        </item>
        <item row="6" column="0">
         <widget class="QLabel" name="label_11">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
          <property name="text">
           <string>Network</string>
          </property>
@@ -219,12 +201,6 @@
        </item>
        <item row="9" column="0">
         <widget class="QLabel" name="label_10">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
          <property name="text">
           <string>Block chain</string>
          </property>
@@ -314,12 +290,6 @@
        </item>
        <item row="14" column="0">
         <widget class="QLabel" name="labelDebugLogfile">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
          <property name="text">
           <string>Debug log file</string>
          </property>
@@ -332,12 +302,6 @@
            <width>120</width>
            <height>25</height>
           </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Lato</family>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="toolTip">
           <string>Open the VeriCoin debug log file from the current data directory. This can take a few seconds for large log files.</string>
@@ -352,12 +316,6 @@
        </item>
        <item row="16" column="0">
         <widget class="QLabel" name="labelCLOptions">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
          <property name="text">
           <string>Command-line options</string>
          </property>
@@ -370,12 +328,6 @@
            <width>120</width>
            <height>25</height>
           </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Lato</family>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="toolTip">
           <string>Show the VeriCoin-Qt help message to get a list with possible VeriCoin command-line options.</string>
@@ -444,11 +396,6 @@
          </item>
          <item>
           <widget class="QLineEdit" name="lineEdit">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
           </widget>
          </item>
          <item>

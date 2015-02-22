@@ -84,11 +84,6 @@
          <height>185</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <family>Lato</family>
-        </font>
-       </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>
@@ -126,17 +121,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_5">
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-              <underline>false</underline>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
+           <widget class="QLabel" name="labelBalance">
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
             </property>
@@ -203,7 +188,7 @@
            <number>0</number>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="labelBalanceText">
+           <widget class="QLabel" name="labelSpendableText">
             <property name="minimumSize">
              <size>
               <width>130</width>
@@ -225,7 +210,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="labelBalance">
+           <widget class="QLabel" name="labelSpendable">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -504,11 +489,6 @@
          <height>185</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <family>Lato</family>
-        </font>
-       </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
@@ -546,17 +526,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_4">
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-              <underline>false</underline>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
+           <widget class="QLabel" name="labelTransactions">
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
             </property>
@@ -805,18 +775,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_7">
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <italic>false</italic>
-              <bold>true</bold>
-              <underline>false</underline>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
+           <widget class="QLabel" name="labelNetwork">
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
             </property>
@@ -978,18 +937,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_8">
-            <property name="font">
-             <font>
-              <family>Lato</family>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <italic>false</italic>
-              <bold>true</bold>
-              <underline>false</underline>
-              <stylestrategy>PreferAntialias</stylestrategy>
-             </font>
-            </property>
+           <widget class="QLabel" name="labelValue">
             <property name="styleSheet">
              <string notr="true">QLabel {color: #444748}</string>
             </property>

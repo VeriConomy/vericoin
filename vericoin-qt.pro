@@ -16,7 +16,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT += webkitwidgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
-macx:QMAKESPEC=/opt/local/share/qt5/mkspecs/macx-g++49
 
 # for boost 1.37, add -mt to the boost libraries
 # use: qmake BOOST_LIB_SUFFIX=-mt

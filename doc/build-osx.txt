@@ -40,7 +40,7 @@ sudo port install boost db48 openssl miniupnpc qt5-mac gcc49 wget
 Optionally install qrencode (and set USE_QRCODE=1):
 sudo port install qrencode
 
-2a. You may also need to copy the qt5 makespec folder for macx-g++42 to macx-g++49 if it does not exist, then set the compilers in qmake.conf to gcc-mp-4.9 and g++-mp-4.9.
+2a. You may also need to copy the qt5 makespec folder for macx-g++42 to macx-g++49 if it does not exist, then set the compilers in qmake.conf to gcc-mp-4.9 and g++-mp-4.9.  If using Qt Creator, add the Qt mkspec macx-g++49 to Kits, and add the compiler/path to Compilers.
 
 3.  Clone the github tree to get the source code:
 

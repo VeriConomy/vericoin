@@ -10,11 +10,6 @@
     <height>556</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>QR Code Dialog</string>
   </property>
@@ -68,11 +63,6 @@
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <property name="font">
-      <font>
-       <pointsize>11</pointsize>
-      </font>
-     </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QCheckBox" name="chkReqPayment">
@@ -199,12 +189,6 @@
             <width>120</width>
             <height>25</height>
            </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Lato</family>
-            <pointsize>11</pointsize>
-           </font>
           </property>
           <property name="text">
            <string>&amp;Save As...</string>

@@ -123,7 +123,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     resizeGUI();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
 
-    QFontDatabase::addApplicationFont(":fonts/Lato-Bold");
+    //QFontDatabase::addApplicationFont(":fonts/Lato-Bold");
     QFontDatabase::addApplicationFont(":fonts/Lato-Regular");
     GUIUtil::setFontPixelSizes();
     qApp->setFont(veriFont);
@@ -134,11 +134,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     qApp->setStyleSheet(veriStyleSheet);
 
+/* (Seems to be working in Qt5)
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
-
+*/
     // Accept D&D of URIs
     setAcceptDrops(true);
 
@@ -237,11 +238,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create status bar
     statusBar();
     statusBar()->setContentsMargins(STATUSBAR_MARGIN,0,0,0);
+    statusBar()->setFont(veriFontSmall);
     statusBar()->setFixedHeight(32);
-    statusBar()->setStyleSheet("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
 
     QFrame *versionBlocks = new QFrame();
     versionBlocks->setContentsMargins(0,0,0,0);
+    versionBlocks->setFont(veriFontSmall);
     versionBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     QHBoxLayout *versionBlocksLayout = new QHBoxLayout(versionBlocks);
     versionBlocksLayout->setContentsMargins(0,0,0,0);
@@ -289,6 +291,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     QFrame *frameBlocks = new QFrame();
     frameBlocks->setContentsMargins(0,0,0,0);
+    frameBlocks->setFont(veriFontSmall);
     frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     frameBlocks->setStyleSheet("QFrame { color: white; }");
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
