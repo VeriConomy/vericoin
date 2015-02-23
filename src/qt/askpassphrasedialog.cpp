@@ -149,6 +149,7 @@ void AskPassphraseDialog::accept()
                                          "will become useless as soon as you start using the new, encrypted wallet.") + 
                                          "</b></qt>");
                     //QApplication::quit();
+                    fEncrypt = true;
                     fRestart = true;
                     StartShutdown();
                 }

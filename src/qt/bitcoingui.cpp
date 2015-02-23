@@ -1370,13 +1370,22 @@ void BitcoinGUI::encryptWallet(bool status)
 
 void BitcoinGUI::backupWallet()
 {
+    QString fileSeparator(QDir::separator());
     QString saveDir = GetDataDir().string().c_str();
     QFileDialog *dlg = new QFileDialog;
-    dlg->selectFile(QString(saveDir + tr("/wallet-backup.dat")));
-    QString filename = dlg->getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (wallet*.dat)"));
+    QString filename = dlg->getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (*.dat)"));
     if(!filename.isEmpty())
     {
-        if (filename.contains("wallet.dat"))
+        if (!filename.endsWith(".dat"))
+        {
+            filename.append(".dat");
+        }
+
+        if ((filename.contains(saveDir) && filename.endsWith(fileSeparator + "wallet.dat")) ||
+                filename.contains("blk0001.dat") ||
+                filename.contains("bootstrap.") ||
+                filename.contains("peers.dat") ||
+                filename.length() < 5)
         {
             QMessageBox::warning(this, tr("Backup Not Allowed"), tr("Please choose a different name for your wallet backup.\nExample: wallet-backup.dat"));
         }

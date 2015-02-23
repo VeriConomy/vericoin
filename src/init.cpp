@@ -104,12 +104,21 @@ void Shutdown(void* parg)
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
                     boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+
+                    RestartWallet("-bootstrapturbo", true);
                 }
                 catch (std::exception &e) {
                     printf("Bootstrapturbo filesystem error!\n");
                 }
             }
-            RestartWallet((fRescan ? "-rescan" : NULL), true);
+            else if (fRescan)
+            {
+                RestartWallet("-rescan", true);
+            }
+            else
+            {
+                RestartWallet(NULL, true);
+            }
         }
 #endif
         boost::filesystem::remove(GetPidFile());
@@ -141,50 +150,61 @@ void RestartWallet(const char *parm, bool fOldParms)
     QStringList newArgv(QApplication::instance()->arguments());
     QString command;
 
-    if (fNewVersion && !fBootstrapTurbo && !fRescan) // For Auto Update executable
+    if (fNewVersion && !fBootstrapTurbo && !fRescan && !fEncrypt) // fNewVersion could be true while trying to do other restarts
     {
 #ifdef WIN32
         // If Windows, replace argv[0] with the exe installer and restart.
-        command = QString(GetArg("-vFileName","vericoin-qt.exe").c_str());
         parm = NULL;
         fOldParms = false;
+        newArgv.clear();
+        command = QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
 #else
 #ifdef MAC_OSX
-        // SDW TODO:
-        // If Mac, replace argv[0] with the installer and pass the pkg file.
-        command = QString("");
+        // If Mac, replace argv[0] with Finder and pass the location of the pkg file.
         parm = NULL;
         fOldParms = false;
+        newArgv.clear();
+        command = QString("/usr/bin/open");
+        newArgv.append(QString(GetProgramDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.pkg").c_str()));
 #else
-        // If Linux, just restart (already extracted vericoin-qt from the zip in bitcoingui.cpp).
+        // If Linux, just restart (already extracted vericoin-qt from the zip in downloader.cpp).
+        parm = NULL;
         command = newArgv[0];
-        parm = "-bootstrapturbo";
+        if (!fOldParms)
+        {
+            newArgv.clear();
+        }
+        else
+        {
+            newArgv.removeFirst();
+        }
+        newArgv.append(QString("-restart"));
 #endif
 #endif
     }
     else
     {
         command = newArgv[0];
-    }
-    newArgv.removeFirst();
-
-    if (!fOldParms)
-    {
-        newArgv.clear();
+        if (!fOldParms)
+        {
+            newArgv.clear();
+        }
+        else
+        {
+            newArgv.removeFirst();
+        }
+        newArgv.append(QString("-restart"));
     }
 
     if ((fOldParms && mapArgs.count("-bootstrapturbo")))
         newArgv.removeOne(QString("-bootstrapturbo"));
 
-    if ((fOldParms && !mapArgs.count("-restart")) || !fOldParms)
-        newArgv.append(QString("-restart"));
+    if ((fOldParms && mapArgs.count("-rescan")))
+        newArgv.removeOne(QString("-rescan"));
 
     if (parm)
     {
-        if ((fOldParms && !mapArgs.count(parm)) || !fOldParms)
-        {
-            newArgv.append(QString(parm));
-        }
+        newArgv.append(QString(parm));
     }
 
     // Spawn a new instance.

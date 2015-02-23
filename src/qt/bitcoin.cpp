@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
     if (mapArgs.count("-restart")) {
         // a wallet restart was issued
         SoftSetBoolArg("-restart", true);
+        MilliSleep(7000); // give the old instance time to quit
 #if !defined(WIN32) && !defined(MAC_OSX)
         if (boost::filesystem::exists(GetDataDir() / "vericoin-qt.old"))
             boost::filesystem::remove(GetDataDir() / "vericoin-qt.old");
