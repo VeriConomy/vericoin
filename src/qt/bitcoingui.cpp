@@ -1381,7 +1381,12 @@ void BitcoinGUI::backupWallet()
             filename.append(".dat");
         }
 
-        if ((filename.contains(saveDir) && filename.endsWith(fileSeparator + "wallet.dat")) ||
+#ifdef Q_OS_WIN
+        // Qt in Windows stores the saved filename separators as "/",
+        // so we need to change them back for comparison below.
+        filename.replace(QRegExp("/"), fileSeparator);
+#endif
+        if ((filename.contains(saveDir) && filename.contains(fileSeparator + "wallet.dat")) ||
                 filename.contains("blk0001.dat") ||
                 filename.contains("bootstrap.") ||
                 filename.contains("peers.dat") ||
