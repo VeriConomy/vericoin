@@ -10,12 +10,6 @@
     <height>400</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-    <pointsize>11</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>VeriCoin Update</string>
   </property>
@@ -86,11 +80,6 @@
      </item>
      <item>
       <widget class="QLabel" name="title">
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
        <property name="cursor">
         <cursorShape>IBeamCursor</cursorShape>
        </property>
@@ -110,11 +99,6 @@
      </item>
      <item>
       <widget class="QTextEdit" name="description">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>

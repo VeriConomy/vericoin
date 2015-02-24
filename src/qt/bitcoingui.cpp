@@ -115,7 +115,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QDesktopWidget desktop;
     QRect screenSize = desktop.availableGeometry(desktop.primaryScreen());
     //QRect screenSize = QRect(0, 0, 1024, 728); // SDW DEBUG
-    if (screenSize.height() <= 768)
+    if (screenSize.height() <= WINDOW_MIN_HEIGHT)
     {
         GUIUtil::refactorGUI(screenSize);
     }
@@ -123,19 +123,23 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     resizeGUI();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
 
+    QFontDatabase::addApplicationFont(":fonts/Lato-Bold");
+    QFontDatabase::addApplicationFont(":fonts/Lato-Regular");
+    GUIUtil::setFontPixelSizes();
+    qApp->setFont(veriFont);
 
     setWindowTitle(tr("VeriCoin Wallet"));
     setWindowIcon(QIcon(":icons/bitcoin"));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
-    GUIUtil::setFontPixelSizes();
-    qApp->setStyleSheet(veriStyleSheet);
-    qApp->setFont(veriFont);
 
+    qApp->setStyleSheet(veriStyleSheet);
+
+/* (Seems to be working in Qt5)
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
-
+*/
     // Accept D&D of URIs
     setAcceptDrops(true);
 
@@ -234,12 +238,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create status bar
     statusBar();
     statusBar()->setContentsMargins(STATUSBAR_MARGIN,0,0,0);
-    statusBar()->setFixedHeight(32);
-    statusBar()->setStyleSheet("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: 0px solid black; }");
     statusBar()->setFont(veriFontSmall);
+    statusBar()->setFixedHeight(32);
 
     QFrame *versionBlocks = new QFrame();
     versionBlocks->setContentsMargins(0,0,0,0);
+    versionBlocks->setFont(veriFontSmall);
     versionBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     QHBoxLayout *versionBlocksLayout = new QHBoxLayout(versionBlocks);
     versionBlocksLayout->setContentsMargins(0,0,0,0);
@@ -247,7 +251,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     labelVersionIcon = new QLabel();
     labelVersionIcon->setContentsMargins(0,0,0,0);
-    labelVersionIcon->setFont(veriFontSmaller);
     labelVersionIcon->setPixmap(QIcon(":/icons/statusGood").pixmap(4, STATUSBAR_ICONSIZE));
     versionLabel = new QLabel();
     versionLabel->setContentsMargins(0,0,0,0);
@@ -288,6 +291,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     QFrame *frameBlocks = new QFrame();
     frameBlocks->setContentsMargins(0,0,0,0);
+    frameBlocks->setFont(veriFontSmall);
     frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     frameBlocks->setStyleSheet("QFrame { color: white; }");
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
@@ -308,8 +312,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Progress bar and label for blocks download
     progressBar = new QProgressBar();
     progressBar->setContentsMargins(0,0,0,0);
-    progressBar->setMinimumWidth(420);
     progressBar->setFont(veriFontSmall);
+    progressBar->setMinimumWidth(420);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
@@ -641,6 +645,7 @@ void BitcoinGUI::createToolBars()
     toolbar->setMovable(false);
     toolbar->setAutoFillBackground(true);
     toolbar->setContentsMargins(0,0,0,0);
+    toolbar->layout()->setSpacing(0);
     toolbar->setOrientation(Qt::Vertical);
     toolbar->setIconSize(QSize(TOOLBAR_ICON_WIDTH,TOOLBAR_ICON_HEIGHT));
     toolbar->setFixedWidth(TOOLBAR_WIDTH);
@@ -1017,7 +1022,7 @@ void BitcoinGUI::error(const QString &title, const QString &message, bool modal)
 void BitcoinGUI::changeEvent(QEvent *e)
 {
     QMainWindow::changeEvent(e);
-#ifndef Q_OS_MAC // Ignored on Mac
+//#ifndef Q_OS_MAC // Ignored on Mac (Seems to be working in Qt5)
     if(e->type() == QEvent::WindowStateChange)
     {
         if(clientModel && clientModel->getOptionsModel()->getMinimizeToTray())
@@ -1030,7 +1035,7 @@ void BitcoinGUI::changeEvent(QEvent *e)
             }
         }
     }
-#endif
+//#endif
 }
 
 void BitcoinGUI::closeEvent(QCloseEvent *event)
@@ -1041,14 +1046,14 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 
     if(clientModel)
     {
-#ifndef Q_OS_MAC // Ignored on Mac
+//#ifndef Q_OS_MAC // Ignored on Mac (Seems to be working in Qt5)
         if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
            !clientModel->getOptionsModel()->getMinimizeOnClose())
         {
             qApp->quit();
             MilliSleep(500);
         }
-#endif
+//#endif
     }
     QMainWindow::closeEvent(event);
 }
@@ -1365,13 +1370,27 @@ void BitcoinGUI::encryptWallet(bool status)
 
 void BitcoinGUI::backupWallet()
 {
+    QString fileSeparator(QDir::separator());
     QString saveDir = GetDataDir().string().c_str();
     QFileDialog *dlg = new QFileDialog;
-    dlg->selectFile(QString(saveDir + tr("/wallet-backup.dat")));
-    QString filename = dlg->getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (wallet*.dat)"));
+    QString filename = dlg->getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (*.dat)"));
     if(!filename.isEmpty())
     {
-        if (filename.contains("wallet.dat"))
+        if (!filename.endsWith(".dat"))
+        {
+            filename.append(".dat");
+        }
+
+#ifdef Q_OS_WIN
+        // Qt in Windows stores the saved filename separators as "/",
+        // so we need to change them back for comparison below.
+        filename.replace(QRegExp("/"), fileSeparator);
+#endif
+        if ((filename.contains(saveDir) && filename.contains(fileSeparator + "wallet.dat")) ||
+                filename.contains("blk0001.dat") ||
+                filename.contains("bootstrap.") ||
+                filename.contains("peers.dat") ||
+                filename.length() < 5)
         {
             QMessageBox::warning(this, tr("Backup Not Allowed"), tr("Please choose a different name for your wallet backup.\nExample: wallet-backup.dat"));
         }

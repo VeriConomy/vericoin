@@ -10,11 +10,6 @@
     <height>380</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Options</string>
   </property>
@@ -24,11 +19,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="veriSendOptions">
-     <property name="font">
-      <font>
-       <pointsize>11</pointsize>
-      </font>
-     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
@@ -42,11 +32,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_Main">
        <item>
         <widget class="QLabel" name="transactionFeeInfoLabel">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="text">
           <string>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB. Fee 0.01 recommended.</string>
          </property>
@@ -62,11 +47,6 @@
         <layout class="QHBoxLayout" name="horizontalLayoutFee">
          <item>
           <widget class="QLabel" name="transactionFeeLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Pay transaction &amp;fee</string>
            </property>
@@ -98,11 +78,6 @@
        </item>
        <item>
         <widget class="QLabel" name="reserveBalanceInfoLabel">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="text">
           <string>Reserved amount does not participate in staking and is therefore spendable at any time.</string>
          </property>
@@ -118,11 +93,6 @@
         <layout class="QHBoxLayout" name="horizontalLayoutReserveBalance">
          <item>
           <widget class="QLabel" name="reserveBalanceLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Reserve</string>
            </property>
@@ -154,11 +124,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Automatically start VeriCoin after logging in to the system.</string>
          </property>
@@ -169,11 +134,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="detachDatabases">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Detach block and address databases at shutdown. This means they can be moved to another data directory, but it slows down shutdown. The wallet is always detached.</string>
          </property>
@@ -204,11 +164,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_Network">
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Automatically open the VeriCoin client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
@@ -219,11 +174,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="connectSocks">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Connect to the VeriCoin network through a SOCKS proxy (e.g. when connecting through Tor).</string>
          </property>
@@ -236,11 +186,6 @@
         <layout class="QHBoxLayout" name="horizontalLayout_Network">
          <item>
           <widget class="QLabel" name="proxyIpLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Proxy &amp;IP:</string>
            </property>
@@ -267,11 +212,6 @@
          </item>
          <item>
           <widget class="QLabel" name="proxyPortLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>&amp;Port:</string>
            </property>
@@ -298,11 +238,6 @@
          </item>
          <item>
           <widget class="QLabel" name="socksVersionLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>SOCKS &amp;Version:</string>
            </property>
@@ -358,11 +293,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_Window">
        <item>
         <widget class="QCheckBox" name="minimizeToTray">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Show only a tray icon after minimizing the window.</string>
          </property>
@@ -373,11 +303,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="minimizeOnClose">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Quit in the menu.</string>
          </property>
@@ -410,11 +335,6 @@
         <layout class="QHBoxLayout" name="horizontalLayout_1_Display">
          <item>
           <widget class="QLabel" name="langLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>User Interface &amp;language:</string>
            </property>
@@ -439,11 +359,6 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2_Display">
          <item>
           <widget class="QLabel" name="unitLabel">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>&amp;Unit to show amounts in:</string>
            </property>
@@ -504,11 +419,6 @@
              <height>0</height>
             </size>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
            </property>
@@ -537,11 +447,6 @@
              <height>16777215</height>
             </size>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many decimal places to display. Depending on the unit of currency, you may see fewer decimal places.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -563,11 +468,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="displayAddresses">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Whether to show VeriCoin addresses in the transaction list or not.</string>
          </property>
@@ -578,11 +478,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="coinControlFeatures">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
           <string>Whether to show coin control features or not.</string>
          </property>
@@ -593,11 +488,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="hideAmounts">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="text">
           <string>Hide amounts for privacy (***.**)</string>
          </property>
@@ -650,11 +540,6 @@
          <height>17</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="text">
         <string>VeriSend Mix Cycles:</string>
        </property>
@@ -667,11 +552,6 @@
          <width>471</width>
          <height>17</height>
         </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
        </property>
        <property name="text">
         <string>VeriSend Entry Ring Node IP address (VeriCoin Ring Node is Default):</string>
@@ -707,12 +587,6 @@
      </item>
      <item>
       <widget class="QLabel" name="statusLabel">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -745,12 +619,6 @@
          <height>25</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <family>Lato</family>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="text">
         <string>&amp;OK</string>
        </property>
@@ -763,12 +631,6 @@
          <width>120</width>
          <height>25</height>
         </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Lato</family>
-         <pointsize>11</pointsize>
-        </font>
        </property>
        <property name="text">
         <string>&amp;Cancel</string>
@@ -785,12 +647,6 @@
          <width>120</width>
          <height>25</height>
         </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Lato</family>
-         <pointsize>11</pointsize>
-        </font>
        </property>
        <property name="text">
         <string>&amp;Apply</string>

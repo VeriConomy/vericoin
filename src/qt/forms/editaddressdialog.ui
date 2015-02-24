@@ -10,11 +10,6 @@
     <height>126</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Edit Address</string>
   </property>
@@ -26,11 +21,6 @@
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="text">
         <string>&amp;Label</string>
        </property>
@@ -41,11 +31,6 @@
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="labelEdit">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="toolTip">
         <string>The label associated with this address book entry</string>
        </property>
@@ -53,11 +38,6 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="text">
         <string>&amp;Address</string>
        </property>
@@ -68,11 +48,6 @@
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="addressEdit">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="toolTip">
         <string>The address associated with this address book entry. This can only be modified for sending addresses.</string>
        </property>

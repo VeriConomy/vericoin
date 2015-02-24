@@ -4,15 +4,16 @@
 
 version="1.5.1"
 arch=`uname -i`
-QtLIBPATH="${HOME}/Qt/5.4/gcc"
 
 if [ "${arch}" = "x86_64" ]; then
     arch="64bit"
+    QtLIBPATH="${HOME}/Qt/5.4/gcc_64"
 else
     arch="32bit"
+    QtLIBPATH="${HOME}/Qt/5.4/gcc"
 fi
 
-if [ -f vericoin-qt ] & [ -f vericoin.conf ] & [ -f README ]; then
+if [ -f vericoin-qt ] && [ -f vericoin.conf ] && [ -f README ]; then
     echo "Building VeriCoin_${version}_${arch}.zip ...\n"
     mkdir VeriCoin_${version}_${arch}
     mkdir VeriCoin_${version}_${arch}/libs

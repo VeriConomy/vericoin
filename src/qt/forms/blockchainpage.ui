@@ -118,13 +118,6 @@
           <height>27</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Lato</family>
-          <pointsize>11</pointsize>
-          <stylestrategy>PreferAntialias</stylestrategy>
-         </font>
-        </property>
         <property name="text">
          <string>Back</string>
         </property>
@@ -159,13 +152,6 @@
           <width>120</width>
           <height>27</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Lato</family>
-          <pointsize>11</pointsize>
-          <stylestrategy>PreferAntialias</stylestrategy>
-         </font>
         </property>
         <property name="text">
          <string>Reload</string>
@@ -202,13 +188,6 @@
           <height>27</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Lato</family>
-          <pointsize>11</pointsize>
-          <stylestrategy>PreferAntialias</stylestrategy>
-         </font>
-        </property>
         <property name="text">
          <string>Home</string>
         </property>
@@ -243,13 +222,6 @@
           <width>120</width>
           <height>27</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Lato</family>
-          <pointsize>11</pointsize>
-          <stylestrategy>PreferAntialias</stylestrategy>
-         </font>
         </property>
         <property name="text">
          <string>Forward</string>

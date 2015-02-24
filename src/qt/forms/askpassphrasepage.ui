@@ -22,12 +22,6 @@
     <height>0</height>
    </size>
   </property>
-  <property name="font">
-   <font>
-    <family>Lato</family>
-    <pointsize>11</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Passphrase Page</string>
   </property>
@@ -82,11 +76,6 @@
          <height>0</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
@@ -121,12 +110,6 @@
          <width>480</width>
          <height>20</height>
         </size>
-       </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
        </property>
        <property name="text">
         <string/>

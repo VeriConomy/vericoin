@@ -122,8 +122,22 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->setupUi(this);
     this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);
 
+    ui->labelBalance->setFont(veriFontLargerBold);
+    ui->labelTransactions->setFont(veriFontLargerBold);
+    ui->labelNetwork->setFont(veriFontLargerBold);
+    ui->labelValue->setFont(veriFontLargerBold);
+
+    ui->labelSpendableText->setFont(veriFont);
+    ui->labelSpendable->setFont(veriFont);
+    ui->labelStakeText->setFont(veriFont);
+    ui->labelStake->setFont(veriFont);
+    ui->labelUnconfirmedText->setFont(veriFont);
+    ui->labelUnconfirmed->setFont(veriFont);
+    ui->labelTotalText->setFont(veriFont);
+    ui->labelTotal->setFont(veriFont);
+
     // Add icons to the Balance section
-    ui->labelBalanceText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
+    ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
     ui->labelStakeText->setText("<html><img src=':icons/staking' width=16 height=16 border=0 align='bottom'> Staking:</html>");
     ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
     ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
@@ -203,8 +217,8 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
     currentUnconfirmedBalance = unconfirmedBalance;
     currentImmatureBalance = immatureBalance;
 
-    ui->labelBalance->setText(bcu->formatWithUnit(unit, balance, false, hideAmounts));
-    ui->labelBalance->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
+    ui->labelSpendable->setText(bcu->formatWithUnit(unit, balance, false, hideAmounts));
+    ui->labelSpendable->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     ui->labelStake->setText(bcu->formatWithUnit(unit, stake, false, hideAmounts));
     ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, stake, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance, false, hideAmounts));

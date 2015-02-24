@@ -62,9 +62,9 @@ int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 int WINDOW_MIN_HEIGHT = 768;
 #else
 #ifdef Q_OS_MAC
-int WINDOW_MIN_HEIGHT = 768;
+int WINDOW_MIN_HEIGHT = 748;
 #else
-int WINDOW_MIN_HEIGHT = 768;
+int WINDOW_MIN_HEIGHT = 772;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
@@ -126,21 +126,18 @@ void setFontPixelSizes()
 {
     setFontPixelSize((QFont *)&veriFontSmaller);
     setFontPixelSize((QFont *)&veriFontSmall);
-    setFontPixelSize((QFont *)&veriFontMedium);
     setFontPixelSize((QFont *)&veriFont);
     setFontPixelSize((QFont *)&veriFontLarge);
     setFontPixelSize((QFont *)&veriFontLarger);
+    setFontPixelSize((QFont *)&veriFontSmallerBold);
+    setFontPixelSize((QFont *)&veriFontSmallBold);
+    setFontPixelSize((QFont *)&veriFontBold);
+    setFontPixelSize((QFont *)&veriFontLargeBold);
+    setFontPixelSize((QFont *)&veriFontLargerBold);
 }
 
 // Common VeriCoin stylesheets
 QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; } ");
-/*
-QString veriDialogStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } \
-                            QDialog::QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
-                            QDialog::QPushButton:disabled { background: #EBEBEB; color: #666666; } \
-                            QDialog::QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
-                            QDialog::QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
-*/
 QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STRING_VERIFONT + "; border: 1px; }");
 
 QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING_VERIBLUE + "; width: %1px; height: %2px; border: none; color: white} \
@@ -149,14 +146,14 @@ QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING
                             QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
 
 QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
-                            QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-size: 12px; } \
+                            QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-family: Lato; font-style: normal; font-weight: normal; font-size: 12px; } \
                             QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } ");
 
 QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING_VERIBLUE_LT + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; } ");
 
-QString veriMiscStyleSheet = QString("QDialog { background: white; color: " + STRING_VERIFONT + "; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
+QString veriMiscStyleSheet = QString("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: none; } QDialog { background: white; color: " + STRING_VERIFONT + "; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
 
 // Put them all together
 QString veriStyleSheet = veriCentralWidgetStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet;

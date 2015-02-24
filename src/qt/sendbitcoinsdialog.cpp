@@ -47,6 +47,8 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
 
+    ui->labelCoinControlFeatures->setFont(veriFontBold);
+
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
     ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a BitCoin address (e.g. 1LRWAyE3WKwTzXszEmtqKXzikQvoq7NJBa)"));
