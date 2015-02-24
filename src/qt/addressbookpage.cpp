@@ -42,7 +42,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
 
     ui->labelExplanation->setFont(veriFontSmaller);
     ui->tableView->viewport()->setAttribute(Qt::WA_Hover, true);
-    ui->tableView->viewport()->setFont(veriFont);
+    ui->tableView->setFont(veriFont);
 
 #ifndef USE_QRCODE
     ui->showQRCode->setVisible(false);
