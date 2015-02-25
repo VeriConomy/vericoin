@@ -184,7 +184,7 @@ public slots:
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
     void reloadBlockchainActionEnabled(bool enabled);
-    void reloadBlockchain();
+    void reloadBlockchain(bool autoReload=false);
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();
 

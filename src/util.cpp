@@ -89,6 +89,7 @@ bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fSuperNETInstalled = false;
 #endif
+bool fFirstRun = true;
 bool fDebug = false;
 bool fDebugNet = false;
 bool fPrintToConsole = false;

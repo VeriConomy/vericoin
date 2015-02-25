@@ -1532,23 +1532,18 @@ void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
     reloadBlockchainAction->setEnabled(enabled);
 }
 
-void BitcoinGUI::reloadBlockchain()
+void BitcoinGUI::reloadBlockchain(bool autoReload)
 {
-    // Don't allow multiple instances
-    reloadBlockchainActionEnabled(false); // Sets back to true when dialog closes.
-
     boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
     QUrl url(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
-    if (boost::filesystem::exists(pathBootstrap))
+    if (boost::filesystem::exists(pathBootstrap) && autoReload)
     {
-        std::time_t bs_time = boost::filesystem::last_write_time(pathBootstrap);
-        if (std::difftime(std::time(0), bs_time) > (48 * 60 * 60)) // 48 hour time difference
-        {
-            // Old boostrap, remove it.
-            boost::filesystem::remove(pathBootstrap);
-        }
+        return;
     }
+
+    // Don't allow multiple instances
+    reloadBlockchainActionEnabled(false); // Sets back to true when dialog closes.
 
     printf("Downloading blockchain data...\n");
     Downloader *bs = new Downloader(this, walletModel);
@@ -1556,7 +1551,7 @@ void BitcoinGUI::reloadBlockchain()
     bs->setUrl(url);
     bs->setDest(boostPathToQString(pathBootstrap));
     bs->processBlockchain = true;
-    if (GetBoolArg("-bootstrapturbo")) // Get bootsrap in auto mode
+    if (autoReload) // Get bootsrap in auto mode
     {
         bs->autoDownload = true;
         bs->exec();
