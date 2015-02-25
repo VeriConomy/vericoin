@@ -123,6 +123,14 @@ void Downloader::on_quitButton_clicked() // Cancel button
     this->close();
 }
 
+void Downloader::closeEvent(QCloseEvent *event)
+{
+    if (!downloaderQuit)
+        on_quitButton_clicked();
+    else
+        QDialog::closeEvent(event);
+}
+
 // Network error ocurred. Download cancelled
 void Downloader::networkError()
 {

@@ -57,6 +57,9 @@ public:
     bool processBlockchain;
     bool processUpdate;
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void on_downloadButton_clicked();
 
