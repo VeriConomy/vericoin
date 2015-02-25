@@ -133,6 +133,7 @@ TransactionView::TransactionView(QWidget *parent) :
     totalWidget->setFixedHeight(27);
     totalWidget->setFixedWidth(300);
     totalWidget->setText(tr("Total: "));
+    totalWidget->setToolTip(tr("Total of displayed transactions.\nHidden decimals are not totaled."));
     vlayout->addWidget(totalWidget);
 
     // Actions
