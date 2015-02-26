@@ -183,9 +183,11 @@ void RestartWallet(const char *parm, bool fOldParms)
         parm = NULL;
         fOldParms = false;
         newArgv.clear();
-        command = QString(GetDataDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.bin").c_str());
+        command = QString(GetDataDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.run").c_str());
+        newArgv.append(QString("--target"));
+        newArgv.append(QString(GetProgramDir().c_str()));
         // Make executable
-        boost::filesystem::permissions(GetDataDir() / GetArg("-vFileName","vericoin-setup.bin"), boost::filesystem::others_exe | boost::filesystem::owner_exe);
+        boost::filesystem::permissions(GetDataDir() / GetArg("-vFileName","vericoin-setup.run"), boost::filesystem::others_exe | boost::filesystem::owner_exe);
 #endif
 #endif
     }
