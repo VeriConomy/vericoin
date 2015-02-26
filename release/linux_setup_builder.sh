@@ -37,7 +37,7 @@ if [ -f vericoin-qt ] && [ -f vericoin.conf ] && [ -f README ]; then
     if [ -f VeriCoin_${version}_${arch}.run ]; then
         rm -f VeriCoin_${version}_${arch}.run
     fi
-    makeself.sh --notemp VeriCoin_${version}_${arch} VeriCoin_${version}_${arch}.run "Copyright (c) 2014-2015 The VeriCoin Developers" echo "VeriCoin installation complete!"
+    makeself.sh --notemp VeriCoin_${version}_${arch} VeriCoin_${version}_${arch}.run "\nCopyright (c) 2014-2015 The VeriCoin Developers\nVeriCoin will start when the installation is complete...\n" ./vericoin-qt \&
     rm -fr VeriCoin_${version}_${arch}/
     echo "Package created in: $PWD/VeriCoin_${version}_${arch}.run\n"
 else
