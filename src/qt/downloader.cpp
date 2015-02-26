@@ -631,7 +631,7 @@ void Downloader::checkForUpdate()
         return;
     }
 
-    if (!boost::filesystem::exists(GetProgramDir() / zlist[0].toStdString().append("vericoin-qt")))
+    if (!boost::filesystem::exists(fileDest.path() / zlist[0].toStdString().append("vericoin-qt")))
     {
         printf("Update extract is invalid!\n");
         ui->statusLabel->setText(tr("I'm sorry, the update extract was successful, but the contents are invalid."));
@@ -644,16 +644,12 @@ void Downloader::checkForUpdate()
         return;
     }
 
-    // Rename the old and move in the new binary then make sure it's executable
+    // Rename the old and move in the new
     boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
-    boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
-    boost::filesystem::permissions(boost::filesystem::path(GetArg("-programpath","vericoin-qt")), boost::filesystem::others_exe | boost::filesystem::owner_exe);
-    // Rename the old and move in the new config
     boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
-    boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
-    // Get the README
-    boost::filesystem::rename(zlist[0].toStdString().append("README"), "README");
-    boost::filesystem::remove_all(zlist[0].toStdString());
+    boost::filesystem::copy_directory(fileDest.path() / zlist[0].toStdString(), GetProgramDir());
+    boost::filesystem::permissions(boost::filesystem::path(GetArg("-programpath","vericoin-qt")), boost::filesystem::others_exe | boost::filesystem::owner_exe);
+    boost::filesystem::remove_all(fileDest.path() / zlist[0].toStdString());
 #endif // Linux
 
     ui->statusLabel->setText(tr("Congratulations, the update was successful! Your wallet will now restart..."));

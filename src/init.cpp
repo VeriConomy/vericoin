@@ -169,7 +169,7 @@ void RestartWallet(const char *parm, bool fOldParms)
         parm = NULL;
         fOldParms = false;
         newArgv.clear();
-        command = QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
+        command = GetDataDir().c_str()) + QString("\") + QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
 #else
 #ifdef MAC_OSX
         // If Mac, replace argv[0] with Finder and pass the location of the pkg file.
@@ -177,7 +177,7 @@ void RestartWallet(const char *parm, bool fOldParms)
         fOldParms = false;
         newArgv.clear();
         command = QString("/usr/bin/open");
-        newArgv.append(QString(GetProgramDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.pkg").c_str()));
+        newArgv.append(QString(GetDataDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.pkg").c_str()));
 #else
         // If Linux, just restart (already extracted vericoin-qt from the zip in downloader.cpp).
         parm = NULL;

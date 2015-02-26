@@ -1612,7 +1612,7 @@ void BitcoinGUI::checkForUpdateActionEnabled(bool enabled)
 
 void BitcoinGUI::checkForUpdate()
 {
-    boost::filesystem::path fileName(GetProgramDir());
+    boost::filesystem::path fileName(GetDataDir());
     QUrl url;
 
     if (fMenuCheckForUpdate)

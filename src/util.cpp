@@ -1266,7 +1266,7 @@ boost::filesystem::path GetVersionFile()
     string versionUrl(walletDownloadsUrl);
 
     versionUrl.append(boostPathToString(versionFile));
-    versionFile = (GetProgramDir() / versionFile);
+    versionFile = (GetDataDir() / versionFile);
 
     // Download the file.
     printf("Downloading version data...\n");
