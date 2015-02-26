@@ -631,7 +631,7 @@ void Downloader::checkForUpdate()
         return;
     }
 
-    if (!boost::filesystem::exists(fileDest.path() / zlist[0].toStdString().append("vericoin-qt")))
+    if (!boost::filesystem::exists(fileDest.path().toStdString().append("/").append(zlist[0].toStdString().append("vericoin-qt"))))
     {
         printf("Update extract is invalid!\n");
         ui->statusLabel->setText(tr("I'm sorry, the update extract was successful, but the contents are invalid."));
@@ -644,12 +644,31 @@ void Downloader::checkForUpdate()
         return;
     }
 
-    // Rename the old and move in the new
+    // Rename the old vericoin-qt and move in the new
     boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
-    boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
-    boost::filesystem::copy_directory(fileDest.path() / zlist[0].toStdString(), GetProgramDir());
+    boost::filesystem::copy(fileDest.path().toStdString().append("/").append(zlist[0].toStdString()).append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
+    // vericoin.conf
+    if (boost::filesystem::exists(fileDest.path().toStdString().append("/").append(zlist[0].toStdString().append("vericoin.conf"))))
+    {
+        if (boost::filesystem::exists(GetConfigFile()))
+        {
+            boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
+        }
+        boost::filesystem::copy(fileDest.path().toStdString().append("/").append(zlist[0].toStdString()).append("vericoin.conf"), GetConfigFile());
+    }
+    // README
+    if (boost::filesystem::exists(fileDest.path().toStdString().append("/").append(zlist[0].toStdString().append("README"))))
+    {
+        if (boost::filesystem::exists(GetProgramDir() / std::string("README")))
+        {
+            boost::filesystem::remove(GetProgramDir() / std::string("README"));
+        }
+        boost::filesystem::copy(fileDest.path().toStdString().append("/").append(zlist[0].toStdString()).append("README"), GetProgramDir() / std::string("README"));
+    }
+    // Make executable
     boost::filesystem::permissions(boost::filesystem::path(GetArg("-programpath","vericoin-qt")), boost::filesystem::others_exe | boost::filesystem::owner_exe);
-    boost::filesystem::remove_all(fileDest.path() / zlist[0].toStdString());
+    // Clean up
+    boost::filesystem::remove_all(fileDest.path().toStdString().append("/").append(zlist[0].toStdString()));
 #endif // Linux
 
     ui->statusLabel->setText(tr("Congratulations, the update was successful! Your wallet will now restart..."));
