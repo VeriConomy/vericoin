@@ -169,7 +169,7 @@ void RestartWallet(const char *parm, bool fOldParms)
         parm = NULL;
         fOldParms = false;
         newArgv.clear();
-        command = GetDataDir().c_str()) + QString("\") + QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
+        command = QString(GetDataDir().c_str()) + QString("\") + QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
 #else
 #ifdef MAC_OSX
         // If Mac, replace argv[0] with Finder and pass the location of the pkg file.
@@ -181,16 +181,11 @@ void RestartWallet(const char *parm, bool fOldParms)
 #else
         // If Linux, just restart (already extracted vericoin-qt from the zip in downloader.cpp).
         parm = NULL;
-        command = newArgv[0];
-        if (!fOldParms)
-        {
-            newArgv.clear();
-        }
-        else
-        {
-            newArgv.removeFirst();
-        }
-        newArgv.append(QString("-restart"));
+        fOldParms = false;
+        newArgv.clear();
+        command = QString(GetDataDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.bin").c_str());
+        // Make executable
+        boost::filesystem::permissions(GetDataDir() / GetArg("-vFileName","vericoin-setup.bin"), boost::filesystem::others_exe | boost::filesystem::owner_exe);
 #endif
 #endif
     }
