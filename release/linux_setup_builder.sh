@@ -26,12 +26,19 @@ if [ -f vericoin-qt ] && [ -f vericoin.conf ] && [ -f README ]; then
     cp vericoin-qt VeriCoin_${version}_${arch}/
     cp vericoin.conf VeriCoin_${version}_${arch}/
     cp README VeriCoin_${version}_${arch}/
-    strip VeriCoin_${version}_${arch}/vericoin-qt
-    #ldd vericoin-qt | grep libQt | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs
+    ldd vericoin-qt | grep libssl | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libdb_cxx | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libboost_system | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libboost_filesystem | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libboost_program_options | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libboost_thread | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libminiupnpc | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
+    ldd vericoin-qt | grep libqrencode | awk '{ printf("%s\0", $3); }' | xargs -0 cp -t VeriCoin_${version}_${arch}/libs/
     cp ${QtLIBPATH}/lib/libQt*.so.5 VeriCoin_${version}_${arch}/libs/
     cp ${QtLIBPATH}/lib/libicu*.so.53 VeriCoin_${version}_${arch}/libs/
     cp ${QtLIBPATH}/plugins/platforms/lib*.so VeriCoin_${version}_${arch}/platforms/
     cp ${QtLIBPATH}/plugins/imageformats/lib*.so VeriCoin_${version}_${arch}/imageformats/
+    strip VeriCoin_${version}_${arch}/vericoin-qt
     echo "Enter your sudo password to change the ownership of the archive: "
     sudo chown -R nobody:nogroup VeriCoin_${version}_${arch}
 
