@@ -190,7 +190,8 @@ void RestartWallet(const char *parm, bool fOldParms)
         newArgv.append(QString("--target"));
         newArgv.append(QString(GetProgramDir().c_str()));
         // Make executable
-        boost::filesystem::permissions(GetDataDir() / GetArg("-vFileName","vericoin-setup.run"), boost::filesystem::others_exe | boost::filesystem::owner_exe);
+        boost::filesystem::path installer(GetDataDir() / GetArg("-vFileName","vericoin-setup.run"));
+        boost::filesystem::permissions(installer, status(installer).permissions() | boost::filesystem::owner_exe | boost::filesystem::group_exe);
 #endif
 #endif
     }
