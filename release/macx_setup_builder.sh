@@ -16,10 +16,13 @@ if [ -f VeriCoin-Qt.app/Contents/MacOS/VeriCoin-Qt ] && [ -f vericoin.conf ] && 
     cp vericoin.conf VeriCoin-Qt.app/Contents/MacOS/
     cp README VeriCoin-Qt.app/Contents/MacOS/
 
-    # now build the archive
+    # Remove the old archive
     if [ -f VeriCoin_${version}_${arch}.pkg ]; then
         rm -f VeriCoin_${version}_${arch}.pkg
     fi
+
+    # Deploy the app, create the plist, then build the package.
+    macdeployqt ./VeriCoin-Qt.app -always-overwrite
     pkgbuild --analyze --root ./VeriCoin-Qt.app share/qt/VeriCoin-Qt.plist
     pkgbuild --root ./VeriCoin-Qt.app --component-plist share/qt/VeriCoin-Qt.plist --identifier org.vericoin.VeriCoin-Qt --install-location /Applications/VeriCoin-Qt.app VeriCoin_${version}_${arch}.pkg
     echo "Package created in: $PWD/VeriCoin_${version}_${arch}.pkg\n"
