@@ -32,13 +32,15 @@ if [ -f vericoin-qt ] && [ -f vericoin.conf ] && [ -f README ]; then
     cp ${QtLIBPATH}/lib/libicu*.so.53 VeriCoin_${version}_${arch}/libs/
     cp ${QtLIBPATH}/plugins/platforms/lib*.so VeriCoin_${version}_${arch}/platforms/
     cp ${QtLIBPATH}/plugins/imageformats/lib*.so VeriCoin_${version}_${arch}/imageformats/
+    echo "Enter your sudo password to change the ownership of the archive: "
+    sudo chown -R nobody:nogroup VeriCoin_${version}_${arch}
 
     # now build the archive
     if [ -f VeriCoin_${version}_${arch}.run ]; then
         rm -f VeriCoin_${version}_${arch}.run
     fi
     makeself.sh --notemp VeriCoin_${version}_${arch} VeriCoin_${version}_${arch}.run "\nCopyright (c) 2014-2015 The VeriCoin Developers\nVeriCoin will start when the installation is complete...\n" ./vericoin-qt \&
-    rm -fr VeriCoin_${version}_${arch}/
+    sudo rm -fr VeriCoin_${version}_${arch}/
     echo "Package created in: $PWD/VeriCoin_${version}_${arch}.run\n"
 else
     echo "Error: Missing files!\n"
