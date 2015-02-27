@@ -20,6 +20,7 @@ if [ -f VeriCoin-Qt.app/Contents/MacOS/VeriCoin-Qt ] && [ -f vericoin.conf ] && 
     if [ -f VeriCoin_${version}_${arch}.pkg ]; then
         rm -f VeriCoin_${version}_${arch}.pkg
     fi
+    pkgbuild --analyze --root ./VeriCoin-Qt.app share/qt/VeriCoin-Qt.plist
     pkgbuild --root ./VeriCoin-Qt.app --component-plist share/qt/VeriCoin-Qt.plist --identifier org.vericoin.VeriCoin-Qt --install-location /Applications/VeriCoin-Qt.app VeriCoin_${version}_${arch}.pkg
     echo "Package created in: $PWD/VeriCoin_${version}_${arch}.pkg\n"
 else

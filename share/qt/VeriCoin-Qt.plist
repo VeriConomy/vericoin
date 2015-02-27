@@ -2,45 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-        <dict>
-                <key>RootRelativeBundlePath</key>
-                <string>Contents</string>
-                <key>CFBundleExecutable</key>
-                <string>VeriCoin-Qt</string>
-                <key>CFBundleGetInfoString</key>
-                <string>$VERSION, Copyright © 2009-$YEAR The Bitcoin developers</string>
-                <key>CFBundleIconFile</key>
-                <string>vericoin.icns</string>
-                <key>CFBundleIdentifier</key>
-                <string>org.vericoin.VeriCoin-Qt</string>
-                <key>CFBundlePackageType</key>
-                <string>APPL</string>
-                <key>CFBundleShortVersionString</key>
-                <string>$VERSION</string>
-                <key>CFBundleSignature</key>
-                <string>????</string>
-                <key>CFBundleURLTypes</key>
-                <array>
-                        <dict>
-                                <key>CFBundleTypeRole</key>
-                                <string>Editor</string>
-                                <key>CFBundleURLName</key>
-                                <string>org.vericoin.VeriCoinPayment</string>
-                                <key>CFBundleURLSchemes</key>
-                                <array>
-                                        <string>vericoin</string>
-                                </array>
-                        </dict>
-                </array>
-                <key>LSAppNapIsDisabled</key>
-                <string>True</string>
-                <key>CFBundleVersion</key>
-                <string>$VERSION</string>
-                <key>LSApplicationCategoryType</key>
-                <string>public.app-category.finance</string>
-                <key>NSHighResolutionCapable</key>
-                <true/>
-        </dict>
 	<dict>
 		<key>BundleIsVersionChecked</key>
 		<true/>
