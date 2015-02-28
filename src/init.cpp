@@ -105,7 +105,7 @@ void Shutdown(void* parg)
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
                     boost::filesystem::remove_all(GetDataDir() / "bootstrap");
 
-                    RestartWallet("-bootstrapturbo", true);
+                    RestartWallet(NULL, true);
                 }
                 catch (std::exception &e) {
                     printf("Bootstrapturbo filesystem error!\n");
@@ -152,33 +152,46 @@ void RestartWallet(const char *parm, bool fOldParms)
 
     if (fNewVersion && !fBootstrapTurbo && !fRescan && !fEncrypt) // fNewVersion could be true while trying to do other restarts
     {
+        // Remove old bootstraps
+        boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap.zip");
+        boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.dat");
+        if (boost::filesystem::exists(pathBootstrapTurbo))
+        {
+            boost::filesystem::remove(pathBootstrapTurbo);
+        }
+        if (boost::filesystem::exists(pathBootstrap))
+        {
+            boost::filesystem::remove(pathBootstrap);
+        }
+
 #ifdef WIN32
         // If Windows, replace argv[0] with the exe installer and restart.
         parm = NULL;
         fOldParms = false;
         newArgv.clear();
-        command = QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
+        // Installer created by Inno Setup
+        command = QString(GetDataDir().string().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.exe").c_str());
 #else
 #ifdef MAC_OSX
         // If Mac, replace argv[0] with Finder and pass the location of the pkg file.
         parm = NULL;
         fOldParms = false;
         newArgv.clear();
+        // Installer created by pkgbuild or Package Maker
         command = QString("/usr/bin/open");
-        newArgv.append(QString(GetProgramDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.pkg").c_str()));
+        newArgv.append(QString(GetDataDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.pkg").c_str()));
 #else
         // If Linux, just restart (already extracted vericoin-qt from the zip in downloader.cpp).
         parm = NULL;
-        command = newArgv[0];
-        if (!fOldParms)
-        {
-            newArgv.clear();
-        }
-        else
-        {
-            newArgv.removeFirst();
-        }
-        newArgv.append(QString("-restart"));
+        fOldParms = false;
+        newArgv.clear();
+        // Installer created by makeself.sh
+        command = QString(GetDataDir().c_str()) + QString("/") + QString(GetArg("-vFileName","vericoin-setup.run").c_str());
+        newArgv.append(QString("--target"));
+        newArgv.append(QString(GetProgramDir().c_str()));
+        // Make executable
+        boost::filesystem::path installer(GetDataDir() / GetArg("-vFileName","vericoin-setup.run"));
+        boost::filesystem::permissions(installer, status(installer).permissions() | boost::filesystem::owner_exe | boost::filesystem::group_exe);
 #endif
 #endif
     }
@@ -195,9 +208,6 @@ void RestartWallet(const char *parm, bool fOldParms)
         }
         newArgv.append(QString("-restart"));
     }
-
-    if ((fOldParms && mapArgs.count("-bootstrapturbo")))
-        newArgv.removeOne(QString("-bootstrapturbo"));
 
     if ((fOldParms && mapArgs.count("-rescan")))
         newArgv.removeOne(QString("-rescan"));
@@ -382,7 +392,6 @@ std::string HelpMessage()
         "  -paytxfee=<amt>        " + _("Fee per KB to add to transactions you send") + "\n" +
         "  -mininput=<amt>        " + _("When creating transactions, ignore inputs with value less than this (default: 0.01)") + "\n" +
 #ifdef QT_GUI
-        "  -bootstrapturbo        " + _("Force a reload of the turbo bootstrap file if flag is 'true' in version file.") + "\n" +
         "  -server                " + _("Accept command line and JSON-RPC commands") + "\n" +
 #endif
 #if !defined(WIN32) && !defined(QT_GUI)
@@ -503,12 +512,6 @@ bool AppInit2()
     // Restarting
     if (mapArgs.count("-restart")) {
         SoftSetBoolArg("-restart", true);
-    }
-
-    // Check if we need to bootstrap and restart.
-    if (mapArgs.count("-bootstrapturbo"))
-    {
-        SoftSetBoolArg("-bootstrapturbo", true);
     }
 
     if (mapArgs.count("-bind")) {
@@ -889,7 +892,7 @@ bool AppInit2()
     uiInterface.InitMessage(_("Loading wallet..."));
     printf("Loading wallet...\n");
     nStart = GetTimeMillis();
-    bool fFirstRun = true;
+    fFirstRun = true;
     pwalletMain = new CWallet(strWalletFileName);
     DBErrors nLoadWalletRet = pwalletMain->LoadWallet(fFirstRun);
     if (nLoadWalletRet != DB_LOAD_OK)

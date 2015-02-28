@@ -50,8 +50,6 @@ QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
 unix: contains(TARGET_BIT, m32) {
 BOOST_INCLUDE_PATH = /usr/local/include
 BOOST_LIB_PATH = /usr/local/lib
-MINIUPNPC_INCLUDE_PATH = /usr/include
-MINIUPNPC_LIB_PATH = /usr/lib
 }
 
 # mac build dependencies

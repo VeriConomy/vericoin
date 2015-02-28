@@ -89,6 +89,7 @@ bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fSuperNETInstalled = false;
 #endif
+bool fFirstRun = true;
 bool fDebug = false;
 bool fDebugNet = false;
 bool fPrintToConsole = false;
@@ -1265,7 +1266,7 @@ boost::filesystem::path GetVersionFile()
     string versionUrl(walletDownloadsUrl);
 
     versionUrl.append(boostPathToString(versionFile));
-    versionFile = (GetProgramDir() / versionFile);
+    versionFile = (GetDataDir() / versionFile);
 
     // Download the file.
     printf("Downloading version data...\n");

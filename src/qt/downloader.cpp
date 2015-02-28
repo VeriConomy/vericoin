@@ -580,91 +580,16 @@ void Downloader::reloadBlockchain()
 
 void Downloader::checkForUpdate()
 {
-    ui->statusLabel->setText(tr("Please wait...."));
+    this->raise();
+
+    ui->statusLabel->setText(tr("Congratulations! Your wallet will now restart..."));
     ui->downloadButton->setEnabled(false);
     ui->continueButton->setEnabled(false);
     ui->quitButton->setEnabled(false);
     ui->downloadButton->setDefault(false);
     ui->continueButton->setDefault(false);
-    ui->quitButton->setDefault(true);
-    this->raise();
-
-    ui->progressBarLabel->setText(tr("Extracting:"));
-    ui->progressBar->setValue(0);
-
-#if !defined(WIN32) && !defined(MAC_OSX)
-    // If Linux, extract zip contents and make vericoin-qt executable then restart.
-    // Test the archive by looking for the version number that was in VERSION.json.
-    QStringList zlist = JlCompress::getFileList(fileDest.filePath(), -1);
-    if (!zlist.isEmpty() && zlist[0].contains(GetArg("-vVersion","1.0.0.0").c_str()))
-    {
-        printf("Update structure is valid.\n");
-    }
-    else
-    {
-        printf("Update structure is invalid!\n");
-        ui->statusLabel->setText(tr("I'm sorry, the update file structure appears to be invalid."));
-        ui->downloadButton->setEnabled(true);
-        ui->continueButton->setEnabled(false);
-        ui->quitButton->setEnabled(true);
-        ui->downloadButton->setDefault(false);
-        ui->continueButton->setDefault(false);
-        ui->quitButton->setDefault(true);
-        return;
-    }
-    // Extract the Update
-    QStringList zextracted = JlCompress::extractDir(fileDest.filePath(), fileDest.path(), ui->progressBar);
-    if (!zextracted.isEmpty())
-    {
-        printf("Update extract successful.\n");
-    }
-    else
-    {
-        printf("Update extract failed!\n");
-        ui->statusLabel->setText(tr("I'm sorry, the update extract failed."));
-        ui->downloadButton->setEnabled(true);
-        ui->continueButton->setEnabled(false);
-        ui->quitButton->setEnabled(true);
-        ui->downloadButton->setDefault(false);
-        ui->continueButton->setDefault(false);
-        ui->quitButton->setDefault(true);
-        return;
-    }
-
-    if (!boost::filesystem::exists(GetProgramDir() / zlist[0].toStdString().append("vericoin-qt")))
-    {
-        printf("Update extract is invalid!\n");
-        ui->statusLabel->setText(tr("I'm sorry, the update extract was successful, but the contents are invalid."));
-        ui->downloadButton->setEnabled(true);
-        ui->continueButton->setEnabled(false);
-        ui->quitButton->setEnabled(true);
-        ui->downloadButton->setDefault(false);
-        ui->continueButton->setDefault(false);
-        ui->quitButton->setDefault(true);
-        return;
-    }
-
-    // Rename the old and move in the new binary then make sure it's executable
-    boost::filesystem::rename(GetArg("-programpath","vericoin-qt"), GetArg("-programpath","vericoin-qt").append(".old"));
-    boost::filesystem::rename(zlist[0].toStdString().append("vericoin-qt"), GetArg("-programpath","vericoin-qt"));
-    boost::filesystem::permissions(boost::filesystem::path(GetArg("-programpath","vericoin-qt")), boost::filesystem::others_exe | boost::filesystem::owner_exe);
-    // Rename the old and move in the new config
-    boost::filesystem::rename(GetConfigFile(), GetConfigFile().operator +=(".old"));
-    boost::filesystem::rename(zlist[0].toStdString().append("vericoin.conf"), GetConfigFile());
-    // Get the README
-    boost::filesystem::rename(zlist[0].toStdString().append("README"), "README");
-    boost::filesystem::remove_all(zlist[0].toStdString());
-#endif // Linux
-
-    ui->statusLabel->setText(tr("Congratulations, the update was successful! Your wallet will now restart..."));
-    ui->downloadButton->setEnabled(false);
-    ui->continueButton->setEnabled(false);
-    ui->quitButton->setEnabled(true);
-    ui->downloadButton->setDefault(false);
-    ui->continueButton->setDefault(false);
     ui->quitButton->setDefault(false);
-    ui->progressBar->setValue(0);
-    this->raise();
+
     MilliSleep(3000);
 
     // Restart with the executable.

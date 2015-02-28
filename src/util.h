@@ -156,6 +156,7 @@ extern bool fMenuCheckForUpdate;
 extern bool fTimerCheckForUpdate;
 extern bool fSuperNETInstalled;
 #endif
+extern bool fFirstRun;
 extern bool fDebug;
 extern bool fDebugNet;
 extern bool fPrintToConsole;

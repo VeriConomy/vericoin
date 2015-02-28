@@ -136,10 +136,6 @@ int main(int argc, char *argv[])
         // a wallet restart was issued
         SoftSetBoolArg("-restart", true);
         MilliSleep(7000); // give the old instance time to quit
-#if !defined(WIN32) && !defined(MAC_OSX)
-        if (boost::filesystem::exists(GetDataDir() / "vericoin-qt.old"))
-            boost::filesystem::remove(GetDataDir() / "vericoin-qt.old");
-#endif // Linux
     }
 
     // ... then bitcoin.conf:
@@ -259,18 +255,14 @@ int main(int argc, char *argv[])
                 ipcInit(argc, argv);
 
                 ReadVersionFile();
-                if (mapArgs.count("-bootstrapturbo") && mapArgs.count("-vBootstrap") && !GetBoolArg("-vBootstrap"))
-                {
-                    SetBoolArg("-bootstrapturbo", false); // This version does not require bootstrapping.
-                }
 
                 if (fNewVersion) // Prompt user for upgrade
                 {
                     window.checkForUpdate();
                 }
-                if (GetBoolArg("-bootstrapturbo")) // Get boostrap in auto mode
+                if (fFirstRun || GetBoolArg("-vBootstrap")) // Force boostraping in auto mode
                 {
-                    window.reloadBlockchain();
+                    window.reloadBlockchain(true);
                 }
 
                 app.exec();
