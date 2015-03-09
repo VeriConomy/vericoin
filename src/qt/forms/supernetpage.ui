@@ -228,7 +228,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/icons/res/icons/forward.png</normaloff>:/icons/res/icons/forward.png</iconset>
+          <normaloff>:/icons/forward</normaloff>:/icons/forward</iconset>
         </property>
         <property name="iconSize">
          <size>
