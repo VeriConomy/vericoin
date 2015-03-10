@@ -52,7 +52,7 @@ bool fSmallHeaders = false;
 int TOOLBAR_WIDTH = 100;
 int TOOLBAR_ICON_WIDTH = 100;
 int TOOLBAR_ICON_HEIGHT = 41;
-int HEADER_WIDTH = 964;
+int HEADER_WIDTH = 1100;
 int HEADER_HEIGHT = 160;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;
@@ -86,11 +86,12 @@ void refactorGUI(QRect screenSize)
     if (screenSize.width() < newWidth - 2)
     {
         newWidth = screenSize.width() - 2;
+        // These are not really constant, but they are defined in guiconstants.h
+        STATUSBAR_MARGIN = 4;
+        TOOLBAR_WIDTH = 86;
+        TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
+        HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
     }
-    // These are not really constant, but they are defined in guiconstants.h
-    TOOLBAR_WIDTH = 80;
-    TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
-    HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
     if (screenSize.height() <= 600)
     {
         TOOLBAR_ICON_HEIGHT = 32;
