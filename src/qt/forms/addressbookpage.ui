@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="labelExplanation">
      <property name="text">
-      <string>These are your VeriCoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/icons/transaction_conflicted&quot;/&gt; These are your VeriCoin addresses for receiving payments. If the sender is near you, use the &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Show QR&lt;/span&gt;&amp;quot; button to enter a specific amount and generate a unique QR code for the transaction.&lt;br&gt;Note: You may want to give a different address to each sender so you can keep track of who is paying you. Use the &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;New Address&lt;/span&gt;&amp;quot; button to create receiving addresses.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
