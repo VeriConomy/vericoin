@@ -978,6 +978,22 @@ int64_t GetProofOfWorkReward(int64_t nFees)
     return nSubsidy + nFees;
 }
 
+// get average stake weight of last 10 blocks
+double GetAverageStakeWeight(CBlockIndex* pindexPrev)
+{
+    double weightSum = 0.0, weightAve = 0.0;
+    CBlockIndex* currentBlockIndex = pindexPrev;
+    for (int i = 0; i < 10; i++)
+    {
+        double tempWeight = GetPoSKernelPS(currentBlockIndex);
+        weightSum += tempWeight;
+        currentBlockIndex = currentBlockIndex->pprev;
+    }
+    weightAve = weightSum/10;
+
+    return weightAve;
+}
+
 // miner's coin stake reward based on coin age spent (coin-days)
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
 {
@@ -1181,15 +1197,6 @@ void CBlock::UpdateTime(const CBlockIndex* pindexPrev)
 {
     nTime = max(GetBlockTime(), GetAdjustedTime());
 }
-
-
-
-
-
-
-
-
-
 
 
 bool CTransaction::DisconnectInputs(CTxDB& txdb)
@@ -1489,8 +1496,6 @@ bool CTransaction::ClientConnectInputs()
 
     return true;
 }
-
-
 
 
 bool CBlock::DisconnectBlock(CTxDB& txdb, CBlockIndex* pindex)
