@@ -1653,10 +1653,17 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     {
         // ppcoin: coin stake tx earns reward instead of paying fee
         uint64_t nCoinAge;
+        int64_t nCalculatedStakeReward;
         if (!vtx[1].GetCoinAge(txdb, nCoinAge))
             return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
-
-        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->pprev);
+        if (fTestNet) //PoST
+        {
+            nCalculatedStakeReward = GetProofOfStakeTimeReward(nCoinAge, nFees, pindex->pprev);
+        }
+        else
+        {
+            nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->pprev);
+        }
 
         if (nStakeReward > nCalculatedStakeReward)
             return DoS(100, error("ConnectBlock() : coinstake pays too much(actual=%"PRId64" vs calculated=%"PRId64")", nStakeReward, nCalculatedStakeReward));

@@ -153,17 +153,6 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexCurrent, uint64_t& nStake
         }
         return true;
     }
-    if (fTestNet) // PoST
-    {
-        if (nModifierTime / nModifierInterval >= pindexCurrent->GetBlockTime() / nModifierInterval)
-        {
-            if (fDebug)
-            {
-                printf("ComputeNextStakeModifier: no new interval keep current modifier: pindexCurrent nHeight=%d nTime=%u\n", pindexCurrent->nHeight, (unsigned int)pindexCurrent->GetBlockTime());
-            }
-            return true;
-        }
-    }
 
     // Sort candidate blocks by timestamp
     vector<pair<int64_t, uint256> > vSortedByTimestamp;
