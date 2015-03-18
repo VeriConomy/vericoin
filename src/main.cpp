@@ -999,7 +999,7 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 {
     double nAverageWeight = GetAverageStakeWeight(pindexPrev)+21;
     double inflationRate = (17*(log(nAverageWeight/20)))/10000;
-    double interestRate = ((inflationRate*26751452)/nAverageWeight)*10000;
+    double interestRate = ((inflationRate*26751452)/nAverageWeight)*100;
 
     return interestRate;
 }
@@ -1008,7 +1008,7 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 int64_t GetProofOfStakeTimeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
 {
     int64_t nSubsidy;
-    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*10000;
+    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*1000000;
     nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
 
     if (fDebug && GetBoolArg("-printcreation"))
