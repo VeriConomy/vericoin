@@ -978,20 +978,43 @@ int64_t GetProofOfWorkReward(int64_t nFees)
     return nSubsidy + nFees;
 }
 
-// get average stake weight of last 10 blocks
+// get average stake weight of last 500 blocks PoST
 double GetAverageStakeWeight(CBlockIndex* pindexPrev)
 {
     double weightSum = 0.0, weightAve = 0.0;
     CBlockIndex* currentBlockIndex = pindexPrev;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 500; i++)
     {
         double tempWeight = GetPoSKernelPS(currentBlockIndex);
         weightSum += tempWeight;
         currentBlockIndex = currentBlockIndex->pprev;
     }
-    weightAve = weightSum/10;
+    weightAve = weightSum/500;
 
     return weightAve;
+}
+
+// get current interest rate by targeting for network stake dependent inflation rate PoST
+double GetCurrentInterestRate(CBlockIndex* pindexPrev)
+{
+    double nAverageWeight = GetAverageStakeWeight(pindexPrev)+21;
+    double inflationRate = (17*(log(nAverageWeight/20)))/10000;
+    double interestRate = ((inflationRate*27000000)/nAverageWeight)*10000;
+
+    return interestRate;
+}
+
+// Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
+int64_t GetProofOfStakeTimeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
+{
+    int64_t nSubsidy;
+    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*10000;
+    nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
+
+    if (fDebug && GetBoolArg("-printcreation"))
+        printf("GetProofOfStakeTimeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
+
+    return nSubsidy + nFees;
 }
 
 // miner's coin stake reward based on coin age spent (coin-days)
