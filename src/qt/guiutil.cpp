@@ -49,10 +49,10 @@ namespace GUIUtil {
 
 bool fNoHeaders = false;
 bool fSmallHeaders = false;
-int TOOLBAR_WIDTH = 100;
-int TOOLBAR_ICON_WIDTH = 100;
-int TOOLBAR_ICON_HEIGHT = 41;
-int HEADER_WIDTH = 1100;
+int TOOLBAR_WIDTH = 110;
+int TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
+int TOOLBAR_ICON_HEIGHT = 48;
+int HEADER_WIDTH = 1090;
 int HEADER_HEIGHT = 160;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;
@@ -166,7 +166,7 @@ QString veriAskPassphrasePushButtonStyleSheet = QString("QPushButton { backgroun
                             QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
                             QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
 
-QString veriAskPassphrasePageStyleSheet = QString("QDialog { background: url(:images/passphraseBackground) repeat 0px 0px; background-color: " + STRING_VERIBLUE + "; } QLabel { color: white; } QLineEdit { background: white; color: " + STRING_VERIBLUE + "; } ") + veriAskPassphrasePushButtonStyleSheet + veriToolTipStyleSheet;
+QString veriAskPassphrasePageStyleSheet = QString("QDialog { border-image: url(:images/askPassphraseBackground) repeat 0px 0px; background-color: " + STRING_VERIBLUE + "; } QLabel { color: white; } QLineEdit { background: white; color: " + STRING_VERIBLUE + "; } ") + veriAskPassphrasePushButtonStyleSheet + veriToolTipStyleSheet;
 
 // Setup header and styles
 QGraphicsView *header(QWidget *parent, QString backgroundImage)

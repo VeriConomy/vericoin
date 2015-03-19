@@ -51,6 +51,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     switch(mode)
     {
     case ForSending:
+        ui->buttonBox->setVisible(true);
         connect(ui->tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(accept()));
         ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         ui->tableView->setFocus();
@@ -63,13 +64,22 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     {
     case SendingTab:
         ui->labelExplanation->setVisible(false);
-        ui->deleteButton->setVisible(true);
-        ui->signMessage->setVisible(false);
+        ui->deleteButton->setEnabled(true);
+        ui->signMessage->setEnabled(false);
+        ui->verifyMessage->setEnabled(true);
         break;
     case ReceivingTab:
         ui->labelExplanation->setVisible(true);
-        ui->deleteButton->setVisible(false);
-        ui->signMessage->setVisible(true);
+        ui->deleteButton->setEnabled(false);
+        ui->signMessage->setEnabled(true);
+        ui->verifyMessage->setEnabled(false);
+        break;
+    case AddressBookTab:
+        ui->buttonBox->setVisible(true);
+        ui->labelExplanation->setVisible(false);
+        ui->deleteButton->setEnabled(true);
+        ui->signMessage->setEnabled(false);
+        ui->verifyMessage->setEnabled(true);
         break;
     }
 
@@ -141,6 +151,11 @@ void AddressBookPage::setModel(AddressTableModel *model)
         proxyModel->setFilterRole(AddressTableModel::TypeRole);
         proxyModel->setFilterFixedString(AddressTableModel::Send);
         break;
+    case AddressBookTab:
+        // addressbook filter
+        proxyModel->setFilterRole(AddressTableModel::TypeRole);
+        proxyModel->setFilterFixedString(AddressTableModel::Send);
+        break;
     }
     ui->tableView->setModel(proxyModel);
     ui->tableView->sortByColumn(0, Qt::AscendingOrder);
@@ -159,6 +174,11 @@ void AddressBookPage::setModel(AddressTableModel *model)
             this, SLOT(selectNewAddress(QModelIndex,int,int)));
 
     selectionChanged();
+}
+
+void AddressBookPage::accept()
+{
+    close();
 }
 
 void AddressBookPage::setOptionsModel(OptionsModel *optionsModel)
@@ -185,7 +205,7 @@ void AddressBookPage::onEditAction()
         return;
 
     EditAddressDialog dlg(
-            tab == SendingTab ?
+            tab == SendingTab || AddressBookTab ?
             EditAddressDialog::EditSendingAddress :
             EditAddressDialog::EditReceivingAddress);
     dlg.setModel(model);
@@ -229,7 +249,7 @@ void AddressBookPage::on_newAddressButton_clicked()
     if(!model)
         return;
     EditAddressDialog dlg(
-            tab == SendingTab ?
+            tab == SendingTab || AddressBookTab ?
             EditAddressDialog::NewSendingAddress :
             EditAddressDialog::NewReceivingAddress, this);
     dlg.setModel(model);
@@ -244,10 +264,18 @@ void AddressBookPage::on_deleteButton_clicked()
     QTableView *table = ui->tableView;
     if(!table->selectionModel())
         return;
-    QModelIndexList indexes = table->selectionModel()->selectedRows();
-    if(!indexes.isEmpty())
+
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm wallet encryption"),
+             tr("Are you sure you want to delete this address?"),
+             QMessageBox::Yes|QMessageBox::Cancel,
+             QMessageBox::Cancel);
+    if(retval == QMessageBox::Yes)
     {
-        table->model()->removeRow(indexes.at(0).row());
+        QModelIndexList indexes = table->selectionModel()->selectedRows();
+        if(!indexes.isEmpty())
+        {
+            table->model()->removeRow(indexes.at(0).row());
+        }
     }
 }
 
@@ -265,22 +293,23 @@ void AddressBookPage::selectionChanged()
         case SendingTab:
             // In sending tab, allow deletion of selection
             ui->deleteButton->setEnabled(true);
-            ui->deleteButton->setVisible(true);
             deleteAction->setEnabled(true);
             ui->signMessage->setEnabled(false);
-            ui->signMessage->setVisible(false);
             ui->verifyMessage->setEnabled(true);
-            ui->verifyMessage->setVisible(true);
             break;
         case ReceivingTab:
             // Deleting receiving addresses, however, is not allowed
             ui->deleteButton->setEnabled(false);
-            ui->deleteButton->setVisible(false);
             deleteAction->setEnabled(false);
             ui->signMessage->setEnabled(true);
-            ui->signMessage->setVisible(true);
             ui->verifyMessage->setEnabled(false);
-            ui->verifyMessage->setVisible(false);
+            break;
+        case AddressBookTab:
+            // In addressbook tab, allow deletion of selection
+            ui->deleteButton->setEnabled(true);
+            deleteAction->setEnabled(true);
+            ui->signMessage->setEnabled(false);
+            ui->verifyMessage->setEnabled(true);
             break;
         }
         ui->copyToClipboard->setEnabled(true);

@@ -26,7 +26,8 @@ class AddressBookPage : public QDialog
 public:
     enum Tabs {
         SendingTab = 0,
-        ReceivingTab = 1
+        ReceivingTab = 1,
+        AddressBookTab = 2
     };
 
     enum Mode {
@@ -58,6 +59,7 @@ private:
     QString newAddressToSelect;
 
 private slots:
+    void accept();
     void on_deleteButton_clicked();
     void on_newAddressButton_clicked();
     /** Copy address of currently selected address entry to clipboard */

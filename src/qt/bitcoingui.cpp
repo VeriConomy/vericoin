@@ -224,7 +224,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(askPassphrasePage);
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
-    centralWidget->addWidget(addressBookPage);
+    //centralWidget->addWidget(addressBookPage);
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(sendBitCoinsPage);
@@ -458,11 +458,13 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
+    /* Removed tab to simplify wallet
     addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("Address"), this);
     addressBookAction->setToolTip(tr("Saved Addresses"));
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
+    */
 
     getVeriCoinAction = new QAction(QIcon(":/icons/getvericoin"), tr("Get VeriCoin"), this);
     getVeriCoinAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
@@ -504,8 +506,8 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
-    connect(addressBookAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
+    //connect(addressBookAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    //connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     connect(getVeriCoinAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(getVeriCoinAction, SIGNAL(triggered()), this, SLOT(gotoGetVeriCoinPage()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -546,6 +548,8 @@ void BitcoinGUI::createActions()
     lockWalletAction->setToolTip(tr("Lock wallet and turn staking off"));
     unlockWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("&Unlock Wallet for Staking..."), this);
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
+    addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("&Address Book..."), this);
+    connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
@@ -576,6 +580,7 @@ void BitcoinGUI::createActions()
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
     connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
+    connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookTab()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     //connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
@@ -603,6 +608,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(backupWalletAction);
     file->addAction(exportAction);
     file->addSeparator();
+    file->addAction(addressBookAction);
     file->addAction(signMessageAction);
     file->addAction(verifyMessageAction);
     //file->addSeparator();
@@ -655,7 +661,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(sendCoinsAction);
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
-    toolbar->addAction(addressBookAction);
+    //toolbar->addAction(addressBookAction);
     toolbar->addAction(sendBitCoinsAction);
     toolbar->addAction(getVeriCoinAction);
     toolbar->addAction(forumsAction);
@@ -787,6 +793,7 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu->addAction(sendCoinsAction);
     trayIconMenu->addAction(receiveCoinsAction);
     trayIconMenu->addSeparator();
+    trayIconMenu->addAction(addressBookAction);
     trayIconMenu->addAction(signMessageAction);
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addSeparator();
@@ -1157,12 +1164,21 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoAddressBookPage()
 {
+    if(!walletModel)
+        return;
+
+    AddressBookPage dlg(AddressBookPage::ForEditing, AddressBookPage::AddressBookTab);
+    dlg.setModel(walletModel->getAddressTableModel());
+    dlg.exec();
+
+    /* Removed tab to simplify wallet
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
 
     exportAction->setEnabled(true);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
     connect(exportAction, SIGNAL(triggered()), addressBookPage, SLOT(exportClicked()));
+    */
 }
 
 void BitcoinGUI::gotoSendBitCoinsPage()
