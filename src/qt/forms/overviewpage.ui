@@ -46,6 +46,9 @@
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
+     <property name="formAlignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
      <property name="horizontalSpacing">
       <number>0</number>
      </property>
@@ -705,6 +708,9 @@
     <layout class="QFormLayout" name="formLayout_6">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <property name="formAlignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
      </property>
      <property name="horizontalSpacing">
       <number>0</number>
