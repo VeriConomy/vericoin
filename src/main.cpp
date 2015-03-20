@@ -1007,9 +1007,8 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 // Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
 int64_t GetProofOfStakeTimeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
 {
-    int64_t nSubsidy;
     int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*1000000;
-    nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
+    int64_t nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeTimeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
