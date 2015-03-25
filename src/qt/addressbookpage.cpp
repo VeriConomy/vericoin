@@ -254,7 +254,7 @@ void AddressBookPage::on_newAddressButton_clicked()
     if(!model)
         return;
     EditAddressDialog dlg(
-            tab == SendingTab || AddressBookTab ?
+            tab == SendingTab || tab == AddressBookTab ?
             EditAddressDialog::NewSendingAddress :
             EditAddressDialog::NewReceivingAddress, this);
     dlg.setModel(model);
