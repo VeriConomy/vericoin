@@ -1153,6 +1153,7 @@ boost::filesystem::path GetConfigFile()
     if (!fs::exists(pathConfigFile)) pathConfigFile = fs::current_path() / conf;  // set it to default current path
     if (!fs::exists(pathConfigFile)) printf("GetConfigFile: Cannot find config file. Using default: %s\n", pathConfigFile.c_str());
 
+    printf("GetConfigFile: %s\n", pathConfigFile.c_str());
     return pathConfigFile;
 }
 

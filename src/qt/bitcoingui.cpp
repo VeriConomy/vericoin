@@ -185,7 +185,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     transactionsPage->setLayout(vbox);
 
     // Create Address Page
-    addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::SendingTab);
+    addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::AddressBookTab);
 
     // Create VeriBit Page
     sendBitCoinsPage = new SendBitCoinsDialog(this);
@@ -548,7 +548,7 @@ void BitcoinGUI::createActions()
     lockWalletAction->setToolTip(tr("Lock wallet and turn staking off"));
     unlockWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("&Unlock Wallet for Staking..."), this);
     unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
-    addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("&Address Book..."), this);
+    addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book..."), this);
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
@@ -789,18 +789,6 @@ void BitcoinGUI::createTrayIcon()
 
     // Configuration of the tray icon (or dock icon) icon menu
     trayIconMenu->addAction(toggleHideAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(sendCoinsAction);
-    trayIconMenu->addAction(receiveCoinsAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(addressBookAction);
-    trayIconMenu->addAction(signMessageAction);
-    trayIconMenu->addAction(verifyMessageAction);
-    trayIconMenu->addSeparator();
-    //trayIconMenu->addAction(accessNxtInsideAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(optionsAction);
-    trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(logoutAction);
 #ifndef Q_OS_MAC // This is built-in on Mac

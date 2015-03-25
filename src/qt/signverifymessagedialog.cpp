@@ -49,7 +49,6 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     ui->addressBookButton_SM->setFixedSize(30,27);
     ui->addressBookButton_VM->setFixedSize(30,27);
     ui->copySignatureButton_SM->setFixedSize(30,27);
-    ui->pasteButton_SM->setFixedSize(30,27);
 }
 
 SignVerifyMessageDialog::~SignVerifyMessageDialog()
@@ -93,18 +92,13 @@ void SignVerifyMessageDialog::on_addressBookButton_SM_clicked()
 {
     if (model && model->getAddressTableModel())
     {
-        AddressBookPage dlg(AddressBookPage::ForSending, AddressBookPage::ReceivingTab, this);
+        AddressBookPage dlg(AddressBookPage::ForSigning, AddressBookPage::ReceivingTab, this);
         dlg.setModel(model->getAddressTableModel());
         if (dlg.exec())
         {
             setAddress_SM(dlg.getReturnValue());
         }
     }
-}
-
-void SignVerifyMessageDialog::on_pasteButton_SM_clicked()
-{
-    setAddress_SM(QApplication::clipboard()->text());
 }
 
 void SignVerifyMessageDialog::on_signMessageButton_SM_clicked()
@@ -182,7 +176,7 @@ void SignVerifyMessageDialog::on_addressBookButton_VM_clicked()
 {
     if (model && model->getAddressTableModel())
     {
-        AddressBookPage dlg(AddressBookPage::ForSending, AddressBookPage::SendingTab, this);
+        AddressBookPage dlg(AddressBookPage::ForVerifying, AddressBookPage::SendingTab, this);
         dlg.setModel(model->getAddressTableModel());
         if (dlg.exec())
         {

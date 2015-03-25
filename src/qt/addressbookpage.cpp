@@ -48,38 +48,48 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     ui->showQRCode->setVisible(false);
 #endif
 
+    // These are disabled in 1.5.2 since they are available from the File menu.
+    // This cleans up the UI and also removes some dialog bugginess.
+    ui->signMessage->setVisible(false);
+    ui->verifyMessage->setVisible(false);
+
     switch(mode)
     {
     case ForSending:
-        ui->buttonBox->setVisible(true);
+    case ForSigning:
+    case ForVerifying:
         connect(ui->tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(accept()));
         ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         ui->tableView->setFocus();
         break;
     case ForEditing:
-        ui->buttonBox->setVisible(false);
         break;
     }
     switch(tab)
     {
     case SendingTab:
+        ui->buttonBox->setVisible(true);
         ui->labelExplanation->setVisible(false);
         ui->deleteButton->setEnabled(true);
-        ui->signMessage->setEnabled(false);
-        ui->verifyMessage->setEnabled(true);
+        //ui->signMessage->setEnabled(false);
+        //ui->verifyMessage->setEnabled(true);
         break;
     case ReceivingTab:
+        if (mode == ForEditing)
+            ui->buttonBox->setVisible(false);
+        else
+            ui->buttonBox->setVisible(true);
         ui->labelExplanation->setVisible(true);
         ui->deleteButton->setEnabled(false);
-        ui->signMessage->setEnabled(true);
-        ui->verifyMessage->setEnabled(false);
+        //ui->signMessage->setEnabled(true);
+        //ui->verifyMessage->setEnabled(false);
         break;
     case AddressBookTab:
         ui->buttonBox->setVisible(true);
         ui->labelExplanation->setVisible(false);
         ui->deleteButton->setEnabled(true);
-        ui->signMessage->setEnabled(false);
-        ui->verifyMessage->setEnabled(true);
+        //ui->signMessage->setEnabled(false);
+        //ui->verifyMessage->setEnabled(true);
         break;
     }
 
@@ -88,8 +98,8 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     QAction *copyAddressAction = new QAction(ui->copyToClipboard->text(), this);
     QAction *editAction = new QAction(tr("&Edit"), this);
     QAction *showQRCodeAction = new QAction(ui->showQRCode->text(), this);
-    QAction *signMessageAction = new QAction(ui->signMessage->text(), this);
-    QAction *verifyMessageAction = new QAction(ui->verifyMessage->text(), this);
+    //QAction *signMessageAction = new QAction(ui->signMessage->text(), this);
+    //QAction *verifyMessageAction = new QAction(ui->verifyMessage->text(), this);
     deleteAction = new QAction(ui->deleteButton->text(), this);
 
     // Build context menu
@@ -101,12 +111,12 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
         contextMenu->addAction(deleteAction);
     contextMenu->addSeparator();
     contextMenu->addAction(showQRCodeAction);
-    if (tab == ReceivingTab)
-    {
-    	contextMenu->addAction(signMessageAction);
-    }
-    else if(tab == SendingTab)
-        contextMenu->addAction(verifyMessageAction);
+    //if (tab == ReceivingTab)
+    //{
+    //	contextMenu->addAction(signMessageAction);
+    //}
+    //else if(tab == SendingTab)
+    //    contextMenu->addAction(verifyMessageAction);
 
     // Connect signals for context menu actions
     connect(copyAddressAction, SIGNAL(triggered()), this, SLOT(on_copyToClipboard_clicked()));
@@ -114,8 +124,8 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     connect(editAction, SIGNAL(triggered()), this, SLOT(onEditAction()));
     connect(deleteAction, SIGNAL(triggered()), this, SLOT(on_deleteButton_clicked()));
     connect(showQRCodeAction, SIGNAL(triggered()), this, SLOT(on_showQRCode_clicked()));
-    connect(signMessageAction, SIGNAL(triggered()), this, SLOT(on_signMessage_clicked()));
-    connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(on_verifyMessage_clicked()));
+    //connect(signMessageAction, SIGNAL(triggered()), this, SLOT(on_signMessage_clicked()));
+    //connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(on_verifyMessage_clicked()));
 
     connect(ui->tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextualMenu(QPoint)));
 
@@ -176,11 +186,6 @@ void AddressBookPage::setModel(AddressTableModel *model)
     selectionChanged();
 }
 
-void AddressBookPage::accept()
-{
-    close();
-}
-
 void AddressBookPage::setOptionsModel(OptionsModel *optionsModel)
 {
     this->optionsModel = optionsModel;
@@ -205,7 +210,7 @@ void AddressBookPage::onEditAction()
         return;
 
     EditAddressDialog dlg(
-            tab == SendingTab || AddressBookTab ?
+            tab == SendingTab || tab == AddressBookTab ?
             EditAddressDialog::EditSendingAddress :
             EditAddressDialog::EditReceivingAddress);
     dlg.setModel(model);
@@ -294,22 +299,22 @@ void AddressBookPage::selectionChanged()
             // In sending tab, allow deletion of selection
             ui->deleteButton->setEnabled(true);
             deleteAction->setEnabled(true);
-            ui->signMessage->setEnabled(false);
-            ui->verifyMessage->setEnabled(true);
+            //ui->signMessage->setEnabled(false);
+            //ui->verifyMessage->setEnabled(true);
             break;
         case ReceivingTab:
             // Deleting receiving addresses, however, is not allowed
             ui->deleteButton->setEnabled(false);
             deleteAction->setEnabled(false);
-            ui->signMessage->setEnabled(true);
-            ui->verifyMessage->setEnabled(false);
+            //ui->signMessage->setEnabled(true);
+            //ui->verifyMessage->setEnabled(false);
             break;
         case AddressBookTab:
             // In addressbook tab, allow deletion of selection
             ui->deleteButton->setEnabled(true);
             deleteAction->setEnabled(true);
-            ui->signMessage->setEnabled(false);
-            ui->verifyMessage->setEnabled(true);
+            //ui->signMessage->setEnabled(false);
+            //ui->verifyMessage->setEnabled(true);
             break;
         }
         ui->copyToClipboard->setEnabled(true);
@@ -320,8 +325,8 @@ void AddressBookPage::selectionChanged()
         ui->deleteButton->setEnabled(false);
         ui->showQRCode->setEnabled(false);
         ui->copyToClipboard->setEnabled(false);
-        ui->signMessage->setEnabled(false);
-        ui->verifyMessage->setEnabled(false);
+        //ui->signMessage->setEnabled(false);
+        //ui->verifyMessage->setEnabled(false);
     }
 }
 
@@ -331,7 +336,7 @@ void AddressBookPage::done(int retval)
     if(!table->selectionModel() || !table->model())
         return;
     // When this is a tab/widget and not a model dialog, ignore "done"
-    if(mode == ForEditing)
+    if(tab == ReceivingTab && mode == ForEditing)
         return;
 
     // Figure out which address was selected, and return it

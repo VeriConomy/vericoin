@@ -31,6 +31,8 @@ public:
     };
 
     enum Mode {
+        ForSigning, /**< Open address book to pick address for signing */
+        ForVerifying, /**< Open address book to pick address for verifying */
         ForSending, /**< Open address book to pick address for sending */
         ForEditing  /**< Open address book for editing */
     };
@@ -59,7 +61,6 @@ private:
     QString newAddressToSelect;
 
 private slots:
-    void accept();
     void on_deleteButton_clicked();
     void on_newAddressButton_clicked();
     /** Copy address of currently selected address entry to clipboard */

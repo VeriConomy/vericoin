@@ -3,6 +3,7 @@
         <file alias="bitcoin">res/icons/vericoin-80.png</file>
         <file alias="about-qt">res/icons/about-qt.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
+        <file alias="address-book-menu">res/icons/address-book-menu.png</file>
         <file alias="spendable">res/icons/spendable.png</file>
         <file alias="staking">res/icons/staking.png</file>
         <file alias="unconfirmed">res/icons/unconfirmed.png</file>
