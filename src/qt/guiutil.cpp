@@ -50,10 +50,10 @@ namespace GUIUtil {
 bool fTicker = true;
 bool fNoHeaders = false;
 bool fSmallHeaders = false;
-int TOOLBAR_WIDTH = 110;
+int TOOLBAR_WIDTH = 120;
 int TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
 int TOOLBAR_ICON_HEIGHT = 48;
-int HEADER_WIDTH = 1040;
+int HEADER_WIDTH = 1024;
 int HEADER_HEIGHT = 160;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;

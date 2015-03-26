@@ -942,11 +942,19 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
     }
 
-    // Override progressBar text and hide progress bar, when we have warnings to display
-    if (!strStatusBarWarnings.isEmpty())
+    // Show a warning message if wallet is unencrypted
+    if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted && strStatusBarWarnings.isEmpty())
     {
-        //progressBar->setVisible(false);
+        // Prompt to set password.
+        strStatusBarWarnings = tr("Wallet is not encrypted! Go to Settings to Set Password.");
+    }
+
+    // Override progressBar text and hide progress bar, when we have warnings to display
+    if (!strStatusBarWarnings.isEmpty() && !progressBar->isVisible())
+    {
         progressBar->setFormat(strStatusBarWarnings);
+        progressBar->setValue(0);
+        progressBar->setVisible(true);
     }
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
