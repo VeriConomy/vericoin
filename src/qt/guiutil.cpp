@@ -47,12 +47,13 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
+bool fTicker = true;
 bool fNoHeaders = false;
 bool fSmallHeaders = false;
 int TOOLBAR_WIDTH = 110;
 int TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
 int TOOLBAR_ICON_HEIGHT = 48;
-int HEADER_WIDTH = 1090;
+int HEADER_WIDTH = 1040;
 int HEADER_HEIGHT = 160;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;
@@ -68,7 +69,8 @@ int WINDOW_MIN_HEIGHT = 772;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
-int STATUSBAR_MARGIN = 8;
+int STATUSBAR_MARGIN = 10;
+int STATUSBAR_HEIGHT = 32;
 
 void refactorGUI(QRect screenSize)
 {
@@ -86,9 +88,8 @@ void refactorGUI(QRect screenSize)
     if (screenSize.width() < newWidth - 2)
     {
         newWidth = screenSize.width() - 2;
-        // These are not really constant, but they are defined in guiconstants.h
-        STATUSBAR_MARGIN = 4;
-        TOOLBAR_WIDTH = 86;
+        STATUSBAR_MARGIN = 0;
+        TOOLBAR_WIDTH = 90;
         TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
         HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
     }
@@ -97,12 +98,14 @@ void refactorGUI(QRect screenSize)
         TOOLBAR_ICON_HEIGHT = 32;
         HEADER_HEIGHT = 0;
         fNoHeaders = true;
+        fTicker = false;
     }
     else if (screenSize.height() < 728) // 728px if OS taskbar is not hidden
     {
         TOOLBAR_ICON_HEIGHT = 32;
         HEADER_HEIGHT = 32;
         fNoHeaders = true;
+        fTicker = false;
     }
     else // Default small wallet at 728px to 768px
     {
@@ -113,7 +116,6 @@ void refactorGUI(QRect screenSize)
 
     WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
     WINDOW_MIN_HEIGHT = newHeight;
-    STATUSBAR_MARGIN = 2;
 }
 
 int pointsToPixels(int points) { return(points * 4 / 3); }
@@ -125,6 +127,7 @@ void setFontPixelSize(QFont *font)
 
 void setFontPixelSizes()
 {
+    setFontPixelSize((QFont *)&veriFontSmallest);
     setFontPixelSize((QFont *)&veriFontSmaller);
     setFontPixelSize((QFont *)&veriFontSmall);
     setFontPixelSize((QFont *)&veriFont);

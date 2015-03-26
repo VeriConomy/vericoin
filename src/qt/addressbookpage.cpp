@@ -38,7 +38,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
 
     ui->setupUi(this);
     this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
-    this->resize(HEADER_WIDTH, 600);
+    this->resize(HEADER_WIDTH, WINDOW_MIN_HEIGHT - HEADER_HEIGHT - STATUSBAR_HEIGHT);
 
     ui->labelExplanation->setFont(veriFontSmaller);
     ui->tableView->viewport()->setAttribute(Qt::WA_Hover, true);

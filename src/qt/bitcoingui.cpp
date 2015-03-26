@@ -239,11 +239,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar();
     statusBar()->setContentsMargins(STATUSBAR_MARGIN,0,0,0);
     statusBar()->setFont(veriFontSmall);
-    statusBar()->setFixedHeight(32);
+    statusBar()->setFixedHeight(STATUSBAR_HEIGHT);
 
     QFrame *versionBlocks = new QFrame();
     versionBlocks->setContentsMargins(0,0,0,0);
     versionBlocks->setFont(veriFontSmall);
+
     versionBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     QHBoxLayout *versionBlocksLayout = new QHBoxLayout(versionBlocks);
     versionBlocksLayout->setContentsMargins(0,0,0,0);
@@ -254,7 +255,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelVersionIcon->setPixmap(QIcon(":/icons/statusGood").pixmap(4, STATUSBAR_ICONSIZE));
     versionLabel = new QLabel();
     versionLabel->setContentsMargins(0,0,0,0);
-    versionLabel->setFont(veriFontSmaller);
+    if (!STATUSBAR_MARGIN)
+        versionLabel->setFont(veriFontSmallest);
+    else
+        versionLabel->setFont(veriFontSmaller);
     versionLabel->setFixedWidth(TOOLBAR_WIDTH - STATUSBAR_MARGIN - (versionBlocksLayout->spacing() * 3) - labelVersionIcon->pixmap()->width());
     versionLabel->setText(tr("Version %1").arg(FormatVersion(CLIENT_VERSION).c_str()));
     versionLabel->setStyleSheet("QLabel { color: white; }");
