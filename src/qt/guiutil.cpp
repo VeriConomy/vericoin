@@ -151,7 +151,7 @@ QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING
 
 QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
                             QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-family: Lato; font-style: normal; font-weight: normal; font-size: 12px; } \
-                            QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
+                            QToolButton:hover { background: #0c456f; color: white; border: none; } \
                             QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } ");
 

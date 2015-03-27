@@ -12,7 +12,7 @@
 #define ProgramName "VeriCoin"
 
 ; Enter the Version Number of your binaries
-#define VersionNumber "1.5.1"
+#define VersionNumber "1.5.2"
 
 ; Enter the Name of the Folder created in \Appdata\Roaming where your binaries will place the user files, including wallet, conf file, blockchain info etc.
 #define RoamingName "VeriCoin"

@@ -946,7 +946,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted && strStatusBarWarnings.isEmpty())
     {
         // Prompt to set password.
-        strStatusBarWarnings = tr("Wallet is not encrypted! Go to Settings to Set Password.");
+        strStatusBarWarnings = tr("Wallet is not encrypted! Go to Settings and Set Password...");
     }
 
     // Override progressBar text and hide progress bar, when we have warnings to display
