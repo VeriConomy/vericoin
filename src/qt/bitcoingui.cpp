@@ -908,7 +908,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // don't show / hide progress bar if we have no connection to the network
     if (!clientModel || clientModel->getNumConnections() == 0)
     {
-        //progressBar->setVisible(false);
+        progressBar->setVisible(true);
         progressBar->setFormat(tr("Waiting for a network connection..."));
         progressBar->setMaximum(nTotalBlocks);
         progressBar->setValue(0);
@@ -942,15 +942,15 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
     }
 
-    // Show a warning message if wallet is unencrypted
-    if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted && strStatusBarWarnings.isEmpty())
+    // Show a warning message if wallet is unencrypted and progressBar is not busy
+    if (walletModel && walletModel->getEncryptionStatus() == WalletModel::Unencrypted && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
     {
         // Prompt to set password.
         strStatusBarWarnings = tr("Wallet is not encrypted! Go to Settings and Set Password...");
     }
 
-    // Override progressBar text and hide progress bar, when we have warnings to display
-    if (!strStatusBarWarnings.isEmpty() && !progressBar->isVisible())
+    // Override progressBar text when we have warnings to display
+    if (!strStatusBarWarnings.isEmpty())
     {
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
