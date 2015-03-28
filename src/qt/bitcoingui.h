@@ -213,6 +213,7 @@ private slots:
     void gotoSuperNETPage();
     /** Switch to GetVeriCoin page */
     void gotoGetVeriCoinPage();
+
     void resizeGUI();
     void logout();
     void unlockWalletFeatures();

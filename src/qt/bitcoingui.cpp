@@ -350,6 +350,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     tCheckForUpdate->start(24 * 60 * 60 * 1000); // every 24 hours
 
     connect(askPassphrasePage, SIGNAL(unlockWalletFeatures()), this, SLOT(unlockWalletFeatures()));
+    connect(sendCoinsPage, SIGNAL(gotoSendBitCoins()), this, SLOT(gotoSendBitCoinsPage()));
+    connect(sendBitCoinsPage, SIGNAL(gotoSendCoins()), this, SLOT(gotoSendCoinsPage()));
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -444,11 +446,13 @@ void BitcoinGUI::createActions()
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendCoinsAction);
 
+    /* Removed tab to simplify wallet
     sendBitCoinsAction = new QAction(QIcon(":/icons/veriBit"), tr("VeriBit"), this);
     sendBitCoinsAction->setToolTip(tr("Send Bitcoin"));
     sendBitCoinsAction->setCheckable(true);
     sendBitCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendBitCoinsAction);
+    */
 
     receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("Receive"), this);
     receiveCoinsAction->setToolTip(tr("Receive Addresses"));
@@ -504,8 +508,8 @@ void BitcoinGUI::createActions()
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
-    connect(sendBitCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(sendBitCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendBitCoinsPage()));
+    //connect(sendBitCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    //connect(sendBitCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendBitCoinsPage()));
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -666,7 +670,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
     //toolbar->addAction(addressBookAction);
-    toolbar->addAction(sendBitCoinsAction);
+    //toolbar->addAction(sendBitCoinsAction);
     toolbar->addAction(getVeriCoinAction);
     toolbar->addAction(forumsAction);
     toolbar->addAction(chatAction);
@@ -1183,11 +1187,19 @@ void BitcoinGUI::gotoAddressBookPage()
 
 void BitcoinGUI::gotoSendBitCoinsPage()
 {
+    sendCoinsAction->setChecked(true);
+    centralWidget->setCurrentWidget(sendBitCoinsPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+
+    /* Removed tab to simplify wallet
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+    */
 }
 
 void BitcoinGUI::gotoGetVeriCoinPage()
