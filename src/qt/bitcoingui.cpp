@@ -1193,7 +1193,7 @@ void BitcoinGUI::gotoSendBitCoinsPage()
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 
-    /* Removed tab to simplify wallet
+    /* Combined tabs to simplify wallet
     sendBitCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendBitCoinsPage);
 

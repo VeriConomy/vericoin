@@ -126,6 +126,9 @@
          <height>25</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>Generate a QR code for the address</string>
+       </property>
        <property name="text">
         <string>Show &amp;QR</string>
        </property>

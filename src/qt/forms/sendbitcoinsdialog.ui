@@ -22,7 +22,7 @@
      <item>
       <widget class="QPushButton" name="btnVeriCoin">
        <property name="text">
-        <string>Send VeriCoin (VRC)</string>
+        <string>Send VeriCoin</string>
        </property>
       </widget>
      </item>
@@ -32,7 +32,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Send VeriBit (BTC)</string>
+        <string>Send VeriCoin to Bitcoin (VeriBit)</string>
        </property>
       </widget>
      </item>
