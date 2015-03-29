@@ -1333,16 +1333,22 @@ void ReadVersionFile()
         vFileName.append(versionObj.value(QString("linux")).toString());
 #endif
 #endif
-        bool vBootstrap = versionObj.value(QString("bootstrap")).toBool();
+        QString vProtocol = versionObj.value(QString("protocol")).toString();
+        bool vAlert = versionObj.value(QString("alert")).toBool();
+        QString vAlertMsg = versionObj.value(QString("alertMsg")).toString();
         QString vTrustedUrls = versionObj.value(QString("trustedUrls")).toString();
+        bool vBootstrap = versionObj.value(QString("bootstrap")).toBool();
 
         SetArg("-vTitle", vTitle.toStdString());
         SetArg("-vDescription", vDescription.toStdString());
         SetArg("-vFileName", vFileName.toStdString());
         SetArg("-vVersion", vVersion.toStdString());
         SetArg("-vArch", vArch.toStdString());
-        SetBoolArg("-vBootstrap", vBootstrap);
+        SetArg("-vProtocol", vProtocol.toStdString());
+        SetBoolArg("-vAlert", vAlert);
+        SetArg("-vAlertMsg", vAlertMsg.toStdString());
         SetArg("-vTrustedUrls", vTrustedUrls.toStdString());
+        SetBoolArg("-vBootstrap", vBootstrap);
 
         version = vVersion.toStdString();
         int maj = 0;
@@ -1370,6 +1376,7 @@ void ReadVersionFile()
         }
         else
         {
+            // For testing, set this to true.
             fNewVersion = false;
         }
     }

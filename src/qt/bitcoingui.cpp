@@ -317,7 +317,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar = new QProgressBar();
     progressBar->setContentsMargins(0,0,0,0);
     progressBar->setFont(veriFontSmall);
-    progressBar->setMinimumWidth(420);
+    progressBar->setMinimumWidth(500);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
@@ -944,6 +944,21 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     {
         progressBar->setVisible(false);
         tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
+    }
+
+    // Show Alert message as first priority.
+    if (GetBoolArg("-vAlert") && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
+    {
+        strStatusBarWarnings = tr(GetArg("-vAlertMsg","").c_str());
+    }
+
+    // Show a warning message if on wrong protocol version
+    char pv[10];
+    sprintf(pv, "%d", PROTOCOL_VERSION);
+    if (GetArg("-vProtocol","0").compare(pv) && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
+    {
+        // Warn for wrong protocol version.
+        strStatusBarWarnings = tr("Wrong protocol version detected. Please upgrade to %1 asap!").arg(GetArg("-vVersion","").c_str());
     }
 
     // Show a warning message if wallet is unencrypted and progressBar is not busy
