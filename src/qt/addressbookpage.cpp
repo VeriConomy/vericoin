@@ -339,21 +339,23 @@ void AddressBookPage::done(int retval)
     if(tab == ReceivingTab && mode == ForEditing)
         return;
 
-    // Figure out which address was selected, and return it
-    QModelIndexList indexes = table->selectionModel()->selectedRows(AddressTableModel::Address);
-
-    foreach (QModelIndex index, indexes)
+    if (tab != AddressBookTab)
     {
-        QVariant address = table->model()->data(index);
-        returnValue = address.toString();
-    }
+        // Figure out which address was selected, and return it
+        QModelIndexList indexes = table->selectionModel()->selectedRows(AddressTableModel::Address);
 
-    if(returnValue.isEmpty())
-    {
-        // If no address entry selected, return rejected
-        retval = Rejected;
-    }
+        foreach (QModelIndex index, indexes)
+        {
+            QVariant address = table->model()->data(index);
+            returnValue = address.toString();
+        }
 
+        if(returnValue.isEmpty())
+        {
+            // If no address entry selected, return rejected
+            retval = Rejected;
+        }
+    }
     QDialog::done(retval);
 }
 

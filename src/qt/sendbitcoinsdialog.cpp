@@ -8,7 +8,6 @@
 
 #include "bitcoinunits.h"
 #include "veribitcoinunits.h"
-#include "addressbookpage.h"
 #include "optionsmodel.h"
 #include "sendbitcoinsentry.h"
 #include "guiutil.h"

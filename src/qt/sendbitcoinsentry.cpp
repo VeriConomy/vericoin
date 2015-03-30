@@ -47,6 +47,7 @@ void SendBitCoinsEntry::on_pasteButton_clicked()
     ui->payTo->setText(QApplication::clipboard()->text());
 }
 
+/* Removed address book funtion for bitcoin
 void SendBitCoinsEntry::on_addressBookButton_clicked()
 {
     if(!model)
@@ -59,6 +60,7 @@ void SendBitCoinsEntry::on_addressBookButton_clicked()
         ui->payAmount->setFocus();
     }
 }
+*/
 
 void SendBitCoinsEntry::on_payTo_textChanged(const QString &address)
 {
