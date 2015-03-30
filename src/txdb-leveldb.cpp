@@ -429,7 +429,7 @@ bool CTxDB::LoadBlockIndex()
         pindex->nChainTrust = (pindex->pprev ? pindex->pprev->nChainTrust : 0) + pindex->GetBlockTrust();
         // VeriCoin: calculate stake modifier checksum
         pindex->nStakeModifierChecksum = GetStakeModifierChecksum(pindex);
-        if (!CheckStakeModifierCheckpoints(pindex->nHeight, pindex->nStakeModifierChecksum))
+        if (!fTestNet && !CheckStakeModifierCheckpoints(pindex->nHeight, pindex->nStakeModifierChecksum))
             return error("CTxDB::LoadBlockIndex() : Failed stake modifier checkpoint height=%d, modifier=0x%016"PRIx64, pindex->nHeight, pindex->nStakeModifier);
     }
 

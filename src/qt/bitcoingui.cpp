@@ -542,10 +542,10 @@ void BitcoinGUI::createActions()
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password..."), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
-    lockWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Lock Wallet..."), this);
-    lockWalletAction->setToolTip(tr("Lock wallet and turn staking off"));
-    unlockWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("&Unlock Wallet for Staking..."), this);
-    unlockWalletAction->setToolTip(tr("Unlock wallet for staking"));
+    lockWalletAction = new QAction(QIcon(":/icons/notsynced"), tr("&Disable Staking..."), this);
+    lockWalletAction->setToolTip(tr("Turn staking off"));
+    unlockWalletAction = new QAction(QIcon(":/icons/staking_on"), tr("&Enable Staking..."), this);
+    unlockWalletAction->setToolTip(tr("Turn staking on"));
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message..."), this);
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify Message..."), this);
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET..."), this);
@@ -672,7 +672,7 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
         // Replace some strings and icons, when using the testnet
         if(clientModel->isTestNet())
         {
-            setWindowTitle(windowTitle() + QString(" ") + tr("[testnet]"));
+            setWindowTitle(windowTitle() + QString(" ") + tr("[PoST testnet]"));
 #ifndef Q_OS_MAC
             qApp->setWindowIcon(QIcon(":icons/bitcoin_testnet"));
             setWindowIcon(QIcon(":icons/bitcoin_testnet"));
@@ -1478,14 +1478,18 @@ void BitcoinGUI::updateStakingIcon()
     {
         return;
     }
-    uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
-    pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
+    uint64_t nWeight = 0, stakeTimeWeight = 0;
+    pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
+    pwalletMain->GetStakeTimeWeight(*pwalletMain, stakeTimeWeight);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
     if (walletModel->getEncryptionStatus() == WalletModel::Unlocked && nLastCoinStakeSearchInterval && nWeight)
     {
-        uint64_t nNetworkWeight = GetPoSKernelPS();
-        unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
+        double nNetworkWeight = GetPoSKernelPS();
+        double nAverageStakeWeight = GetAverageStakeWeight(pindexBest->pprev);
+        double nInflationRate = GetCurrentInflationRate(nAverageStakeWeight);
+        double nInterestRate = GetCurrentInterestRate(pindexBest->pprev);
+        unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / stakeTimeWeight;
 
         QString text;
         if (nEstimateTime < 60)
@@ -1508,7 +1512,7 @@ void BitcoinGUI::updateStakingIcon()
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("In sync and staking.\nBlock number %1\nExpected time to earn interest is: %2").arg(currentBlock).arg(text));
+        labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2\nCoinAgeWeight: %3\nStakeTimeWeight: %4\nNetworkStakeWeight: %5\nAverageStakeWeight: %6\nInflationRate: %7\n InterestRate: %8").arg(currentBlock).arg(text).arg(nWeight).arg(stakeTimeWeight).arg(nNetworkWeight).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
     }
     else
     {
@@ -1517,7 +1521,7 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, the wallet is locked.\nUnlock wallet in Settings.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, turn on staking in the Settings menu.").arg(currentBlock));
         else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else

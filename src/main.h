@@ -26,7 +26,6 @@ class CInv;
 class CRequestTracker;
 class CNode;
 
-static const double PI = 3.1415926535;
 static const int LAST_POW_BLOCK = 20160;
 static const unsigned int MAX_BLOCK_SIZE = 1000000;
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2;
@@ -36,6 +35,7 @@ static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 10000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MAX_MONEY = 2000000000 * COIN;
+static const double PI = 3.1415926535;
 
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
@@ -48,7 +48,7 @@ static const int fHaveUPnP = false;
 #endif
 
 static const uint256 hashGenesisBlock("0x000004da58a02be894a6c916d349fe23cc29e21972cafb86b5d3f07c4b8e6bb8");
-static const uint256 hashGenesisBlockTestNet("0x0000bc5769efde881ee95b88dfe4d378d580d10a5e1bf8e1f7fd3844b418c920");
+static const uint256 hashGenesisBlockTestNet("0x0000d90349e5898a5cb76775e93f8774138d48cd2d763c7707ce87d42af0f66a");
 
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 10 * 60; } // up to 10 minutes from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 10 minutes from the future
@@ -112,9 +112,11 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake);
 int64_t GetProofOfWorkReward(int64_t nFees);
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev);
-int64_t GetProofOfStakeTimeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev);
+int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev);
+int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, CBlockIndex *pindexPrev);
 double GetAverageStakeWeight(CBlockIndex* pindexPrev);
 double GetCurrentInterestRate(CBlockIndex* pindexPrev);
+double GetCurrentInflationRate(double nAverageWeight);
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime);
 unsigned int ComputeMinStake(unsigned int nBase, int64_t nTime, unsigned int nBlockTime);
 int GetNumBlocksOfPeers();
@@ -695,6 +697,7 @@ public:
     bool CheckTransaction() const;
     bool AcceptToMemoryPool(CTxDB& txdb, bool fCheckInputs=true, bool* pfMissingInputs=NULL);
     bool GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
+    bool GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* pindexPrev) const;  // VeriCoin: get transaction staketime
 
 protected:
     const CTxOut& GetOutputFor(const CTxIn& input, const MapPrevTx& inputs) const;
