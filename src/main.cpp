@@ -1006,7 +1006,7 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
     return weightAve+21;
 }
 
-// get current interest rate by targeting for network stake dependent inflation rate PoST
+// get current inflation rate using average stake weight ~1.5-2.5% (measure of liquidity) PoST
 double GetCurrentInflationRate(double nAverageWeight)
 {
     double inflationRate = (17*(log(nAverageWeight/20)))/100;
