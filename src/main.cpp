@@ -182,11 +182,6 @@ void ResendWalletTransactions()
         pwallet->ResendWalletTransactions();
 }
 
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // mapOrphanTransactions
@@ -252,10 +247,6 @@ unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
     }
     return nEvicted;
 }
-
-
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -455,11 +446,6 @@ int CMerkleTx::SetMerkleBranch(const CBlock* pblock)
 
     return pindexBest->nHeight - pindex->nHeight + 1;
 }
-
-
-
-
-
 
 
 bool CTransaction::CheckTransaction() const
@@ -904,12 +890,6 @@ bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock)
     }
     return false;
 }
-
-
-
-
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2034,7 +2014,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
     return true;
 }
 
-// VeriCoin: total coin age spent in transaction, in the unit of coin-days.
+// VeriCoin: total stake time spent in transaction that is accepted by the network, in the unit of coin-days.
 // Only those coins meeting minimum age requirement counts. As those
 // transactions not in main chain are not currently indexed so we
 // might not find out about their coin age. Older transactions are
@@ -2180,8 +2160,6 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos)
     uiInterface.NotifyBlocksChanged();
     return true;
 }
-
-
 
 
 bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) const
@@ -2768,45 +2746,6 @@ bool LoadBlockIndex(bool fAllowNew)
         assert(block.hashMerkleRoot == uint256("0x60424046d38de827de0ed1a20a351aa7f3557e3e1d3df6bfb34a94bc6161ec68"));
         block.print();
 
-        if (fTestNet)
-        {
-            //// debug print
-            printf("%s\n", block.GetHash().ToString().c_str());
-            printf("%s\n", hashGenesisBlock.ToString().c_str());
-            printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-            assert(block.hashMerkleRoot == uint256("0x60424046d38de827de0ed1a20a351aa7f3557e3e1d3df6bfb34a94bc6161ec68"));
-            block.print();
-
-            // If genesis block hash does not match, then generate new genesis hash.
-            if (block.GetHash() != hashGenesisBlockTestNet)
-            {
-                printf("Searching for genesis block...\n");
-                // This will figure out a valid hash and Nonce if you're
-                // creating a different genesis block:
-                uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-                uint256 thash;
-
-                while(true)
-                {
-                    thash = scrypt_blockhash(BEGIN(block.nVersion));
-                    if (thash <= hashTarget)
-                        break;
-                    if ((block.nNonce & 0xFFF) == 0)
-                    {
-                        printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
-                    }
-                    ++block.nNonce;
-                    if (block.nNonce == 0)
-                    {
-                        printf("NONCE WRAPPED, incrementing time\n");
-                        ++block.nTime;
-                    }
-                }
-                printf("block.nTime = %u \n", block.nTime);
-                printf("block.nNonce = %u \n", block.nNonce);
-                printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
-            }
-        }
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
 
