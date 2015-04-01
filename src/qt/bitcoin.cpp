@@ -238,11 +238,13 @@ int main(int argc, char *argv[])
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
+                ReadVersionFile();
+
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel);
 
                 // If -min option passed, start window minimized.
-                if(GetBoolArg("-min"))
+                if(GetBoolArg("-min") && !fFirstRun)
                 {
                     window.showMinimized();
                 }
@@ -254,15 +256,20 @@ int main(int argc, char *argv[])
                 // Place this here as guiref has to be defined if we don't want to lose URIs
                 ipcInit(argc, argv);
 
-                ReadVersionFile();
-
-                if (fNewVersion) // Prompt user for upgrade
-                {
-                    window.checkForUpdate();
-                }
+                // Heirarchical order for special events and first runs:
+                // 1. Bootstrap wallet and restart
+                // 2. Encrypt wallet and restart (happens in BitcoinGUI:setModel())
+                // 3. Update wallet and restart
                 if (fFirstRun || GetBoolArg("-vBootstrap")) // Force boostraping in auto mode
                 {
                     window.reloadBlockchain(true);
+                }
+                else
+                {
+                    if (fNewVersion) // Prompt user for upgrade
+                    {
+                        window.checkForUpdate();
+                    }
                 }
 
                 app.exec();

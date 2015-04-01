@@ -103,7 +103,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     clientModel(0),
     walletModel(0),
     currentTotal(-1),
-    encryptWalletAction(0),
+    //encryptWalletAction(0),
     changePassphraseAction(0),
     lockWalletAction(0),
     unlockWalletAction(0),
@@ -157,6 +157,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create AskPassphrase Page
     askPassphrasePage = new AskPassphrasePage(AskPassphrasePage::Unlock, this);
+    encryptWalletPage = new AskPassphrasePage(AskPassphrasePage::Encrypt, this);
 
     // Create Overview Page
     overviewPage = new OverviewPage();
@@ -222,6 +223,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
     centralWidget->addWidget(askPassphrasePage);
+    centralWidget->addWidget(encryptWalletPage);
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     //centralWidget->addWidget(addressBookPage);
@@ -349,7 +351,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
     tCheckForUpdate->start(24 * 60 * 60 * 1000); // every 24 hours
 
-    connect(askPassphrasePage, SIGNAL(unlockWalletFeatures()), this, SLOT(unlockWalletFeatures()));
+    connect(askPassphrasePage, SIGNAL(lockWalletFeatures(bool)), this, SLOT(lockWalletFeatures(bool)));
+    connect(encryptWalletPage, SIGNAL(lockWalletFeatures(bool)), this, SLOT(lockWalletFeatures(bool)));
     connect(sendCoinsPage, SIGNAL(gotoSendBitCoins()), this, SLOT(gotoSendBitCoinsPage()));
     connect(sendBitCoinsPage, SIGNAL(gotoSendCoins()), this, SLOT(gotoSendCoinsPage()));
 
@@ -390,12 +393,6 @@ void BitcoinGUI::logout()
     }
 }
 
-// Signal emitted from AskPassphrasePage
-void BitcoinGUI::unlockWalletFeatures()
-{
-    lockWalletFeatures(false);
-}
-
 void BitcoinGUI::lockWalletFeatures(bool lock)
 {
     if (lock)
@@ -407,7 +404,10 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
         this->setWindowState(Qt::WindowNoState); // Fix for window maximized state
         resizeGUI();
 
-        gotoAskPassphrasePage();
+        if (walletModel && walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
+            gotoEncryptWalletPage();
+        else
+            gotoAskPassphrasePage();
     }
     else
     {
@@ -544,10 +544,10 @@ void BitcoinGUI::createActions()
     optionsAction->setToolTip(tr("Modify configuration options for VeriCoin"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
     toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Show / Hide"), this);
-    encryptWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Set Password..."), this);
-    encryptWalletAction->setToolTip(tr("Encrypt or decrypt wallet"));
-    encryptWalletAction->setCheckable(true);
-    encryptWalletAction->setChecked(false);
+    //encryptWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Set Password..."), this);
+    //encryptWalletAction->setToolTip(tr("Encrypt or decrypt wallet"));
+    //encryptWalletAction->setCheckable(true);
+    //encryptWalletAction->setChecked(false);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet..."), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password..."), this);
@@ -582,7 +582,7 @@ void BitcoinGUI::createActions()
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
-    connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
+    //connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
     connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
@@ -629,7 +629,7 @@ void BitcoinGUI::createMenuBar()
 
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
     settings->setFont(veriFont);
-    settings->addAction(encryptWalletAction);
+    //settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
     settings->addSeparator();
     settings->addAction(lockWalletAction);
@@ -731,6 +731,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
 
         // Put transaction list in tabs
         askPassphrasePage->setModel(walletModel);
+        encryptWalletPage->setModel(walletModel);
         overviewPage->setModel(walletModel);
         sendCoinsPage->setModel(walletModel);
         receiveCoinsPage->setModel(walletModel->getAddressTableModel());
@@ -760,19 +761,8 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel(qint64,qint64,qint64,qint64)));
         setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 
-        // Passphrase required if wallet is encrypted.
-        if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted)
-        {
-            gotoOverviewPage();
-
-            QSettings settings("VeriCoin", "VeriCoin-Qt");
-            restoreGeometry(settings.value("geometry").toByteArray());
-            restoreState(settings.value("windowState").toByteArray());
-        }
-        else
-        {
-            lockWalletFeatures(true); // Lock features
-        }
+        // Passphrase required.
+        lockWalletFeatures(true); // Lock features
     }
 }
 
@@ -1142,6 +1132,15 @@ void BitcoinGUI::gotoAskPassphrasePage()
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
 
+void BitcoinGUI::gotoEncryptWalletPage()
+{
+    overviewAction->setChecked(false);
+    centralWidget->setCurrentWidget(encryptWalletPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
 void BitcoinGUI::gotoOverviewPage()
 {
     overviewAction->setChecked(true);
@@ -1368,32 +1367,32 @@ void BitcoinGUI::setEncryptionStatus(int status)
     switch(status)
     {
     case WalletModel::Unencrypted:
-        encryptWalletAction->setChecked(false);
+        //encryptWalletAction->setChecked(false);
         changePassphraseAction->setEnabled(false);
         logoutAction->setEnabled(false);
         lockWalletAction->setEnabled(false);
         unlockWalletAction->setEnabled(false);
-        encryptWalletAction->setEnabled(true);
+        //encryptWalletAction->setEnabled(true);
         break;
     case WalletModel::Unlocked:
         //labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>"));
-        encryptWalletAction->setChecked(true);
+        //encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         logoutAction->setEnabled(true);
         lockWalletAction->setEnabled(true);
         unlockWalletAction->setEnabled(false);
-        encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        //encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         break;
     case WalletModel::Locked:
         //labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_closed").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
-        encryptWalletAction->setChecked(true);
+        //encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         logoutAction->setEnabled(true);
         lockWalletAction->setEnabled(false);
         unlockWalletAction->setEnabled(true);
-        encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        //encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         break;
     }
 }
@@ -1402,6 +1401,13 @@ void BitcoinGUI::encryptWallet(bool status)
 {
     if(!walletModel)
         return;
+
+    if (fBootstrapTurbo)
+    {
+        QMessageBox::warning(this, tr("Not Allowed"), tr("Please wait until bootstrap operation is complete."));
+        return;
+    }
+
     AskPassphraseDialog dlg(status ? AskPassphraseDialog::Encrypt:
                                      AskPassphraseDialog::Decrypt, this);
     dlg.setModel(walletModel);
@@ -1446,6 +1452,12 @@ void BitcoinGUI::backupWallet()
 
 void BitcoinGUI::changePassphrase()
 {
+    if (fBootstrapTurbo)
+    {
+        QMessageBox::warning(this, tr("Not Allowed"), tr("Please wait until bootstrap operation is complete."));
+        return;
+    }
+
     AskPassphraseDialog dlg(AskPassphraseDialog::ChangePass, this);
     dlg.setModel(walletModel);
     dlg.exec();
@@ -1455,6 +1467,7 @@ void BitcoinGUI::lockWallet()
 {
     if (!walletModel)
         return;
+
     // Lock wallet when requested by wallet model
     if (walletModel->getEncryptionStatus() == WalletModel::Unlocked)
     {
@@ -1579,13 +1592,16 @@ void BitcoinGUI::reloadBlockchain(bool autoReload)
     boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
     QUrl url(QString(walletDownloadsUrl).append("bootstrap.zip"));
 
-    if (boost::filesystem::exists(pathBootstrap) && autoReload)
+    // Don't auto-bootstrap if the file has already been downloaded, unless the wallet is being encrypted.
+    if (boost::filesystem::exists(pathBootstrap) && autoReload && !fEncrypt)
     {
         return;
     }
 
-    // Don't allow multiple instances
+    // Don't allow multiple instances of bootstrapping
     reloadBlockchainActionEnabled(false); // Sets back to true when dialog closes.
+
+    fBootstrapTurbo = true;
 
     printf("Downloading blockchain data...\n");
     Downloader *bs = new Downloader(this, walletModel);
@@ -1593,7 +1609,7 @@ void BitcoinGUI::reloadBlockchain(bool autoReload)
     bs->setUrl(url);
     bs->setDest(boostPathToQString(pathBootstrap));
     bs->processBlockchain = true;
-    if (autoReload) // Get bootsrap in auto mode
+    if (autoReload) // Get bootsrap in auto mode (model)
     {
         bs->autoDownload = true;
         bs->exec();
@@ -1607,6 +1623,12 @@ void BitcoinGUI::reloadBlockchain(bool autoReload)
 
 void BitcoinGUI::rescanBlockchain()
 {
+    if (fBootstrapTurbo)
+    {
+        QMessageBox::warning(this, tr("Not Allowed"), tr("Please wait until bootstrap operation is complete."));
+        return;
+    }
+
     // No turning back. Ask permission.
     RescanDialog rs;
     rs.setModel(clientModel);
@@ -1615,6 +1637,7 @@ void BitcoinGUI::rescanBlockchain()
     {
         return;
     }
+    fRescan = true;
 
     if (!walletModel->rescanBlockchain())
     {

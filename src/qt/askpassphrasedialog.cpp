@@ -87,6 +87,8 @@ AskPassphraseDialog::~AskPassphraseDialog()
 
 void AskPassphraseDialog::setModel(WalletModel *model)
 {
+    if (mode == Encrypt)
+        fEncrypt = true;
     this->model = model;
 
     switch(mode)
@@ -148,9 +150,8 @@ void AskPassphraseDialog::accept()
                                          "For security reasons, previous backups of the unencrypted wallet file "
                                          "will become useless as soon as you start using the new, encrypted wallet.") + 
                                          "</b></qt>");
-                    //QApplication::quit();
-                    fEncrypt = true;
                     fRestart = true;
+                    MilliSleep(7 * 1000);
                     StartShutdown();
                 }
                 else
