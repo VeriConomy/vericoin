@@ -87,8 +87,6 @@ AskPassphraseDialog::~AskPassphraseDialog()
 
 void AskPassphraseDialog::setModel(WalletModel *model)
 {
-    if (mode == Encrypt)
-        fEncrypt = true;
     this->model = model;
 
     switch(mode)

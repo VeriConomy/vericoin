@@ -87,8 +87,6 @@ AskPassphrasePage::~AskPassphrasePage()
 
 void AskPassphrasePage::setModel(WalletModel *model)
 {
-    if (mode == Encrypt)
-        fEncrypt = true;
     this->model = model;
 }
 

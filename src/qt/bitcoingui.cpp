@@ -1058,18 +1058,30 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
 
-    if(clientModel)
+    // Check if a pending bootstrap needs a restart (ie. user closed window before encrypting wallet)
+    if (walletModel && fBootstrapTurbo)
     {
-//#ifndef Q_OS_MAC // Ignored on Mac (Seems to be working in Qt5)
-        if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
-           !clientModel->getOptionsModel()->getMinimizeOnClose())
+        if (!walletModel->reloadBlockchain())
         {
-            qApp->quit();
-            MilliSleep(500);
+            fBootstrapTurbo = false;
+            QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
         }
-//#endif
     }
-    QMainWindow::closeEvent(event);
+    else
+    {
+        if(clientModel)
+        {
+//#ifndef Q_OS_MAC // Ignored on Mac (Seems to be working in Qt5)
+            if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
+                !clientModel->getOptionsModel()->getMinimizeOnClose())
+            {
+                qApp->quit();
+                MilliSleep(500);
+            }
+//#endif
+        }
+        QMainWindow::closeEvent(event);
+    }
 }
 
 void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
@@ -1133,6 +1145,8 @@ void BitcoinGUI::gotoAskPassphrasePage()
 
 void BitcoinGUI::gotoEncryptWalletPage()
 {
+    fEncrypt = true;
+
     overviewAction->setChecked(false);
     centralWidget->setCurrentWidget(encryptWalletPage);
 
@@ -1406,6 +1420,8 @@ void BitcoinGUI::encryptWallet(bool status)
         QMessageBox::warning(this, tr("Not Allowed"), tr("Please wait until bootstrap operation is complete."));
         return;
     }
+
+    fEncrypt = true;
 
     AskPassphraseDialog dlg(status ? AskPassphraseDialog::Encrypt:
                                      AskPassphraseDialog::Decrypt, this);

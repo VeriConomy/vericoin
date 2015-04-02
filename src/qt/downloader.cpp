@@ -562,11 +562,12 @@ void Downloader::reloadBlockchain()
 
     printf("Bootstrap extract successful!\n");
     ui->progressBarLabel->setText(tr("Complete:"));
-    ui->statusLabel->setText(tr("Congratulations, the bootstrap extract was successful! Your wallet will now restart..."));
+    ui->statusLabel->setText(tr("Congratulations, the bootstrap extract was successful! Your wallet will restart %1.").arg(fEncrypt ? "after encrypting the wallet" : "to complete the operation"));
     ui->downloadButton->setEnabled(false);
     ui->continueButton->setEnabled(false);
     ui->quitButton->setEnabled(false);
     this->raise();
+    this->repaint();
     MilliSleep(5 * 1000);
 
     // If the wallet is still encrypting, hold off on the restart
@@ -574,6 +575,7 @@ void Downloader::reloadBlockchain()
     {
         if (!walletModel->reloadBlockchain())
         {
+            fBootstrapTurbo = false;
             QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
         }
     }
