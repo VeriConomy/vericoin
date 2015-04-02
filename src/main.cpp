@@ -1635,13 +1635,13 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
             int64_t currentHeight = pindex->pprev->nHeight+1;
-            if (tx.IsCoinStake() && currentHeight < 299000)
+            if (tx.IsCoinStake() && currentHeight < 299000 && !fTestNet)
             {
                 double nNetworkDriftBuffer = nTxValueOut*.02;
                 nTxValueOut = nTxValueOut-nNetworkDriftBuffer;
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
-            if (tx.IsCoinStake() && currentHeight >= 299000)
+            if ((tx.IsCoinStake() && currentHeight >= 299000) || (tx.IsCoinStake() && fTestNet))
             {
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
