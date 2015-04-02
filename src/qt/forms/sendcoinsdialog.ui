@@ -679,7 +679,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Balance:</string>
+          <string>Spendable:</string>
          </property>
          <property name="indent">
           <number>8</number>
