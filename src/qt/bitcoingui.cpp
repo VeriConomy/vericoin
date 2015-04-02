@@ -935,31 +935,30 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
     }
 
-    // Show Alert message as first priority.
-    if (GetBoolArg("-vAlert") && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
-    {
-        strStatusBarWarnings = tr(GetArg("-vAlertMsg","").c_str());
-    }
-
     // Show a warning message if on wrong protocol version
     char pv[10];
     sprintf(pv, "%d", PROTOCOL_VERSION);
     if (GetArg("-vProtocol","0").compare("0") && GetArg("-vProtocol","0").compare(pv) && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
     {
         // Warn for wrong protocol version.
-        strStatusBarWarnings = tr("Wrong protocol version detected. Please upgrade to %1 asap!").arg(GetArg("-vVersion","").c_str());
-    }
-
-    // Show a warning message if wallet is unencrypted and progressBar is not busy
-    if (walletModel && walletModel->getEncryptionStatus() == WalletModel::Unencrypted && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
-    {
-        // Prompt to set password.
-        strStatusBarWarnings = tr("Wallet is not encrypted! Go to Settings and Set Password...");
+        strStatusBarWarnings = tr("Wrong protocol version detected. Please update to %1 asap!").arg(GetArg("-vVersion","").c_str());
     }
 
     // Override progressBar text when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
     {
+        progressBar->setFormat(strStatusBarWarnings);
+        progressBar->setValue(0);
+        progressBar->setVisible(true);
+    }
+
+    // Show Alert message always.
+    if (GetBoolArg("-vAlert") && GetArg("-vAlertMsg","").c_str() != "")
+    {
+        // Add a delay in case there is another warning
+        this->repaint();
+        MilliSleep(1000);
+        strStatusBarWarnings = tr(GetArg("-vAlertMsg","").c_str());
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
         progressBar->setVisible(true);
@@ -1648,6 +1647,12 @@ void BitcoinGUI::rescanBlockchain()
 // Called by user
 void BitcoinGUI::menuCheckForUpdate()
 {
+    if (fBootstrapTurbo)
+    {
+        QMessageBox::warning(this, tr("Not Allowed"), tr("Please wait until bootstrap operation is complete."));
+        return;
+    }
+
     fMenuCheckForUpdate = true;
 
     if (!fTimerCheckForUpdate)
@@ -1659,6 +1664,9 @@ void BitcoinGUI::menuCheckForUpdate()
 // Called by timer
 void BitcoinGUI::timerCheckForUpdate()
 {
+    if (fBootstrapTurbo)
+        return;
+
     if (fTimerCheckForUpdate)
         return;
 
