@@ -86,7 +86,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                         {
                             if (wallet->mapAddressBook.count(address))
                             {
-                                strHTML += "<b>" + tr("From") + ":</b> " + tr("unknown") + "<br>";
+                                strHTML += "<b>" + tr("From") + ":</b> " + tr("Unknown") + "<br>";
                                 strHTML += "<b>" + tr("To") + ":</b> ";
                                 strHTML += GUIUtil::HtmlEscape(CBitcoinAddress(address).ToString());
                                 if (!wallet->mapAddressBook[address].empty())
@@ -134,14 +134,17 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                 strHTML += "(" + tr("not accepted") + ")";
             strHTML += "<br>";
         }
-        else if (nNet > 0)
+        else if (nNet > 0 || wtx.IsCoinBase() || wtx.IsCoinStake())
         {
             //
             // Credit
             //
-            strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+            if (nNet > 0)
+                strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+            else
+                strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, wtx.GetValueOut() - nDebit, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
         }
-        else
+        else if (nDebit > 0)
         {
             bool fAllFromMe = true;
             BOOST_FOREACH(const CTxIn& txin, wtx.vin)
@@ -205,7 +208,10 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
             }
         }
 
-        strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRC), true) + "<br>";
+        if (wtx.IsCoinBase() || wtx.IsCoinStake())
+            strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, wtx.GetValueOut() - nDebit, BitcoinUnits::maxdecimals(BitcoinUnits::VRC), true) + "<br>";
+        else
+            strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRC), true) + "<br>";
 
         //
         // Message

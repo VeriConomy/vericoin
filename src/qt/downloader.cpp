@@ -68,7 +68,7 @@ void Downloader::showEvent(QShowEvent *e)
 {
     if (autoDownload)
     {
-        ui->quitButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
         on_downloadButton_clicked();
     }
 }
@@ -112,6 +112,8 @@ void Downloader::on_quitButton_clicked() // Cancel button
         BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
         p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
         processBlockchain = false;
+        if (httpRequestAborted)
+            fBootstrapTurbo = false;
     }
     if (processUpdate)
     {
@@ -136,12 +138,6 @@ void Downloader::networkError()
 {
     if (!downloaderQuit)
         cancelDownload();
-
-    if (autoDownload)
-    {
-        MilliSleep(3000);
-        on_quitButton_clicked();
-    }
 }
 
 // During the download progress, it can be canceled
@@ -286,7 +282,16 @@ void Downloader::startRequest(QUrl url)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(networkError()));
 
-    ui->statusLabel->setText(tr("Please wait..."));
+    QString statusText(tr("Please wait for the download to complete..."));
+    if (processBlockchain)
+    {
+        statusText.append(tr("\n\nThe VeriCoin wallet will restart after extracting the bootstrap%1").arg((fEncrypt ? " and encrypting the wallet." : ".")));
+    }
+    else if (processUpdate)
+    {
+        statusText.append(tr("\n\nThe VeriCoin wallet will restart after downloading the update."));
+    }
+    ui->statusLabel->setText(statusText);
 }
 
 // When download finished or canceled, this will be called
@@ -473,8 +478,6 @@ void Downloader::setDest(QString dest)
 
 void Downloader::reloadBlockchain()
 {
-    bool turbo = true;
-
     ui->statusLabel->setText(tr("Please wait...."));
     ui->downloadButton->setEnabled(false);
     ui->continueButton->setEnabled(false);
@@ -504,60 +507,57 @@ void Downloader::reloadBlockchain()
         return;
     }
 
-    if (turbo)
+    // Test the archive.
+    QStringList zlist = JlCompress::getFileList(fileDest.filePath(), 1);
+    if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
     {
-        // Test the archive.
-        QStringList zlist = JlCompress::getFileList(fileDest.filePath(), 1);
-        if (!zlist.isEmpty() && zlist[0].contains("bootstrap/"))
-        {
-            printf("Bootstrap structure is valid.\n");
-        }
-        else
-        {
-            printf("Bootstrap structure is invalid!\n");
-            ui->statusLabel->setText(tr("I'm sorry, the bootstrap file structure appears to be invalid."));
-            ui->downloadButton->setEnabled(true);
-            ui->continueButton->setEnabled(false);
-            ui->quitButton->setEnabled(true);
-            ui->downloadButton->setDefault(false);
-            ui->continueButton->setDefault(false);
-            ui->quitButton->setDefault(true);
-            return;
-        }
+        printf("Bootstrap structure is valid.\n");
+    }
+    else
+    {
+        printf("Bootstrap structure is invalid!\n");
+        ui->statusLabel->setText(tr("I'm sorry, the bootstrap file structure appears to be invalid."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(false);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(true);
+        return;
+    }
 
-        // Extract bootstrap.zip
-        QStringList zextracted = JlCompress::extractDir(fileDest.filePath(), fileDest.path(), ui->progressBar);
+    // Extract bootstrap.zip
+    QStringList zextracted = JlCompress::extractDir(fileDest.filePath(), fileDest.path(), ui->progressBar);
 
-        if (!zextracted.isEmpty())
-        {
-            printf("Bootstrap extract successful.\n");
-        }
-        else
-        {
-            printf("Bootstrap extract failed!\n");
-            ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract failed."));
-            ui->downloadButton->setEnabled(true);
-            ui->continueButton->setEnabled(false);
-            ui->quitButton->setEnabled(true);
-            ui->downloadButton->setDefault(false);
-            ui->continueButton->setDefault(false);
-            ui->quitButton->setDefault(true);
-            return;
-        }
+    if (!zextracted.isEmpty())
+    {
+        printf("Bootstrap extract successful.\n");
+    }
+    else
+    {
+        printf("Bootstrap extract failed!\n");
+        ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract failed."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(false);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(true);
+        return;
+    }
 
-        if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
-            !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
-        {
-            printf("Bootstrap extract is invalid!\n");
-            ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract was successful, but the contents are invalid."));
-            ui->downloadButton->setEnabled(true);
-            ui->continueButton->setEnabled(false);
-            ui->quitButton->setEnabled(true);
-            ui->downloadButton->setDefault(false);
-            ui->continueButton->setDefault(false);
-            ui->quitButton->setDefault(true);
-            return;
-        }
+    if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
+        !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
+    {
+        printf("Bootstrap extract is invalid!\n");
+        ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract was successful, but the contents are invalid."));
+        ui->downloadButton->setEnabled(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        ui->downloadButton->setDefault(false);
+        ui->continueButton->setDefault(false);
+        ui->quitButton->setDefault(true);
+        return;
     }
 
     printf("Bootstrap extract successful!\n");
@@ -569,9 +569,10 @@ void Downloader::reloadBlockchain()
     this->raise();
     MilliSleep(5 * 1000);
 
-    if (this->walletModel)
+    // If the wallet is still encrypting, hold off on the restart
+    if (this->walletModel && !fEncrypt)
     {
-        if (!walletModel->reloadBlockchain(turbo))
+        if (!walletModel->reloadBlockchain())
         {
             QMessageBox::warning(this, tr("Reload Failed"), tr("There was an error trying to reload the blockchain."));
         }

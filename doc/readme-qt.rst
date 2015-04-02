@@ -1,4 +1,4 @@
-VeriCoin-qt: Qt4 GUI for VeriCoin
+VeriCoin-qt: Qt5 GUI for VeriCoin
 ===============================
 
 Build instructions
@@ -7,12 +7,14 @@ Build instructions
 Debian
 -------
 
-First, make sure that the required packages for Qt4 development of your
+- Download the `Qt Creator 5` and install it.
+
+Make sure that the required packages for Qt5 development of your
 distribution are installed, for Debian and Ubuntu these are:
 
 ::
 
-    apt-get install qt4-qmake libqt4-dev build-essential libboost-dev libboost-system-dev \
+    apt-get install qt5-qmake libqt5-dev build-essential libboost-dev libboost-system-dev \
         libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev \
         libssl-dev libdb4.8++-dev
 
@@ -31,7 +33,7 @@ then execute the following:
     qmake vericoin-qt.pro
     make
 
-Alternatively, install Qt Creator and open the `vericoin-qt.pro` file.
+Alternatively, run Qt Creator and open the `vericoin-qt.pro` file.
 
    You may need to install libGL in some Linux environments:
 
@@ -45,24 +47,18 @@ Windows
 
 Windows build instructions:
 
-- Download the `QT Windows SDK`_ and install it. You don't need the Symbian stuff, just the desktop Qt.
+- Download the `Qt Creator 5` and install it.
 
-- Download and extract the `dependencies archive`_  [#]_, or compile openssl, boost and dbcxx yourself.
-
-- Copy the contents of the folder "deps" to "X:\\QtSDK\\mingw", replace X:\\ with the location where you installed the Qt SDK. Make sure that the contents of "deps\\include" end up in the current "include" directory.
+- Download and extract the `dependencies archive`_  [#]_, or compile openssl, boost and dbcxx yourself.  Refer to build-msw.txt.
 
 - Open the .pro file in QT creator and build as normal (ctrl-B)
 
-.. _`QT Windows SDK`: http://qt.nokia.com/downloads/sdk-windows-cpp
-.. _`dependencies archive`: https://download.visucore.com/vericoin/qtgui_deps_1.zip
-.. [#] PGP signature: https://download.visucore.com/vericoin/qtgui_deps_1.zip.sig (signed with RSA key ID `610945D0`_)
-.. _`610945D0`: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x610945D0
 
 
 Mac OS X
 --------
 
-- Download and install the `Qt Mac OS X SDK`_. It is recommended to also install Apple's Xcode with UNIX tools.
+- Download and install the `Qt Creator 5`. It is recommended to also install Apple's Xcode with UNIX tools.
 
 - Download and install `MacPorts`_.
 
@@ -75,8 +71,8 @@ Mac OS X
 
 - Open the .pro file in Qt Creator and build as normal (cmd-B)
 
-.. _`Qt Mac OS X SDK`: http://qt.nokia.com/downloads/sdk-mac-os-cpp
-.. _`MacPorts`: http://www.macports.org/install.php
+.. _`Qt Mac OS X SDK`: http://qt.nokia.com/downloads/
+.. _`MacPorts`: http://www.macports.org/
 
 
 Build configuration options

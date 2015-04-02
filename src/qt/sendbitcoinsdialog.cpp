@@ -8,7 +8,6 @@
 
 #include "bitcoinunits.h"
 #include "veribitcoinunits.h"
-#include "addressbookpage.h"
 #include "optionsmodel.h"
 #include "sendbitcoinsentry.h"
 #include "guiutil.h"
@@ -17,6 +16,7 @@
 #include "coincontrol.h"
 #include "coincontroldialog.h"
 #include "clientmodel.h"
+#include "bitcoingui.h"
 
 #include <QMessageBox>
 #include <QLocale>
@@ -48,6 +48,8 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
 
     ui->labelCoinControlFeatures->setFont(veriFontBold);
+    ui->btnBitcoin->setEnabled(false);
+    ui->btnVeriCoin->setEnabled(true);
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
@@ -56,6 +58,7 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
 
     addEntry();
 
+    connect(ui->btnVeriCoin, SIGNAL(clicked()), this, SLOT(gotoSendCoinsPage()));
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
 
@@ -126,6 +129,11 @@ void SendBitCoinsDialog::setModel(WalletModel *model)
 SendBitCoinsDialog::~SendBitCoinsDialog()
 {
     delete ui;
+}
+
+void SendBitCoinsDialog::gotoSendCoinsPage()
+{
+    emit gotoSendCoins();
 }
 
 void SendBitCoinsDialog::clear()

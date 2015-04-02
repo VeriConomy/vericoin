@@ -311,9 +311,9 @@ bool WalletModel::backupWallet(const QString &filename)
     return BackupWallet(*wallet, filename.toLocal8Bit().data());
 }
 
-bool WalletModel::reloadBlockchain(bool turbo)
+bool WalletModel::reloadBlockchain()
 {
-    return ReloadBlockchain(turbo);
+    return ReloadBlockchain();
 }
 
 bool WalletModel::rescanBlockchain()

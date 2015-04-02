@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>964</width>
+    <width>996</width>
     <height>608</height>
    </rect>
   </property>
@@ -46,6 +46,9 @@
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
+     <property name="formAlignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
      <property name="horizontalSpacing">
       <number>0</number>
      </property>
@@ -67,20 +70,20 @@
      <item row="0" column="0">
       <widget class="QFrame" name="frame">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>400</width>
-         <height>185</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>400</width>
+         <width>450</width>
          <height>185</height>
         </size>
        </property>
@@ -173,7 +176,7 @@
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
           <property name="horizontalSpacing">
-           <number>69</number>
+           <number>70</number>
           </property>
           <property name="verticalSpacing">
            <number>16</number>
@@ -455,7 +458,7 @@
    <item row="0" column="1">
     <layout class="QGridLayout" name="gridLayout_3">
      <property name="leftMargin">
-      <number>30</number>
+      <number>0</number>
      </property>
      <property name="topMargin">
       <number>20</number>
@@ -706,6 +709,9 @@
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
+     <property name="formAlignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
      <property name="horizontalSpacing">
       <number>0</number>
      </property>
@@ -721,15 +727,15 @@
      <item row="0" column="1">
       <widget class="QFrame" name="frame_4">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>400</width>
-         <height>319</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
@@ -833,6 +839,12 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>400</width>
@@ -869,7 +881,7 @@
    <item row="1" column="1">
     <layout class="QGridLayout" name="gridLayout_4">
      <property name="leftMargin">
-      <number>30</number>
+      <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>

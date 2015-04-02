@@ -33,9 +33,18 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     ui(new Ui::CoinControlDialog),
     model(0)
 {
+    // Setup header and styles
+    if (fNoHeaders)
+        GUIUtil::header(this, QString(""));
+    else if (fSmallHeaders)
+        GUIUtil::header(this, QString(":images/headerSendSmall"));
+    else
+        GUIUtil::header(this, QString(":images/headerSend"));
+
     ui->setupUi(this);
 
-    this->layout()->setGeometry(QRect(0,0,WINDOW_MIN_WIDTH, 600));
+    this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
+    this->resize(HEADER_WIDTH, WINDOW_MIN_HEIGHT - HEADER_HEIGHT - STATUSBAR_HEIGHT);
 
     // context menu actions
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);

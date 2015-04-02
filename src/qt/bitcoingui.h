@@ -78,6 +78,7 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     AccessNxtInsideDialog *accessNxtInsideDialog;
     AskPassphrasePage *askPassphrasePage;
+    AskPassphrasePage *encryptWalletPage;
     OverviewPage *overviewPage;
     TransactionsPage *transactionsPage;
     TransactionView *transactionView;
@@ -191,6 +192,8 @@ public slots:
 private slots:
     /** Switch to askpassphrase page */
     void gotoAskPassphrasePage();
+    /** Switch to encrypt wallet page */
+    void gotoEncryptWalletPage();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
@@ -213,9 +216,9 @@ private slots:
     void gotoSuperNETPage();
     /** Switch to GetVeriCoin page */
     void gotoGetVeriCoinPage();
+
     void resizeGUI();
     void logout();
-    void unlockWalletFeatures();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
