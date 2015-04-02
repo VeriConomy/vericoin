@@ -21,6 +21,7 @@ class SendCoinsRecipient;
  */
 namespace GUIUtil
 {
+    extern bool fTicker;
     extern bool fNoHeaders;
     extern bool fSmallHeaders;
     extern int TOOLBAR_WIDTH;
@@ -35,6 +36,7 @@ namespace GUIUtil
     extern int WINDOW_MIN_HEIGHT;
     extern int STATUSBAR_ICONSIZE;
     extern int STATUSBAR_MARGIN;
+    extern int STATUSBAR_HEIGHT;
 
     void refactorGUI(QRect screenSize);
     int pointsToPixels(int points);

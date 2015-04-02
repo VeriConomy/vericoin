@@ -3,6 +3,7 @@
         <file alias="bitcoin">res/icons/vericoin-80.png</file>
         <file alias="about-qt">res/icons/about-qt.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
+        <file alias="address-book-menu">res/icons/address-book-menu.png</file>
         <file alias="spendable">res/icons/spendable.png</file>
         <file alias="staking">res/icons/staking.png</file>
         <file alias="unconfirmed">res/icons/unconfirmed.png</file>
@@ -77,7 +78,7 @@
         <file alias="passphraseIcon">res/icons/vericoin-128-trans.png</file>
     </qresource>
     <qresource prefix="/images">
-        <file alias="passphraseBackground">res/images/askpassphrasepage-background.png</file>
+        <file alias="askPassphraseBackground">res/images/askpassphrasepage-background.png</file>
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
         <file alias="headerOverview">res/images/headerOverview.png</file>

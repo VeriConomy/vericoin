@@ -26,10 +26,13 @@ class AddressBookPage : public QDialog
 public:
     enum Tabs {
         SendingTab = 0,
-        ReceivingTab = 1
+        ReceivingTab = 1,
+        AddressBookTab = 2
     };
 
     enum Mode {
+        ForSigning, /**< Open address book to pick address for signing */
+        ForVerifying, /**< Open address book to pick address for verifying */
         ForSending, /**< Open address book to pick address for sending */
         ForEditing  /**< Open address book for editing */
     };

@@ -46,6 +46,7 @@ public slots:
 
 signals:
     void dataready( QByteArray &dataR );
+    void gotoSendBitCoins();
 
 private:
     Ui::SendCoinsDialog *ui;
@@ -72,6 +73,8 @@ private slots:
     void coinControlClipboardLowOutput();
     void coinControlClipboardChange();
     void on_veriSendButton_clicked();
+    /** Switch to send coins page */
+    void gotoSendBitCoinsPage();
 };
 
 #endif // SENDCOINSDIALOG_H

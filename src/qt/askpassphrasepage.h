@@ -17,6 +17,7 @@ class AskPassphrasePage : public QDialog
 
 public:
     enum Mode {
+        Encrypt,    /**< Ask passphrase twice and encrypt */
         Lock,       /**< Ask passphrase and lock */
         Unlock      /**< Ask passphrase and unlock */
     };
@@ -39,7 +40,7 @@ private slots:
     bool eventFilter(QObject *, QEvent *event);
 
 signals:
-    void unlockWalletFeatures();
+    void lockWalletFeatures(bool lock);
 };
 
 #endif // ASKPASSPHRASEPAGE_H

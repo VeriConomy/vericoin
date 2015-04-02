@@ -47,12 +47,13 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
+bool fTicker = true;
 bool fNoHeaders = false;
 bool fSmallHeaders = false;
-int TOOLBAR_WIDTH = 100;
-int TOOLBAR_ICON_WIDTH = 100;
-int TOOLBAR_ICON_HEIGHT = 41;
-int HEADER_WIDTH = 964;
+int TOOLBAR_WIDTH = 120;
+int TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
+int TOOLBAR_ICON_HEIGHT = 48;
+int HEADER_WIDTH = 1024;
 int HEADER_HEIGHT = 160;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;
@@ -68,7 +69,8 @@ int WINDOW_MIN_HEIGHT = 772;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
-int STATUSBAR_MARGIN = 8;
+int STATUSBAR_MARGIN = 10;
+int STATUSBAR_HEIGHT = 32;
 
 void refactorGUI(QRect screenSize)
 {
@@ -86,22 +88,24 @@ void refactorGUI(QRect screenSize)
     if (screenSize.width() < newWidth - 2)
     {
         newWidth = screenSize.width() - 2;
+        STATUSBAR_MARGIN = 0;
+        TOOLBAR_WIDTH = 90;
+        TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
+        HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
     }
-    // These are not really constant, but they are defined in guiconstants.h
-    TOOLBAR_WIDTH = 80;
-    TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
-    HEADER_WIDTH = newWidth - TOOLBAR_WIDTH;
     if (screenSize.height() <= 600)
     {
         TOOLBAR_ICON_HEIGHT = 32;
         HEADER_HEIGHT = 0;
         fNoHeaders = true;
+        fTicker = false;
     }
     else if (screenSize.height() < 728) // 728px if OS taskbar is not hidden
     {
         TOOLBAR_ICON_HEIGHT = 32;
         HEADER_HEIGHT = 32;
         fNoHeaders = true;
+        fTicker = false;
     }
     else // Default small wallet at 728px to 768px
     {
@@ -112,7 +116,6 @@ void refactorGUI(QRect screenSize)
 
     WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
     WINDOW_MIN_HEIGHT = newHeight;
-    STATUSBAR_MARGIN = 2;
 }
 
 int pointsToPixels(int points) { return(points * 4 / 3); }
@@ -124,6 +127,7 @@ void setFontPixelSize(QFont *font)
 
 void setFontPixelSizes()
 {
+    setFontPixelSize((QFont *)&veriFontSmallest);
     setFontPixelSize((QFont *)&veriFontSmaller);
     setFontPixelSize((QFont *)&veriFontSmall);
     setFontPixelSize((QFont *)&veriFont);
@@ -147,7 +151,7 @@ QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STRING
 
 QString veriToolBarStyleSheet = QString("QToolBar { background: " + STRING_VERIBLUE + "; color: white; border: none; } \
                             QToolButton { background: " + STRING_VERIBLUE + "; color: white; border: none; font-family: Lato; font-style: normal; font-weight: normal; font-size: 12px; } \
-                            QToolButton:hover { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
+                            QToolButton:hover { background: #0c456f; color: white; border: none; } \
                             QToolButton:pressed { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } \
                             QToolButton:checked { background: " + STRING_VERIBLUE_LT + "; color: white; border: none; } ");
 
@@ -165,7 +169,7 @@ QString veriAskPassphrasePushButtonStyleSheet = QString("QPushButton { backgroun
                             QPushButton:hover { background: " + STRING_VERIBLUE_LT + "; } \
                             QPushButton:pressed { background: " + STRING_VERIBLUE_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
 
-QString veriAskPassphrasePageStyleSheet = QString("QDialog { background: url(:images/passphraseBackground) repeat 0px 0px; background-color: " + STRING_VERIBLUE + "; } QLabel { color: white; } QLineEdit { background: white; color: " + STRING_VERIBLUE + "; } ") + veriAskPassphrasePushButtonStyleSheet + veriToolTipStyleSheet;
+QString veriAskPassphrasePageStyleSheet = QString("QDialog { border-image: url(:images/askPassphraseBackground) repeat 0px 0px; background-color: " + STRING_VERIBLUE + "; } QLabel { color: white; } QLineEdit { background: white; color: " + STRING_VERIBLUE + "; } ") + veriAskPassphrasePushButtonStyleSheet + veriToolTipStyleSheet;
 
 // Setup header and styles
 QGraphicsView *header(QWidget *parent, QString backgroundImage)

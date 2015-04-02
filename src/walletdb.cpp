@@ -635,10 +635,9 @@ bool BackupWallet(const CWallet& wallet, const string& strDest)
 }
 
 #ifdef QT_GUI
-bool ReloadBlockchain(bool turbo)
+bool ReloadBlockchain()
 {
     fRestart = true;
-    fBootstrapTurbo = turbo;
 
     StartShutdown();
 
@@ -648,7 +647,6 @@ bool ReloadBlockchain(bool turbo)
 bool RescanBlockchain()
 {
     fRestart = true;
-    fRescan = true;
 
     StartShutdown();
 

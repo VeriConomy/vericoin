@@ -30,7 +30,6 @@ SendBitCoinsEntry::SendBitCoinsEntry(QWidget *parent) :
 #endif
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->payTo);
-    ui->addressBookButton->setFixedSize(38,27);
     ui->pasteButton->setFixedSize(38,27);
     ui->deleteButton->setFixedSize(38,27);
 
@@ -48,6 +47,7 @@ void SendBitCoinsEntry::on_pasteButton_clicked()
     ui->payTo->setText(QApplication::clipboard()->text());
 }
 
+/* Removed address book funtion for bitcoin
 void SendBitCoinsEntry::on_addressBookButton_clicked()
 {
     if(!model)
@@ -60,6 +60,7 @@ void SendBitCoinsEntry::on_addressBookButton_clicked()
         ui->payAmount->setFocus();
     }
 }
+*/
 
 void SendBitCoinsEntry::on_payTo_textChanged(const QString &address)
 {
@@ -147,8 +148,7 @@ SendCoinsRecipient SendBitCoinsEntry::getValue()
 QWidget *SendBitCoinsEntry::setupTabChain(QWidget *prev)
 {
     QWidget::setTabOrder(prev, ui->payTo);
-    QWidget::setTabOrder(ui->payTo, ui->addressBookButton);
-    QWidget::setTabOrder(ui->addressBookButton, ui->pasteButton);
+    QWidget::setTabOrder(ui->payTo, ui->pasteButton);
     QWidget::setTabOrder(ui->pasteButton, ui->deleteButton);
     QWidget::setTabOrder(ui->deleteButton, ui->addAsLabel);
     return ui->payAmount->setupTabChain(ui->addAsLabel);

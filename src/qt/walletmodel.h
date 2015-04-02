@@ -96,7 +96,7 @@ public:
     // Wallet backup
     bool backupWallet(const QString &filename);
     // Reload blockchain
-    bool reloadBlockchain(bool turbo);
+    bool reloadBlockchain();
     // Rescan blockchain
     bool rescanBlockchain();
     // Restart wallet on update

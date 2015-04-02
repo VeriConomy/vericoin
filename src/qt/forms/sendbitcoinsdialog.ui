@@ -13,10 +13,31 @@
   <property name="windowTitle">
    <string>Send Coins</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
    <property name="bottomMargin">
     <number>8</number>
    </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="btnVeriCoin">
+       <property name="text">
+        <string>Send VeriCoin</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnBitcoin">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Send VeriCoin to Bitcoin (VeriBit)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QFrame" name="frameCoinControl">
      <property name="sizePolicy">
@@ -548,7 +569,7 @@
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>522</height>
+        <height>516</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
