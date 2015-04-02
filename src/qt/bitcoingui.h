@@ -62,10 +62,10 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-    void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void resizeEvent(QResizeEvent *e);
+    void closeEvent(QCloseEvent *event);
 
 private:
     ClientModel *clientModel;
@@ -219,6 +219,7 @@ private slots:
 
     void resizeGUI();
     void logout();
+    void exitApp();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

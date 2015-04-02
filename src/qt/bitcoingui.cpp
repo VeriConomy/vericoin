@@ -427,6 +427,7 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
     foreach (QAction* ai, trayActionItems) {
         ai->setVisible(lock == false);
     }
+    toggleHideAction->setVisible(true);
     quitAction->setVisible(true);
 }
 
@@ -576,7 +577,7 @@ void BitcoinGUI::createActions()
     openRPCConsoleAction = new QAction(QIcon(":/icons/debugwindow"), tr("&Console"), this);
     openRPCConsoleAction->setToolTip(tr("Open debugging and diagnostic console"));
 
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(exitApp()));
     connect(logoutAction, SIGNAL(triggered()), this, SLOT(logout()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -1052,7 +1053,7 @@ void BitcoinGUI::changeEvent(QEvent *e)
 //#endif
 }
 
-void BitcoinGUI::closeEvent(QCloseEvent *event)
+void BitcoinGUI::exitApp()
 {
     QSettings settings("VeriCoin", "VeriCoin-Qt");
     settings.setValue("geometry", saveGeometry());
@@ -1069,19 +1070,24 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
     }
     else
     {
-        if(clientModel)
-        {
-//#ifndef Q_OS_MAC // Ignored on Mac (Seems to be working in Qt5)
-            if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
-                !clientModel->getOptionsModel()->getMinimizeOnClose())
-            {
-                qApp->quit();
-                MilliSleep(500);
-            }
-//#endif
-        }
-        QMainWindow::closeEvent(event);
+        qApp->quit();
+        MilliSleep(500);
     }
+}
+
+void BitcoinGUI::closeEvent(QCloseEvent *event)
+{
+    if(clientModel)
+    {
+//#ifndef Q_OS_MAC // Ignored on Mac (Seems to be working in Qt5)
+        if(!clientModel->getOptionsModel()->getMinimizeToTray() &&
+            !clientModel->getOptionsModel()->getMinimizeOnClose())
+         {
+            exitApp();
+         }
+//#endif
+    }
+    QMainWindow::closeEvent(event);
 }
 
 void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
