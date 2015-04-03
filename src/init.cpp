@@ -95,7 +95,7 @@ void Shutdown(void* parg)
 #ifdef QT_GUI
         if (fRestart)
         {
-            if (fBootstrapTurbo)
+            if (fBootstrapTurbo && boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat"))
             {
                 try
                 {
