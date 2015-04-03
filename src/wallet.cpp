@@ -15,6 +15,7 @@
 
 using namespace std;
 unsigned int nStakeSplitAge = 1 * 24 * 60 * 60;
+double nStakeSplitWeightFraction = 0.25;
 int64_t nStakeCombineThreshold = 500 * COIN;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1918,8 +1919,10 @@ bool CWallet::CreateCoinTimeStake(const CKeyStore& keystore, unsigned int nBits,
                 nCredit += pcoin.first->vout[pcoin.second].nValue;
                 vwtxPrev.push_back(pcoin.first);
                 txNew.vout.push_back(CTxOut(0, scriptPubKeyOut));
-
-                if (GetWeight(block.GetBlockTime(), (int64_t)txNew.nTime) < nStakeSplitAge)
+                int64_t nWeight = GetWeight(block.GetBlockTime(), (int64_t)txNew.nTime);
+                int64_t nCoinWeight = nCredit*nWeight;
+                double nAverageStakeWeight = GetAverageStakeWeight(pindexPrev);
+                if ((nWeight < nStakeSplitAge) || ((nCoinWeight/nAverageStakeWeight) < nStakeSplitWeightFraction))
                     txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinTimeStake : added kernel type=%d\n", whichType);
