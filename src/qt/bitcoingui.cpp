@@ -939,7 +939,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Show a warning message if on wrong protocol version
     char pv[10];
     sprintf(pv, "%d", PROTOCOL_VERSION);
-    if (GetArg("-vProtocol","0").compare("0") && GetArg("-vProtocol","0").compare(pv) && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
+    if (GetArg("-vProtocol","0").compare(pv) && !progressBar->isVisible() && strStatusBarWarnings.isEmpty())
     {
         // Warn for wrong protocol version.
         strStatusBarWarnings = tr("Wrong protocol version detected. Please update to %1 asap!").arg(GetArg("-vVersion","").c_str());
