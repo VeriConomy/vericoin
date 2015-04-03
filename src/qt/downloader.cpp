@@ -83,7 +83,7 @@ void Downloader::on_continueButton_clicked() // Next button
     {
         checkForUpdate();
     }
-    if (autoDownload || processBlockchain || processUpdate)
+    if (downloadFinished && (autoDownload || processBlockchain || processUpdate))
     {
         on_quitButton_clicked();
     }
@@ -102,8 +102,8 @@ void Downloader::on_quitButton_clicked() // Cancel button
             {
                 reply->abort();
             }
+            httpRequestAborted = true;
         }
-        httpRequestAborted = true;
         downloaderFinished();
     }
 
@@ -112,7 +112,7 @@ void Downloader::on_quitButton_clicked() // Cancel button
         BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
         p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
         processBlockchain = false;
-        if (httpRequestAborted)
+        if (!downloadFinished)
             fBootstrapTurbo = false;
     }
     if (processUpdate)
@@ -465,9 +465,9 @@ void Downloader::setDest(QString dest)
     {
         ui->statusLabel->setText(tr("The file \"%1\" already exists.\n\nPress 'Next' to continue with this file, or 'Download' to get a new one.").arg(fileDest.filePath()));
         ui->continueButton->setEnabled(true);
-        downloadFinished = true;
         ui->progressBar->setMaximum(100);
         ui->progressBar->setValue(100);
+        downloadFinished = true;
     }
     else
     {
@@ -504,6 +504,7 @@ void Downloader::reloadBlockchain()
         ui->downloadButton->setDefault(true);
         ui->continueButton->setDefault(false);
         ui->quitButton->setDefault(false);
+        downloadFinished = false;
         return;
     }
 
@@ -516,13 +517,14 @@ void Downloader::reloadBlockchain()
     else
     {
         printf("Bootstrap structure is invalid!\n");
-        ui->statusLabel->setText(tr("I'm sorry, the bootstrap file structure appears to be invalid."));
+        ui->statusLabel->setText(tr("I'm sorry, the bootstrap file structure appears to be invalid. Please try to download it again."));
         ui->downloadButton->setEnabled(true);
         ui->continueButton->setEnabled(false);
         ui->quitButton->setEnabled(true);
         ui->downloadButton->setDefault(false);
         ui->continueButton->setDefault(false);
         ui->quitButton->setDefault(true);
+        downloadFinished = false;
         return;
     }
 
@@ -543,6 +545,7 @@ void Downloader::reloadBlockchain()
         ui->downloadButton->setDefault(false);
         ui->continueButton->setDefault(false);
         ui->quitButton->setDefault(true);
+        downloadFinished = false;
         return;
     }
 
@@ -557,6 +560,7 @@ void Downloader::reloadBlockchain()
         ui->downloadButton->setDefault(false);
         ui->continueButton->setDefault(false);
         ui->quitButton->setDefault(true);
+        downloadFinished = false;
         return;
     }
 
