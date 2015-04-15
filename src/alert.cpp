@@ -105,9 +105,10 @@ bool CAlert::IsInEffect() const
 
 bool CAlert::Cancels(const CAlert& alert) const
 {
-    if (!IsInEffect())
+    if (!alert.IsInEffect())
         return false; // this was a no-op before 31403
-    return (alert.nID <= nCancel || setCancel.count(alert.nID));
+
+    return (alert.setCancel.count(alert.nID) == 0);
 }
 
 bool CAlert::AppliesTo(int nVersion, std::string strSubVerIn) const
@@ -127,6 +128,7 @@ bool CAlert::RelayTo(CNode* pnode) const
 {
     if (!IsInEffect())
         return false;
+
     // returns true if wasn't already contained in the set
     if (pnode->setKnown.insert(GetHash()).second)
     {
@@ -198,11 +200,11 @@ bool CAlert::ProcessAlert()
 
     {
         LOCK(cs_mapAlerts);
-        // Cancel previous alerts
+        // Cancel previous alerts up to nCancel
         for (map<uint256, CAlert>::iterator mi = mapAlerts.begin(); mi != mapAlerts.end();)
         {
             const CAlert& alert = (*mi).second;
-            if (Cancels(alert))
+            if ((alert.nID <= nCancel || alert.nID == this->nID) && Cancels(alert))
             {
                 printf("cancelling alert %d\n", alert.nID);
                 uiInterface.NotifyAlertChanged((*mi).first, CT_DELETED);
@@ -218,24 +220,18 @@ bool CAlert::ProcessAlert()
                 mi++;
         }
 
-        // Check if this alert has been cancelled
-        BOOST_FOREACH(PAIRTYPE(const uint256, CAlert)& item, mapAlerts)
+        // Add to mapAlerts if id is greater than cancel id
+        if (nID > nCancel)
         {
-            const CAlert& alert = item.second;
-            if (alert.Cancels(*this))
-            {
-                printf("alert already cancelled by %d\n", alert.nID);
-                return false;
-            }
+            mapAlerts.insert(make_pair(GetHash(), *this));
+            // Notify UI if it applies to me
+            if(AppliesToMe())
+                uiInterface.NotifyAlertChanged(GetHash(), CT_NEW);
+            printf("accepted alert %d, AppliesToMe()=%d\n", nID, AppliesToMe());
+        } else
+        {
+            printf("alert %d falls within cancelled alerts, AppliesToMe()=%d\n", nID, AppliesToMe());
         }
-
-        // Add to mapAlerts
-        mapAlerts.insert(make_pair(GetHash(), *this));
-        // Notify UI if it applies to me
-        if(AppliesToMe())
-            uiInterface.NotifyAlertChanged(GetHash(), CT_NEW);
     }
-
-    printf("accepted alert %d, AppliesToMe()=%d\n", nID, AppliesToMe());
     return true;
 }

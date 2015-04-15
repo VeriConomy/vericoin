@@ -2927,6 +2927,7 @@ extern CCriticalSection cs_mapAlerts;
 string GetWarnings(string strFor)
 {
     int nPriority = 0;
+    int nID = 0;
     string strStatusBar;
     string strRPC;
 
@@ -2953,12 +2954,17 @@ string GetWarnings(string strFor)
         BOOST_FOREACH(PAIRTYPE(const uint256, CAlert)& item, mapAlerts)
         {
             const CAlert& alert = item.second;
-            if (alert.AppliesToMe() && alert.nPriority > nPriority)
+            if (alert.AppliesToMe() && alert.nPriority >= nPriority && alert.nPriority < 3000)
             {
                 nPriority = alert.nPriority;
-                strStatusBar = alert.strStatusBar;
-                if (nPriority > 1000)
-                    strRPC = strStatusBar;
+                // Get alert with the highest ID
+                if (alert.nID > nID)
+                {
+                    strStatusBar = alert.strStatusBar;
+                    nID = alert.nID;
+                    if (nPriority > 1000)
+                        strRPC = alert.strStatusBar;
+                }
             }
         }
     }

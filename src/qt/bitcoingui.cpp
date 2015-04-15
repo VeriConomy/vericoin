@@ -953,7 +953,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         progressBar->setVisible(true);
     }
 
-    // Show Alert message always.
+    // Show vAlertMsg messages always.
     if (GetBoolArg("-vAlert") && GetArg("-vAlertMsg","").c_str() != "")
     {
         // Add a delay in case there is another warning

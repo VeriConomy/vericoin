@@ -12,6 +12,9 @@
 using namespace json_spirit;
 using namespace std;
 
+extern map<uint256, CAlert> mapAlerts;
+extern CCriticalSection cs_mapAlerts;
+
 Value getconnectioncount(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
@@ -57,7 +60,7 @@ Value getpeerinfo(const Array& params, bool fHelp)
         obj.push_back(Pair("lastrecv", (boost::int64_t)stats.nLastRecv));
         obj.push_back(Pair("conntime", (boost::int64_t)stats.nTimeConnected));
         obj.push_back(Pair("version", stats.nVersion));
-        obj.push_back(Pair("subver", stats.strSubVer));
+        obj.push_back(Pair("subversion", stats.strSubVer));
         obj.push_back(Pair("inbound", stats.fInbound));
         obj.push_back(Pair("startingheight", stats.nStartingHeight));
         obj.push_back(Pair("banscore", stats.nMisbehavior));
@@ -74,13 +77,14 @@ Value getpeerinfo(const Array& params, bool fHelp)
 // ThreadRPCServer: holds cs_main and acquiring cs_vSend in alert.RelayTo()/PushMessage()/BeginMessage()
 Value sendalert(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() < 6)
+    if (fHelp || params.size() < 7)
         throw runtime_error(
-            "sendalert <message> <privatekey> <minver> <maxver> <priority> <id> [cancelupto]\n"
+            "sendalert <message> <privatekey> <minver> <maxver> <subver> <priority> <id> [cancelupto]\n"
             "<message> is the alert text message\n"
             "<privatekey> is hex string of alert master private key\n"
             "<minver> is the minimum applicable internal client version\n"
             "<maxver> is the maximum applicable internal client version\n"
+            "<subver> is the string client version /Satoshi:0.0.0/\n"
             "<priority> is integer priority number\n"
             "<id> is the alert id\n"
             "[cancelupto] cancels all alert id's up to this number\n"
@@ -92,10 +96,12 @@ Value sendalert(const Array& params, bool fHelp)
     alert.strStatusBar = params[0].get_str();
     alert.nMinVer = params[2].get_int();
     alert.nMaxVer = params[3].get_int();
-    alert.nPriority = params[4].get_int();
-    alert.nID = params[5].get_int();
-    if (params.size() > 6)
-        alert.nCancel = params[6].get_int();
+    std::string strSetSubVer = params[4].get_str();
+    alert.setSubVer.insert(strSetSubVer);
+    alert.nPriority = params[5].get_int();
+    alert.nID = params[6].get_int();
+    if (params.size() > 7)
+        alert.nCancel = params[7].get_int();
     alert.nVersion = PROTOCOL_VERSION;
     alert.nRelayUntil = GetAdjustedTime() + 24*60*60;
     alert.nExpiration = GetAdjustedTime() + 24*60*60;
@@ -124,9 +130,41 @@ Value sendalert(const Array& params, bool fHelp)
     result.push_back(Pair("nVersion", alert.nVersion));
     result.push_back(Pair("nMinVer", alert.nMinVer));
     result.push_back(Pair("nMaxVer", alert.nMaxVer));
+    result.push_back(Pair("setSubVer", strSetSubVer));
     result.push_back(Pair("nPriority", alert.nPriority));
     result.push_back(Pair("nID", alert.nID));
     if (alert.nCancel > 0)
         result.push_back(Pair("nCancel", alert.nCancel));
+    return result;
+}
+
+Value showalerts(const Array& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+            "showalerts\n");
+
+    Object result;
+
+    LOCK(cs_mapAlerts);
+    // Display alerts table
+    for (map<uint256, CAlert>::iterator mi = mapAlerts.begin(); mi != mapAlerts.end();)
+    {
+        const CAlert& alert = (*mi).second;
+        result.push_back(Pair("strStatusBar", alert.strStatusBar));
+        result.push_back(Pair("nVersion", alert.nVersion));
+        result.push_back(Pair("nMinVer", alert.nMinVer));
+        result.push_back(Pair("nMaxVer", alert.nMaxVer));
+        std::string strSetSubVer;
+        BOOST_FOREACH(std::string str, alert.setSubVer)
+            strSetSubVer += str;
+        result.push_back(Pair("setSubVer", strSetSubVer));
+        result.push_back(Pair("nPriority", alert.nPriority));
+        result.push_back(Pair("nID", alert.nID));
+        if (alert.nCancel > 0)
+            result.push_back(Pair("nCancel", alert.nCancel));
+        result.push_back(Pair("active", alert.IsInEffect()));
+        mi++;
+    }
     return result;
 }
