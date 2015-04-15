@@ -103,6 +103,7 @@ private:
     QLabel *stakingLabel;
     QLabel *connectionsLabel;
     QProgressBar *progressBar;
+    QProgressBar *stakingBar;
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
