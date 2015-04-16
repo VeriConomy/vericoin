@@ -160,10 +160,10 @@ QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STRING
 QString veriMiscStyleSheet = QString("QStatusBar { background: " + STRING_VERIBLUE + "; color: white; } QStatusBar::item { border: none; } QDialog { background: white; color: " + STRING_VERIFONT + "; } QTableView::item:hover { background: #EBEBEB; color: " + STRING_VERIFONT + "; } ");
 
 QString veriMenuStyleSheet = QString("QMenuBar { background-color: #0c456f; color: white; } \
-                                      QMenu { background-color: white; color: " + STRING_VERIBLUE + "; } \
+                                      QMenu { background-color: #0c456f; color: white; } \
                                       QMenuBar::item { background-color: transparent;} \
-                                      QMenuBar::item:selected { background-color: " + STRING_VERIBLUE_LT + "; color: white;} \
-                                      QMenu::item:selected { background-color: " + STRING_VERIBLUE_LT + "; color: white;}");
+                                      QMenuBar::item:selected { background-color: " + STRING_VERIBLUE + "; color: white;} \
+                                      QMenu::item:selected { background-color: " + STRING_VERIBLUE + "; color: white;}");
 // Put them all together
 QString veriStyleSheet = veriCentralWidgetStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet + veriMenuStyleSheet;
 
