@@ -47,7 +47,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             ui->passEdit2->hide();
             ui->passLabel3->hide();
             ui->passEdit3->hide();
-            setWindowTitle(tr("Lock Wallet"));
+            setWindowTitle(tr("Staking off"));
             break;
         case Unlock: // Ask passphrase
             ui->warningLabel->setText(tr("Enter your wallet password."));
@@ -55,7 +55,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             ui->passEdit2->hide();
             ui->passLabel3->hide();
             ui->passEdit3->hide();
-            setWindowTitle(tr("Unlock Wallet"));
+            setWindowTitle(tr("Enter Password"));
             break;
         case Decrypt:   // Ask passphrase
             ui->warningLabel->setText(tr("Enter your wallet password"));
