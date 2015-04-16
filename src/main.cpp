@@ -44,7 +44,6 @@ CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 
 unsigned int nTargetSpacing = 1 * 60; // 1 minute
 unsigned int nStakeMinAge = 8 * 60 * 60; // 8 hours
-unsigned int nStakeMaxAge = -1; // unlimited
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed
 
 int nCoinbaseMaturity = 500;
@@ -183,11 +182,6 @@ void ResendWalletTransactions()
         pwallet->ResendWalletTransactions();
 }
 
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // mapOrphanTransactions
@@ -253,10 +247,6 @@ unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
     }
     return nEvicted;
 }
-
-
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -456,11 +446,6 @@ int CMerkleTx::SetMerkleBranch(const CBlock* pblock)
 
     return pindexBest->nHeight - pindex->nHeight + 1;
 }
-
-
-
-
-
 
 
 bool CTransaction::CheckTransaction() const
@@ -907,12 +892,6 @@ bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock)
 }
 
 
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // CBlock and CBlockIndex
@@ -970,10 +949,89 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees)
 {
-    int64_t nSubsidy = 2500 * COIN;
+    int64_t nSubsidy;
+    if (fTestNet)
+    {
+        nSubsidy = 18750 * COIN;
+    }
+    else
+    {
+        nSubsidy = 2500 * COIN;
+    }
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
+
+    return nSubsidy + nFees;
+}
+
+// get stake time factored weight for reward and hash PoST
+int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, CBlockIndex* pindexPrev)
+{
+    int64_t factoredTimeWeight;
+    double weightFraction = (bnCoinDayWeight+1) / (GetAverageStakeWeight(pindexPrev));
+    if (weightFraction > 0.49)
+    {
+        factoredTimeWeight = nStakeMinAge+1;
+    }
+    else
+    {
+        double stakeTimeFactor = 1-(sin(pow((PI*weightFraction),2.0)));
+        factoredTimeWeight = stakeTimeFactor*timeWeight;
+    }
+    return factoredTimeWeight;
+}
+
+// get average stake weight of last 60 blocks PoST
+double GetAverageStakeWeight(CBlockIndex* pindexPrev)
+{
+    double weightSum = 0.0, weightAve = 0.0;
+    int i;
+    CBlockIndex* currentBlockIndex = pindexPrev;
+    for (i = 0; i < 60; i++)
+    {
+        if (currentBlockIndex != pindexGenesisBlock)
+        {
+            double tempWeight = GetPoSKernelPS(currentBlockIndex);
+            weightSum += tempWeight;
+            currentBlockIndex = currentBlockIndex->pprev;
+        }
+        else
+        {
+            break;
+        }
+    }
+    weightAve = weightSum/i;
+
+    return weightAve+21;
+}
+
+// get current inflation rate using average stake weight ~1.5-2.5% (measure of liquidity) PoST
+double GetCurrentInflationRate(double nAverageWeight)
+{
+    double inflationRate = (17*(log(nAverageWeight/20)))/100;
+
+    return inflationRate;
+}
+
+// get current interest rate by targeting for network stake dependent inflation rate PoST
+double GetCurrentInterestRate(CBlockIndex* pindexPrev)
+{
+    double nAverageWeight = GetAverageStakeWeight(pindexPrev);
+    double inflationRate = GetCurrentInflationRate(nAverageWeight)/100;
+    double interestRate = ((inflationRate*26751452)/nAverageWeight)*100;
+
+    return interestRate;
+}
+
+// Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
+int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev)
+{
+    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*1000000;
+    int64_t nSubsidy = (nStakeTime * (nInterestRate) * 33 / (365 * 33 + 8));
+
+    if (fDebug && GetBoolArg("-printcreation"))
+        printf("GetProofOfStakeTimeReward(): create=%s nStakeTime=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nStakeTime);
 
     return nSubsidy + nFees;
 }
@@ -1181,15 +1239,6 @@ void CBlock::UpdateTime(const CBlockIndex* pindexPrev)
 {
     nTime = max(GetBlockTime(), GetAdjustedTime());
 }
-
-
-
-
-
-
-
-
-
 
 
 bool CTransaction::DisconnectInputs(CTxDB& txdb)
@@ -1491,8 +1540,6 @@ bool CTransaction::ClientConnectInputs()
 }
 
 
-
-
 bool CBlock::DisconnectBlock(CTxDB& txdb, CBlockIndex* pindex)
 {
     // Disconnect in reverse order
@@ -1588,13 +1635,13 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
             int64_t currentHeight = pindex->pprev->nHeight+1;
-            if (tx.IsCoinStake() && currentHeight < 299000)
+            if (tx.IsCoinStake() && currentHeight < 299000 && !fTestNet)
             {
                 double nNetworkDriftBuffer = nTxValueOut*.02;
                 nTxValueOut = nTxValueOut-nNetworkDriftBuffer;
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
-            if (tx.IsCoinStake() && currentHeight >= 299000)
+            if ((tx.IsCoinStake() && currentHeight >= 299000) || (tx.IsCoinStake() && fTestNet))
             {
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
@@ -1623,12 +1670,23 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     }
     if (IsProofOfStake())
     {
-        // ppcoin: coin stake tx earns reward instead of paying fee
-        uint64_t nCoinAge;
-        if (!vtx[1].GetCoinAge(txdb, nCoinAge))
-            return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
-
-        int64_t nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->pprev);
+        int64_t nCalculatedStakeReward;
+        if (fTestNet) //PoST
+        {
+            // VeriCoin: coin stake tx earns reward instead of paying fee
+            uint64_t nStakeTime;
+            if (!vtx[1].GetStakeTime(txdb, nStakeTime, pindex->pprev))
+                return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
+            nCalculatedStakeReward = GetProofOfStakeTimeReward(nStakeTime, nFees, pindex->pprev);
+        }
+        else
+        {
+            // ppcoin: coin stake tx earns reward instead of paying fee
+            uint64_t nCoinAge;
+            if (!vtx[1].GetCoinAge(txdb, nCoinAge))
+                return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
+            nCalculatedStakeReward = GetProofOfStakeReward(nCoinAge, nFees, pindex->pprev);
+        }
 
         if (nStakeReward > nCalculatedStakeReward)
             return DoS(100, error("ConnectBlock() : coinstake pays too much(actual=%"PRId64" vs calculated=%"PRId64")", nStakeReward, nCalculatedStakeReward));
@@ -1956,6 +2014,56 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
     return true;
 }
 
+// VeriCoin: total stake time spent in transaction that is accepted by the network, in the unit of coin-days.
+// Only those coins meeting minimum age requirement counts. As those
+// transactions not in main chain are not currently indexed so we
+// might not find out about their coin age. Older transactions are
+// guaranteed to be in main chain by sync-checkpoint. This rule is
+// introduced to help nodes establish a consistent view of the coin
+// age (trust score) of competing branches. PoST
+bool CTransaction::GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* pindexPrev) const
+{
+    int64_t nValuesIn = 0;  // coin age in the unit of cent-seconds
+    int64_t timeWeights = 0;
+    nStakeTime = 0;
+
+    if (IsCoinBase())
+        return true;
+
+    BOOST_FOREACH(const CTxIn& txin, vin)
+    {
+        // First try finding the previous transaction in database
+        CTransaction txPrev;
+        CTxIndex txindex;
+        if (!txPrev.ReadFromDisk(txdb, txin.prevout, txindex))
+            continue;  // previous transaction not in main chain
+        if (nTime < txPrev.nTime)
+            return false;  // Transaction timestamp violation
+
+        // Read block header
+        CBlock block;
+        if (!block.ReadFromDisk(txindex.pos.nFile, txindex.pos.nBlockPos, false))
+            return false; // unable to read block of previous transaction
+        if (block.GetBlockTime() + nStakeMinAge > nTime)
+            continue; // only count coins meeting min age requirement
+
+        int64_t timeWeight = (nTime-txPrev.nTime);
+        if (timeWeight > 0)
+        {
+            int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+            nValuesIn += nValueIn;
+            timeWeights += timeWeight;
+        }
+    }
+    int64_t bnCoinDay = nValuesIn * timeWeights / COIN / (24 * 60 * 60);
+    int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(timeWeights, bnCoinDay, pindexPrev);
+    CBigNum bnStakeTime = CBigNum(nValuesIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
+    if (fDebug && GetBoolArg("-printcoinage"))
+        printf("coin age bnStakeTime=%s\n", bnStakeTime.ToString().c_str());
+    nStakeTime = bnStakeTime.getuint64();
+    return true;
+}
+
 // ppcoin: total coin age spent in block, in the unit of coin-days.
 bool CBlock::GetCoinAge(uint64_t& nCoinAge) const
 {
@@ -2015,11 +2123,11 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos)
     // ppcoin: compute stake modifier
     uint64_t nStakeModifier = 0;
     bool fGeneratedStakeModifier = false;
-    if (!ComputeNextStakeModifier(pindexNew->pprev, nStakeModifier, fGeneratedStakeModifier))
+    if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
         return error("AddToBlockIndex() : ComputeNextStakeModifier() failed");
     pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
     pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-    if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
+    if (!fTestNet && !CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
         return error("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=0x%016"PRIx64, pindexNew->nHeight, nStakeModifier);
 
     // Add to mapBlockIndex
@@ -2052,8 +2160,6 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos)
     uiInterface.NotifyBlocksChanged();
     return true;
 }
-
-
 
 
 bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) const
@@ -2384,26 +2490,54 @@ bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
     if (nSearchTime > nLastCoinStakeSearchTime)
     {
-        if (wallet.CreateCoinStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key))
+        if (fTestNet)// PoST
         {
-            if (txCoinStake.nTime >= max(pindexBest->GetMedianTimePast()+1, PastDrift(pindexBest->GetBlockTime())))
+            if (wallet.CreateCoinTimeStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key))
             {
-                // make sure coinstake would meet timestamp protocol
-                //    as it would be the same as the block timestamp
-                vtx[0].nTime = nTime = txCoinStake.nTime;
-                nTime = max(pindexBest->GetMedianTimePast()+1, GetMaxTransactionTime());
-                nTime = max(GetBlockTime(), PastDrift(pindexBest->GetBlockTime()));
+                if (txCoinStake.nTime >= max(pindexBest->GetMedianTimePast()+1, PastDrift(pindexBest->GetBlockTime())))
+                {
+                    // make sure coinstake would meet timestamp protocol
+                    //    as it would be the same as the block timestamp
+                    vtx[0].nTime = nTime = txCoinStake.nTime;
+                    nTime = max(pindexBest->GetMedianTimePast()+1, GetMaxTransactionTime());
+                    nTime = max(GetBlockTime(), PastDrift(pindexBest->GetBlockTime()));
 
-                // we have to make sure that we have no future timestamps in
-                //    our transactions set
-                for (vector<CTransaction>::iterator it = vtx.begin(); it != vtx.end();)
-                    if (it->nTime > nTime) { it = vtx.erase(it); } else { ++it; }
+                    // we have to make sure that we have no future timestamps in
+                    //    our transactions set
+                    for (vector<CTransaction>::iterator it = vtx.begin(); it != vtx.end();)
+                        if (it->nTime > nTime) { it = vtx.erase(it); } else { ++it; }
 
-                vtx.insert(vtx.begin() + 1, txCoinStake);
-                hashMerkleRoot = BuildMerkleTree();
+                    vtx.insert(vtx.begin() + 1, txCoinStake);
+                    hashMerkleRoot = BuildMerkleTree();
 
-                // append a signature to our block
-                return key.Sign(GetHash(), vchBlockSig);
+                    // append a signature to our block
+                    return key.Sign(GetHash(), vchBlockSig);
+                }
+            }
+        }
+        else
+        {
+            if (wallet.CreateCoinStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key))
+            {
+                if (txCoinStake.nTime >= max(pindexBest->GetMedianTimePast()+1, PastDrift(pindexBest->GetBlockTime())))
+                {
+                    // make sure coinstake would meet timestamp protocol
+                    //    as it would be the same as the block timestamp
+                    vtx[0].nTime = nTime = txCoinStake.nTime;
+                    nTime = max(pindexBest->GetMedianTimePast()+1, GetMaxTransactionTime());
+                    nTime = max(GetBlockTime(), PastDrift(pindexBest->GetBlockTime()));
+
+                    // we have to make sure that we have no future timestamps in
+                    //    our transactions set
+                    for (vector<CTransaction>::iterator it = vtx.begin(); it != vtx.end();)
+                        if (it->nTime > nTime) { it = vtx.erase(it); } else { ++it; }
+
+                    vtx.insert(vtx.begin() + 1, txCoinStake);
+                    hashMerkleRoot = BuildMerkleTree();
+
+                    // append a signature to our block
+                    return key.Sign(GetHash(), vchBlockSig);
+                }
             }
         }
         nLastCoinStakeSearchInterval = nSearchTime - nLastCoinStakeSearchTime;
@@ -2545,7 +2679,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
         bnTrustedModulus.SetHex("f0d14cf72623dacfe738d0892b599be0f31052239cddd95a3f25101c801dc990453b38c9434efe3f372db39a32c2bb44cbaea72d62c8931fa785b0ec44531308df3e46069be5573e49bb29f4d479bfc3d162f57a5965db03810be7636da265bfced9c01a6b0296c77910ebdc8016f70174f0f18a57b3b971ac43a934c6aedbc5c866764a3622b5b7e3f9832b8b3f133c849dbcc0396588abcd1e41048555746e4823fb8aba5b3d23692c6857fccce733d6bb6ec1d5ea0afafecea14a0f6f798b6b27f77dc989c557795cc39a0940ef6bb29a7fc84135193a55bcfc2f01dd73efad1b69f45a55198bd0e6bef4d338e452f6a420f1ae2b1167b923f76633ab6e55");
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 16 bits PoW target limit for testnet
-        nStakeMinAge = 1 * 60 * 60; // test net min age is 1 hour
+        nStakeMinAge = 8 * 60 * 60; // test net min age is 1 hour
         nCoinbaseMaturity = 10; // test maturity is 10 blocks
     }
     else
@@ -2585,11 +2719,11 @@ bool LoadBlockIndex(bool fAllowNew)
 
 
         // TestNet:
-        //CBlock(hash=0000bc5769efde881ee95b88dfe4d378d580d10a5e1bf8e1f7fd3844b418c920, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=c94f7deb5b37c2a6a871a10aa60d946d7abee7f309c76c99a9bbb76f4cc93b81, nTime=1396995919, nBits=1f00ffff, nNonce=159684, vtx=1, vchBlockSig=)
-        //  Coinbase(hash=c94f7deb5b, nTime=1396995919, ver=1, vin.size=1, vout.size=1, nLockTime=0)
-        //    CTxIn(COutPoint(0000000000, 4294967295), coinbase 00012a4c573820417072696c203230313420426974636f696e20616b696e20746f2074686520496e7465726e65742032302079656172732061676f2c206469676974616c2063757272656e6379206578656375746976652073617973)
-        //    CTxOut(empty)
-        //  vMerkleTree: c94f7deb5bco
+        //CBlock(hash=4247afa995120a09a5a22391f63031714169bc988eb0e6116a8100b298f88361, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=60424046d38de827de0ed1a20a351aa7f3557e3e1d3df6bfb34a94bc6161ec68, nTime=1399690945, nBits=1f00ffff, nNonce=612416, vtx=1, vchBlockSig=)
+        //Coinbase(hash=60424046d3, nTime=1399690945, ver=1, vin.size=1, vout.size=1, nLockTime=0)
+        //  CTxIn(COutPoint(0000000000, 4294967295), coinbase 00012a3639204d6179203230313420555320706f6c6974696369616e732063616e2061636365707420626974636f696e20646f6e6174696f6e73)
+        //  CTxOut(empty)
+        // vMerkleTree: 60424046d3
 
 
         const char* pszTimestamp = "9 May 2014 US politicians can accept bitcoin donations";
@@ -2606,7 +2740,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1399690945;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 612416 : 612416;
+        block.nNonce   = !fTestNet ? 612416 : 712750;
 
         //// debug print
         assert(block.hashMerkleRoot == uint256("0x60424046d38de827de0ed1a20a351aa7f3557e3e1d3df6bfb34a94bc6161ec68"));

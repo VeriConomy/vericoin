@@ -42,9 +42,9 @@ Value getmininginfo(const Array& params, bool fHelp)
             "getmininginfo\n"
             "Returns an object containing mining-related information.");
 
-    uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
-    pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-    uint64_t nNetworkWeight_ = GetPoSKernelPS();
+    uint64_t nWeight = 0;
+    pwalletMain->GetStakeTimeWeight(*pwalletMain, nWeight);
+    double averageStakeWeight = GetAverageStakeWeight(pindexBest->pprev);
 
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
@@ -62,18 +62,10 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
 
-    weight.push_back(Pair("minimum",    (uint64_t)nMinWeight));
-    weight.push_back(Pair("maximum",    (uint64_t)nMaxWeight));
     weight.push_back(Pair("combined",  (uint64_t)nWeight));
     obj.push_back(Pair("stakeweight", weight));
-    if (nNetworkWeight_ < 21)
-    {
-        obj.push_back(Pair("stakeinterest",    (uint64_t)(0)));
-    }
-    else
-    {
-        obj.push_back(Pair("stakeinterest",    (double)(0.17*(log(nNetworkWeight_/20)))));
-    }
+    obj.push_back(Pair("stakeinterest",    (double)GetCurrentInterestRate(pindexBest)));
+    obj.push_back(Pair("stakeinflation",    (double)GetCurrentInflationRate(averageStakeWeight)));
     obj.push_back(Pair("testnet",       fTestNet));
     return obj;
 }

@@ -506,7 +506,7 @@ bool AppInit2()
 
     fTestNet = GetBoolArg("-testnet");
     if (fTestNet) {
-        SoftSetBoolArg("-irc", true);
+        SoftSetBoolArg("-irc", false);
     }
 
     // Restarting

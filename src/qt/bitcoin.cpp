@@ -262,7 +262,14 @@ int main(int argc, char *argv[])
                 // 3. Update wallet and restart
                 if (fFirstRun || GetBoolArg("-vBootstrap")) // Force boostraping in auto mode
                 {
-                    window.reloadBlockchain(true);
+                    if (GetBoolArg("-testnet"))
+                    {
+                        //do nothing for now
+                    }
+                    else
+                    {
+                        window.reloadBlockchain(true);
+                    }
                 }
                 else
                 {

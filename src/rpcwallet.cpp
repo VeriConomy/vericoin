@@ -78,7 +78,6 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("stake",         ValueFromAmount(pwalletMain->GetStake())));
     obj.push_back(Pair("blocks",        (int)nBestHeight));
     obj.push_back(Pair("timeoffset",    (boost::int64_t)GetTimeOffset()));
-    //obj.push_back(Pair("moneysupply",   ValueFromAmount(pindexBest->nMoneySupply)));
     obj.push_back(Pair("connections",   (int)vNodes.size()));
     obj.push_back(Pair("proxy",         (proxy.first.IsValid() ? proxy.first.ToStringIPPort() : string())));
     obj.push_back(Pair("ip",            addrSeenByPeer.ToStringIP()));
@@ -101,7 +100,7 @@ Value getinfo(const Array& params, bool fHelp)
 
 Value getinterestrate(const Array& params, bool fHelp)
 {
-    return (0.17*(log(GetPoSKernelPS()/20)));
+    return (GetCurrentInterestRate(pindexBest->pprev));
 }
 
 Value getnewpubkey(const Array& params, bool fHelp)
