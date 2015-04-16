@@ -84,7 +84,7 @@ Value sendalert(const Array& params, bool fHelp)
             "<privatekey> is hex string of alert master private key\n"
             "<minver> is the minimum applicable internal client version\n"
             "<maxver> is the maximum applicable internal client version\n"
-            "<subver> is the string client version /Satoshi:0.0.0/\n"
+            "<subver> is the string client version /Veritoshi:0.0.0/\n"
             "<priority> is integer priority number\n"
             "<id> is the alert id\n"
             "[cancelupto] cancels all alert id's up to this number\n"
