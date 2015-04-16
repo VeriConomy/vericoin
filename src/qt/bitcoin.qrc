@@ -76,6 +76,10 @@
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="supernet_white">res/icons/supernet-white.png</file>
         <file alias="passphraseIcon">res/icons/vericoin-128-trans.png</file>
+        <file alias="verify">res/icons/verify.png</file>
+        <file alias="site">res/icons/website.png</file>
+        <file alias="about">res/icons/about.png</file>
+        <file alias="update">res/icons/update.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="askPassphraseBackground">res/images/askpassphrasepage-background.png</file>
@@ -116,4 +120,3 @@
         <file alias="Lato-Regular">res/fonts/Lato2OFL/Lato-Regular.ttf</file>
     </qresource>
 </RCC>
-
