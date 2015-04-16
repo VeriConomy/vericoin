@@ -336,8 +336,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     stakingBar = new QProgressBar();
     stakingBar->setContentsMargins(0,0,0,0);
     stakingBar->setFont(veriFontSmall);
-    stakingBar->setMinimumWidth(200);
-    stakingBar->setStyleSheet("QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 #A54B4B, stop: 1 #5F8C5F);} QProgressBar { color: white; border-color: " + STRING_VERIBLUE + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
+    stakingBar->setMinimumWidth(450);
+    stakingBar->setStyleSheet("QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 orange, stop: 1 #5F8C5F);} QProgressBar { color: white; border-color: " + STRING_VERIBLUE + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     stakingBar->setAlignment(Qt::AlignCenter);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
     // as they make the text unreadable (workaround for issue #1071)
@@ -1608,13 +1608,12 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2\nnWeight %3\nStakeTimeWeight: %4\nNetworkStakeTimeWeight: %5\nInflationRate: %6\n InterestRate: %7").arg(currentBlock).arg(text).arg(nWeight).arg(stakeTimeWeight).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
-        float stakeTimeWeightF = stakeTimeWeight;
-        float nWeightF = nWeight;
-        int nStakeTimePower = (stakeTimeWeightF/nWeightF)*100;
-        stakingBar->setFormat(tr("Stake Time Power: %1%").arg(nStakeTimePower));
+
+        int nStakeTimePower = StakeTimeEarned(nWeight, stakeTimeWeight);
+        stakingBar->setFormat(tr("Stake Charge: %1%").arg(nStakeTimePower));
         stakingBar->setMaximum(100);
         stakingBar->setValue(nStakeTimePower);
-        stakingBar->setVisible(true);
+        //stakingBar->setVisible(true);
     }
     else
     {
@@ -1632,6 +1631,18 @@ void BitcoinGUI::updateStakingIcon()
     }
     // Update balance in balanceLabel
     setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
+}
+
+int BitcoinGUI::StakeTimeEarned(uint nWeight, uint stakeTimeWeight)
+{
+    float stakeTimeWeightF = stakeTimeWeight;
+    float nWeightF = nWeight;
+    int nStakeTimePower = (stakeTimeWeightF/nWeightF)*100+1;
+    if (nStakeTimePower > 100)
+    {
+        nStakeTimePower = 100;
+    }
+    return nStakeTimePower;
 }
 
 void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
