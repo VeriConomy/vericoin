@@ -576,7 +576,7 @@ void BitcoinGUI::createActions()
     unlockWalletAction = new QAction(QIcon(":/icons/overview"), tr("&Enable Staking"), this);
     unlockWalletAction->setToolTip(tr("Turn staking on"));
     addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book"), this);
-    signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &Message"), this);
+    signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET"), this);
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
@@ -636,7 +636,7 @@ void BitcoinGUI::createMenuBar()
     file->addSeparator();
     file->addAction(addressBookAction);
     file->addAction(signMessageAction);
-    file->addAction(verifyMessageAction);
+    //file->addAction(verifyMessageAction);
     //file->addSeparator();
     //file->addAction(accessNxtInsideAction);
     file->addSeparator();
