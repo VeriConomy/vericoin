@@ -6,8 +6,8 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-#CONFIG += debug
-CONFIG += release
+CONFIG += debug
+#CONFIG += release
 !win32{
 CONFIG += static
 }
@@ -15,6 +15,26 @@ QT += network webkit
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += webkitwidgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
+}
+
+# Profiling on linux
+#   Download, build and install: libunwind and gperftools
+#   Include the profiler header "gperftools/profiler.h" in the code to profile
+#   Bracket the code to profile with ProfileStart("vericoin-qt.prof") and ProfileStop() and recompile
+#   Run vericoin-qt through its paces then exit
+#   Analyze with:
+#      pprof ./vericoin-qt vericoin-qt.prof
+#   For a graphical view you need to: sudo apt-get install graphviz gv
+#   Then run:
+#      pprof --gv ./vericoin-qt vericoin-qt.prof
+PROFILE = 0
+!macx:!win32:contains(PROFILE, 1) {
+DEFINES += PROFILER
+PROFILER_INCLUDE_PATH=/usr/local/include/gperftools
+PROFILER_LIB_PATH=-L/usr/local/lib -lprofiler
+UNWIND_LIB_PATH=-L/usr/local/lib -lunwind
+INCLUDEPATH += $$PROFILER_INCLUDE_PATH
+LIBS += $$UNWIND_LIB_PATH $$PROFILER_LIB_PATH
 }
 
 # for boost 1.37, add -mt to the boost libraries

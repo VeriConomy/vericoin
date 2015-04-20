@@ -20,6 +20,10 @@
 #include <QSplashScreen>
 #include <QLibraryInfo>
 
+#ifdef PROFILER // For CPU profiling
+#include "gperftools/profiler.h"
+#endif
+
 #if defined(BITCOIN_NEED_QT_PLUGINS) && !defined(_BITCOIN_QT_PLUGINS_INCLUDED)
 #define _BITCOIN_QT_PLUGINS_INCLUDED
 #define __INSURE__
@@ -227,6 +231,10 @@ int main(int argc, char *argv[])
         if(AppInit2())
         {
             {
+#ifdef PROFILER // For CPU profiling
+                ProfilerStart("vericoin-qt.prof");
+#endif
+
                 // Put this in a block, so that the Model objects are cleaned up before
                 // calling Shutdown().
 
@@ -285,6 +293,10 @@ int main(int argc, char *argv[])
                 window.setClientModel(0);
                 window.setWalletModel(0);
                 guiref = 0;
+
+#ifdef PROFILER // For CPU profiling
+                ProfilerStop();
+#endif
             }
             // Shutdown the core and its threads, but don't exit Bitcoin-Qt here
             Shutdown(NULL);
