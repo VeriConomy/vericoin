@@ -970,7 +970,7 @@ int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, 
 {
     int64_t factoredTimeWeight;
     double weightFraction = (bnCoinDayWeight+1) / (GetAverageStakeWeight(pindexPrev));
-    if (weightFraction > 0.49)
+    if (weightFraction > 0.49) //Should be 0.45 to ensure cost of coins is minimum
     {
         factoredTimeWeight = nStakeMinAge+1;
     }
