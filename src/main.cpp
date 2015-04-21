@@ -80,8 +80,6 @@ int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
 int64_t nMinimumInputValue = 0;
 
-extern enum Checkpoints::CPMode CheckpointsMode;
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // dispatching functions
@@ -2318,14 +2316,9 @@ bool CBlock::AcceptBlock()
     if (!Checkpoints::CheckHardened(nHeight, hash))
         return DoS(100, error("AcceptBlock() : rejected by hardened checkpoint lock-in at %d", nHeight));
 
-    bool cpSatisfies = Checkpoints::CheckSync(hash, pindexPrev);
-
     // Check that the block satisfies synchronized checkpoint
-    if (CheckpointsMode == Checkpoints::CPSTRICT && !cpSatisfies)
+    if (!Checkpoints::CheckSync(nHeight))
         return error("AcceptBlock() : rejected by synchronized checkpoint");
-
-    if (CheckpointsMode == Checkpoints::CPADVISORY && !cpSatisfies)
-        strMiscWarning = _("WARNING: syncronized checkpoint violation detected, but skipped!");
 
     // Enforce rule that the coinbase starts with serialized block height
     CScript expect = CScript() << nHeight;
@@ -2394,7 +2387,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // ppcoin: check proof-of-stake
     // Limited duplicity on stake: prevents block flood attack
     // Duplicate stake allowed only when there is orphan child block
-    if (pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
+    if (pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash))
         return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
 
     // Preliminary checks
@@ -2415,10 +2408,10 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
             mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
     }
 
-    CBlockIndex* pcheckpoint = Checkpoints::GetLastSyncCheckpoint();
-    if (pcheckpoint && pblock->hashPrevBlock != hashBestChain && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
+    if (pblock->hashPrevBlock != hashBestChain)
     {
         // Extra checks to prevent "fill up memory by spamming with bogus blocks"
+        const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
         int64_t deltaTime = pblock->GetBlockTime() - pcheckpoint->nTime;
         CBigNum bnNewBlock;
         bnNewBlock.SetCompact(pblock->nBits);
@@ -2437,10 +2430,6 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         }
     }
 
-    // ppcoin: ask for pending sync-checkpoint if any
-    if (!IsInitialBlockDownload())
-        Checkpoints::AskForPendingSyncCheckpoint(pfrom);
-
     // If don't already have its previous block, shunt it off to holding area until we get it
     if (!mapBlockIndex.count(pblock->hashPrevBlock))
     {
@@ -2450,7 +2439,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         {
             // Limited duplicity on stake: prevents block flood attack
             // Duplicate stake allowed only when there is orphan child block
-            if (setStakeSeenOrphan.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
+            if (setStakeSeenOrphan.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash))
                 return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for orphan block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
             else
                 setStakeSeenOrphan.insert(pblock->GetProofOfStake());
@@ -2514,7 +2503,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 
     // ppcoin: if responsible for sync-checkpoint send it
     if (pfrom && !CSyncCheckpoint::strMasterPrivKey.empty())
-        Checkpoints::SendSyncCheckpoint(Checkpoints::AutoSelectSyncCheckpoint());
+        Checkpoints::SendSyncCheckpoint(Checkpoints::AutoSelectSyncCheckpoint()->GetBlockHash());
 
     return true;
 }
@@ -3203,10 +3192,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         printf("receive version message: version %d, blocks=%d, us=%s, them=%s, peer=%s\n", pfrom->nVersion, pfrom->nStartingHeight, addrMe.ToString().c_str(), addrFrom.ToString().c_str(), pfrom->addr.ToString().c_str());
 
         cPeerBlockCounts.input(pfrom->nStartingHeight);
-
-        // ppcoin: ask for pending sync-checkpoint if any
-        if (!IsInitialBlockDownload())
-            Checkpoints::AskForPendingSyncCheckpoint(pfrom);
     }
 
 

@@ -209,55 +209,23 @@ namespace Checkpoints
         return false;
     }
 
-    // Automatically select a suitable sync-checkpoint 
-    uint256 AutoSelectSyncCheckpoint()
+    // Automatically select a suitable sync-checkpoint
+    const CBlockIndex* AutoSelectSyncCheckpoint()
     {
         const CBlockIndex *pindex = pindexBest;
         // Search backward for a block within max span and maturity window
-        while (pindex->pprev && (pindex->GetBlockTime() + CHECKPOINT_MAX_SPAN > pindexBest->GetBlockTime() || pindex->nHeight + 8 > pindexBest->nHeight))
+        while (pindex->pprev && pindex->nHeight + nCoinbaseMaturity > pindexBest->nHeight)
             pindex = pindex->pprev;
-        return pindex->GetBlockHash();
+        return pindex;
     }
 
     // Check against synchronized checkpoint
-    bool CheckSync(const uint256& hashBlock, const CBlockIndex* pindexPrev)
+    bool CheckSync(int nHeight)
     {
-        if (fTestNet) return true; // Testnet has no checkpoints
-        int nHeight = pindexPrev->nHeight + 1;
-
-        LOCK(cs_hashSyncCheckpoint);
-        // sync-checkpoint should always be accepted block
-        assert(mapBlockIndex.count(hashSyncCheckpoint));
-        const CBlockIndex* pindexSync = mapBlockIndex[hashSyncCheckpoint];
-
-        if (nHeight > pindexSync->nHeight)
-        {
-            // trace back to same height as sync-checkpoint
-            const CBlockIndex* pindex = pindexPrev;
-            while (pindex->nHeight > pindexSync->nHeight)
-                if (!(pindex = pindex->pprev))
-                    return error("CheckSync: pprev null - block index structure failure");
-            if (pindex->nHeight < pindexSync->nHeight || pindex->GetBlockHash() != hashSyncCheckpoint)
-                return false; // only descendant of sync-checkpoint can pass check
-        }
-        if (nHeight == pindexSync->nHeight && hashBlock != hashSyncCheckpoint)
-            return false; // same height with sync-checkpoint
-        if (nHeight < pindexSync->nHeight && !mapBlockIndex.count(hashBlock))
-            return false; // lower height than sync-checkpoint
-        return true;
-    }
-
-    bool WantedByPendingSyncCheckpoint(uint256 hashBlock)
-    {
-        LOCK(cs_hashSyncCheckpoint);
-        if (hashPendingCheckpoint == 0)
+        const CBlockIndex* pindexSync = AutoSelectSyncCheckpoint();
+        if (nHeight <= pindexSync->nHeight)
             return false;
-        if (hashBlock == hashPendingCheckpoint)
-            return true;
-        if (mapOrphanBlocks.count(hashPendingCheckpoint) 
-            && hashBlock == WantedByOrphan(mapOrphanBlocks[hashPendingCheckpoint]))
-            return true;
-        return false;
+        return true;
     }
 
     // ppcoin: reset synchronized checkpoint to last hardened checkpoint
@@ -299,13 +267,6 @@ namespace Checkpoints
         }
 
         return false;
-    }
-
-    void AskForPendingSyncCheckpoint(CNode* pfrom)
-    {
-        LOCK(cs_hashSyncCheckpoint);
-        if (pfrom && hashPendingCheckpoint != 0 && (!mapBlockIndex.count(hashPendingCheckpoint)) && (!mapOrphanBlocks.count(hashPendingCheckpoint)))
-            pfrom->AskFor(CInv(MSG_BLOCK, hashPendingCheckpoint));
     }
 
     bool SetCheckpointPrivKey(std::string strPrivKey)
@@ -403,15 +364,6 @@ bool CSyncCheckpoint::ProcessSyncCheckpoint(CNode* pfrom)
         // We haven't received the checkpoint chain, keep the checkpoint as pending
         Checkpoints::hashPendingCheckpoint = hashCheckpoint;
         Checkpoints::checkpointMessagePending = *this;
-        printf("ProcessSyncCheckpoint: pending for sync-checkpoint %s\n", hashCheckpoint.ToString().c_str());
-        // Ask this guy to fill in what we're missing
-        if (pfrom)
-        {
-            pfrom->PushGetBlocks(pindexBest, hashCheckpoint);
-            // ask directly as well in case rejected earlier by duplicate
-            // proof-of-stake because getblocks may not get it this time
-            pfrom->AskFor(CInv(MSG_BLOCK, mapOrphanBlocks.count(hashCheckpoint)? WantedByOrphan(mapOrphanBlocks[hashCheckpoint]) : hashCheckpoint));
-        }
         return false;
     }
 
