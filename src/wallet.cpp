@@ -1972,20 +1972,20 @@ printf("Time in CreateCoinTimeStake 1: %.fs\n",s);
         {
             int64_t nTimeWeight = GetWeight((int64_t)pcoin.first->nTime, (int64_t)txNew.nTime);
 
-            // Do not add input that is still too young
-            if (nTimeWeight < nStakeMinAge)
-                continue;
-            // Stop adding more inputs if value is already pretty significant
-            if (nCredit >= nStakeCombineThreshold)
-                break;
             // Stop adding more inputs if already too many inputs
             if (txNew.vin.size() >= 100)
+                break;
+            // Stop adding more inputs if value is already pretty significant
+            if (nCredit >= nStakeCombineThreshold)
                 break;
             // Stop adding inputs if reached reserve limit
             if (nCredit + pcoin.first->vout[pcoin.second].nValue > nBalance - nReserveBalance)
                 break;
             // Do not add additional significant input
             if (pcoin.first->vout[pcoin.second].nValue >= nStakeCombineThreshold)
+                continue;
+            // Do not add input that is still too young
+            if (nTimeWeight < nStakeMinAge)
                 continue;
 
             txNew.vin.push_back(CTxIn(pcoin.first->GetHash(), pcoin.second));
