@@ -319,7 +319,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar = new QProgressBar();
     progressBar->setContentsMargins(0,0,0,0);
     progressBar->setFont(veriFontSmall);
-    progressBar->setMinimumWidth(500);
+    progressBar->setMinimumWidth(550);
     progressBar->setStyleSheet("QProgressBar::chunk { background: " + STRING_VERIBLUE_LT + "; } QProgressBar { color: black; border-color: " + STRING_VERIBLUE_LT + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
     progressBar->setAlignment(Qt::AlignCenter);
     // Override style sheet for progress bar for styles that have a segmented progress bar,
