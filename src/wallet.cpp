@@ -14,7 +14,7 @@
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace std;
-unsigned int nStakeSplitAge = 1 * 24 * 60 * 60;
+unsigned int nStakeSplitAge = 7 * 24 * 60 * 60;
 double nStakeSplitWeightFraction = 0.30;
 int64_t nStakeCombineThreshold = 750 * COIN;
 
