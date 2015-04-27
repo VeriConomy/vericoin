@@ -3,9 +3,6 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-// DEBUG
-#include "time.h"
-
 #include "txdb.h"
 #include "wallet.h"
 #include "walletdb.h"
@@ -1594,11 +1591,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     CBigNum bnTargetPerCoinDay;
     bnTargetPerCoinDay.SetCompact(nBits);
 
-// DEBUG
-time_t t;
-double s;
-time(&t);
-
     txNew.vin.clear();
     txNew.vout.clear();
 
@@ -1732,10 +1724,6 @@ time(&t);
     if (nCredit == 0 || nCredit > nBalance - nReserveBalance)
         return false;
 
-// DEBUG
-s = difftime(time(NULL),t);
-printf("Time in CreateCoinStake 1: %.fs\n",s);
-
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {
         // Attempt to add more inputs
@@ -1804,10 +1792,6 @@ printf("Time in CreateCoinStake 1: %.fs\n",s);
     if (nBytes >= MAX_BLOCK_SIZE_GEN/5)
         return error("CreateCoinStake : exceeded coinstake size limit");
 
-// DEBUG
-s = difftime(time(NULL),t);
-printf("Time in CreateCoinStake 2: %.fs\n",s);
-
     // Successfully generated coinstake
     return true;
 }
@@ -1818,11 +1802,6 @@ bool CWallet::CreateCoinTimeStake(const CKeyStore& keystore, unsigned int nBits,
     CBlockIndex* pindexPrev = pindexBest;
     CBigNum bnTargetPerCoinDay;
     bnTargetPerCoinDay.SetCompact(nBits);
-
-// DEBUG
-time_t t;
-double s;
-time(&t);
 
     txNew.vin.clear();
     txNew.vout.clear();
@@ -1959,10 +1938,6 @@ time(&t);
     if (nCredit == 0 || nCredit > nBalance - nReserveBalance)
         return false;
 
-// DEBUG
-s = difftime(time(NULL),t);
-printf("Time in CreateCoinTimeStake 1: %.fs\n",s);
-
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {
         // Attempt to add more inputs
@@ -2031,10 +2006,6 @@ printf("Time in CreateCoinTimeStake 1: %.fs\n",s);
     unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
     if (nBytes >= MAX_BLOCK_SIZE_GEN/5)
         return error("CreateCoinTimeStake : exceeded coinstake size limit");
-
-// DEBUG
-s = difftime(time(NULL),t);
-printf("Time in CreateCoinTimeStake 2: %.fs\n",s);
 
     // Successfully generated coinstake
     return true;
