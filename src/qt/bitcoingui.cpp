@@ -332,26 +332,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     }
     progressBar->setVisible(true);
 
-    // staking bar and label for stake power metric
-    stakingBar = new QProgressBar();
-    stakingBar->setContentsMargins(0,0,0,0);
-    stakingBar->setFont(veriFontSmall);
-    stakingBar->setMinimumWidth(450);
-    stakingBar->setStyleSheet("QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 orange, stop: 1 #5F8C5F);} QProgressBar { color: white; border-color: " + STRING_VERIBLUE + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
-    stakingBar->setAlignment(Qt::AlignCenter);
-    // Override style sheet for progress bar for styles that have a segmented progress bar,
-    // as they make the text unreadable (workaround for issue #1071)
-    // See https://qt-project.org/doc/qt-4.8/gallery.html
-    if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
-    {
-        stakingBar->setStyleSheet("QProgressBar { background: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
-    }
-    stakingBar->setVisible(false);
-
-
     statusBar()->addWidget(versionBlocks);
     statusBar()->addWidget(progressBar);
-    statusBar()->addWidget(stakingBar);
     statusBar()->addPermanentWidget(frameBlocks);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
@@ -360,7 +342,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
         connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
-        timerStakingIcon->start(15 * 1000);
+        timerStakingIcon->start(30 * 1000);
         updateStakingIcon();
     }
 
@@ -961,7 +943,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Override progressBar text when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
     {
-        stakingBar->setVisible(false);
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
         progressBar->setVisible(true);
@@ -975,7 +956,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         this->repaint();
         MilliSleep(1000);
         strStatusBarWarnings = tr(GetArg("-vAlertMsg","").c_str());
-        stakingBar->setVisible(false);
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
         progressBar->setVisible(true);
@@ -1561,7 +1541,7 @@ void BitcoinGUI::toggleHidden()
 
 void BitcoinGUI::updateStakingIcon()
 {
-    if (!walletModel)
+    if (!walletModel || pindexBest == pindexGenesisBlock)
         return;
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
@@ -1609,10 +1589,6 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2\nnWeight %3\nStakeTimeWeight: %4\nNetworkStakeTimeWeight: %5\nInflationRate: %6\n InterestRate: %7").arg(currentBlock).arg(text).arg(nWeight).arg(stakeTimeWeight).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
 
         int nStakeTimePower = StakeTimeEarned(nWeight, stakeTimeWeight);
-        stakingBar->setFormat(tr("Stake Charge: %1%").arg(nStakeTimePower));
-        stakingBar->setMaximum(100);
-        stakingBar->setValue(nStakeTimePower);
-        //stakingBar->setVisible(true);
     }
     else
     {
@@ -1626,7 +1602,6 @@ void BitcoinGUI::updateStakingIcon()
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else
             labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking because you do not have mature coins.\nNetworkStakeTimeWeight: %2\nInflationRate: %3\n InterestRate: %4").arg(currentBlock).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
-        stakingBar->setVisible(false);
     }
     // Update balance in balanceLabel
     setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
