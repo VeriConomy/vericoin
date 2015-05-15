@@ -188,7 +188,6 @@ public slots:
     void reloadBlockchain(bool autoReload=false);
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();
-    int StakeTimeEarned(uint nWeight, uint stakeTimeWeight);
 
 private slots:
     /** Switch to askpassphrase page */
