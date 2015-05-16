@@ -1539,7 +1539,7 @@ bool CWallet::GetStakeWeight(const CKeyStore& keystore, uint64_t& nWeight)
     return true;
 }
 
-int CWallet::StakeTimeEarned(uint nWeight, CBlockIndex* pindexPrev)
+int CWallet::StakeTimeEarned(uint64_t nWeight, CBlockIndex* pindexPrev)
 {
     int factor;
     double weightFraction = (nWeight+1) / (GetAverageStakeWeight(pindexPrev));

@@ -83,6 +83,7 @@
     </qresource>
     <qresource prefix="/images">
         <file alias="askPassphraseBackground">res/images/askpassphrasepage-background.png</file>
+        <file alias="post">res/images/post.png</file>
         <file alias="aboutBackground">res/images/aboutBackground.png</file>
         <file alias="splash">res/images/splash.png</file>
         <file alias="headerOverview">res/images/headerOverview.png</file>

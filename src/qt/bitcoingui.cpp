@@ -14,6 +14,7 @@
 #include "accessnxtinsidedialog.h"
 #include "optionsdialog.h"
 #include "aboutdialog.h"
+#include "postdialog.h"
 #include "clientmodel.h"
 #include "walletmodel.h"
 #include "editaddressdialog.h"
@@ -538,6 +539,9 @@ void BitcoinGUI::createActions()
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About VeriCoin"), this);
     aboutAction->setToolTip(tr("Show information about VeriCoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
+    aboutPostAction = new QAction(QIcon(":/icons/about"), tr("&About PoST"), this);
+    aboutPostAction->setToolTip(tr("Show information about PoST protocol"));
+    aboutPostAction->setMenuRole(QAction::AboutRole);
     aboutQtAction = new QAction(QIcon(":icons/about-qt"), tr("About &Qt"), this);
     aboutQtAction->setToolTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
@@ -580,6 +584,7 @@ void BitcoinGUI::createActions()
     connect(quitAction, SIGNAL(triggered()), this, SLOT(exitApp()));
     connect(logoutAction, SIGNAL(triggered()), this, SLOT(logout()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
+    connect(aboutPostAction, SIGNAL(triggered()), this, SLOT(aboutPostClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
@@ -644,6 +649,7 @@ void BitcoinGUI::createMenuBar()
     help->addSeparator();
     help->addAction(webAction);
     help->addAction(aboutAction);
+    help->addAction(aboutPostAction);
     help->addAction(aboutQtAction);
 }
 
@@ -827,6 +833,13 @@ void BitcoinGUI::webClicked()
 void BitcoinGUI::aboutClicked()
 {
     AboutDialog dlg;
+    dlg.setModel(clientModel);
+    dlg.exec();
+}
+
+void BitcoinGUI::aboutPostClicked()
+{
+    PostDialog dlg;
     dlg.setModel(clientModel);
     dlg.exec();
 }

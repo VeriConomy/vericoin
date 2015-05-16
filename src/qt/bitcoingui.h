@@ -121,6 +121,8 @@ private:
     QAction *verifyMessageAction;
     QAction *accessNxtInsideAction;
     QAction *aboutAction;
+    QAction *aboutPostAction;
+    QAction *aboutQtAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
     QAction *forumAction;
@@ -132,7 +134,6 @@ private:
     QAction *changePassphraseAction;
     QAction *lockWalletAction;
     QAction *unlockWalletAction;
-    QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *reloadBlockchainAction;
     QAction *rescanBlockchainAction;
@@ -236,6 +237,8 @@ private slots:
     void webClicked();
     /** Show about dialog */
     void aboutClicked();
+    /** Show about PoST dialog */
+    void aboutPostClicked();
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
