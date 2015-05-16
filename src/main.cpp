@@ -952,7 +952,7 @@ int64_t GetProofOfWorkReward(int64_t nFees)
     int64_t nSubsidy;
     if (fTestNet)
     {
-        nSubsidy = 18750 * COIN;
+        nSubsidy = 100000 * COIN;
     }
     else
     {
@@ -2018,8 +2018,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
 // age (trust score) of competing branches. PoST
 bool CTransaction::GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* pindexPrev) const
 {
-    int64_t nValuesIn = 0;  // coin age in the unit of cent-seconds
-    int64_t timeWeights = 0;
+    CBigNum bnStakeTime = 0;  // coin age in the unit of cent-seconds
     nStakeTime = 0;
 
     if (IsCoinBase())
@@ -2042,23 +2041,17 @@ bool CTransaction::GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* 
         if (block.GetBlockTime() + nStakeMinAge > nTime)
             continue; // only count coins meeting min age requirement
 
-        int64_t timeWeight = (nTime-txPrev.nTime);
-        if (timeWeight > 0)
-        {
-            int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
-            nValuesIn += nValueIn;
-            timeWeights += timeWeight;
-        }
+        int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+        int64_t timeWeight = nTime-txPrev.nTime;
+        int64_t CoinDay = nValueIn * timeWeight / COIN / (24 * 60 * 60);
+        int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(timeWeight, CoinDay, pindexPrev);
+        bnStakeTime += CBigNum(nValueIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
     }
-    int64_t bnCoinDay = nValuesIn * timeWeights / COIN / (24 * 60 * 60);
-    int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(timeWeights, bnCoinDay, pindexPrev);
-    CBigNum bnStakeTime = CBigNum(nValuesIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
     if (fDebug && GetBoolArg("-printcoinage"))
-        printf("coin age bnStakeTime=%s\n", bnStakeTime.ToString().c_str());
+        printf("stake time bnStakeTime=%s\n", bnStakeTime.ToString().c_str());
     nStakeTime = bnStakeTime.getuint64();
     return true;
 }
-
 
 bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos)
 {
