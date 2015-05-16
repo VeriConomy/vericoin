@@ -14,10 +14,10 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::UpdateDialog)
 {
-    std::string title = GetArg("-vTitle", "Update Available") + "\n";
+    std::string title = GetArg("-vTitle", "VeriCoin Update Available");
     std::string description = GetArg("-vDescription", "Lot's of new features.").c_str();
     std::string version = "NEW IN " + GetArg("-vVersion", "1.0.0.0");
-    std::string postreq = std::string("\n\nPost-Install Notes: ").append((GetBoolArg("-vBootstrap") ? "Auto Bootstrap will run after the installation." : "Bootstrapping is not required."));
+    std::string postreq = std::string("\nPost-Install Notes: ").append((GetBoolArg("-vBootstrap") ? "Auto Bootstrap will run after the installation." : "Bootstrapping is not required."));
     ui->setupUi(this);
 
     ui->title->setFont(veriFontLarge);
@@ -30,7 +30,7 @@ void UpdateDialog::setModel(ClientModel *model)
 {
     if(model)
     {
-        ui->versionLabel->setText(model->formatFullVersion().append(" ").append(GetArg("-vArch", "").c_str()));
+        ui->versionLabel->setText(model->formatFullVersion().append(GetArg("-vArch", "").c_str()).append("  (Update Available)"));
     }
 }
 

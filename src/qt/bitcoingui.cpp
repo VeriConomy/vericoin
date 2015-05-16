@@ -555,6 +555,10 @@ void BitcoinGUI::createActions()
     //encryptWalletAction->setChecked(false);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet"), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
+    rescanWalletAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
+    rescanWalletAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
+    reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
+    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password"), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
     lockWalletAction = new QAction(QIcon(":/icons/overview"), tr("&Disable Staking"), this);
@@ -565,10 +569,6 @@ void BitcoinGUI::createActions()
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET"), this);
-    reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
-    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
-    rescanBlockchainAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     checkForUpdateAction = new QAction(QIcon(":/icons/update"), tr("Check For &Update"), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums"), this);
@@ -590,6 +590,8 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     //connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
+    connect(rescanWalletAction, SIGNAL(triggered()), this, SLOT(rescanWallet()));
+    connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
     connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
@@ -597,8 +599,6 @@ void BitcoinGUI::createActions()
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     //connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
-    connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
-    connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
     connect(forumAction, SIGNAL(triggered()), this, SLOT(forumClicked()));
     connect(webAction, SIGNAL(triggered()), this, SLOT(webClicked()));
@@ -620,15 +620,14 @@ void BitcoinGUI::createMenuBar()
     file->setFont(veriFont);
     file->addAction(backupWalletAction);
     file->addAction(exportAction);
+    file->addAction(rescanWalletAction);
+    file->addAction(reloadBlockchainAction);
     file->addSeparator();
     file->addAction(addressBookAction);
     file->addAction(signMessageAction);
     //file->addAction(verifyMessageAction);
     //file->addSeparator();
     //file->addAction(accessNxtInsideAction);
-    file->addSeparator();
-    file->addAction(reloadBlockchainAction);
-    file->addAction(rescanBlockchainAction);
     file->addSeparator();
     file->addAction(logoutAction);
     file->addAction(quitAction);
@@ -638,16 +637,17 @@ void BitcoinGUI::createMenuBar()
     //settings->addAction(encryptWalletAction);
     settings->addAction(lockWalletAction);
     settings->addAction(unlockWalletAction);
-    settings->addSeparator();
     settings->addAction(changePassphraseAction);
+    settings->addSeparator();
     settings->addAction(optionsAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->setFont(veriFont);
-    help->addAction(checkForUpdateAction);
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
     help->addAction(webAction);
+    help->addAction(checkForUpdateAction);
+    help->addSeparator();
     help->addAction(aboutAction);
     help->addAction(aboutPostAction);
     help->addAction(aboutQtAction);
@@ -1656,7 +1656,7 @@ void BitcoinGUI::reloadBlockchain(bool autoReload)
     }
 }
 
-void BitcoinGUI::rescanBlockchain()
+void BitcoinGUI::rescanWallet()
 {
     if (fBootstrapTurbo)
     {
@@ -1674,7 +1674,7 @@ void BitcoinGUI::rescanBlockchain()
     }
     fRescan = true;
 
-    if (!walletModel->rescanBlockchain())
+    if (!walletModel->rescanWallet())
     {
         QMessageBox::warning(this, tr("Rescan Failed"), tr("There was an error trying to rescan the blockchain."));
     }

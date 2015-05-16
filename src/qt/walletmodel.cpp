@@ -316,9 +316,9 @@ bool WalletModel::reloadBlockchain()
     return ReloadBlockchain();
 }
 
-bool WalletModel::rescanBlockchain()
+bool WalletModel::rescanWallet()
 {
-    return RescanBlockchain();
+    return RescanWallet();
 }
 
 bool WalletModel::checkForUpdate()

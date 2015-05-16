@@ -136,7 +136,7 @@ private:
     QAction *unlockWalletAction;
     QAction *openRPCConsoleAction;
     QAction *reloadBlockchainAction;
-    QAction *rescanBlockchainAction;
+    QAction *rescanWalletAction;
     QAction *checkForUpdateAction;
 
     QSystemTrayIcon *trayIcon;
@@ -259,7 +259,7 @@ private slots:
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
     /** Rescan the blockchain */
-    void rescanBlockchain();
+    void rescanWallet();
     /** Check for wallet update from Help menu */
     void menuCheckForUpdate();
     /** Check for wallet update from timer */
