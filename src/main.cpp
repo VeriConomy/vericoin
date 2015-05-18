@@ -1047,7 +1047,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pind
 
     return nSubsidy + nFees;
 }
-#ifdef fTestNet //PoST
+#ifdef fTestNet
 static const int64_t nTargetTimespan = 10 * 60;  // 10 mins
 #else
 static const int64_t nTargetTimespan = 16 * 60;  // 16 mins
@@ -1629,7 +1629,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
-            int64_t currentHeight = pindex->pprev->nHeight+1;
+            int currentHeight = pindex->pprev->nHeight+1;
             if (tx.IsCoinStake() && currentHeight < 299000 && !fTestNet)
             {
                 double nNetworkDriftBuffer = nTxValueOut*.02;
@@ -1666,7 +1666,8 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     if (IsProofOfStake())
     {
         int64_t nCalculatedStakeReward;
-        if (fTestNet) //PoST
+        int currentHeight = pindex->pprev->nHeight+1;
+        if (PoSTprotocol(currentHeight) || fTestNet) //PoST
         {
             // VeriCoin: coin stake tx earns reward instead of paying fee
             uint64_t nStakeTime;
@@ -2457,7 +2458,7 @@ bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
     if (nSearchTime > nLastCoinStakeSearchTime)
     {
-        if (fTestNet)// PoST
+        if (PoSTprotocol(nHeight) || fTestNet)// PoST
         {
             if (wallet.CreateCoinTimeStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key))
             {
