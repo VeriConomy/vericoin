@@ -27,6 +27,7 @@ VERSION.json
 *.zip
 *.pkg
 *.dmg
+*.prof
 src/quazip/libquazip.a
 src/quazip/.qmake.stash
 *.patch

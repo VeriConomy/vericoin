@@ -1,3 +1,9 @@
+/*
+ * Qt5 webview naviagation
+ *
+ * Developed by OnsightIT 2014-2015
+ * onsightit@gmail.com
+ */
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
