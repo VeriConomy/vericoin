@@ -98,7 +98,7 @@ public:
     // Reload blockchain
     bool reloadBlockchain();
     // Rescan blockchain
-    bool rescanBlockchain();
+    bool rescanWallet();
     // Restart wallet on update
     bool checkForUpdate();
 

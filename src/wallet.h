@@ -189,7 +189,7 @@ public:
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey);
 
     bool GetStakeWeight(const CKeyStore& keystore, uint64_t& nWeight);
-    bool GetStakeTimeWeight(const CKeyStore& keystore, uint64_t& nWeight);
+    int StakeTimeEarned(uint64_t nWeight, CBlockIndex* pindexPrev);
     bool CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, int64_t nFees, CTransaction& txNew, CKey& key);
     bool CreateCoinTimeStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, int64_t nFees, CTransaction& txNew, CKey& key);
 

@@ -29,7 +29,7 @@ extern unsigned int nWalletDBUpdated;
 void ThreadFlushWalletDB(void* parg);
 bool BackupWallet(const CWallet& wallet, const std::string& strDest);
 bool ReloadBlockchain();
-bool RescanBlockchain();
+bool RescanWallet();
 bool CheckForUpdate();
 
 

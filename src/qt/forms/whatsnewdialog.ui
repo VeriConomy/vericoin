@@ -84,10 +84,10 @@
         <cursorShape>IBeamCursor</cursorShape>
        </property>
        <property name="text">
-        <string>You Have the Most Current VeriCoin Wallet</string>
+        <string>What's New</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <set>Qt::AlignHCenter|Qt::AlignTop</set>
        </property>
        <property name="margin">
         <number>2</number>

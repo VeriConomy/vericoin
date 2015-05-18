@@ -14,6 +14,7 @@
 #include "accessnxtinsidedialog.h"
 #include "optionsdialog.h"
 #include "aboutdialog.h"
+#include "postdialog.h"
 #include "clientmodel.h"
 #include "walletmodel.h"
 #include "editaddressdialog.h"
@@ -332,26 +333,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     }
     progressBar->setVisible(true);
 
-    // staking bar and label for stake power metric
-    stakingBar = new QProgressBar();
-    stakingBar->setContentsMargins(0,0,0,0);
-    stakingBar->setFont(veriFontSmall);
-    stakingBar->setMinimumWidth(450);
-    stakingBar->setStyleSheet("QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 orange, stop: 1 #5F8C5F);} QProgressBar { color: white; border-color: " + STRING_VERIBLUE + "; margin: 3px; margin-right: 13px; border-width: 1px; border-style: solid; }");
-    stakingBar->setAlignment(Qt::AlignCenter);
-    // Override style sheet for progress bar for styles that have a segmented progress bar,
-    // as they make the text unreadable (workaround for issue #1071)
-    // See https://qt-project.org/doc/qt-4.8/gallery.html
-    if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
-    {
-        stakingBar->setStyleSheet("QProgressBar { background: white; color: black; border: 0px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 " + STRING_VERIBLUE_LT + "); border-radius: 7px; margin: 0px; }");
-    }
-    stakingBar->setVisible(false);
-
-
     statusBar()->addWidget(versionBlocks);
     statusBar()->addWidget(progressBar);
-    statusBar()->addWidget(stakingBar);
     statusBar()->addPermanentWidget(frameBlocks);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
@@ -360,7 +343,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
         connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
-        timerStakingIcon->start(15 * 1000);
+        timerStakingIcon->start(30 * 1000);
         updateStakingIcon();
     }
 
@@ -556,6 +539,9 @@ void BitcoinGUI::createActions()
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About VeriCoin"), this);
     aboutAction->setToolTip(tr("Show information about VeriCoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
+    aboutPostAction = new QAction(QIcon(":/icons/PoSTicon"), tr("&About PoST"), this);
+    aboutPostAction->setToolTip(tr("Show information about PoST protocol"));
+    aboutPostAction->setMenuRole(QAction::AboutRole);
     aboutQtAction = new QAction(QIcon(":icons/about-qt"), tr("About &Qt"), this);
     aboutQtAction->setToolTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
@@ -569,6 +555,10 @@ void BitcoinGUI::createActions()
     //encryptWalletAction->setChecked(false);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet"), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
+    rescanWalletAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
+    rescanWalletAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
+    reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
+    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password"), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
     lockWalletAction = new QAction(QIcon(":/icons/overview"), tr("&Disable Staking"), this);
@@ -579,10 +569,6 @@ void BitcoinGUI::createActions()
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
     //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET"), this);
-    reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
-    reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
-    rescanBlockchainAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
-    rescanBlockchainAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     checkForUpdateAction = new QAction(QIcon(":/icons/update"), tr("Check For &Update"), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums"), this);
@@ -598,11 +584,14 @@ void BitcoinGUI::createActions()
     connect(quitAction, SIGNAL(triggered()), this, SLOT(exitApp()));
     connect(logoutAction, SIGNAL(triggered()), this, SLOT(logout()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
+    connect(aboutPostAction, SIGNAL(triggered()), this, SLOT(aboutPostClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     //connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
+    connect(rescanWalletAction, SIGNAL(triggered()), this, SLOT(rescanWallet()));
+    connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
     connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
@@ -610,8 +599,6 @@ void BitcoinGUI::createActions()
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
     //connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
-    connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
-    connect(rescanBlockchainAction, SIGNAL(triggered()), this, SLOT(rescanBlockchain()));
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
     connect(forumAction, SIGNAL(triggered()), this, SLOT(forumClicked()));
     connect(webAction, SIGNAL(triggered()), this, SLOT(webClicked()));
@@ -633,15 +620,14 @@ void BitcoinGUI::createMenuBar()
     file->setFont(veriFont);
     file->addAction(backupWalletAction);
     file->addAction(exportAction);
+    file->addAction(rescanWalletAction);
+    file->addAction(reloadBlockchainAction);
     file->addSeparator();
     file->addAction(addressBookAction);
     file->addAction(signMessageAction);
     //file->addAction(verifyMessageAction);
     //file->addSeparator();
     //file->addAction(accessNxtInsideAction);
-    file->addSeparator();
-    file->addAction(reloadBlockchainAction);
-    file->addAction(rescanBlockchainAction);
     file->addSeparator();
     file->addAction(logoutAction);
     file->addAction(quitAction);
@@ -651,17 +637,19 @@ void BitcoinGUI::createMenuBar()
     //settings->addAction(encryptWalletAction);
     settings->addAction(lockWalletAction);
     settings->addAction(unlockWalletAction);
-    settings->addSeparator();
     settings->addAction(changePassphraseAction);
+    settings->addSeparator();
     settings->addAction(optionsAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     help->setFont(veriFont);
-    help->addAction(checkForUpdateAction);
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
     help->addAction(webAction);
+    help->addAction(checkForUpdateAction);
+    help->addSeparator();
     help->addAction(aboutAction);
+    help->addAction(aboutPostAction);
     help->addAction(aboutQtAction);
 }
 
@@ -849,6 +837,13 @@ void BitcoinGUI::aboutClicked()
     dlg.exec();
 }
 
+void BitcoinGUI::aboutPostClicked()
+{
+    PostDialog dlg;
+    dlg.setModel(clientModel);
+    dlg.exec();
+}
+
 void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature)
 {
     if (clientModel && walletModel)
@@ -961,7 +956,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Override progressBar text when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
     {
-        stakingBar->setVisible(false);
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
         progressBar->setVisible(true);
@@ -975,7 +969,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         this->repaint();
         MilliSleep(1000);
         strStatusBarWarnings = tr(GetArg("-vAlertMsg","").c_str());
-        stakingBar->setVisible(false);
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
         progressBar->setVisible(true);
@@ -1561,7 +1554,7 @@ void BitcoinGUI::toggleHidden()
 
 void BitcoinGUI::updateStakingIcon()
 {
-    if (!walletModel)
+    if (!walletModel || pindexBest == pindexGenesisBlock)
         return;
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
@@ -1572,19 +1565,14 @@ void BitcoinGUI::updateStakingIcon()
     {
         return;
     }
-    uint64_t nWeight = 0, stakeTimeWeight = 0;
+    uint64_t nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
-    pwalletMain->GetStakeTimeWeight(*pwalletMain, stakeTimeWeight);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
     double nNetworkWeight = GetPoSKernelPS();
-    double nAverageStakeWeight = GetAverageStakeWeight(pindexBest->pprev);
-    double nInflationRate = GetCurrentInflationRate(nAverageStakeWeight);
-    double nInterestRate = GetCurrentInterestRate(pindexBest->pprev);
     if (walletModel->getEncryptionStatus() == WalletModel::Unlocked && nLastCoinStakeSearchInterval && nWeight)
     {
-        unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / stakeTimeWeight;
-
+        unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
         QString text;
         if (nEstimateTime < 60)
         {
@@ -1605,14 +1593,42 @@ void BitcoinGUI::updateStakingIcon()
         stakingLabel->setText(QString("Staking"));
         labelBlocksIcon->hide();
         labelStakingIcon->show();
-        labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2\nnWeight %3\nStakeTimeWeight: %4\nNetworkStakeTimeWeight: %5\nInflationRate: %6\n InterestRate: %7").arg(currentBlock).arg(text).arg(nWeight).arg(stakeTimeWeight).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
-
-        int nStakeTimePower = StakeTimeEarned(nWeight, stakeTimeWeight);
-        stakingBar->setFormat(tr("Stake Charge: %1%").arg(nStakeTimePower));
-        stakingBar->setMaximum(100);
-        stakingBar->setValue(nStakeTimePower);
-        //stakingBar->setVisible(true);
+        int nStakeTimePower = pwalletMain->StakeTimeEarned(nWeight, pindexBest->pprev);
+        if (PoSTprotocol(currentBlock) || fTestNet)
+        {
+            if (nStakeTimePower <= 100 && nStakeTimePower > 75)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake100").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 75 && nStakeTimePower > 50)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake75").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 50 && nStakeTimePower > 25)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake50").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 25 && nStakeTimePower > 5)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake25").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 5 && nStakeTimePower >= 0)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake0").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+        }
+        else
+        {
+            labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+        }
+        if (PoSTprotocol(currentBlock) || fTestNet)
+        {
+            labelStakingIcon->setToolTip(tr("In sync and staking...\nEarnable matured interest: %1%\nBlock number: %2\nExpected time to earn interest: %3").arg(nStakeTimePower).arg(currentBlock).arg(text));
+        }
+        else
+        {
+            labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2").arg(currentBlock).arg(text));
+        }
     }
     else
     {
@@ -1621,27 +1637,14 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, turn on staking in the Settings menu.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, enable staking in the Settings menu.").arg(currentBlock));
         else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking because you do not have mature coins.\nNetworkStakeTimeWeight: %2\nInflationRate: %3\n InterestRate: %4").arg(currentBlock).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
-        stakingBar->setVisible(false);
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, earning Stake-Time.").arg(currentBlock));
     }
     // Update balance in balanceLabel
     setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
-}
-
-int BitcoinGUI::StakeTimeEarned(uint nWeight, uint stakeTimeWeight)
-{
-    float stakeTimeWeightF = stakeTimeWeight;
-    float nWeightF = nWeight;
-    int nStakeTimePower = (stakeTimeWeightF/nWeightF)*100+1;
-    if (nStakeTimePower > 100)
-    {
-        nStakeTimePower = 100;
-    }
-    return nStakeTimePower;
 }
 
 void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
@@ -1683,7 +1686,7 @@ void BitcoinGUI::reloadBlockchain(bool autoReload)
     }
 }
 
-void BitcoinGUI::rescanBlockchain()
+void BitcoinGUI::rescanWallet()
 {
     if (fBootstrapTurbo)
     {
@@ -1701,7 +1704,7 @@ void BitcoinGUI::rescanBlockchain()
     }
     fRescan = true;
 
-    if (!walletModel->rescanBlockchain())
+    if (!walletModel->rescanWallet())
     {
         QMessageBox::warning(this, tr("Rescan Failed"), tr("There was an error trying to rescan the blockchain."));
     }

@@ -14,7 +14,7 @@ WhatsNewDialog::WhatsNewDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::WhatsNewDialog)
 {
-    std::string title = "You Have the Most Current VeriCoin Wallet\n";
+    std::string title = "What's New in VeriCoin";
     std::string description = GetArg("-vDescription", "Lot's of new features.").c_str();
     std::string version = "NEW IN " + GetArg("-vVersion", "1.0.0.0");
     ui->setupUi(this);
@@ -29,7 +29,7 @@ void WhatsNewDialog::setModel(ClientModel *model)
 {
     if(model)
     {
-        ui->versionLabel->setText(model->formatFullVersion().append(" ").append(GetArg("-vArch", "").c_str()));
+        ui->versionLabel->setText(model->formatFullVersion().append(GetArg("-vArch", "").c_str()).append("  (No Update Available)"));
     }
 }
 

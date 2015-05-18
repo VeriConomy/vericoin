@@ -103,7 +103,6 @@ private:
     QLabel *stakingLabel;
     QLabel *connectionsLabel;
     QProgressBar *progressBar;
-    QProgressBar *stakingBar;
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
@@ -122,6 +121,8 @@ private:
     QAction *verifyMessageAction;
     QAction *accessNxtInsideAction;
     QAction *aboutAction;
+    QAction *aboutPostAction;
+    QAction *aboutQtAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
     QAction *forumAction;
@@ -133,10 +134,9 @@ private:
     QAction *changePassphraseAction;
     QAction *lockWalletAction;
     QAction *unlockWalletAction;
-    QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *reloadBlockchainAction;
-    QAction *rescanBlockchainAction;
+    QAction *rescanWalletAction;
     QAction *checkForUpdateAction;
 
     QSystemTrayIcon *trayIcon;
@@ -189,7 +189,6 @@ public slots:
     void reloadBlockchain(bool autoReload=false);
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();
-    int StakeTimeEarned(uint nWeight, uint stakeTimeWeight);
 
 private slots:
     /** Switch to askpassphrase page */
@@ -238,6 +237,8 @@ private slots:
     void webClicked();
     /** Show about dialog */
     void aboutClicked();
+    /** Show about PoST dialog */
+    void aboutPostClicked();
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -258,7 +259,7 @@ private slots:
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
     /** Rescan the blockchain */
-    void rescanBlockchain();
+    void rescanWallet();
     /** Check for wallet update from Help menu */
     void menuCheckForUpdate();
     /** Check for wallet update from timer */

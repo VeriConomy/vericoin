@@ -952,7 +952,7 @@ int64_t GetProofOfWorkReward(int64_t nFees)
     int64_t nSubsidy;
     if (fTestNet)
     {
-        nSubsidy = 18750 * COIN;
+        nSubsidy = 100000 * COIN;
     }
     else
     {
@@ -970,13 +970,13 @@ int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, 
 {
     int64_t factoredTimeWeight;
     double weightFraction = (bnCoinDayWeight+1) / (GetAverageStakeWeight(pindexPrev));
-    if (weightFraction > 0.49) //Should be 0.45 to ensure cost of coins is minimum
+    if (weightFraction > 0.45)
     {
         factoredTimeWeight = nStakeMinAge+1;
     }
     else
     {
-        double stakeTimeFactor = 1-(sin(pow((PI*weightFraction),2.0)));
+        double stakeTimeFactor = pow(cos((PI*weightFraction)),2.0);
         factoredTimeWeight = stakeTimeFactor*timeWeight;
     }
     return factoredTimeWeight;
@@ -990,19 +990,11 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
     CBlockIndex* currentBlockIndex = pindexPrev;
     for (i = 0; i < 60; i++)
     {
-        if (currentBlockIndex != pindexGenesisBlock)
-        {
-            double tempWeight = GetPoSKernelPS(currentBlockIndex);
-            weightSum += tempWeight;
-            currentBlockIndex = currentBlockIndex->pprev;
-        }
-        else
-        {
-            break;
-        }
+        double tempWeight = GetPoSKernelPS(currentBlockIndex);
+        weightSum += tempWeight;
+        currentBlockIndex = currentBlockIndex->pprev;
     }
     weightAve = weightSum/i;
-
     return weightAve+21;
 }
 
@@ -1027,8 +1019,8 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 // Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
 int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev)
 {
-    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*1000000;
-    int64_t nSubsidy = (nStakeTime * (nInterestRate) * 33 / (365 * 33 + 8));
+    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*CENT;
+    int64_t nSubsidy = nStakeTime * nInterestRate * 33 / (365 * 33 + 8);
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeTimeReward(): create=%s nStakeTime=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nStakeTime);
@@ -1055,8 +1047,11 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pind
 
     return nSubsidy + nFees;
 }
-
+#ifdef fTestNet
+static const int64_t nTargetTimespan = 10 * 60;  // 10 mins
+#else
 static const int64_t nTargetTimespan = 16 * 60;  // 16 mins
+#endif
 
 //
 // maximum nBits value could possible be required nTime after
@@ -1634,7 +1629,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
-            int64_t currentHeight = pindex->pprev->nHeight+1;
+            int currentHeight = pindex->pprev->nHeight+1;
             if (tx.IsCoinStake() && currentHeight < 299000 && !fTestNet)
             {
                 double nNetworkDriftBuffer = nTxValueOut*.02;
@@ -1671,7 +1666,8 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     if (IsProofOfStake())
     {
         int64_t nCalculatedStakeReward;
-        if (fTestNet) //PoST
+        int currentHeight = pindex->pprev->nHeight+1;
+        if (PoSTprotocol(currentHeight) || fTestNet) //PoST
         {
             // VeriCoin: coin stake tx earns reward instead of paying fee
             uint64_t nStakeTime;
@@ -2023,8 +2019,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
 // age (trust score) of competing branches. PoST
 bool CTransaction::GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* pindexPrev) const
 {
-    int64_t nValuesIn = 0;  // coin age in the unit of cent-seconds
-    int64_t timeWeights = 0;
+    CBigNum bnStakeTime = 0;  // coin age in the unit of cent-seconds
     nStakeTime = 0;
 
     if (IsCoinBase())
@@ -2047,42 +2042,15 @@ bool CTransaction::GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* 
         if (block.GetBlockTime() + nStakeMinAge > nTime)
             continue; // only count coins meeting min age requirement
 
-        int64_t timeWeight = (nTime-txPrev.nTime);
-        if (timeWeight > 0)
-        {
-            int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
-            nValuesIn += nValueIn;
-            timeWeights += timeWeight;
-        }
+        int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+        int64_t timeWeight = nTime-txPrev.nTime;
+        int64_t CoinDay = nValueIn * timeWeight / COIN / (24 * 60 * 60);
+        int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(timeWeight, CoinDay, pindexPrev);
+        bnStakeTime += CBigNum(nValueIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
     }
-    int64_t bnCoinDay = nValuesIn * timeWeights / COIN / (24 * 60 * 60);
-    int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(timeWeights, bnCoinDay, pindexPrev);
-    CBigNum bnStakeTime = CBigNum(nValuesIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
     if (fDebug && GetBoolArg("-printcoinage"))
-        printf("coin age bnStakeTime=%s\n", bnStakeTime.ToString().c_str());
+        printf("stake time bnStakeTime=%s\n", bnStakeTime.ToString().c_str());
     nStakeTime = bnStakeTime.getuint64();
-    return true;
-}
-
-// ppcoin: total coin age spent in block, in the unit of coin-days.
-bool CBlock::GetCoinAge(uint64_t& nCoinAge) const
-{
-    nCoinAge = 0;
-
-    CTxDB txdb("r");
-    BOOST_FOREACH(const CTransaction& tx, vtx)
-    {
-        uint64_t nTxCoinAge;
-        if (tx.GetCoinAge(txdb, nTxCoinAge))
-            nCoinAge += nTxCoinAge;
-        else
-            return false;
-    }
-
-    if (nCoinAge == 0) // block coin age minimum 1 coin-day
-        nCoinAge = 1;
-    if (fDebug && GetBoolArg("-printcoinage"))
-        printf("block coin age total nCoinDays=%"PRId64"\n", nCoinAge);
     return true;
 }
 
@@ -2490,7 +2458,7 @@ bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
     if (nSearchTime > nLastCoinStakeSearchTime)
     {
-        if (fTestNet)// PoST
+        if (PoSTprotocol(nHeight) || fTestNet)// PoST
         {
             if (wallet.CreateCoinTimeStake(wallet, nBits, nSearchTime-nLastCoinStakeSearchTime, nFees, txCoinStake, key))
             {
@@ -2679,7 +2647,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
         bnTrustedModulus.SetHex("f0d14cf72623dacfe738d0892b599be0f31052239cddd95a3f25101c801dc990453b38c9434efe3f372db39a32c2bb44cbaea72d62c8931fa785b0ec44531308df3e46069be5573e49bb29f4d479bfc3d162f57a5965db03810be7636da265bfced9c01a6b0296c77910ebdc8016f70174f0f18a57b3b971ac43a934c6aedbc5c866764a3622b5b7e3f9832b8b3f133c849dbcc0396588abcd1e41048555746e4823fb8aba5b3d23692c6857fccce733d6bb6ec1d5ea0afafecea14a0f6f798b6b27f77dc989c557795cc39a0940ef6bb29a7fc84135193a55bcfc2f01dd73efad1b69f45a55198bd0e6bef4d338e452f6a420f1ae2b1167b923f76633ab6e55");
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 16 bits PoW target limit for testnet
-        nStakeMinAge = 8 * 60 * 60; // test net min age is 1 hour
+        nStakeMinAge = 1 * 60 * 60; // test net min age is 1 hour
         nCoinbaseMaturity = 10; // test maturity is 10 blocks
     }
     else

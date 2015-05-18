@@ -43,7 +43,7 @@ Value getmininginfo(const Array& params, bool fHelp)
             "Returns an object containing mining-related information.");
 
     uint64_t nWeight = 0;
-    pwalletMain->GetStakeTimeWeight(*pwalletMain, nWeight);
+    pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
     double averageStakeWeight = GetAverageStakeWeight(pindexBest->pprev);
 
     Object obj, diff, weight;
@@ -58,7 +58,7 @@ Value getmininginfo(const Array& params, bool fHelp)
 
     obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(0)));
     obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
-    obj.push_back(Pair("netstakeweight", GetPoSKernelPS()));
+    obj.push_back(Pair("netstakeweight", averageStakeWeight));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
 

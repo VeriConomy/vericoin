@@ -87,7 +87,7 @@
         <string>A New Version of the Software is Available</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <set>Qt::AlignHCenter|Qt::AlignTop</set>
        </property>
        <property name="margin">
         <number>2</number>

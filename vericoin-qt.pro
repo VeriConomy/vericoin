@@ -347,6 +347,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/autosaver.h \
     src/qt/rescandialog.h \
     src/qt/webview.h \
+    src/qt/postdialog.h \
     src/qt/whatsnewdialog.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
@@ -444,6 +445,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/zerocoin/SerialNumberSignatureOfKnowledge.cpp \
     src/zerocoin/SpendMetaData.cpp \
     src/qt/webview.cpp \
+    src/qt/postdialog.cpp \
     src/qt/whatsnewdialog.cpp \
     src/zerocoin/ZeroTest.cpp
 
@@ -476,6 +478,7 @@ FORMS += \
     src/qt/forms/updatedialog.ui \
     src/qt/forms/rescandialog.ui \
     src/qt/forms/transactionspage.ui \
+    src/qt/forms/postdialog.ui \
     src/qt/forms/whatsnewdialog.ui
 
 contains(USE_QRCODE, 1) {

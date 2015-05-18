@@ -100,7 +100,14 @@ Value getinfo(const Array& params, bool fHelp)
 
 Value getinterestrate(const Array& params, bool fHelp)
 {
-    return (GetCurrentInterestRate(pindexBest->pprev));
+    if (PoSTprotocol(pindexBest->nHeight))
+    {
+        return (GetCurrentInterestRate(pindexBest->pprev));
+    }
+    else
+    {
+        return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
+    }
 }
 
 Value getnewpubkey(const Array& params, bool fHelp)

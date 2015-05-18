@@ -15,8 +15,8 @@
 
 using namespace std;
 unsigned int nStakeSplitAge = 7 * 24 * 60 * 60;
-double nStakeSplitWeightFraction = 0.30;
-int64_t nStakeCombineThreshold = 750 * COIN;
+double nStakeSplitWeightFraction = 0.25;
+int64_t nStakeCombineThreshold = 1000 * COIN;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1539,50 +1539,19 @@ bool CWallet::GetStakeWeight(const CKeyStore& keystore, uint64_t& nWeight)
     return true;
 }
 
-// VeriCoin: get current stake weight PoST
-bool CWallet::GetStakeTimeWeight(const CKeyStore& keystore, uint64_t& nWeight)
+int CWallet::StakeTimeEarned(uint64_t nWeight, CBlockIndex* pindexPrev)
 {
-    // Choose coins to use
-    int64_t nBalance = GetBalance();
-
-    if (nBalance <= nReserveBalance)
-        return false;
-
-    vector<const CWalletTx*> vwtxPrev;
-
-    set<pair<const CWalletTx*,unsigned int> > setCoins;
-    int64_t nValueIn = 0;
-
-    if (!SelectCoinsSimple(nBalance - nReserveBalance, GetTime(), nCoinbaseMaturity + 10, setCoins, nValueIn))
-        return false;
-
-    if (setCoins.empty())
-        return false;
-
-    CTxDB txdb("r");
-    BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
+    int factor;
+    double weightFraction = (nWeight+1) / (GetAverageStakeWeight(pindexPrev));
+    if (weightFraction > 0.45)
     {
-        CTxIndex txindex;
-        {
-            LOCK2(cs_main, cs_wallet);
-            if (!txdb.ReadTxIndex(pcoin.first->GetHash(), txindex))
-                continue;
-        }
-
-        int64_t nTimeWeight = GetWeight((int64_t)pcoin.first->nTime, (int64_t)GetTime());
-        int64_t ValueIn = pcoin.first->vout[pcoin.second].nValue;
-        int64_t bnCoinDayWeight = ValueIn * nTimeWeight / COIN / (24 * 60 * 60);
-        int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(nTimeWeight, bnCoinDayWeight, pindexBest->pprev);
-        CBigNum bnStakeTime = CBigNum(ValueIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
-
-        // Weight is greater than zero
-        if (nTimeWeight > 0)
-        {
-            nWeight += bnStakeTime.getuint64();
-        }
-
+        factor = 0;
     }
-    return true;
+    else
+    {
+        factor = (pow(cos((PI*weightFraction)),2.0))*100;
+    }
+    return factor;
 }
 
 bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, int64_t nFees, CTransaction& txNew, CKey& key)

@@ -644,7 +644,7 @@ bool ReloadBlockchain()
     return true;
 }
 
-bool RescanBlockchain()
+bool RescanWallet()
 {
     fRestart = true;
 
