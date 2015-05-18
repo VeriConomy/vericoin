@@ -1549,11 +1549,10 @@ int CWallet::StakeTimeEarned(uint64_t nWeight, CBlockIndex* pindexPrev)
     }
     else
     {
-        factor = pow(cos((PI*weightFraction)),2.0);
+        factor = (pow(cos((PI*weightFraction)),2.0))*100;
     }
     return factor;
 }
-
 
 bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, int64_t nFees, CTransaction& txNew, CKey& key)
 {

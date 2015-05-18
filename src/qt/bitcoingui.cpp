@@ -539,7 +539,7 @@ void BitcoinGUI::createActions()
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About VeriCoin"), this);
     aboutAction->setToolTip(tr("Show information about VeriCoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
-    aboutPostAction = new QAction(QIcon(":/icons/about"), tr("&About PoST"), this);
+    aboutPostAction = new QAction(QIcon(":/icons/PoSTicon"), tr("&About PoST"), this);
     aboutPostAction->setToolTip(tr("Show information about PoST protocol"));
     aboutPostAction->setMenuRole(QAction::AboutRole);
     aboutQtAction = new QAction(QIcon(":icons/about-qt"), tr("About &Qt"), this);
@@ -1570,13 +1570,9 @@ void BitcoinGUI::updateStakingIcon()
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
     double nNetworkWeight = GetPoSKernelPS();
-    double nAverageStakeWeight = GetAverageStakeWeight(pindexBest->pprev);
-    double nInflationRate = GetCurrentInflationRate(nAverageStakeWeight);
-    double nInterestRate = GetCurrentInterestRate(pindexBest->pprev);
     if (walletModel->getEncryptionStatus() == WalletModel::Unlocked && nLastCoinStakeSearchInterval && nWeight)
     {
         unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
-        int nStakeTimePower = pwalletMain->StakeTimeEarned(nWeight, pindexBest->pprev);
         QString text;
         if (nEstimateTime < 60)
         {
@@ -1597,8 +1593,42 @@ void BitcoinGUI::updateStakingIcon()
         stakingLabel->setText(QString("Staking"));
         labelBlocksIcon->hide();
         labelStakingIcon->show();
-        labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2\nnWeight %3\nStake-Time: %4\nNetworkStakeTimeWeight: %5\nInflationRate: %6\n InterestRate: %7").arg(currentBlock).arg(text).arg(nWeight).arg(nStakeTimePower).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
+        int nStakeTimePower = pwalletMain->StakeTimeEarned(nWeight, pindexBest->pprev);
+        if (PoSTprotocol(currentBlock) || fTestNet)
+        {
+            if (nStakeTimePower <= 100 && nStakeTimePower > 75)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake100").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 75 && nStakeTimePower > 50)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake75").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 50 && nStakeTimePower > 25)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake50").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 25 && nStakeTimePower > 5)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake25").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+            if (nStakeTimePower <= 5 && nStakeTimePower >= 0)
+            {
+                labelStakingIcon->setPixmap(QIcon(":/icons/stake0").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+            }
+        }
+        else
+        {
+            labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+        }
+        if (PoSTprotocol(currentBlock) || fTestNet)
+        {
+            labelStakingIcon->setToolTip(tr("In sync and staking...\nEarnable matured interest: %1%\nBlock number: %2\nExpected time to earn interest: %3").arg(nStakeTimePower).arg(currentBlock).arg(text));
+        }
+        else
+        {
+            labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2").arg(currentBlock).arg(text));
+        }
     }
     else
     {
@@ -1611,7 +1641,7 @@ void BitcoinGUI::updateStakingIcon()
         else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, earning Stake-Time.\nNetworkStakeTimeWeight: %2\nInflationRate: %3\n InterestRate: %4").arg(currentBlock).arg(nAverageStakeWeight).arg(nInflationRate).arg(nInterestRate));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, earning Stake-Time.").arg(currentBlock));
     }
     // Update balance in balanceLabel
     setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());

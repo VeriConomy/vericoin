@@ -80,6 +80,12 @@
         <file alias="site">res/icons/website.png</file>
         <file alias="about">res/icons/about.png</file>
         <file alias="update">res/icons/update.png</file>
+        <file alias="stake0">res/icons/stake0.png</file>
+        <file alias="stake25">res/icons/stake25.png</file>
+        <file alias="stake50">res/icons/stake50.png</file>
+        <file alias="stake75">res/icons/stake75.png</file>
+        <file alias="stake100">res/icons/stake100.png</file>
+        <file alias="PoSTicon">res/icons/PoSTicon.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="askPassphraseBackground">res/images/askpassphrasepage-background.png</file>
