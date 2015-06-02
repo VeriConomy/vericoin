@@ -1311,6 +1311,11 @@ void ReadVersionFile()
         }
         streamVersion.close();
 
+        if (versionData.isEmpty())
+        {
+            printf("Error: Version data is empty.\n");
+            return;
+        }
         QJsonDocument versionDoc = QJsonDocument::fromJson(versionData.toUtf8());
         QJsonObject versionObj = versionDoc.object();
         QString vTitle = versionObj.value(QString("title")).toString();
