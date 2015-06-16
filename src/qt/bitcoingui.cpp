@@ -947,10 +947,10 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Show a warning message if on wrong protocol version
     char pv[10];
     sprintf(pv, "%d", PROTOCOL_VERSION);
-    if (GetArg("-vProtocol","").c_str() != "" && GetArg("-vProtocol","0").compare(pv) && !progressBar->isVisible() && strStatusBarWarnings.isEmpty() && !clientModel->isTestNet())
+    if (GetArg("-vProtocol","").compare("") && GetArg("-vProtocol","0").compare(pv) && !progressBar->isVisible() && strStatusBarWarnings.isEmpty() && !clientModel->isTestNet())
     {
         // Warn for wrong protocol version.
-        strStatusBarWarnings = tr("Wrong protocol version detected. Please update to %1 asap!").arg(GetArg("-vVersion","").c_str());
+        strStatusBarWarnings = tr("Wrong protocol version detected: %1 Check for update.").arg(GetArg("-vProtocol","").c_str());
     }
 
     // Override progressBar text when we have warnings to display
@@ -1757,7 +1757,6 @@ void BitcoinGUI::checkForUpdate()
     if (fMenuCheckForUpdate)
         fNewVersion = false; // Force a reload of the version file if the user requested a check and a new version was already found
 
-    printf("Downloading and parsing version data...\n");
     ReadVersionFile();
 
     // Set version icon good/bad
