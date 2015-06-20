@@ -4,6 +4,8 @@ VeriCoin-qt: Qt5 GUI for VeriCoin
 Build instructions
 ===================
 
+Building your own VeriCoin GUI requires Qt version 5.2 or newer.
+
 Debian
 -------
 
