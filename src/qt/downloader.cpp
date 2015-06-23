@@ -564,7 +564,6 @@ void Downloader::reloadBlockchain()
         return;
     }
 
-    printf("Bootstrap extract successful!\n");
     ui->progressBarLabel->setText(tr("Complete:"));
     ui->statusLabel->setText(tr("Congratulations, the bootstrap extract was successful! Your wallet will restart %1.").arg(fEncrypt ? "after encrypting the wallet" : "to complete the operation"));
     ui->downloadButton->setEnabled(false);
