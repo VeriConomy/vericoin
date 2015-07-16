@@ -47,7 +47,7 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
 
-    ui->labelCoinControlFeatures->setFont(veriFontBold);
+    ui->labelCoinControlFeatures->setFont(qFontBold);
     ui->btnBitcoin->setEnabled(false);
     ui->btnVeriCoin->setEnabled(true);
 
@@ -372,7 +372,7 @@ void SendBitCoinsDialog::coinControlChangeEdited(const QString & text)
         CoinControlDialog::coinControl->destChange = CBitcoinAddress(text.toStdString()).Get();
 
         // label for the change address
-        ui->labelCoinControlChangeLabel->setStyleSheet("QLabel { color: " + STRING_VERIFONT + "; }");
+        ui->labelCoinControlChangeLabel->setStyleSheet("QLabel { color: " + STR_FONT_COLOR + "; }");
         if (text.isEmpty())
             ui->labelCoinControlChangeLabel->setText("");
         else if (!CBitcoinAddress(text.toStdString()).IsValid())
