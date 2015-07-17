@@ -561,7 +561,7 @@ void BitcoinGUI::createActions()
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password"), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
-    lockWalletAction = new QAction(QIcon(":/icons/overview"), tr("&Disable Staking"), this);
+    lockWalletAction = new QAction(QIcon(":/icons/stake100"), tr("&Disable Staking"), this);
     lockWalletAction->setToolTip(tr("Turn staking off"));
     unlockWalletAction = new QAction(QIcon(":/icons/overview"), tr("&Enable Staking"), this);
     unlockWalletAction->setToolTip(tr("Turn staking on"));
