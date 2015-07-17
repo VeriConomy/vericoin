@@ -949,7 +949,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     int countDiff = nTotalBlocks - count;
     if ((countDiff > 500 && countDiff < 5000) && !fBootstrapTurbo && strStatusBarWarnings.isEmpty() && !clientModel->isTestNet())
     {
-        strStatusBarWarnings = tr("Go to File->Reload Blockchain to speed up or fix syncing issues.");
+        strStatusBarWarnings = tr("Go to File > Reload Blockchain to speed up or fix syncing issues.");
     }
 
     // Override progressBar text when we have warnings to display
