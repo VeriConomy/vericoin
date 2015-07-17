@@ -1338,7 +1338,6 @@ void ReadVersionFile()
         vFileName.append(versionObj.value(QString("linux")).toString());
 #endif
 #endif
-        QString vProtocol = versionObj.value(QString("protocol")).toString();
         bool vAlert = versionObj.value(QString("alert")).toBool();
         QString vAlertMsg = versionObj.value(QString("alertMsg")).toString();
         QString vTrustedUrls = versionObj.value(QString("trustedUrls")).toString();
@@ -1349,7 +1348,6 @@ void ReadVersionFile()
         SetArg("-vFileName", vFileName.toStdString());
         SetArg("-vVersion", vVersion.toStdString());
         SetArg("-vArch", vArch.toStdString());
-        SetArg("-vProtocol", vProtocol.toStdString());
         SetBoolArg("-vAlert", vAlert);
         SetArg("-vAlertMsg", vAlertMsg.toStdString());
         SetArg("-vTrustedUrls", vTrustedUrls.toStdString());
