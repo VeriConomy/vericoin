@@ -602,6 +602,10 @@ void BitcoinGUI::createActions()
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
     connect(forumAction, SIGNAL(triggered()), this, SLOT(forumClicked()));
     connect(webAction, SIGNAL(triggered()), this, SLOT(webClicked()));
+
+    // Disable on testnet
+    if (fTestNet)
+        reloadBlockchainActionEnabled(false);
 }
 
 void BitcoinGUI::createMenuBar()
