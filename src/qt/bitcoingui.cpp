@@ -94,6 +94,7 @@ using namespace GUIUtil;
 extern CWallet* pwalletMain;
 extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
+extern double GetPoSKernelPS(CBlockIndex* pindexPrev);
 double GetPoSKernelPS();
 bool blocksIcon = true;
 bool resizeGUICalled = false;
@@ -396,7 +397,7 @@ void BitcoinGUI::logout()
 
 void BitcoinGUI::lockWalletFeatures(bool lock)
 {
-    if (lock)
+    if (lock && !fTestNet)
     {
         appMenuBar->setVisible(false);
         toolbar->setVisible(false);
@@ -1572,10 +1573,10 @@ void BitcoinGUI::updateStakingIcon()
     pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
     progressBar->setVisible(false);
     overviewPage->showOutOfSyncWarning(false);
-    double nNetworkWeight = GetPoSKernelPS();
+    double nNetworkWeight = GetPoSKernelPS(pindexBest->pprev);
     if (walletModel->getEncryptionStatus() == WalletModel::Unlocked && nLastCoinStakeSearchInterval && nWeight)
     {
-        unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
+        u_int64_t nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
         QString text;
         if (nEstimateTime < 60)
         {

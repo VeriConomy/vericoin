@@ -990,7 +990,7 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
         return weightAve;
     int i;
     CBlockIndex* currentBlockIndex = pindexPrev;
-    for (i = 0; i < 60; i++)
+    for (i = 0; currentBlockIndex && i < 60; i++)
     {
         double tempWeight = GetPoSKernelPS(currentBlockIndex);
         weightSum += tempWeight;
