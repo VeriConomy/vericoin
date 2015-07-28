@@ -104,10 +104,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     clientModel(0),
     walletModel(0),
     currentTotal(-1),
-    //encryptWalletAction(0),
     changePassphraseAction(0),
     lockWalletAction(0),
     unlockWalletAction(0),
+    encryptWalletAction(0),
     aboutQtAction(0),
     trayIcon(0),
     notificator(0),
@@ -549,10 +549,6 @@ void BitcoinGUI::createActions()
     optionsAction->setToolTip(tr("Modify configuration options for VeriCoin"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
     toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Show / Hide"), this);
-    //encryptWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Set Password"), this);
-    //encryptWalletAction->setToolTip(tr("Encrypt or decrypt wallet"));
-    //encryptWalletAction->setCheckable(true);
-    //encryptWalletAction->setChecked(false);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet"), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
     rescanWalletAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
@@ -565,6 +561,8 @@ void BitcoinGUI::createActions()
     lockWalletAction->setToolTip(tr("Turn staking off"));
     unlockWalletAction = new QAction(QIcon(":/icons/stake100"), tr("&Enable Staking"), this);
     unlockWalletAction->setToolTip(tr("Turn staking on"));
+    encryptWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("En&crypt Wallet"), this);
+    encryptWalletAction->setToolTip(tr("Encrypt the wallet for staking"));
     addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book"), this);
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
@@ -588,13 +586,13 @@ void BitcoinGUI::createActions()
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
-    //connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
     connect(rescanWalletAction, SIGNAL(triggered()), this, SLOT(rescanWallet()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
     connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
     connect(unlockWalletAction, SIGNAL(triggered()), this, SLOT(unlockWallet()));
+    connect(encryptWalletAction, SIGNAL(triggered()), this, SLOT(encryptWallet()));
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
@@ -638,9 +636,9 @@ void BitcoinGUI::createMenuBar()
 
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
     settings->setFont(qFont);
-    //settings->addAction(encryptWalletAction);
     settings->addAction(lockWalletAction);
     settings->addAction(unlockWalletAction);
+    settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
     settings->addSeparator();
     settings->addAction(optionsAction);
@@ -1398,34 +1396,30 @@ void BitcoinGUI::setEncryptionStatus(int status)
     switch(status)
     {
     case WalletModel::Unencrypted:
-        //encryptWalletAction->setChecked(false);
         changePassphraseAction->setEnabled(false);
         logoutAction->setEnabled(false);
         lockWalletAction->setVisible(false);
         unlockWalletAction->setVisible(false);
-        //encryptWalletAction->setEnabled(true);
+        encryptWalletAction->setEnabled(true); // Testnet can startup unencrypted
+        encryptWalletAction->setVisible(true);
         break;
     case WalletModel::Unlocked:
-        //labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>"));
-        //encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         logoutAction->setEnabled(true);
         lockWalletAction->setEnabled(true);
         lockWalletAction->setVisible(true);
         unlockWalletAction->setVisible(false);
-        //encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        encryptWalletAction->setVisible(false);
         break;
     case WalletModel::Locked:
-        //labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_closed").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        //labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
-        //encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         logoutAction->setEnabled(true);
         lockWalletAction->setVisible(false);
         unlockWalletAction->setEnabled(true);
         unlockWalletAction->setVisible(true);
-        //encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        encryptWalletAction->setVisible(false);
         break;
     }
 }
