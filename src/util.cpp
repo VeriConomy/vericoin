@@ -1146,7 +1146,11 @@ boost::filesystem::path GetConfigFile()
     std::string confArg(GetArg("-conf", conf));
     fs::path pathConfigFile(confArg);
 
-    if (fs::exists(pathConfigFile) && pathConfigFile.is_relative()) pathConfigFile = fs::canonical(confArg);
+    if (pathConfigFile.is_relative())
+    {
+        pathConfigFile = fs::current_path() / confArg;  // set it to default current path
+        if (!fs::exists(pathConfigFile)) pathConfigFile = GetDataDir(false) / confArg;
+    }
 
     if (!fs::exists(pathConfigFile)) pathConfigFile = GetDataDir(false) / conf;
     if (!fs::exists(pathConfigFile)) pathConfigFile = GetProgramDir() / conf;
