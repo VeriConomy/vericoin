@@ -1130,24 +1130,11 @@ void MapPort()
 }
 #endif
 
-
-
-
-
-
-
-
-
 // DNS seeds
 // Each pair gives a source name and a seed name.
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strDNSSeed[][2] = {
-    {"dnsseed1", "dnsseed.vericoin.info"},
-    {"dnsseed2", "dnsseed2.vericoin.info"},
-    {"dnsseed3", "dnsseed3.vericoin.info"},
-    {"dnsseed-pnosker", "dnsseed.pnosker.com"},
-    {"dnsseed-pcmerc", "dnsseed.kryptochaos.com"},
     {"dnsseed-pcmerc3", "seed.kryptochaos.com"},
 };
 
@@ -1206,20 +1193,9 @@ void ThreadDNSAddressSeed2(void* parg)
     printf("%d addresses found from DNS seeds\n", found);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 unsigned int pnSeed[] =
 {
-    0xD28CAA6B, 0xBF63AA6B, 0x887858A7, 0x40DFE2BC, 0xABC2C780
+    0xD28CAA6B
 };
 
 void DumpAddresses()
