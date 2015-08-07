@@ -112,8 +112,7 @@ void Downloader::on_quitButton_clicked() // Cancel button
         BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
         p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
         processBlockchain = false;
-        if (!downloadFinished)
-            fBootstrapTurbo = false;
+        fBootstrapTurbo = false;
     }
     if (processUpdate)
     {
@@ -549,8 +548,8 @@ void Downloader::reloadBlockchain()
         return;
     }
 
-    if (!boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("blk0001.dat")) ||
-        !boost::filesystem::exists(GetDataDir() / zlist[0].toStdString().append("txleveldb")))
+    if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
+        !boost::filesystem::exists(GetDataDir() / "bootstrap" / "txleveldb"))
     {
         printf("Bootstrap extract is invalid!\n");
         ui->statusLabel->setText(tr("I'm sorry, the bootstrap extract was successful, but the contents are invalid."));
