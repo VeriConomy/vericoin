@@ -28,32 +28,15 @@ double GetDifficulty(const CBlockIndex* blockindex)
 
     double dDiff =
         (double)0x0000ffff / (double)(blockindex->nBits & 0x00ffffff);
-
-    if (fTestNet && blockindex->nHeight > 20)
+    while (nShift < 29)
     {
-        while (nShift < 29)
-        {
-            dDiff *= 256.0;
-            nShift++;
-        }
-        while (nShift > 14)
-        {
-            dDiff /= 256.0;
-            nShift--;
-        }
+        dDiff *= 256.0;
+        nShift++;
     }
-    else
+    while (nShift > 29)
     {
-        while (nShift < 29)
-        {
-            dDiff *= 256.0;
-            nShift++;
-        }
-        while (nShift > 29)
-        {
-            dDiff /= 256.0;
-            nShift--;
-        }
+        dDiff /= 256.0;
+        nShift--;
     }
     return dDiff;
 }
