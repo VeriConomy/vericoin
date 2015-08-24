@@ -90,7 +90,7 @@ Value getinfo(const Array& params, bool fHelp)
     if (PoSTprotocol(pindexBest->nHeight))
     {
     obj.push_back(Pair("networkweight", GetAverageStakeWeight(pindexBest->pprev)));
-    obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))/100));
+    obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))));
     obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev)));
     }
 
@@ -122,7 +122,7 @@ Value getinflationrate(const Array& params, bool fHelp)
             "getinflationrate\n"
             "Returns the current inflation rate.");
 
-    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))/100);
+    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
 }
 
 Value getinterestrate(const Array& params, bool fHelp)

@@ -1013,7 +1013,7 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 {
     double nAverageWeight = GetAverageStakeWeight(pindexPrev);
     double inflationRate = GetCurrentInflationRate(nAverageWeight)/100;
-    double interestRate = ((inflationRate*26751452)/nAverageWeight)*100;
+    double interestRate = ((inflationRate*INITIAL_COIN_SUPPLY)/nAverageWeight)*100;
 
     return interestRate;
 }

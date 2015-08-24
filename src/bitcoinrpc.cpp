@@ -245,7 +245,7 @@ static const CRPCCommand vRPCCommands[] =
     { "getdifficulty",          &getdifficulty,          true,   false },
     { "getinfo",                &getinfo,                true,   false },
     { "getnetworkweight",       &getnetworkweight,       true,   true },
-    { "getinflationtrate",      &getinflationtrate,      true,   true },
+    { "getinflationrate",       &getinflationrate,       true,   true },
     { "getinterestrate",        &getinterestrate,        true,   true },
     { "getsubsidy",             &getsubsidy,             true,   false },
     { "getmininginfo",          &getmininginfo,          true,   false },
