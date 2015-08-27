@@ -113,15 +113,15 @@ static inline void xor_salsa8(unsigned int B[16], const unsigned int Bx[16])
 
 static inline void scrypt_core(unsigned int *X, unsigned int *V)
 {
-    unsigned int i, j, k;
+    unsigned int i, j, k, n=1024;
 
-    for (i = 0; i < 1024; i++) {
+    for (i = 0; i < n; i++) {
         memcpy(&V[i * 32], X, 128);
         xor_salsa8(&X[0], &X[16]);
         xor_salsa8(&X[16], &X[0]);
     }
-    for (i = 0; i < 1024; i++) {
-        j = 32 * (X[16] & 1023);
+    for (i = 0; i < n; i++) {
+        j = 32 * (X[16] & n-1);
         for (k = 0; k < 32; k++)
             X[k] ^= V[j + k];
         xor_salsa8(&X[0], &X[16]);
