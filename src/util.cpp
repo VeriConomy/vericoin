@@ -1085,7 +1085,7 @@ const boost::filesystem::path &GetProgramDir()
 {
     namespace fs = boost::filesystem;
 
-    static fs::path path = ".";
+    static fs::path path = fs::current_path();
 
     if (mapArgs.count("-programpath")) {
         path = fs::system_complete(mapArgs["-programpath"]);
@@ -1094,10 +1094,8 @@ const boost::filesystem::path &GetProgramDir()
         }
         else
         {
-            path = ".";
+            path = fs::current_path();
         }
-    } else {
-        path = ".";
     }
 
     return path;
