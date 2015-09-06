@@ -120,6 +120,7 @@ int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, 
 double GetAverageStakeWeight(CBlockIndex* pindexPrev);
 double GetCurrentInterestRate(CBlockIndex* pindexPrev);
 double GetCurrentInflationRate(double nAverageWeight);
+int GetBlockRatePerHour(CBlockIndex* pindexPrev);
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime);
 unsigned int ComputeMinStake(unsigned int nBase, int64_t nTime, unsigned int nBlockTime);
 int GetNumBlocksOfPeers();

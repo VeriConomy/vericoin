@@ -1018,6 +1018,20 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
     return interestRate;
 }
 
+// Get the block rate for one hour
+int GetBlockRatePerHour(CBlockIndex* pindexPrev)
+{
+    int nRate = 0;
+    CBlockIndex* pindex = pindexPrev;
+    int64_t nTargetTime = GetAdjustedTime() - 3600;
+
+    while (pindex && pindex->pprev && pindex->nTime > nTargetTime) {
+        nRate += 1;
+        pindex = pindex->pprev;
+    }
+    return nRate;
+}
+
 // Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
 int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev)
 {
