@@ -2352,7 +2352,8 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         return error("ProcessBlock() : CheckBlock FAILED");
 
     // ppcoin: verify hash target and signature of coinstake tx
-    if (pblock->IsProofOfStake())
+    // Orphan it if we don't have the previous block
+    if (pblock->IsProofOfStake() && mapBlockIndex.count(pblock->hashPrevBlock))
     {
         uint256 hashProofOfStake = 0, targetProofOfStake = 0;
         if (!CheckProofOfStake(pblock->vtx[1], pblock->nBits, hashProofOfStake, targetProofOfStake))
@@ -2435,9 +2436,21 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
              ++mi)
         {
             CBlock* pblockOrphan = (*mi).second;
+            uint256 orphanhash = pblockOrphan->GetHash();
+            if (pblockOrphan->IsProofOfStake())
+            {
+                uint256 hashProofOfStake = 0, targetProofOfStake = 0;
+                if (!CheckProofOfStake(pblockOrphan->vtx[1], pblockOrphan->nBits, hashProofOfStake, targetProofOfStake))
+                {
+                    printf("WARNING: ProcessBlock(): check proof-of-stake failed for orphan block %s\n", orphanhash.ToString().c_str());
+                    return false;
+                }
+                if (!mapProofOfStake.count(orphanhash)) // add to mapProofOfStake
+                    mapProofOfStake.insert(make_pair(orphanhash, hashProofOfStake));
+            }
             if (pblockOrphan->AcceptBlock())
-                vWorkQueue.push_back(pblockOrphan->GetHash());
-            mapOrphanBlocks.erase(pblockOrphan->GetHash());
+                vWorkQueue.push_back(orphanhash);
+            mapOrphanBlocks.erase(orphanhash);
             setStakeSeenOrphan.erase(pblockOrphan->GetProofOfStake());
             delete pblockOrphan;
         }
@@ -3803,7 +3816,12 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         }
 
         // Resend wallet transactions that haven't gotten in a block yet
-        ResendWalletTransactions();
+        // Except during reindex, importing and IBD, when old wallet
+        // transactions become unconfirmed and spams other nodes.
+        if (!IsInitialBlockDownload())
+        {
+            ResendWalletTransactions();
+        }
 
         // Address refresh broadcast
         static int64_t nLastRebroadcast;
