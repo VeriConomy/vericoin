@@ -1019,11 +1019,11 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 }
 
 // Get the block rate for one hour
-int GetBlockRatePerHour(CBlockIndex* pindexPrev)
+int GetBlockRatePerHour()
 {
     int nRate = 0;
-    CBlockIndex* pindex = pindexPrev;
-    int64_t nTargetTime = GetAdjustedTime() - 3600;
+    CBlockIndex* pindex = pindexBest;
+    int64_t nTargetTime = pindexBest->nTime - 3600;
 
     while (pindex && pindex->pprev && pindex->nTime > nTargetTime) {
         nRate += 1;
