@@ -112,7 +112,8 @@ void Downloader::on_quitButton_clicked() // Cancel button
         BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
         p->reloadBlockchainActionEnabled(true); // Set menu option back to true when dialog closes.
         processBlockchain = false;
-        fBootstrapTurbo = false;
+        if (!downloadFinished)
+            fBootstrapTurbo = false;
     }
     if (processUpdate)
     {
@@ -312,6 +313,24 @@ void Downloader::downloaderFinished()
             delete file;
             file = 0;
         }
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setDefault(true);
+        ui->continueButton->setEnabled(false);
+        ui->quitButton->setEnabled(true);
+        return;
+    }
+
+    // when partial
+    if (processBlockchain && file && file->size() < 1000000)
+    {
+        if (file)
+        {
+            file->close();
+            file->remove();
+            delete file;
+            file = 0;
+        }
+        ui->statusLabel->setText("Error: Download ended prematurely.");
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setDefault(true);
         ui->continueButton->setEnabled(false);
