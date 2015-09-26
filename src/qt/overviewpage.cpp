@@ -150,7 +150,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
     ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
 
-    QUrl statsUrl(QString(walletUrl).append("wallet/stats.php?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+    QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
     CookieJar *statsJar = new CookieJar;
     ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
     ui->stats->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -158,7 +158,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->stats->load(statsUrl);
 
-    QUrl valueUrl(QString(walletUrl).append("wallet/chart.php?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+    QUrl valueUrl(QString(walletUrl).append("wallet/chart.php"));
     CookieJar *valueJar = new CookieJar;
     ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
     ui->value->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -166,7 +166,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
     ui->value->load(valueUrl);
 
-    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.php?v=").append(FormatVersion(CLIENT_VERSION).c_str()));
+    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.php"));
     CookieJar *tickerJar = new CookieJar;
     ui->ticker->page()->networkAccessManager()->setCookieJar(tickerJar);
     ui->ticker->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);

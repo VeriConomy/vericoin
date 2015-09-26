@@ -531,7 +531,7 @@ void StakeMiner(CWallet *pwallet)
         if (fShutdown)
             return;
 
-        while (pwallet->IsLocked())
+        while (pwallet->IsLocked() || !pwallet->IsCrypted())
         {
             MilliSleep(1000);
             if (fShutdown)
