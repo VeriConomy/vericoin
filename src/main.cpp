@@ -57,6 +57,9 @@ uint256 hashBestChain = 0;
 CBlockIndex* pindexBest = NULL;
 int64_t nTimeBestReceived = 0;
 
+int nAverageStakeWeightHeightCached = 0;
+double dAverageStakeWeightCached = 0;
+
 CMedianFilter<int> cPeerBlockCounts(5, 0); // Amount of blocks that other nodes claim to have
 
 map<uint256, CBlock*> mapOrphanBlocks;
@@ -988,6 +991,14 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
     double weightSum = 0.0, weightAve = 0.0;
     if (nBestHeight < 1)
         return weightAve;
+
+    // Use cached weight if it's still valid
+    if (pindexPrev->nHeight == nAverageStakeWeightHeightCached)
+    {
+        return dAverageStakeWeightCached;
+    }
+    nAverageStakeWeightHeightCached = pindexPrev->nHeight;
+
     int i;
     CBlockIndex* currentBlockIndex = pindexPrev;
     for (i = 0; currentBlockIndex && i < 60; i++)
@@ -996,8 +1007,12 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
         weightSum += tempWeight;
         currentBlockIndex = currentBlockIndex->pprev;
     }
-    weightAve = weightSum/i;
-    return weightAve+21;
+    weightAve = (weightSum/i)+21;
+
+    // Cache the stake weight value
+    dAverageStakeWeightCached = weightAve;
+
+    return weightAve;
 }
 
 // get current inflation rate using average stake weight ~1.5-2.5% (measure of liquidity) PoST
