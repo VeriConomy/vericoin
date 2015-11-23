@@ -1079,7 +1079,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pind
     return nSubsidy + nFees;
 }
 #ifdef fTestNet
-static const int64_t nTargetTimespan = 10 * 60;  // 10 mins
+static const int64_t nTargetTimespan = 3 * 60;  // 3 mins
 #else
 static const int64_t nTargetTimespan = 16 * 60;  // 16 mins
 #endif
@@ -1192,10 +1192,42 @@ static unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool 
     return bnNew.GetCompact();
 }
 
+static unsigned int GetNextTargetRequiredVRM(const CBlockIndex* pindexLast, bool fProofOfStake)
+{
+    CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
+
+    if (pindexLast == NULL)
+        return bnTargetLimit.GetCompact(); // genesis block
+
+    const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
+    if (pindexPrev->pprev == NULL)
+        return bnTargetLimit.GetCompact(); // first block
+    const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
+    if (pindexPrevPrev->pprev == NULL)
+        return bnTargetLimit.GetCompact(); // second block
+
+    int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
+    int64_t nVariableTarget = (nTargetSpacing - nActualSpacing) + nTargetSpacing;
+    // ppcoin: target change every block
+    // ppcoin: retarget with exponential moving toward target spacing
+    CBigNum bnNew;
+    bnNew.SetCompact(pindexPrev->nBits);
+    int64_t nInterval = nTargetTimespan / nVariableTarget;
+    bnNew *= ((nInterval - 1) * nVariableTarget);
+    bnNew /= ((nInterval + 1) * nVariableTarget);
+
+    if (bnNew <= 0 || bnNew > bnTargetLimit)
+        bnNew = bnTargetLimit;
+
+    return bnNew.GetCompact();
+}
+
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
     if (pindexLast->nHeight < 38424)
         return GetNextTargetRequiredV1(pindexLast, fProofOfStake);
+    else if (fTestNet)
+        return GetNextTargetRequiredVRM(pindexLast, fProofOfStake);
     else
         return GetNextTargetRequiredV2(pindexLast, fProofOfStake);
 }

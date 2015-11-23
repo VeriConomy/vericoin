@@ -269,14 +269,13 @@ void OverviewPage::setModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
         connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
-
-        QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
-        QUrl valueUrl(QString(walletUrl).append("wallet/chart.php"));
-        QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.php"));
-        ui->stats->load(statsUrl);
-        ui->value->load(valueUrl);
-        ui->ticker->load(tickerUrl);
     }
+    QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
+    QUrl valueUrl(QString(walletUrl).append("wallet/chart.php"));
+    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.php"));
+    ui->stats->load(statsUrl);
+    ui->value->load(valueUrl);
+    ui->ticker->load(tickerUrl);
 
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
