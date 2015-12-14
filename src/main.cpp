@@ -1227,7 +1227,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     if (pindexLast->nHeight < 38424)
         return GetNextTargetRequiredV1(pindexLast, fProofOfStake);
     else if (fTestNet)
-        return GetNextTargetRequiredVRM(pindexLast, fProofOfStake);
+        return GetNextTargetRequiredV2(pindexLast, fProofOfStake);
     else
         return GetNextTargetRequiredV2(pindexLast, fProofOfStake);
 }
