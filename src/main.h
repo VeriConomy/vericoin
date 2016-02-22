@@ -12,6 +12,7 @@
 #include "scrypt.h"
 #include "zerocoin/Zerocoin.h"
 
+#include <limits>
 #include <list>
 
 class CWallet;
@@ -36,7 +37,7 @@ static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 10000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64_t MAX_MONEY = 2000000000 * COIN;
+static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
 static const double PI = 3.1415926535;
 
 inline bool PoSTprotocol(int nHeight) { return nHeight > 608100; }
