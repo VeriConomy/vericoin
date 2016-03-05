@@ -1,4 +1,4 @@
-VeriCoin 1.4.1
+VeriCoin 1.6.4
 
 Copyright (c) 2015 VeriCoin Developers
 Copyright (c) 2014 Blackcoin Developers
@@ -22,9 +22,9 @@ help further advance the field of crypto-currency.
 
 Quick Linux Build
 
--All typical Dependencies for Debian Build (git is optional) and make command
+-All typical Dependencies for Debian Build (git is optional) after installing qt
 
-sudo apt-get install qt5-qmake libqt5-dev build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev git
+sudo apt-get install build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev git
 
 cd src
 make -f makefile.unix
