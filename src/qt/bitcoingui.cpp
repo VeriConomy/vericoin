@@ -551,6 +551,8 @@ void BitcoinGUI::createActions()
     toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Show / Hide"), this);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet"), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
+    exportPrivKeyAction = new QAction(QIcon(":/icons/key"), tr("&Export Private key"), this);
+    exportPrivKeyAction->setToolTip(tr("Export Private key to a file"));
     rescanWalletAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
     rescanWalletAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
@@ -587,6 +589,7 @@ void BitcoinGUI::createActions()
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
+    connect(exportPrivKeyAction, SIGNAL(triggered()), this, SLOT(exportPrivKey()));
     connect(rescanWalletAction, SIGNAL(triggered()), this, SLOT(rescanWallet()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
@@ -625,10 +628,10 @@ void BitcoinGUI::createMenuBar()
     file->addAction(rescanWalletAction);
     file->addAction(reloadBlockchainAction);
     file->addSeparator();
+    file->addAction(exportPrivKeyAction);
+    file->addSeparator();
     file->addAction(addressBookAction);
     file->addAction(signMessageAction);
-    //file->addAction(verifyMessageAction);
-    //file->addSeparator();
     //file->addAction(accessNxtInsideAction);
     file->addSeparator();
     file->addAction(logoutAction);
@@ -1471,6 +1474,51 @@ void BitcoinGUI::backupWallet()
     delete dlg;
 }
 
+void BitcoinGUI::exportPrivKey()
+{
+    string strAddress;
+    QString qstrAddress;
+    AddressBookPage dlg(AddressBookPage::ForSigning, AddressBookPage::ReceivingTab, this);
+    dlg.setModel(walletModel->getAddressTableModel());
+    if (dlg.exec())
+    {
+        qstrAddress = dlg.getReturnValue();
+        strAddress = qstrAddress.toStdString();
+    }
+    CBitcoinAddress address;
+    if (!address.SetString(strAddress))
+    {
+        QMessageBox::warning(this, tr("Export Private Key"),
+            tr("This is an invalid VeriCoin address"),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+    CKeyID keyID;
+    if (!address.GetKeyID(keyID))
+    {
+        QMessageBox::warning(this, tr("Export Private Key"),
+            tr("Address does not refer to a key"),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+    CSecret vchSecret;
+    bool fCompressed;
+    if (!pwalletMain->GetSecret(keyID, vchSecret, fCompressed))
+    {
+        QMessageBox::warning(this, tr("Export Private Key"),
+            tr("Private key for address %1 is not known").arg(qstrAddress),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+
+    string privkey = CBitcoinSecret(vchSecret, fCompressed).ToString();
+    QString qprivkey = QString::fromStdString(privkey);
+    QMessageBox::warning(this, tr("Export Private Key"),
+        tr("This is the private key:\n%1 \n\nAssociated with this VeriCoin address: \n%2\n\nCopy to secure location, this allows access to coins.").arg(qprivkey).arg(qstrAddress),
+        QMessageBox::Ok, QMessageBox::Ok);
+    return;
+}
+
 void BitcoinGUI::changePassphrase()
 {
     if (fBootstrapTurbo)
@@ -1788,3 +1836,5 @@ void BitcoinGUI::checkForUpdate()
         }
     }
 }
+
+
