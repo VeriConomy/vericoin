@@ -552,7 +552,9 @@ void BitcoinGUI::createActions()
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet"), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
     exportPrivKeyAction = new QAction(QIcon(":/icons/key"), tr("&Export Private key"), this);
-    exportPrivKeyAction->setToolTip(tr("Export Private key to a file"));
+    exportPrivKeyAction->setToolTip(tr("Export a private key to a file"));
+    importPrivKeyAction = new QAction(QIcon(":/icons/key"), tr("&Import Private key"), this);
+    importPrivKeyAction->setToolTip(tr("Import a private key into your wallet"));
     rescanWalletAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
     rescanWalletAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
@@ -590,6 +592,7 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
     connect(exportPrivKeyAction, SIGNAL(triggered()), this, SLOT(exportPrivKey()));
+    connect(importPrivKeyAction, SIGNAL(triggered()), this, SLOT(importPrivKey()));
     connect(rescanWalletAction, SIGNAL(triggered()), this, SLOT(rescanWallet()));
     connect(reloadBlockchainAction, SIGNAL(triggered()), this, SLOT(reloadBlockchain()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
@@ -629,6 +632,7 @@ void BitcoinGUI::createMenuBar()
     file->addAction(reloadBlockchainAction);
     file->addSeparator();
     file->addAction(exportPrivKeyAction);
+    file->addAction(importPrivKeyAction);
     file->addSeparator();
     file->addAction(addressBookAction);
     file->addAction(signMessageAction);
@@ -1519,11 +1523,85 @@ void BitcoinGUI::exportPrivKey()
         QMessageBox::warning(this, tr("Export Private Key"),
             tr("This is the private key:\n%1 \n\nAssociated with this VeriCoin address: \n%2\n\nCopy to secure location, this allows access to coins.").arg(qprivkey).arg(qstrAddress),
             QMessageBox::Ok, QMessageBox::Ok);
+        vchSecret.clear(), privkey.clear(), qprivkey.clear(); //ensure memory is cleared once ok is pressed
     }
     else
     {
         QMessageBox::warning(this, tr("Export Private Key"),
             tr("Cannot export the private key from a locked wallet"),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+    return;
+}
+
+void BitcoinGUI::importPrivKey()
+{
+    walletModel->requestUnlock();
+    if (walletModel->getEncryptionStatus() == WalletModel::Unlocked)
+    {
+        bool ok;
+        QString text = "paste private key here";
+        QString input = QInputDialog::getText(this, tr("Import Private Key"),tr("Input Private key: "), QLineEdit::Normal, text, &ok);
+        if (ok)
+        {
+            string strSecret = input.toStdString();
+            string strLabel = "";
+            CBitcoinSecret vchSecret;
+            bool fGood = vchSecret.SetString(strSecret);
+            if (!fGood)
+            {
+                QMessageBox::warning(this, tr("Import Private Key"),
+                    tr("This is an invalid private key"),
+                    QMessageBox::Ok, QMessageBox::Ok);
+                return;
+            }
+            CKey key;
+            bool fCompressed;
+            CSecret secret = vchSecret.GetSecret(fCompressed);
+            key.SetSecret(secret, fCompressed);
+            CKeyID vchAddress = key.GetPubKey().GetID();
+            {
+                LOCK2(cs_main, pwalletMain->cs_wallet);
+
+                pwalletMain->MarkDirty();
+                pwalletMain->SetAddressBookName(vchAddress, strLabel);
+
+                // Don't throw error in case a key is already there
+                if (pwalletMain->HaveKey(vchAddress))
+                {
+                    QMessageBox::warning(this, tr("Import Private Key"),
+                        tr("This key is already in wallet"),
+                        QMessageBox::Ok, QMessageBox::Ok);
+                    return;
+                }
+
+                pwalletMain->mapKeyMetadata[vchAddress].nCreateTime = 1;
+
+                if (!pwalletMain->AddKey(key))
+                {
+                    QMessageBox::warning(this, tr("Import Private Key"),
+                        tr("Error importing private key"),
+                        QMessageBox::Ok, QMessageBox::Ok);
+                    return;
+                }
+
+                QMessageBox::warning(this, tr("Import Private Key"),
+                    tr("The wallet will now scan the blockchain for all transactions with this key"),
+                    QMessageBox::Ok, QMessageBox::Ok);
+
+                // whenever a key is imported, we need to scan the whole chain
+                pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
+
+                pwalletMain->ScanForWalletTransactions(pindexGenesisBlock, true);
+                pwalletMain->ReacceptWalletTransactions();
+            }
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Import Private Key"),
+            tr("Cannot import a private key into a locked wallet"),
             QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
