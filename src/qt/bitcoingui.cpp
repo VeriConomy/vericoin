@@ -1476,46 +1476,57 @@ void BitcoinGUI::backupWallet()
 
 void BitcoinGUI::exportPrivKey()
 {
-    string strAddress;
-    QString qstrAddress;
-    AddressBookPage dlg(AddressBookPage::ForSigning, AddressBookPage::ReceivingTab, this);
-    dlg.setModel(walletModel->getAddressTableModel());
-    if (dlg.exec())
+    walletModel->requestUnlock();
+    if (walletModel->getEncryptionStatus() == WalletModel::Unlocked)
     {
-        qstrAddress = dlg.getReturnValue();
-        strAddress = qstrAddress.toStdString();
-    }
-    CBitcoinAddress address;
-    if (!address.SetString(strAddress))
-    {
-        QMessageBox::warning(this, tr("Export Private Key"),
-            tr("This is an invalid VeriCoin address"),
-            QMessageBox::Ok, QMessageBox::Ok);
-        return;
-    }
-    CKeyID keyID;
-    if (!address.GetKeyID(keyID))
-    {
-        QMessageBox::warning(this, tr("Export Private Key"),
-            tr("Address does not refer to a key"),
-            QMessageBox::Ok, QMessageBox::Ok);
-        return;
-    }
-    CSecret vchSecret;
-    bool fCompressed;
-    if (!pwalletMain->GetSecret(keyID, vchSecret, fCompressed))
-    {
-        QMessageBox::warning(this, tr("Export Private Key"),
-            tr("Private key for address %1 is not known").arg(qstrAddress),
-            QMessageBox::Ok, QMessageBox::Ok);
-        return;
-    }
+        string strAddress;
+        QString qstrAddress;
+        AddressBookPage dlg(AddressBookPage::ForSigning, AddressBookPage::ReceivingTab, this);
+        dlg.setModel(walletModel->getAddressTableModel());
+        if (dlg.exec())
+        {
+            qstrAddress = dlg.getReturnValue();
+            strAddress = qstrAddress.toStdString();
+        }
+        CBitcoinAddress address;
+        if (!address.SetString(strAddress))
+        {
+            QMessageBox::warning(this, tr("Export Private Key"),
+                tr("This is an invalid VeriCoin address"),
+                QMessageBox::Ok, QMessageBox::Ok);
+            return;
+        }
+        CKeyID keyID;
+        if (!address.GetKeyID(keyID))
+        {
+            QMessageBox::warning(this, tr("Export Private Key"),
+                tr("Address does not refer to a key"),
+                QMessageBox::Ok, QMessageBox::Ok);
+            return;
+        }
+        CSecret vchSecret;
+        bool fCompressed;
+        if (!pwalletMain->GetSecret(keyID, vchSecret, fCompressed))
+        {
+            QMessageBox::warning(this, tr("Export Private Key"),
+                tr("Private key for address %1 is not known").arg(qstrAddress),
+                QMessageBox::Ok, QMessageBox::Ok);
+            return;
+        }
 
-    string privkey = CBitcoinSecret(vchSecret, fCompressed).ToString();
-    QString qprivkey = QString::fromStdString(privkey);
-    QMessageBox::warning(this, tr("Export Private Key"),
-        tr("This is the private key:\n%1 \n\nAssociated with this VeriCoin address: \n%2\n\nCopy to secure location, this allows access to coins.").arg(qprivkey).arg(qstrAddress),
-        QMessageBox::Ok, QMessageBox::Ok);
+        string privkey = CBitcoinSecret(vchSecret, fCompressed).ToString();
+        QString qprivkey = QString::fromStdString(privkey);
+        QMessageBox::warning(this, tr("Export Private Key"),
+            tr("This is the private key:\n%1 \n\nAssociated with this VeriCoin address: \n%2\n\nCopy to secure location, this allows access to coins.").arg(qprivkey).arg(qstrAddress),
+            QMessageBox::Ok, QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Export Private Key"),
+            tr("Cannot export the private key from a locked wallet"),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
     return;
 }
 
