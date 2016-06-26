@@ -11,6 +11,7 @@
 #include "base58.h"
 #include "kernel.h"
 #include "coincontrol.h"
+#include "bitcoinrpc.h"
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace std;

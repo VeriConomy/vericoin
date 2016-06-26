@@ -546,6 +546,14 @@ void StakeMiner(CWallet *pwallet)
                 return;
         }
 
+        while (GetTimeToStake() > 43200)
+        {
+            nLastCoinStakeSearchInterval = 0;
+            MilliSleep(1800000);
+            if (fShutdown)
+                return;
+        }
+
         //
         // Create new block
         //
