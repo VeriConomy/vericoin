@@ -155,7 +155,7 @@ QString veriMiscStyleSheet = QString("QStatusBar { background: " + STR_COLOR + "
 
 QString veriMenuStyleSheet = QString("QMenuBar { background-color: " + STR_COLOR + "; color: white; } \
                             QMenuBar::item { background-color: transparent; margin: 0px; padding: 4px 16px 4px 16px; } \
-                            QMenuBar::item:selected { background-color: " + STR_COLOR_LT + "; color: white; } \
+                            QMenuBar::item:selected { background-color: " + STR_COLOR_HOVER + "; color: white; } \
                             QMenu { background-color: " + STR_COLOR + "; color: white; } \
                             QMenu::item { background-color: transparent; margin: 0px 0px 4px 4px; padding: 4px 8px 4px 24px; } \
                             QMenu::item:selected { background-color: " + STR_COLOR_HOVER + "; color: white; }");
