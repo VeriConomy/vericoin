@@ -17,16 +17,13 @@ class AddressBookPage;
 class SendCoinsDialog;
 class SendBitCoinsDialog;
 class SignVerifyMessageDialog;
-class AccessNxtInsideDialog;
 class Notificator;
 class RPCConsole;
 class Downloader;
 class WebView;
 class GetVeriCoinPage;
 class ForumsPage;
-class ChatPage;
 class BlockchainPage;
-class SuperNETPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -76,7 +73,6 @@ private:
     QStackedWidget *centralWidget;
 
     SignVerifyMessageDialog *signVerifyMessageDialog;
-    AccessNxtInsideDialog *accessNxtInsideDialog;
     AskPassphrasePage *askPassphrasePage;
     AskPassphrasePage *encryptWalletPage;
     OverviewPage *overviewPage;
@@ -88,9 +84,7 @@ private:
     SendBitCoinsDialog *sendBitCoinsPage;
     GetVeriCoinPage *getVeriCoinPage;
     ForumsPage *forumsPage;
-    ChatPage *chatPage;
     BlockchainPage *blockchainPage;
-    SuperNETPage *superNETPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelBalanceIcon;
@@ -113,13 +107,10 @@ private:
     QAction *sendBitCoinsAction;
     QAction *getVeriCoinAction;
     QAction *forumsAction;
-    QAction *chatAction;
     QAction *blockchainAction;
-    QAction *superNETAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
-    QAction *accessNxtInsideAction;
     QAction *aboutAction;
     QAction *aboutPostAction;
     QAction *aboutQtAction;
@@ -131,6 +122,8 @@ private:
     QAction *exportAction;
     QAction *encryptWalletAction;
     QAction *backupWalletAction;
+    QAction *exportPrivKeyAction;
+    QAction *importPrivKeyAction;
     QAction *changePassphraseAction;
     QAction *lockWalletAction;
     QAction *unlockWalletAction;
@@ -209,12 +202,8 @@ private slots:
     void gotoSendBitCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
-    /** Switch to Chat page */
-    void gotoChatPage();
     /** Switch to Blockchain page */
     void gotoBlockchainPage();
-    /** Switch to SuperNET page */
-    void gotoSuperNETPage();
     /** Switch to GetVeriCoin page */
     void gotoGetVeriCoinPage();
 
@@ -226,9 +215,6 @@ private slots:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-  	/** Show Access Nxt dialog and switch to access nxt tab */
-	void gotoAccessNxtInsideTab(QString addr = "");
-
     /** Show configuration dialog */
     void optionsClicked();
     /** Show forums page */
@@ -252,6 +238,10 @@ private slots:
     void encryptWallet(bool status=true);
     /** Backup the wallet */
     void backupWallet();
+    /** Export private key */
+    void exportPrivKey();
+    /** Import a private key into wallet */
+    void importPrivKey();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
     /** Ask for passphrase to lock wallet temporarily */

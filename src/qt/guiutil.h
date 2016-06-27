@@ -21,9 +21,7 @@ class SendCoinsRecipient;
  */
 namespace GUIUtil
 {
-    extern bool fTicker;
     extern bool fNoHeaders;
-    extern bool fSmallHeaders;
     extern int TOOLBAR_WIDTH;
     extern int TOOLBAR_ICON_WIDTH;
     extern int TOOLBAR_ICON_HEIGHT;

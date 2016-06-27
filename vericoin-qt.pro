@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = vericoin-qt
-VERSION = 1.6.4
+VERSION = 1.6.5
 USE_QRCODE = 1
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
@@ -249,7 +249,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/sendbitcoinsdialog.h \
     src/qt/addressbookpage.h \
     src/qt/signverifymessagedialog.h \
-    src/qt/accessnxtinsidedialog.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
@@ -266,17 +265,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/kernel.h \
     src/scrypt.h \
     src/pbkdf2.h \
-    src/zerocoin/Accumulator.h \
-    src/zerocoin/AccumulatorProofOfKnowledge.h \
-    src/zerocoin/Coin.h \
-    src/zerocoin/CoinSpend.h \
-    src/zerocoin/Commitment.h \
-    src/zerocoin/ParamGeneration.h \
-    src/zerocoin/Params.h \
-    src/zerocoin/SerialNumberSignatureOfKnowledge.h \
-    src/zerocoin/SpendMetaData.h \
-    src/zerocoin/ZeroTest.h \
-    src/zerocoin/Zerocoin.h \
     src/serialize.h \
     src/strlcpy.h \
     src/main.h \
@@ -329,9 +317,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/askpassphrasepage.h \
     src/qt/getvericoinpage.h \
     src/qt/forumspage.h \
-    src/qt/chatpage.h \
     src/qt/blockchainpage.h \
-    src/qt/supernetpage.h \
     src/protocol.h \
     src/qt/notificator.h \
     src/qt/qtipcserver.h \
@@ -360,7 +346,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/coincontroltreewidget.cpp \
     src/qt/addressbookpage.cpp \
     src/qt/signverifymessagedialog.cpp \
-    src/qt/accessnxtinsidedialog.cpp \
     src/qt/aboutdialog.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
@@ -425,9 +410,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/autosaver.cpp \
     src/qt/getvericoinpage.cpp \
     src/qt/forumspage.cpp \
-    src/qt/chatpage.cpp \
     src/qt/blockchainpage.cpp \
-    src/qt/supernetpage.cpp \
     src/noui.cpp \
     src/kernel.cpp \
     src/scrypt-arm.S \
@@ -435,19 +418,9 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/scrypt-x86_64.S \
     src/scrypt.cpp \
     src/pbkdf2.cpp \
-    src/zerocoin/Accumulator.cpp \
-    src/zerocoin/AccumulatorProofOfKnowledge.cpp \
-    src/zerocoin/Coin.cpp \
-    src/zerocoin/CoinSpend.cpp \
-    src/zerocoin/Commitment.cpp \
-    src/zerocoin/ParamGeneration.cpp \
-    src/zerocoin/Params.cpp \
-    src/zerocoin/SerialNumberSignatureOfKnowledge.cpp \
-    src/zerocoin/SpendMetaData.cpp \
     src/qt/webview.cpp \
     src/qt/postdialog.cpp \
     src/qt/whatsnewdialog.cpp \
-    src/zerocoin/ZeroTest.cpp
 
 RESOURCES += \
     src/qt/bitcoin.qrc
@@ -457,12 +430,9 @@ FORMS += \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/forumspage.ui \
-    src/qt/forms/chatpage.ui \
     src/qt/forms/blockchainpage.ui \
-    src/qt/forms/supernetpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
-    src/qt/forms/accessnxtinsidedialog.ui \
     src/qt/forms/aboutdialog.ui \
     src/qt/forms/editaddressdialog.ui \
     src/qt/forms/transactiondescdialog.ui \

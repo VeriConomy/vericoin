@@ -83,7 +83,6 @@ private slots:
 signals:
     void signMessage(QString addr);
     void verifyMessage(QString addr);
-    void accessNxt(QString addr);
 };
 
 #endif // ADDRESSBOOKDIALOG_H

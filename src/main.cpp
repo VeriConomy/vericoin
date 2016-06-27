@@ -11,7 +11,6 @@
 #include "init.h"
 #include "ui_interface.h"
 #include "kernel.h"
-#include "zerocoin/Zerocoin.h"
 #include "bitcoinrpc.h"
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
@@ -36,7 +35,6 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
-libzerocoin::Params* ZCParams;
 
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
@@ -3370,7 +3368,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         // Send the rest of the chain
         if (pindex)
             pindex = pindex->pnext;
-        int nLimit = 500;
+        int nLimit = 2000;
         printf("getblocks %d to %s limit %d\n", (pindex ? pindex->nHeight : -1), hashStop.ToString().substr(0,20).c_str(), nLimit);
         for (; pindex; pindex = pindex->pnext)
         {
@@ -3419,7 +3417,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         }
 
         vector<CBlock> vHeaders;
-        int nLimit = 2000;
+        int nLimit = 8000;
         printf("getheaders %d to %s\n", (pindex ? pindex->nHeight : -1), hashStop.ToString().substr(0,20).c_str());
         for (; pindex; pindex = pindex->pnext)
         {
@@ -3944,4 +3942,13 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
 
     }
     return true;
+}
+
+uint64_t GetTimeToStake()
+{
+    uint64_t nWeight =0;
+    pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
+    double nNetworkWeight = GetPoSKernelPS();
+    u_int64_t nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
+    return nEstimateTime;
 }
