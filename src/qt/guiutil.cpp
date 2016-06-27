@@ -47,25 +47,23 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
-bool fTicker = true;
 bool fNoHeaders = false;
-bool fSmallHeaders = false;
-int TOOLBAR_WIDTH = 120;
+int TOOLBAR_WIDTH = 110;
 int TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
 int TOOLBAR_ICON_HEIGHT = 48;
 int HEADER_WIDTH = 1024;
-int HEADER_HEIGHT = 160;
+int HEADER_HEIGHT = 110;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;
 int FRAMEBLOCKS_LABEL_WIDTH = 100;
 int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
-int WINDOW_MIN_HEIGHT = 768;
+int WINDOW_MIN_HEIGHT = 693;
 #else
 #ifdef Q_OS_MAC
-int WINDOW_MIN_HEIGHT = 748;
+int WINDOW_MIN_HEIGHT = 673;
 #else
-int WINDOW_MIN_HEIGHT = 772;
+int WINDOW_MIN_HEIGHT = 697;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
@@ -98,20 +96,16 @@ void refactorGUI(QRect screenSize)
         TOOLBAR_ICON_HEIGHT = 32;
         HEADER_HEIGHT = 0;
         fNoHeaders = true;
-        fTicker = false;
     }
     else if (screenSize.height() < 728) // 728px if OS taskbar is not hidden
     {
         TOOLBAR_ICON_HEIGHT = 32;
         HEADER_HEIGHT = 32;
         fNoHeaders = true;
-        fTicker = false;
     }
     else // Default small wallet at 728px to 768px
     {
         TOOLBAR_ICON_HEIGHT = 34;
-        HEADER_HEIGHT = 85;
-        fSmallHeaders = true;
     }
 
     WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
@@ -159,12 +153,12 @@ QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STR_CO
 
 QString veriMiscStyleSheet = QString("QStatusBar { background: " + STR_COLOR + "; color: white; } QStatusBar::item { border: none; } QDialog { background: white; color: " + STR_FONT_COLOR + "; } QTableView::item:hover { background: #EBEBEB; color: " + STR_FONT_COLOR + "; } ");
 
-QString veriMenuStyleSheet = QString("QMenuBar { background-color: " + STR_COLOR_HOVER + "; color: white; } \
+QString veriMenuStyleSheet = QString("QMenuBar { background-color: " + STR_COLOR + "; color: white; } \
                             QMenuBar::item { background-color: transparent; margin: 0px; padding: 4px 16px 4px 16px; } \
-                            QMenuBar::item:selected { background-color: " + STR_COLOR + "; color: white; } \
-                            QMenu { background-color: " + STR_COLOR_HOVER + "; color: white; } \
+                            QMenuBar::item:selected { background-color: " + STR_COLOR_LT + "; color: white; } \
+                            QMenu { background-color: " + STR_COLOR + "; color: white; } \
                             QMenu::item { background-color: transparent; margin: 0px 0px 4px 4px; padding: 4px 8px 4px 24px; } \
-                            QMenu::item:selected { background-color: " + STR_COLOR + "; color: white; }");
+                            QMenu::item:selected { background-color: " + STR_COLOR_HOVER + "; color: white; }");
 
 // Put them all together
 QString veriStyleSheet = veriCentralWidgetStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet + veriMenuStyleSheet;

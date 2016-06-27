@@ -31,8 +31,6 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
     // Setup header and styles
     if (fNoHeaders)
         GUIUtil::header(this, QString(""));
-    else if (fSmallHeaders)
-        GUIUtil::header(this, QString(":images/headerAddressSmall"));
     else
         GUIUtil::header(this, QString(":images/headerAddress"));
 

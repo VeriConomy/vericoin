@@ -114,8 +114,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
     // Setup header and styles
     if (fNoHeaders)
         GUIUtil::header(this, QString(""));
-    else if (fSmallHeaders)
-        GUIUtil::header(this, QString(":images/headerOverviewSmall"));
     else
         GUIUtil::header(this, QString(":images/headerOverview"));
 
@@ -161,13 +159,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->value->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(ui->value->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
     connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-
-    CookieJar *tickerJar = new CookieJar;
-    ui->ticker->page()->networkAccessManager()->setCookieJar(tickerJar);
-    ui->ticker->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-    ui->ticker->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    connect(ui->ticker->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
-    connect(ui->ticker->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
@@ -257,8 +248,6 @@ void OverviewPage::setModel(WalletModel *model)
         ui->listTransactions->setModel(filter);
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
-        ui->ticker->setVisible(fTicker);
-
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance(), model->getImmatureBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64, qint64)));
@@ -272,10 +261,8 @@ void OverviewPage::setModel(WalletModel *model)
     }
     QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
     QUrl valueUrl(QString(walletUrl).append("wallet/chart.php"));
-    QUrl tickerUrl(QString(walletUrl).append("wallet/ticker.php"));
     ui->stats->load(statsUrl);
     ui->value->load(valueUrl);
-    ui->ticker->load(tickerUrl);
 
     // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();

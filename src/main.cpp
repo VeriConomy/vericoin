@@ -11,7 +11,6 @@
 #include "init.h"
 #include "ui_interface.h"
 #include "kernel.h"
-#include "zerocoin/Zerocoin.h"
 #include "bitcoinrpc.h"
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
@@ -36,7 +35,6 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
-libzerocoin::Params* ZCParams;
 
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);

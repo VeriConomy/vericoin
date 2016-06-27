@@ -21,8 +21,6 @@ ForumsPage::ForumsPage(QWidget *parent) :
     // Setup header and styles
     if (fNoHeaders)
         GUIUtil::header(this, QString(""));
-    else if (fSmallHeaders)
-        GUIUtil::header(this, QString(":images/headerForumsSmall"));
     else
         GUIUtil::header(this, QString(":images/headerForums"));
     this->layout()->setContentsMargins(0, HEADER_HEIGHT, 0, 0);
@@ -56,6 +54,6 @@ void ForumsPage::setModel(WalletModel *model)
 {
     this->walletModel = model;
 
-    QUrl url(QString(walletUrl).append("wallet/forums.php"));
+    QUrl url(QString(walletUrl).append("wallet/forums2.php"));
     ui->webView->myOpenUrl(url);
 }

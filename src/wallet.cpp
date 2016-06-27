@@ -11,12 +11,11 @@
 #include "base58.h"
 #include "kernel.h"
 #include "coincontrol.h"
-#include "bitcoinrpc.h"
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace std;
 unsigned int nStakeSplitAge = 30 * 24 * 60 * 60;
-double nStakeSplitWeightFraction = 0.45;
+double nStakeSplitWeightFraction = 0.35;
 int64_t nStakeCombineThreshold = 5000 * COIN;
 
 //////////////////////////////////////////////////////////////////////////////
