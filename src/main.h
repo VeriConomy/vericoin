@@ -10,8 +10,8 @@
 #include "net.h"
 #include "script.h"
 #include "scrypt.h"
-#include "zerocoin/Zerocoin.h"
 
+#include <limits>
 #include <list>
 
 class CWallet;
@@ -36,7 +36,7 @@ static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 10000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64_t MAX_MONEY = 2000000000 * COIN;
+static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
 static const double PI = 3.1415926535;
 
 inline bool PoSTprotocol(int nHeight) { return nHeight > 608100; }
@@ -56,7 +56,6 @@ static const uint256 hashGenesisBlockTestNet("0x0000d90349e5898a5cb76775e93f8774
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 10 * 60; } // up to 10 minutes from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 10 minutes from the future
 
-extern libzerocoin::Params* ZCParams;
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern std::map<uint256, CBlockIndex*> mapBlockIndex;
@@ -131,6 +130,7 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan);
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 void StakeMiner(CWallet *pwallet);
 void ResendWalletTransactions();
+uint64_t GetTimeToStake();
 
 
 

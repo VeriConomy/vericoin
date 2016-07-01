@@ -39,8 +39,6 @@ SendBitCoinsDialog::SendBitCoinsDialog(QWidget *parent) :
     // Setup header and styles
     if (fNoHeaders)
         GUIUtil::header(this, QString(""));
-    else if (fSmallHeaders)
-        GUIUtil::header(this, QString(":images/headerVeriBitSmall"));
     else
         GUIUtil::header(this, QString(":images/headerVeriBit"));
 
