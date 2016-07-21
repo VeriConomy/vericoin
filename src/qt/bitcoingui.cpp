@@ -131,6 +131,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     qApp->setStyleSheet(veriStyleSheet);
 
+
 /* (Seems to be working in Qt5)
 #ifdef Q_OS_MAC
     setUnifiedTitleAndToolBarOnMac(false);
