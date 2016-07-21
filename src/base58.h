@@ -218,7 +218,6 @@ public:
             return false;
         }
         nVersion = vchTemp[0];
-        std::cout << nVersion;
         vchData.resize(vchTemp.size() - 1);
         if (!vchData.empty())
             memcpy(&vchData[0], &vchTemp[1], vchData.size());
