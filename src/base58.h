@@ -426,7 +426,8 @@ public:
         {
             case (128 + CBitcoinAddress::PUBKEY_ADDRESS):
                 break;
-
+            case (128):
+                break;
             case (128 + CBitcoinAddress::PUBKEY_ADDRESS_TEST):
                 fExpectTestNet = true;
                 break;

@@ -159,9 +159,10 @@ QString veriMenuStyleSheet = QString("QMenuBar { background-color: " + STR_COLOR
                             QMenu { background-color: " + STR_COLOR + "; color: white; } \
                             QMenu::item { background-color: transparent; margin: 0px 0px 4px 4px; padding: 4px 8px 4px 24px; } \
                             QMenu::item:selected { background-color: " + STR_COLOR_HOVER + "; color: white; }");
+QString veriMessageBox = QString("QMessageBox { messagebox-text-interaction-flags: 5; }");
 
 // Put them all together
-QString veriStyleSheet = veriCentralWidgetStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet + veriMenuStyleSheet;
+QString veriStyleSheet = veriCentralWidgetStyleSheet + veriPushButtonStyleSheet + veriToolBarStyleSheet + veriToolTipStyleSheet + veriMiscStyleSheet + veriMenuStyleSheet + veriMessageBox;
 
 
 // Special styling for AskPassphrasePage

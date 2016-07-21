@@ -145,9 +145,9 @@ Value importprivkey(const Array& params, bool fHelp)
 
         // whenever a key is imported, we need to scan the whole chain
         pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
-
-        pwalletMain->ScanForWalletTransactions(pindexGenesisBlock, true);
-        pwalletMain->ReacceptWalletTransactions();
+        fRescan = true;
+        //pwalletMain->ScanForWalletTransactions(pindexGenesisBlock, true);
+        //pwalletMain->ReacceptWalletTransactions();
     }
 
     return Value::null;
