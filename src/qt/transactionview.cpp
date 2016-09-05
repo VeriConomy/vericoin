@@ -207,6 +207,8 @@ void TransactionView::setModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(refreshTotalAmount()));
         connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(refreshTotalAmount()));
 
+        connect(model->getTransactionTableModel(), SIGNAL(updateTotalAmount()), this, SLOT(showTotalAmount()));
+
         showTotalAmount();
     }
 }

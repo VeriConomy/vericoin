@@ -82,6 +82,9 @@ public slots:
     void updateDecimalPoints();
     void updateHideAmounts();
 
+signals:
+    void updateTotalAmount();
+
     friend class TransactionTablePriv;
 };
 
