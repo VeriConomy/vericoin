@@ -130,8 +130,8 @@ TransactionView::TransactionView(QWidget *parent) :
     totalWidget->setFont(qFont);
     totalWidget->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     totalWidget->setLayoutDirection(Qt::RightToLeft);
-    totalWidget->setFixedHeight(27);
-    totalWidget->setFixedWidth(300);
+    totalWidget->setFixedHeight(25);
+    totalWidget->setFixedWidth(500);
     totalWidget->setText(tr("Total: "));
     totalWidget->setToolTip(tr("Total of displayed transactions.\nHidden decimals are not totaled."));
     vlayout->addWidget(totalWidget);
@@ -202,12 +202,10 @@ void TransactionView::setModel(WalletModel *model)
                 TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
         amountWidget->setFixedWidth(100 + (model->getOptionsModel()->getDecimalPoints() * 10));
 
-        // Bug Fix - grrr
-        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(refreshTotalAmount()));
-        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(refreshTotalAmount()));
-        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(refreshTotalAmount()));
-
-        connect(model->getTransactionTableModel(), SIGNAL(updateTotalAmount()), this, SLOT(showTotalAmount()));
+        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(showTotalAmount(bool=true)));
+        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(showTotalAmount(bool=true)));
+        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(showTotalAmount(bool=true)));
+        connect(model->getTransactionTableModel(), SIGNAL(updateTotalAmount(bool)), this, SLOT(showTotalAmount(bool)));
 
         showTotalAmount();
     }
@@ -218,7 +216,7 @@ void TransactionView::chooseDate(int idx)
     if(!transactionProxyModel)
         return;
 
-    resetTotalAmount();
+    transactionProxyModel->setAmountTotal(0);
 
     QDate current = QDate::currentDate();
     dateRangeWidget->setVisible(false);
@@ -272,7 +270,7 @@ void TransactionView::chooseType(int idx)
     if(!transactionProxyModel)
         return;
 
-    resetTotalAmount();
+    transactionProxyModel->setAmountTotal(0);
 
     transactionProxyModel->setTypeFilter(
         typeWidget->itemData(idx).toInt());
@@ -285,7 +283,7 @@ void TransactionView::changedPrefix(const QString &prefix)
     if(!transactionProxyModel)
         return;
 
-    resetTotalAmount();
+    transactionProxyModel->setAmountTotal(0);
 
     transactionProxyModel->setAddressPrefix(prefix);
 
@@ -297,7 +295,7 @@ void TransactionView::changedAmount(const QString &amount)
     if(!transactionProxyModel)
         return;
 
-    resetTotalAmount();
+    transactionProxyModel->setAmountTotal(0);
 
     qint64 amount_parsed = 0;
     if(BitcoinUnits::parse(model->getOptionsModel()->getDisplayUnit(), amount, &amount_parsed))
@@ -312,29 +310,18 @@ void TransactionView::changedAmount(const QString &amount)
     showTotalAmount();
 }
 
-void TransactionView::showTotalAmount()
+void TransactionView::showTotalAmount(bool reset)
 {
     if(!transactionProxyModel)
         return;
 
-    totalWidget->setText(tr("Total: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, model->getOptionsModel()->getHideAmounts()))));
-}
+    if (reset) {
+        transactionProxyModel->setAmountTotal(0);
+        // Force a refresh using the date widget
+        chooseDate(dateWidget->currentIndex());
+    }
 
-void TransactionView::resetTotalAmount()
-{
-    if(!transactionProxyModel)
-        return;
-
-    transactionProxyModel->setAmountTotal(0);
-}
-
-void TransactionView::refreshTotalAmount()
-{
-    if(!transactionProxyModel)
-        return;
-
-    // Force a refresh using the date widget
-    chooseDate(dateWidget->currentIndex());
+    totalWidget->setText(tr("Total: ").append(QString(BitcoinUnits::formatWithUnitWithMaxDecimals(model->getOptionsModel()->getDisplayUnit(), transactionProxyModel->getAmountTotal(), model->getOptionsModel()->getDecimalPoints(), true, model->getOptionsModel()->getHideAmounts()))).append(tr("  Txns: ")).append(QString::number(transactionProxyModel->rowCount())));
 }
 
 void TransactionView::exportClicked()
@@ -508,6 +495,7 @@ void TransactionView::focusTransaction(const QModelIndex &idx)
 {
     if(!transactionProxyModel)
         return;
+
     QModelIndex targetIdx = transactionProxyModel->mapFromSource(idx);
     transactionView->scrollTo(targetIdx);
     transactionView->setCurrentIndex(targetIdx);

@@ -83,7 +83,7 @@ public slots:
     void updateHideAmounts();
 
 signals:
-    void updateTotalAmount();
+    void updateTotalAmount(bool reset);
 
     friend class TransactionTablePriv;
 };
