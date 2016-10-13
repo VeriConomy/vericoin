@@ -318,7 +318,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
         connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
-        timerStakingIcon->start(30 * 1000);
+        timerStakingIcon->start(90 * 1000);
         updateStakingIcon();
     }
 
@@ -1540,7 +1540,8 @@ void BitcoinGUI::lockWallet()
         AskPassphraseDialog dlg(AskPassphraseDialog::Lock, this);
         dlg.setModel(walletModel);
         dlg.exec();
-        stakingLabel->setText("Staking...");
+        stakingLabel->setText("Staking off");
+        updateStakingIcon();
     }
 }
 
@@ -1555,7 +1556,8 @@ void BitcoinGUI::unlockWallet()
         AskPassphraseDialog dlg(AskPassphraseDialog::Unlock, this);
         dlg.setModel(walletModel);
         dlg.exec();
-        stakingLabel->setText("Staking...");
+        stakingLabel->setText("Staking on");
+        updateStakingIcon();
     }
 }
 
@@ -1597,6 +1599,7 @@ void BitcoinGUI::updateStakingIcon()
     int peerBlock = clientModel->getNumBlocksOfPeers();
     if ((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
     {
+
         return;
     }
     uint64_t nWeight = 0;
@@ -1671,7 +1674,7 @@ void BitcoinGUI::updateStakingIcon()
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, enable staking in the Settings menu.").arg(currentBlock));
+            labelStakingIcon->setToolTip(tr("In sync at block %1\n").arg(currentBlock));
         else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
         else
