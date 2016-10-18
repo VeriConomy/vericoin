@@ -14,8 +14,8 @@
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace std;
-unsigned int nStakeSplitAge = 3 * 24 * 60 * 60;
-int64_t nStakeCombineThreshold = 5000 * COIN;
+unsigned int nStakeSplitAge = 7 * 24 * 60 * 60;
+int64_t nStakeCombineThreshold = 1000 * COIN;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -2146,7 +2146,7 @@ void CWallet::PrintWallet(const CBlock& block)
         if (block.IsProofOfStake() && mapWallet.count(block.vtx[1].GetHash()))
         {
             CWalletTx& wtx = mapWallet[block.vtx[1].GetHash()];
-            printf("    stake: %d  %d  %"PRId64"", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
+            printf("    stake: %d  %d  %"PRId64"", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit()calculate);
          }
 
     }
