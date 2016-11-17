@@ -93,10 +93,10 @@ UI_DIR = build
 
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
-    # Mac: compile for maximum compatibility (10.6, 64-bit (Apple no longer supports 32 bit macs))
-    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.6 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk
-    macx:QMAKE_CFLAGS += -mmacosx-version-min=10.6 -arch x86_64 -isysroot  /Developer/SDKs/MacOSX10.6.sdk
-    macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.6 -arch x86_64 -isysroot  /Developer/SDKs/MacOSX10.6.sdk
+    # Mac: compile for maximum compatibility (10.7, 64-bit (Apple no longer supports 32 bit macs))
+    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.9.sdk
+    macx:QMAKE_CFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.9.sdk
+    macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.9.sdk
     !windows:!macx {
         # Linux: static link
         LIBS += -Wl,-Bstatic
@@ -112,7 +112,7 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./lib
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware
-#win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
+macx:QMAKE_LFLAGS += -stdlib=libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
@@ -552,7 +552,6 @@ macx:LIBS += -lssl -lcrypto $$BDB_LIB_PATH/db48/libdb_cxx-4.8.a
 windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
 LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
-
 
 contains(RELEASE, 1) {
     !windows:!macx {
