@@ -14,9 +14,8 @@
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace std;
-unsigned int nStakeSplitAge = 30 * 24 * 60 * 60;
-double nStakeSplitWeightFraction = 0.35;
-int64_t nStakeCombineThreshold = 5000 * COIN;
+unsigned int nStakeSplitAge = 7 * 24 * 60 * 60;
+int64_t nStakeCombineThreshold = 2000 * COIN;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1891,9 +1890,9 @@ bool CWallet::CreateCoinTimeStake(const CKeyStore& keystore, unsigned int nBits,
                 vwtxPrev.push_back(pcoin.first);
                 txNew.vout.push_back(CTxOut(0, scriptPubKeyOut));
                 int64_t nWeight = GetWeight(block.GetBlockTime(), (int64_t)txNew.nTime);
-                int64_t nCoinWeight = nCredit*nWeight;
-                double nAverageStakeWeight = GetAverageStakeWeight(pindexPrev);
-                if ((nWeight < nStakeSplitAge) || ((nCoinWeight/nAverageStakeWeight) < nStakeSplitWeightFraction))
+               // int64_t nCoinWeight = nCredit*nWeight;
+               // double nAverageStakeWeight = GetAverageStakeWeight(pindexPrev);
+                if (nWeight < nStakeSplitAge)// || ((nCoinWeight/nAverageStakeWeight) < nStakeSplitWeightFraction))
                     txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinTimeStake : added kernel type=%d\n", whichType);
