@@ -5,17 +5,17 @@
 
 # Mac OS X makefile for vericoin
 # Originally by Laszlo Hanyecz (solar@heliacal.net)
-
-#CXX=llvm-g++
-CC=gcc-mp-4.9
-CXX=g++-mp-4.9
+#CXX=clang
+CXX=llvm-g++
+#CC=gcc-mp-4.9
+#XX=g++-mp-4.9
 DEPSDIR=/opt/local
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
  -I"$(CURDIR)"/obj \
  -I"$(DEPSDIR)/include" \
- -I"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include" \
+ -I"$(DEPSDIR)/include/boost" \
  -I"$(DEPSDIR)/include/db48"
 
 LIBPATHS= \
@@ -50,16 +50,9 @@ LIBS += \
  -lz
 endif
 
-DEFS=-DMAC_OSX -DMSG_NOSIGNAL=0 -DBOOST_SPIRIT_THREADSAFE
+DEFS=-DMAC_OSX -DMSG_NOSIGNAL=0 -DBOOST_SPIRIT_THREADSAFE -DUSE_IPV6
 
-ifdef RELEASE
-# Compile for maximum compatibility and smallest size.
-# This requires that dependencies are compiled
-# the same way.
-CFLAGS = -mmacosx-version-min=10.9 -arch x86_64 -O3 -msse2
-else
-CFLAGS = -g -msse2
-endif
+CFLAGS = -O3 -arch x86_64
 
 # ppc doesn't work because we don't support big-endian
 CFLAGS += -Wall -Wextra -Wformat -Wno-ignored-qualifiers -Wformat-security -Wno-unused-parameter \
@@ -123,7 +116,7 @@ DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
 OBJS += obj/txdb-leveldb.o
 leveldb/libleveldb.a:
-	@echo "Building LevelDB ..."; cd leveldb; make; cd ..
+	@echo "Building LevelDB ..."; cd leveldb; make libleveldb.a libmemenv.a; cd ..
 obj/txdb-leveldb.o: leveldb/libleveldb.a
 
 # auto-generated dependencies:
