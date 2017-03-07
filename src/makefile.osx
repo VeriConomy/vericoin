@@ -5,10 +5,8 @@
 
 # Mac OS X makefile for vericoin
 # Originally by Laszlo Hanyecz (solar@heliacal.net)
-#CXX=clang
+
 CXX=llvm-g++
-#CC=gcc-mp-4.9
-#XX=g++-mp-4.9
 DEPSDIR=/opt/local
 
 INCLUDEPATHS= \
