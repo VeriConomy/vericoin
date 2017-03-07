@@ -28,20 +28,20 @@ but you can get the current version from http://developer.apple.com
 
 2.  sudo xcode-select --install
 
-1.  Download and install MacPorts from http://www.macports.org/
+3.  Download and install MacPorts from http://www.macports.org/
 
-1a. (for 10.7 Lion)
+4. (for 10.7 Lion)
     Edit /opt/local/etc/macports/macports.conf and uncomment "build_arch i386"
 
-2.  Install dependencies from MacPorts
+5.  Install dependencies from MacPorts
 
 sudo port install boost db48 openssl miniupnpc
 
-3.  Clone the github tree to get the source code:
+6.  Clone the github tree to get the source code:
 
 git clone https://github.com/vericoin/vericoin.git
 
-4.  Now you should be able to build headless vericoind if building vericoin-qt skip to 5:
+7.  Now you should be able to build headless vericoind, if building vericoin-qt skip to 8:
 
 cd vericoin/src
 make -f makefile.osx
@@ -52,11 +52,11 @@ Run
 Run
   ./vericoind help # When the daemon is running, to get a list of RPC commands
 
-5. For qt builds:
+8. For qt builds:
 
 sudo port install qrencode
 
-6. Download and install qt 5.4.2 for Mac 
+9. Download and install qt 5.4.2 for Mac 
 
 https://download.qt.io/archive/qt/5.4/5.4.2/qt-opensource-mac-x64-clang-5.4.2.dmg
 
@@ -67,14 +67,14 @@ isEmpty($$list($$system("/usr/bin/xcrun -find xcrun 2>/dev/null"))): \
 to:
 isEmpty($$list($$system("/usr/bin/xcrun -find xcodebuild 2>/dev/null"))): \
 
-7. To make qt 5.4.2 support new libc++ standard of macOS 9+ you will need to edit line 14 of the file qmake.conf in in the Qt folder at 5.4/clang_64/mkspecs/macx-clang
+10. To make qt 5.4.2 support new libc++ standard of macOS 9+ you will need to edit line 14 of the file qmake.conf in in the Qt folder at 5.4/clang_64/mkspecs/macx-clang
 
 from:
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 to:
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 
-8. Run qtcreator in qt install folder and load vericoin via the vericoin-qt.pro file and click the build button
+11. Run qtcreator in qt install folder and load vericoin via the vericoin-qt.pro file and click the build button
 
 
 
