@@ -7,7 +7,7 @@ software written by Eric Young (eay@cryptsoft.com) and UPnP software written by
 Thomas Bernard.
 
 
-Mac OS X vericoind build instructions
+Mac OS X vericoind and qt build instructions
 Laszlo Hanyecz <solar@heliacal.net>
 Douglas Huff <dhuff@jrbobdobbs.org>
 
@@ -15,7 +15,7 @@ Douglas Huff <dhuff@jrbobdobbs.org>
 See readme-qt.rst for instructions on building VeriCoin QT, the
 graphical user interface.
 
-Tested on 10.5 and 10.6 and 10.9.5 intel.  PPC is not supported because it's big-endian.
+This source is actively supported for 10.9 and above and tested up to 10.12 since apple switched to libc++ from libstdc++.  It can be built for 10.7-10.9 by changing -mmacosx-version-min=10.9 to -mmacosx-version-min=10.7 in lines 97-99 of vericoin-qt.pro.
 
 All of the commands should be executed in Terminal.app.. it's in
 /Applications/Utilities
@@ -24,36 +24,62 @@ You need to install XCode with all the options checked so that the compiler and
 everything is available in /usr not just /Developer I think it comes on the DVD
 but you can get the current version from http://developer.apple.com
 
-0.  Download and install xcode from the app store.
-0a. If Xcode 5.X, go to Xcode->Preferences->Downloads and install Comand Line Tools.
-    Otherwise, run 'sudo xcode-select --install' to install the command line tools.
+1.  Download and install xcode from the app store.
 
-1.  Download and install MacPorts from http://www.macports.org/
+2.  sudo xcode-select --install
 
-1a. (for 10.7 Lion)
+3.  Download and install MacPorts from http://www.macports.org/
+
+4. (for 10.7 Lion)
     Edit /opt/local/etc/macports/macports.conf and uncomment "build_arch i386"
 
-2.  Install dependencies from MacPorts
+5.  Install dependencies from MacPorts
 
-sudo port install boost db48 openssl miniupnpc qt5-mac gcc49 wget
+sudo port install boost db48 openssl miniupnpc
 
-Optionally install qrencode (and set USE_QRCODE=1):
-sudo port install qrencode
-
-2a. You may also need to copy the qt5 makespec folder for macx-g++42 to macx-g++49 if it does not exist, then set the compilers in qmake.conf to gcc-mp-4.9 and g++-mp-4.9.  If using Qt Creator, add the Qt mkspec macx-g++49 to Kits, and add the compiler/path to Compilers.
-
-3.  Clone the github tree to get the source code:
+6.  Clone the github tree to get the source code:
 
 git clone https://github.com/vericoin/vericoin.git
 
-4.  Now you should be able to build vericoind:
+7.  Now you should be able to build headless vericoind, if building vericoin-qt skip to 8:
 
 cd vericoin/src
 make -f makefile.osx
-
 Run:
   ./vericoind --help  # for a list of command-line options.
 Run
   ./vericoind -daemon # to start the vericoin daemon.
 Run
   ./vericoind help # When the daemon is running, to get a list of RPC commands
+
+8. For qt builds:
+
+sudo port install qrencode
+
+9. Download and install qt 5.4.2 for Mac 
+
+https://download.qt.io/archive/qt/5.4/5.4.2/qt-opensource-mac-x64-clang-5.4.2.dmg
+
+Note: If you have Xcode 8+ you will need to edit line 15 of default_pre.prf in the Qt folder at 5.4/clang_64/mkspecs/features/mac 
+
+from:
+isEmpty($$list($$system("/usr/bin/xcrun -find xcrun 2>/dev/null"))): \
+to:
+isEmpty($$list($$system("/usr/bin/xcrun -find xcodebuild 2>/dev/null"))): \
+
+10. To make qt 5.4.2 support new libc++ standard of macOS 9+ you will need to edit line 14 of the file qmake.conf in in the Qt folder at 5.4/clang_64/mkspecs/macx-clang
+
+from:
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+to:
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+
+11. Run qtcreator in qt install folder and load vericoin via the vericoin-qt.pro file and click the build button
+
+
+
+
+
+
+
+
