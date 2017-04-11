@@ -304,7 +304,7 @@ Value createrawtext(const Array& params, bool fHelp)
             "Note that the transaction's inputs are not signed, and\n"
             "it is not stored in the wallet or transmitted to the network.\n"
             "The message will be added as an OP_RETRUN \n"
-            "The maximum message size is 80 bytes");
+            "The maximum message size is 1 kb");
 
     RPCTypeCheck(params, list_of(array_type)(obj_type)(obj_type));
 
@@ -314,8 +314,8 @@ Value createrawtext(const Array& params, bool fHelp)
     Value  message_v = find_value(message_o, "message");
     string message = message_v.get_str();
 
-    if (message.size() > 80)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Your Message is longer then 80 bytes");
+    if (message.size() > 1000)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Your Message is longer then 1 kb");
 
     CTransaction rawTx;
 
