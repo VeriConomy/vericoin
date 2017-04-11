@@ -302,7 +302,9 @@ Value createrawtext(const Array& params, bool fHelp)
             "sending to given address(es).\n"
             "Returns hex-encoded raw transaction.\n"
             "Note that the transaction's inputs are not signed, and\n"
-            "it is not stored in the wallet or transmitted to the network.");
+            "it is not stored in the wallet or transmitted to the network.\n"
+            "The message will be added as an OP_RETRUN \n"
+            "The maximum message size is 80 bytes");
 
     RPCTypeCheck(params, list_of(array_type)(obj_type)(obj_type));
 
@@ -311,9 +313,11 @@ Value createrawtext(const Array& params, bool fHelp)
     Object message_o = params[2].get_obj();
     Value  message_v = find_value(message_o, "message");
     string message = message_v.get_str();
-    CTransaction rawTx;
 
-//    printf("Help I'm trapped in a VRC wallet %s \n",message);
+    if (message.size() > 80)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Your Message is longer then 80 bytes");
+
+    CTransaction rawTx;
 
 
     BOOST_FOREACH(Value& input, inputs)
@@ -356,6 +360,8 @@ Value createrawtext(const Array& params, bool fHelp)
         CTxOut out(nAmount, scriptPubKey);
         rawTx.vout.push_back(out);
     }
+
+
 
     CScript OpRet;
     OpRet.push_back(0x6a);
