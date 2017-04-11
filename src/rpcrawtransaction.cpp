@@ -13,6 +13,8 @@
 #include "net.h"
 #include "wallet.h"
 
+
+
 using namespace std;
 using namespace boost;
 using namespace boost::assign;
@@ -242,6 +244,78 @@ Value createrawtransaction(const Array& params, bool fHelp)
 
     CTransaction rawTx;
 
+
+    BOOST_FOREACH(Value& input, inputs)
+    {
+        const Object& o = input.get_obj();
+
+        const Value& txid_v = find_value(o, "txid");
+        if (txid_v.type() != str_type)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, missing txid key");
+        string txid = txid_v.get_str();
+        if (!IsHex(txid))
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected hex txid");
+
+        const Value& vout_v = find_value(o, "vout");
+        if (vout_v.type() != int_type)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, missing vout key");
+        int nOutput = vout_v.get_int();
+        if (nOutput < 0)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, vout must be positive");
+
+        CTxIn in(COutPoint(uint256(txid), nOutput));
+        rawTx.vin.push_back(in);
+    }
+
+    set<CBitcoinAddress> setAddress;
+    BOOST_FOREACH(const Pair& s, sendTo)
+    {
+        CBitcoinAddress address(s.name_);
+        if (!address.IsValid())
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid VeriCoin address: ")+s.name_);
+
+        if (setAddress.count(address))
+            throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+s.name_);
+        setAddress.insert(address);
+
+        CScript scriptPubKey;
+        scriptPubKey.SetDestination(address.Get());
+        int64_t nAmount = AmountFromValue(s.value_);
+
+
+        CTxOut out(nAmount, scriptPubKey);
+        rawTx.vout.push_back(out);
+    }
+
+    CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+    ss << rawTx;
+    return HexStr(ss.begin(), ss.end());
+}
+
+Value createrawtext(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error(
+            "createrawtext [{\"txid\":txid,\"vout\":n},...] {address:amount,...} {\"message\":message} \n"
+            "Create a transaction spending given inputs\n"
+            "(array of objects containing transaction id and output number),\n"
+            "sending to given address(es).\n"
+            "Returns hex-encoded raw transaction.\n"
+            "Note that the transaction's inputs are not signed, and\n"
+            "it is not stored in the wallet or transmitted to the network.");
+
+    RPCTypeCheck(params, list_of(array_type)(obj_type)(obj_type));
+
+    Array inputs = params[0].get_array();
+    Object sendTo = params[1].get_obj();
+    Object message_o = params[2].get_obj();
+    Value  message_v = find_value(message_o, "message");
+    string message = message_v.get_str();
+    CTransaction rawTx;
+
+//    printf("Help I'm trapped in a VRC wallet %s \n",message);
+
+
     BOOST_FOREACH(Value& input, inputs)
     {
         const Object& o = input.get_obj();
@@ -282,6 +356,16 @@ Value createrawtransaction(const Array& params, bool fHelp)
         CTxOut out(nAmount, scriptPubKey);
         rawTx.vout.push_back(out);
     }
+
+    CScript OpRet;
+    OpRet.push_back(0x6a);
+    vector<unsigned char> vec(message.begin(),message.end());
+    OpRet.operator <<(vec);
+
+    int64_t zero = 0;
+    CTxOut OpRets(zero,OpRet);
+
+    rawTx.vout.push_back(OpRets);
 
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
     ss << rawTx;
