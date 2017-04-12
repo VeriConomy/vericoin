@@ -303,7 +303,7 @@ Value createrawtext(const Array& params, bool fHelp)
             "Returns hex-encoded raw transaction.\n"
             "Note that the transaction's inputs are not signed, and\n"
             "it is not stored in the wallet or transmitted to the network.\n"
-            "The message will be added as an OP_RETRUN \n"
+            "The message will be added as an OP_RETURN \n"
             "The maximum message size is 100 kb");
 
     RPCTypeCheck(params, list_of(array_type)(obj_type)(obj_type));
