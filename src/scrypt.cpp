@@ -37,6 +37,7 @@
 #include "net.h"
 
 #define SCRYPT_BUFFER_SIZE (131072 + 63)
+#define OPTIMIZED_SALSA 1
 
 #if defined (OPTIMIZED_SALSA) && ( defined (__x86_64__) || defined (__i386__) || defined(__arm__) )
 extern "C" void scrypt_core(unsigned int *X, unsigned int *V);

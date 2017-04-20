@@ -7,6 +7,7 @@
  * any later version.  See COPYING for more details.
  */
 
+#define OPTIMIZED_SALSA 1
 
 #if defined(OPTIMIZED_SALSA) &&  defined(__arm__) && defined(__APCS_32__)
 

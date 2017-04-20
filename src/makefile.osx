@@ -48,7 +48,7 @@ LIBS += \
  -lz
 endif
 
-DEFS=-DMAC_OSX -DMSG_NOSIGNAL=0 -DBOOST_SPIRIT_THREADSAFE -DUSE_IPV6
+DEFS=-DMAC_OSX -DMSG_NOSIGNAL=0 -DBOOST_SPIRIT_THREADSAFE -DUSE_IPV6 -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
 
 CFLAGS = -O3 -arch x86_64
 
@@ -146,5 +146,6 @@ clean:
 	-rm -f obj/*.o
 	-rm -f obj/*.P
 	-rm -f obj/build.h
+	cd leveldb; make clean; cd ..;
 
 FORCE:

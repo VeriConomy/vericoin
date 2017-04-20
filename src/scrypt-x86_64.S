@@ -22,8 +22,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+#define OPTIMIZED_SALSA 1
 
-#if defined(OPTIMIZED_SALSA) && defined(__x86_64__)
+#if (defined(__x86_64__) && defined(OPTIMIZED_SALSA))
 
 #if defined(__linux__) && defined(__ELF__)
 	.section .note.GNU-stack,"",%progbits
@@ -176,7 +177,7 @@
 
 
 	.text
-	.align 32
+	.align 16
 gen_salsa8_core:
 	# 0: %rdx, %rdi, %rcx, %rsi
 	movq	8(%rsp), %rdi
@@ -275,7 +276,7 @@ gen_salsa8_core:
 
 
 	.text
-	.align 32
+	.align 16
 	.globl scrypt_core
 	.globl _scrypt_core
 scrypt_core:
@@ -526,7 +527,7 @@ gen_scrypt_core_loop2:
 	xmm_salsa8_core_doubleround(); \
 
 
-	.align 32
+	.align 16
 xmm_scrypt_core:
 	# shuffle 1st block into %xmm8-%xmm11
 	movl	60(%rdi), %edx

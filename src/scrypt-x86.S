@@ -22,6 +22,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+#define OPTIMIZED_SALSA 1
+
 #if defined(OPTIMIZED_SALSA) &&  defined(__i386__)
 
 #if defined(__linux__) && defined(__ELF__)
@@ -349,7 +351,7 @@
 
 
 	.text
-	.align 32
+    .align 16
 gen_salsa8_core:
 	gen_salsa8_core_quadround()
 	gen_salsa8_core_quadround()
@@ -357,7 +359,7 @@ gen_salsa8_core:
 	
 	
 	.text
-	.align 32
+    .align 16
 	.globl scrypt_core
 	.globl _scrypt_core
 scrypt_core:
@@ -633,7 +635,7 @@ gen_scrypt_core_loop2:
 	xmm_salsa8_core_doubleround(); \
 
 	
-	.align 32
+    .align 16
 xmm_scrypt_core:
 	movl	20(%esp), %edi
 	movl	24(%esp), %esi
