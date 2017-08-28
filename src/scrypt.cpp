@@ -194,6 +194,7 @@ uint256 scrypt_salted_multiround_hash(const void* input, size_t inputlen, const 
 uint256 scrypt_blockhash(const void* input)
 {
     unsigned char scratchpad[SCRYPT_BUFFER_SIZE];
-    return scrypt_nosalt(input, 80, scratchpad);
+    uint256 hash = scrypt_nosalt(input, 80, scratchpad);
+    return hash;
 }
 
