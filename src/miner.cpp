@@ -541,7 +541,7 @@ void StakeMiner(CWallet *pwallet)
         while ((vNodes.size() < 3 && !fTestNet) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
         {
             nLastCoinStakeSearchInterval = 0;
-            MilliSleep(nMinerSleep*4);
+            MilliSleep(nMinerSleep);
             if (fShutdown)
                 return;
         }
@@ -560,7 +560,7 @@ void StakeMiner(CWallet *pwallet)
             SetThreadPriority(THREAD_PRIORITY_NORMAL);
             CheckStake(pblock.get(), *pwallet);
             SetThreadPriority(THREAD_PRIORITY_LOWEST);
-            MilliSleep(nMinerSleep/2);
+            MilliSleep(nMinerSleep);
         }
         MilliSleep(nMinerSleep);
     }
