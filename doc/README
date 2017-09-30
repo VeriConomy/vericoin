@@ -24,7 +24,7 @@ Quick Linux Build
 
 -All typical Dependencies for Debian Build (git is optional) after installing qt
 
-sudo apt-get install build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev git
+sudo apt-get install build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev git libcurl4-gnutls-dev libminizip-dev
 
 cd src
 make -f makefile.unix

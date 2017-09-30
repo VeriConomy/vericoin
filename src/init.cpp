@@ -120,6 +120,34 @@ void Shutdown(void* parg)
                 RestartWallet(NULL, true);
             }
         }
+#else
+        if (fBootstrapTurbo && boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat"))
+        {
+            try
+            {
+                // Leveldb instance destruction
+                CTxDB().Destroy();
+                boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
+                boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                if (fBootstrapConfig)
+                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetConfigFile());
+                boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+
+                boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap.zip");
+                boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.dat");
+                if (boost::filesystem::exists(pathBootstrapTurbo))
+                {
+                    boost::filesystem::remove(pathBootstrapTurbo);
+                }
+                if (boost::filesystem::exists(pathBootstrap))
+                {
+                    boost::filesystem::remove(pathBootstrap);
+                }
+            }
+            catch (std::exception &e) {
+                printf("Bootstrapturbo filesystem error!\n");
+            }
+        }
 #endif
         boost::filesystem::remove(GetPidFile());
         UnregisterWallet(pwalletMain);

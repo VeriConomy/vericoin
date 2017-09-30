@@ -33,7 +33,9 @@ LIBS += \
    -l boost_thread$(BOOST_LIB_SUFFIX) \
    -l db_cxx$(BDB_LIB_SUFFIX) \
    -l ssl \
-   -l crypto
+   -l crypto \
+   -l curl \
+   -l minizip
 
 ifndef USE_UPNP
 	override USE_UPNP = -
@@ -141,7 +143,8 @@ OBJS= \
     obj/walletdb.o \
     obj/noui.o \
     obj/kernel.o \
-    obj/scrypt.o 
+    obj/scrypt.o \
+    obj/miniunz.o
 
 all: vericoind
 

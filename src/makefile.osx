@@ -47,7 +47,9 @@ LIBS += \
  -lboost_thread-mt \
  -lssl \
  -lcrypto \
- -lz
+ -lz \
+ -lcurl \
+ -lminizip
 endif
 
 DEFS=-DMAC_OSX -DMSG_NOSIGNAL=0 -DBOOST_SPIRIT_THREADSAFE -DUSE_IPV6 -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
@@ -89,6 +91,7 @@ OBJS= \
     obj/noui.o \
     obj/kernel.o \
     obj/scrypt.o \
+    obj/miniunz.o \
 
 ifndef USE_UPNP
 	override USE_UPNP = -
