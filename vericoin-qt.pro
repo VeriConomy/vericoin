@@ -1,20 +1,18 @@
 TEMPLATE = app
 TARGET = vericoin-qt
-VERSION = 1.6.5.5
-USE_QRCODE = 1
+VERSION = 1.7
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE __STDC_FORMAT_MACROS __STDC_LIMIT_MACROS
-CONFIG += no_include_pwd
-CONFIG += thread
-CONFIG += release
-!win32{
+CONFIG += no_include_pwd thread release
 CONFIG += static
-}
-QT += network webkit
+QT += network widgets core gui
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += webkitwidgets
-    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
+	DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
+
+USE_QRCODE = 1
+USE_AVX = 1
+USE_AVX2 = 0
 
 # Profiling on linux
 #   Download, build and install: libunwind and gperftools
@@ -27,7 +25,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 #   Then run:
 #      pprof --gv ./vericoin-qt vericoin-qt.prof
 PROFILE = 0
-!macx:!win32:contains(PROFILE, 1) {
+!macx:!windows:contains(PROFILE, 1) {
 DEFINES += PROFILER
 PROFILER_INCLUDE_PATH=/usr/local/include/gperftools
 PROFILER_LIB_PATH=-L/usr/local/lib -lprofiler
@@ -38,8 +36,8 @@ LIBS += $$UNWIND_LIB_PATH $$PROFILER_LIB_PATH
 
 # for boost 1.37, add -mt to the boost libraries
 # use: qmake BOOST_LIB_SUFFIX=-mt
-# for boost thread win32 with _win32 sufix
-# use: BOOST_THREAD_LIB_SUFFIX=_win32-...
+# for boost thread windows with _windows sufix
+# use: BOOST_THREAD_LIB_SUFFIX=_windows-...
 # or when linking against a specific BerkelyDB version: BDB_LIB_SUFFIX=-4.8
 
 # Dependency library locations can be customized with:
@@ -48,7 +46,7 @@ LIBS += $$UNWIND_LIB_PATH $$PROFILER_LIB_PATH
 
 
 # win build dependencies
-win32 {
+windows {
   lessThan(QT_VERSION, 5.4) {
   BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
   } else {
@@ -102,7 +100,7 @@ contains(RELEASE, 1) {
     }
 }
 
-!win32 {
+!windows {
 # for extra security against potential buffer overflows: enable GCCs Stack Smashing Protection
 QMAKE_CXXFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
 QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./libs
@@ -110,7 +108,8 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./lib
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
-win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware
+windows:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl,-static
+windows:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
@@ -134,7 +133,7 @@ contains(USE_UPNP, -) {
     DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
     INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
     LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
-    win32:LIBS += -liphlpapi
+	windows:LIBS += -liphlpapi
 }
 
 # use: qmake "USE_DBUS=1"
@@ -156,6 +155,16 @@ contains(USE_IPV6, -) {
     DEFINES += USE_IPV6=$$USE_IPV6
 }
 
+contains(USE_AVX, 1) {
+	message(Building with AVX support)
+	DEFINES += USE_AVX
+}
+
+contains(USE_AVX2, 1) {
+	message(Building with AVX2 support)
+	DEFINES += USE_AVX2
+}
+
 contains(BITCOIN_NEED_QT_PLUGINS, 1) {
     DEFINES += BITCOIN_NEED_QT_PLUGINS
     QTPLUGIN += qcncodecs qjpcodecs qtwcodecs qkrcodecs qtaccessiblewidgets
@@ -164,7 +173,7 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
 SOURCES += src/txdb-leveldb.cpp
-!win32 {
+!windows {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
 } else {
@@ -187,18 +196,18 @@ INCLUDEPATH += $$PWD/src/quazip
 DEPENDPATH += $$PWD/src/quazip
 DEFINES += QUAZIP_STATIC
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/src/quazip/release/ -lquazip -lz
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/src/quazip/debug/ -lquazip -lz
+windows:CONFIG(release, debug|release): LIBS += -L$$PWD/src/quazip/release/ -lquazip -lz
+else:windows:CONFIG(debug, debug|release): LIBS += -L$$PWD/src/quazip/debug/ -lquazip -lz
 else: LIBS += -L$$PWD/src/quazip/ -lquazip -lz
 
 win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/libquazip.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/libquazip.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/quazip.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/quazip.lib
+else:windows:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/quazip.lib
+else:windows:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/quazip.lib
 else: PRE_TARGETDEPS += $$PWD/src/quazip/libquazip.a
 
-win32:CONFIG(release, debug|release): QUAZIPLIB=release
-else:win32:CONFIG(debug, debug|release): QUAZIPLIB=debug
+windows:CONFIG(release, debug|release): QUAZIPLIB=release
+else:windows:CONFIG(debug, debug|release): QUAZIPLIB=debug
 else: QUAZIPLIB=
 
 genquazip.commands = cd $$PWD/src/quazip && qmake quazip.pro && $(MAKE)
@@ -262,7 +271,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/uint256.h \
     src/kernel.h \
     src/scrypt.h \
-    src/pbkdf2.h \
     src/serialize.h \
     src/strlcpy.h \
     src/main.h \
@@ -313,9 +321,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/qvaluecombobox.h \
     src/qt/askpassphrasedialog.h \
     src/qt/askpassphrasepage.h \
-    src/qt/getvericoinpage.h \
     src/qt/forumspage.h \
-    src/qt/blockchainpage.h \
     src/protocol.h \
     src/qt/notificator.h \
     src/qt/qtipcserver.h \
@@ -327,10 +333,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/clientversion.h \
     src/qt/downloader.h \
     src/qt/updatedialog.h \
-    src/qt/cookiejar.h \
     src/qt/autosaver.h \
     src/qt/rescandialog.h \
-    src/qt/webview.h \
     src/qt/postdialog.h \
     src/qt/whatsnewdialog.h
 
@@ -404,21 +408,18 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/downloader.cpp \
     src/qt/updatedialog.cpp \
     src/qt/rescandialog.cpp \
-    src/qt/cookiejar.cpp \
     src/qt/autosaver.cpp \
-    src/qt/getvericoinpage.cpp \
     src/qt/forumspage.cpp \
-    src/qt/blockchainpage.cpp \
     src/noui.cpp \
-    src/kernel.cpp \
-    src/scrypt-arm.S \
-    src/scrypt-x86.S \
-    src/scrypt-x86_64.S \
-    src/scrypt.cpp \
-    src/pbkdf2.cpp \
-    src/qt/webview.cpp \
     src/qt/postdialog.cpp \
-    src/qt/whatsnewdialog.cpp \
+	src/qt/whatsnewdialog.cpp \
+	src/scrypt.cpp \
+	src/scrypt-x64.S \
+	src/scrypt-x86.S \
+	src/scrypt-arm.S \
+	src/sha2-x64.S \
+	src/sha2-x86.S \
+	src/sha2-arm.S \
 
 RESOURCES += \
     src/qt/bitcoin.qrc
@@ -428,14 +429,12 @@ FORMS += \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/forumspage.ui \
-    src/qt/forms/blockchainpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
     src/qt/forms/aboutdialog.ui \
     src/qt/forms/editaddressdialog.ui \
     src/qt/forms/transactiondescdialog.ui \
     src/qt/forms/overviewpage.ui \
-    src/qt/forms/getvericoinpage.ui \
     src/qt/forms/sendcoinsentry.ui \
     src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \
@@ -462,7 +461,7 @@ CODECFORTR = UTF-8
 TRANSLATIONS = $$files(src/qt/locale/bitcoin_*.ts)
 
 isEmpty(QMAKE_LRELEASE) {
-    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe
+	windows:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe
     else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
 isEmpty(QM_DIR):QM_DIR = $$PWD/src/qt/locale
@@ -485,7 +484,7 @@ isEmpty(BOOST_LIB_SUFFIX) {
 }
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
-    win32:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
+	windows:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
     else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 
@@ -513,7 +512,7 @@ windows:DEFINES += WIN32
 windows:RC_FILE = src/qt/res/bitcoin-qt.rc
 
 windows:!contains(MINGW_THREAD_BUGFIX, 0) {
-    # At least qmake's win32-g++-cross profile is missing the -lmingwthrd
+	# At least qmake's windows-g++-cross profile is missing the -lmingwthrd
     # thread-safety flag. GCC has -mthreads to enable this, but it doesn't
     # work with static linking. -lmingwthrd must come BEFORE -lmingw, so
     # it is prepended to QMAKE_LIBS_QT_ENTRY.

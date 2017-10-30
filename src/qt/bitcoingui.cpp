@@ -30,18 +30,11 @@
 #include "notificator.h"
 #include "guiutil.h"
 #include "rpcconsole.h"
-#include "getvericoinpage.h"
-#include "forumspage.h"
-#include "blockchainpage.h"
-#include "ui_getvericoinpage.h"
 #include "ui_forumspage.h"
-#include "ui_blockchainpage.h"
 #include "downloader.h"
 #include "updatedialog.h"
 #include "whatsnewdialog.h"
 #include "rescandialog.h"
-#include "cookiejar.h"
-#include "webview.h"
 
 #include "JlCompress.h"
 #include "walletdb.h"
@@ -55,6 +48,7 @@
 #endif
 
 #include <QApplication>
+#include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QMenuBar>
@@ -187,14 +181,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create VeriBit Page
     sendBitCoinsPage = new SendBitCoinsDialog(this);
 
-    // Create GetVeriCoin Page
-    getVeriCoinPage = new GetVeriCoinPage();
-
     // Create Forums Page
     forumsPage = new ForumsPage();
-
-    // Create Blockchain Page
-    blockchainPage = new BlockchainPage();
 
     // Create Sign Message Dialog
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
@@ -208,9 +196,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(sendBitCoinsPage);
-    centralWidget->addWidget(getVeriCoinPage);
     centralWidget->addWidget(forumsPage);
-    centralWidget->addWidget(blockchainPage);
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -678,9 +664,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         transactionView->setModel(walletModel);
         addressBookPage->setModel(walletModel->getAddressTableModel());
         sendBitCoinsPage->setModel(walletModel);
-        getVeriCoinPage->setModel(walletModel);
         forumsPage->setModel(walletModel);
-        blockchainPage->setModel(walletModel);
 
         signVerifyMessageDialog->setModel(walletModel);
 
@@ -1142,14 +1126,6 @@ void BitcoinGUI::gotoAddressBookPage()
     dlg.setModel(walletModel->getAddressTableModel());
     dlg.exec();
 
-    /* Removed tab to simplify wallet
-    addressBookAction->setChecked(true);
-    centralWidget->setCurrentWidget(addressBookPage);
-
-    exportAction->setEnabled(true);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-    connect(exportAction, SIGNAL(triggered()), addressBookPage, SLOT(exportClicked()));
-    */
 }
 
 void BitcoinGUI::gotoSendBitCoinsPage()
@@ -1159,24 +1135,8 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-
-    /* Combined tabs to simplify wallet
-    sendBitCoinsAction->setChecked(true);
-    centralWidget->setCurrentWidget(sendBitCoinsPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-    */
 }
 
-void BitcoinGUI::gotoGetVeriCoinPage()
-{
-    getVeriCoinAction->setChecked(true);
-    centralWidget->setCurrentWidget(getVeriCoinPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
 
 void BitcoinGUI::gotoForumsPage()
 {
@@ -1186,24 +1146,6 @@ void BitcoinGUI::gotoForumsPage()
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
-
-void BitcoinGUI::gotoBlockchainPage()
-{
-    blockchainAction->setChecked(true);
-    centralWidget->setCurrentWidget(blockchainPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
-/*void BitcoinGUI::gotoSuperNETPage()
-{
-    superNETAction->setChecked(true);
-    centralWidget->setCurrentWidget(superNETPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}*/
 
 void BitcoinGUI::resizeEvent(QResizeEvent *e)
 {

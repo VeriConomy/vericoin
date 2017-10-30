@@ -82,9 +82,7 @@ private:
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     SendBitCoinsDialog *sendBitCoinsPage;
-    GetVeriCoinPage *getVeriCoinPage;
     ForumsPage *forumsPage;
-    BlockchainPage *blockchainPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelBalanceIcon;

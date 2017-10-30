@@ -12,6 +12,7 @@ namespace Ui {
     class OverviewPage;
 }
 class WalletModel;
+class ClientModel;
 class TxViewDelegate;
 class TransactionFilterProxy;
 
@@ -26,10 +27,14 @@ public:
 
     void setModel(WalletModel *model);
     void showOutOfSyncWarning(bool fShow);
+    bool mining;
+    int processors;
+    QString miningColor;
+    QString notminingColor;
 
 public slots:
-    void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance);
-    void setNumTransactions(int count);
+    void setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 immatureBalance);
+    void setStatistics();
 
 signals:
     void transactionClicked(const QModelIndex &index);
@@ -40,8 +45,8 @@ signals:
 private:
     Ui::OverviewPage *ui;
     WalletModel *model;
+    ClientModel *clientmodel;
     qint64 currentBalance;
-    qint64 currentStake;
     qint64 currentUnconfirmedBalance;
     qint64 currentImmatureBalance;
 
@@ -55,6 +60,8 @@ private slots:
     void handleTransactionClicked(const QModelIndex &index);
     void myOpenUrl(QUrl url);
     void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
+    void on_mineButton_clicked();
+    void on_spinBox_valueChanged(int procs);
 };
 
 #endif // OVERVIEWPAGE_H

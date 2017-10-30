@@ -40,6 +40,10 @@ private:
 
 private slots:
 
+    void on_explorerButton_clicked();
+    void on_chatButton_clicked();
+    void on_forumButton_clicked();
+    void on_siteButton_clicked();
 };
 
 #endif // FORUMSPAGE_H
