@@ -389,6 +389,23 @@ WalletModel::UnlockContext WalletModel::requestUnlock()
     return UnlockContext(this, valid, was_locked && !fWalletUnlockStakingOnly);
 }
 
+// WalletModel::UnlockContext implementation
+WalletModel::UnlockContext WalletModel::requestLock()
+{
+    bool was_locked = getEncryptionStatus() == Locked;
+
+    if (!was_locked)
+    {
+       setWalletLocked(true);
+       was_locked = getEncryptionStatus() == Locked;
+
+    }
+    bool valid = getEncryptionStatus() == Locked;
+
+    return UnlockContext(this, valid, valid);
+}
+
+
 WalletModel::UnlockContext::UnlockContext(WalletModel *wallet, bool valid, bool relock):
         wallet(wallet),
         valid(valid),

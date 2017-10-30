@@ -105,7 +105,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     QDesktopWidget desktop;
     QRect screenSize = desktop.availableGeometry(desktop.primaryScreen());
-    //QRect screenSize = QRect(0, 0, 1024, 728); // SDW DEBUG
     if (screenSize.height() <= WINDOW_MIN_HEIGHT)
     {
         GUIUtil::refactorGUI(screenSize);
@@ -127,12 +126,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     qApp->setStyleSheet(veriStyleSheet);
 
 
-/* (Seems to be working in Qt5)
+
 #ifdef Q_OS_MAC
-    setUnifiedTitleAndToolBarOnMac(false);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
-*/
+
     // Accept D&D of URIs
     setAcceptDrops(true);
 
@@ -468,12 +466,12 @@ void BitcoinGUI::createActions()
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password"), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
-    lockWalletAction = new QAction(QIcon(":/icons/stake100"), tr("&Disable Staking"), this);
-    lockWalletAction->setToolTip(tr("Turn staking off"));
-    unlockWalletAction = new QAction(QIcon(":/icons/stake100"), tr("&Enable Staking"), this);
-    unlockWalletAction->setToolTip(tr("Turn staking on"));
+    lockWalletAction = new QAction(QIcon(":/icons/veriSend"), tr("&Lock Wallet"), this);
+    lockWalletAction->setToolTip(tr("Lock Wallet"));
+    unlockWalletAction = new QAction(QIcon(":/icons/veriSend"), tr("&Unlock Wallet"), this);
+    unlockWalletAction->setToolTip(tr("Unlock Wallet"));
     encryptWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("En&crypt Wallet"), this);
-    encryptWalletAction->setToolTip(tr("Encrypt the wallet for staking"));
+    encryptWalletAction->setToolTip(tr("Encrypt the wallet"));
     addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book"), this);
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
@@ -896,9 +894,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     // Set icon state: spinning if catching up, tick otherwise
     if(secs < 90*60 && count >= nTotalBlocks)
     {
-        //tooltip = tr("Up to date") + QString(".\n") + tooltip;
-        //labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-        //labelBlocksIcon->hide();
+        overviewPage->setStatistics();
         overviewPage->showOutOfSyncWarning(false);
     }
     else
@@ -995,9 +991,9 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
 {
     QString strMessage =
-        tr("This transaction is over the size limit.  You can still send it for a fee of %1, "
-          "which goes to the nodes that process your transaction and helps to support the network.  "
-          "Do you want to pay the fee?").arg(
+        tr("To send this transaction it requires a fee of %1, "
+          "This fee goes to the nodes that process your transaction.  "
+          "Do you want to continue?").arg(
                 BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRC, nFeeRequired));
     QMessageBox::StandardButton retval = QMessageBox::question(
           this, tr("Confirm transaction fee"), strMessage,
@@ -1454,11 +1450,6 @@ void BitcoinGUI::changePassphrase()
     dlg.exec();
 }
 
-void BitcoinGUI::lockWalletPub()
-{
-    lockWallet();
-}
-
 void BitcoinGUI::lockWallet()
 {
     if (!walletModel)
@@ -1473,11 +1464,6 @@ void BitcoinGUI::lockWallet()
         stakingLabel->setText("Staking off");
         updateStakingIcon();
     }
-}
-
-void BitcoinGUI::unlockWalletPub()
-{
-    unlockWallet();
 }
 
 void BitcoinGUI::unlockWallet()

@@ -1,11 +1,10 @@
-#ifndef SCRYPT_H
-#define SCRYPT_H
+#ifndef SCRYPT_MINE_H
+#define SCRYPT_MINE_H
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <inttypes.h>
-#include <openssl/sha.h>
 #include "util.h"
 
 

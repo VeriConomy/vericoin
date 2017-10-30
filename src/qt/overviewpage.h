@@ -32,7 +32,7 @@ public:
     QString notstakingColor;
 
 public slots:
-    void setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 immatureBalance);
+    void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance);
     void setStatistics();
 
 signals:
@@ -47,7 +47,7 @@ private:
     ClientModel *clientmodel;
     qint64 currentBalance;
     qint64 currentUnconfirmedBalance;
-    qint64 currentImmatureBalance;
+    qint64 currentStakeBalance;
 
     TxViewDelegate *txdelegate;
     TransactionFilterProxy *filter;

@@ -2,7 +2,6 @@
 #include "ui_overviewpage.h"
 
 #include "util.h"
-#include "miner.h"
 #include "init.h"
 #include "walletmodel.h"
 #include "clientmodel.h"
@@ -107,7 +106,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui(new Ui::OverviewPage),
     currentBalance(-1),
     currentUnconfirmedBalance(-1),
-    currentImmatureBalance(-1),
+    currentStakeBalance(-1),
     txdelegate(new TxViewDelegate()),
     filter(0),
     Staking(GetBoolArg("-staking",true))
@@ -136,14 +135,14 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     ui->labelSpendableText->setFont(qFont);
     ui->labelSpendable->setFont(qFont);
-    ui->labelImmatureText->setFont(qFont);
-    ui->labelImmature->setFont(qFont);
+    ui->labelStakeText->setFont(qFont);
+    ui->labelStake->setFont(qFont);
     ui->labelUnconfirmedText->setFont(qFont);
     ui->labelUnconfirmed->setFont(qFont);
     ui->labelTotalText->setFont(qFont);
     ui->labelTotal->setFont(qFont);
 
-    // stakersection
+    // staker section
     ui->stakingLabel->setFont(qFont);
 
     //statistics section
@@ -159,8 +158,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->blocknumber->setFont(qFont);
 
     // Add icons to the Balance section
-    ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Sendable:</html>");
-    ui->labelImmatureText->setText("<html><img src=':icons/miningoff' width=16 height=16 border=0 align='bottom'> Immature:</html>");
+    ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
+    ui->labelStakeText->setText("<html><img src=':icons/stakingoff' width=16 height=16 border=0 align='bottom'> Staking Coins:</html>");
     ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
     ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
 
@@ -187,11 +186,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     // set initial state of mining button
     if (Staking)
     {
-        ui->stakeButton->setIcon(QIcon(":/icons/miningon"));
+        ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
         ui->stakingLabel->setText("Click to stop:");
     }
     else{
-        ui->stakeButton->setIcon(QIcon(":/icons/miningoff"));
+        ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
         ui->stakingLabel->setText("Click to start:");
     }
 }
@@ -207,10 +206,10 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 immatureBalance)
+void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance)
 {
     QString maxDecimalsTooltipText("\nUse Settings/Options/Display to hide decimals.");
-    qint64 total = balance + unconfirmedBalance + immatureBalance;
+    qint64 total = balance + stake + unconfirmedBalance;
 
     BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
     int unit = model->getOptionsModel()->getDisplayUnit();
@@ -222,14 +221,14 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
 
     currentBalance = balance;
     currentUnconfirmedBalance = unconfirmedBalance;
-    currentImmatureBalance = immatureBalance;
+    currentStakeBalance = stake;
 
     ui->labelSpendable->setText(bcu->formatWithUnit(unit, balance, false, hideAmounts));
     ui->labelSpendable->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance, false, hideAmounts));
     ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance, false, hideAmounts));
-    ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
+    ui->labelStake->setText(bcu->formatWithUnit(unit, stake, false, hideAmounts));
+    ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, stake, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     ui->labelTotal->setText(bcu->formatWithUnit(unit, total, false, hideAmounts));
     ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
 
@@ -240,8 +239,8 @@ void OverviewPage::setStatistics()
 {
 
     uint64_t nWeight = 0;
-    //pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
-    double nNetworkWeight = 0;//GetPoSKernelPS();
+    pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
+    double nNetworkWeight = GetPoSKernelPS();
     u_int64_t nEstimateTime = 60 * nNetworkWeight / nWeight;
     double stakerate = nEstimateTime/(60*60*24);
     // display stats
@@ -270,14 +269,14 @@ void OverviewPage::setModel(WalletModel *model)
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
         // Keep up to date with wallet
-        setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64)));
+        setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance());
+        connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
         connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
     }
 
-    // update the display unit, to not use the default ("VRM")
+    // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
 }
 
@@ -286,7 +285,7 @@ void OverviewPage::updateDisplayUnit()
     if(model && model->getOptionsModel())
     {
         if(currentBalance != -1)
-            setBalance(currentBalance, currentUnconfirmedBalance, currentImmatureBalance);
+            setBalance(currentBalance, currentStakeBalance, currentUnconfirmedBalance);
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
@@ -344,22 +343,27 @@ void OverviewPage::on_stakeButton_clicked()
     bool onOrOff;
     if (!Staking)
     {
-        onOrOff = true;
-        Staking = onOrOff;
-        ui->stakingLabel->setText("Click to stop:");
-        ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
-        MilliSleep(100);
-        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
-        p->unlockWalletPub();
-
+        model->requestUnlock();
+        if (model->getEncryptionStatus() == WalletModel::Unlocked)
+        {
+            onOrOff = true;
+            Staking = onOrOff;
+            ui->stakingLabel->setText("Click to stop:");
+            ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
+            MilliSleep(100);
+            SetBoolArg("-staking",true);
+        }
     }
     else
     {
-        onOrOff = false;
-        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
-        p->lockWalletPub();
-        Staking = onOrOff;
-        ui->stakingLabel->setText("Click to start:");
-        ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
+        model->requestLock();
+        if (model->getEncryptionStatus() == WalletModel::Locked)
+        {
+            onOrOff = false;
+            Staking = onOrOff;
+            ui->stakingLabel->setText("Click to start:");
+            ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
+            SetBoolArg("-staking",false);
+        }
     }
 }

@@ -175,10 +175,6 @@ public slots:
     void reloadBlockchain(bool autoReload=false);
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();
-    /** Ask for passphrase to lock wallet temporarily */
-    void lockWalletPub();
-    /** Ask for passphrase to unlock wallet temporarily */
-    void unlockWalletPub();
 
 private slots:
     /** Switch to askpassphrase page */

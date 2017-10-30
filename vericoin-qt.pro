@@ -363,6 +363,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/init.cpp \
     src/net.cpp \
     src/irc.cpp \
+	src/kernel.cpp \
     src/checkpoints.cpp \
     src/addrman.cpp \
     src/db.cpp \
