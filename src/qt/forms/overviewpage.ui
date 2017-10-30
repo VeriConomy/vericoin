@@ -245,7 +245,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string notr="true">0 VRM</string>
+             <string notr="true">0 VRC</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
@@ -313,7 +313,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string notr="true">0 VRM</string>
+             <string notr="true">0 VRC</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
@@ -381,7 +381,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string notr="true">0 VRM</string>
+             <string notr="true">0 VRC</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
@@ -437,7 +437,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string notr="true">0 VRM</string>
+             <string notr="true">0 VRC</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
@@ -549,7 +549,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string>Mining Statistics</string>
+             <string>Network Statistics</string>
             </property>
            </widget>
           </item>
@@ -617,7 +617,7 @@
         <number>10</number>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="hashrateText">
+        <widget class="QLabel" name="stakeRateText">
          <property name="minimumSize">
           <size>
            <width>130</width>
@@ -631,331 +631,18 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Hashrate (H/m):</string>
+          <string>Time till stake (days):</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLabel" name="hashrate">
+        <widget class="QLabel" name="stakeRate">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>IBeamCursor</cursorShape>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string notr="true">0 </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="blockrewardText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string>Block reward (VRM):</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="blockreward">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>IBeamCursor</cursorShape>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string notr="true">0 </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="difficultyText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string>Difficulty:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="difficulty">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>IBeamCursor</cursorShape>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string notr="true">0 </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="blocknumberText">
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string>Block number:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="blocknumber">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>IBeamCursor</cursorShape>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string notr="true">0 </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="nethashrateText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string>Network hashrate (kH/m):</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="nethashrate">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>IBeamCursor</cursorShape>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string notr="true">0 </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="blocktimeText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {color: #444748}</string>
-         </property>
-         <property name="text">
-          <string>Blocktime (min):</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="blocktime">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -992,7 +679,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="mineRateText">
+        <widget class="QLabel" name="interestRateText">
          <property name="minimumSize">
           <size>
            <width>130</width>
@@ -1006,12 +693,195 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Mined block within (days):</string>
+          <string>Current interest rate (%):</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLabel" name="mineRate">
+        <widget class="QLabel" name="interestRate">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>IBeamCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {color: #444748}</string>
+         </property>
+         <property name="text">
+          <string notr="true">0 </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="inflationRateText">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>130</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {color: #444748}</string>
+         </property>
+         <property name="text">
+          <string>Current inflation rate (%):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="inflationRate">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>IBeamCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {color: #444748}</string>
+         </property>
+         <property name="text">
+          <string notr="true">0 </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="netstakeweightText">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>130</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {color: #444748}</string>
+         </property>
+         <property name="text">
+          <string>Network stakeweight:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="netstakeweight">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>IBeamCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {color: #444748}</string>
+         </property>
+         <property name="text">
+          <string notr="true">0 </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="blocknumberText">
+         <property name="minimumSize">
+          <size>
+           <width>130</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {color: #444748}</string>
+         </property>
+         <property name="text">
+          <string>Block number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="blocknumber">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1327,7 +1197,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string>Mining</string>
+             <string>Staking</string>
             </property>
            </widget>
           </item>
@@ -1385,11 +1255,11 @@
        <property name="lineWidth">
         <number>0</number>
        </property>
-       <widget class="QPushButton" name="mineButton">
+       <widget class="QPushButton" name="stakeButton">
         <property name="geometry">
          <rect>
           <x>160</x>
-          <y>10</y>
+          <y>30</y>
           <width>151</width>
           <height>131</height>
          </rect>
@@ -1404,7 +1274,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../bitcoin.qrc">
+         <iconset>
           <normaloff>:/icons/miningoff</normaloff>
           <normalon>:/icons/miningon</normalon>:/icons/miningoff</iconset>
         </property>
@@ -1415,40 +1285,11 @@
          </size>
         </property>
        </widget>
-       <widget class="QSpinBox" name="spinBox">
-        <property name="geometry">
-         <rect>
-          <x>220</x>
-          <y>160</y>
-          <width>51</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>99</number>
-        </property>
-       </widget>
-       <widget class="QLabel" name="proclabel">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>170</y>
-          <width>161</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Number of processors:</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="miningLabel">
+       <widget class="QLabel" name="stakingLabel">
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>70</y>
+          <y>90</y>
           <width>101</width>
           <height>21</height>
          </rect>
@@ -1466,8 +1307,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../bitcoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

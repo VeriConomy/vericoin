@@ -20,10 +20,7 @@ class SignVerifyMessageDialog;
 class Notificator;
 class RPCConsole;
 class Downloader;
-class WebView;
-class GetVeriCoinPage;
 class ForumsPage;
-class BlockchainPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -103,9 +100,7 @@ private:
     QAction *logoutAction;
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
-    QAction *getVeriCoinAction;
     QAction *forumsAction;
-    QAction *blockchainAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -180,6 +175,10 @@ public slots:
     void reloadBlockchain(bool autoReload=false);
     void checkForUpdateActionEnabled(bool enabled);
     void checkForUpdate();
+    /** Ask for passphrase to lock wallet temporarily */
+    void lockWalletPub();
+    /** Ask for passphrase to unlock wallet temporarily */
+    void unlockWalletPub();
 
 private slots:
     /** Switch to askpassphrase page */
@@ -200,10 +199,6 @@ private slots:
     void gotoSendBitCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
-    /** Switch to Blockchain page */
-    void gotoBlockchainPage();
-    /** Switch to GetVeriCoin page */
-    void gotoGetVeriCoinPage();
 
     void resizeGUI();
     void logout();
@@ -242,10 +237,6 @@ private slots:
     void importPrivKey();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
-    /** Ask for passphrase to lock wallet temporarily */
-    void lockWallet();
-    /** Ask for passphrase to unlock wallet temporarily */
-    void unlockWallet();
     /** Rescan the blockchain */
     void rescanWallet();
     /** Check for wallet update from Help menu */
@@ -257,6 +248,11 @@ private slots:
     void showNormalIfMinimized(bool fToggleHidden = false);
     /** simply calls showNormalIfMinimized(true) for use in SLOT() macro */
     void toggleHidden();
+
+    /** Ask for passphrase to lock wallet temporarily */
+    void lockWallet();
+    /** Ask for passphrase to unlock wallet temporarily */
+    void unlockWallet();
 
     void updateStakingIcon();
 };

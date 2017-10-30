@@ -30,7 +30,7 @@ class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 public:
-    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::VRM)
+    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::VRC)
     {
 
     }
@@ -110,14 +110,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     currentImmatureBalance(-1),
     txdelegate(new TxViewDelegate()),
     filter(0),
-    mining(GetBoolArg("-gen",false)),
-    processors(boost::thread::hardware_concurrency())
+    Staking(GetBoolArg("-staking",true))
 {
     // Setup header and styles
     if (fNoHeaders)
         GUIUtil::header(this, QString(""));
-    else if (fSmallHeaders)
-        GUIUtil::header(this, QString(":images/headerOverviewSmall"));
     else
         GUIUtil::header(this, QString(":images/headerOverview"));
 
@@ -146,24 +143,18 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->labelTotalText->setFont(qFont);
     ui->labelTotal->setFont(qFont);
 
-    // minersection
-    ui->miningLabel->setFont(qFont);
-    ui->proclabel->setFont(qFont);
-    ui->spinBox->setFont(qFont);
+    // stakersection
+    ui->stakingLabel->setFont(qFont);
 
     //statistics section
-    ui->difficultyText->setFont(qFont);
-    ui->difficulty->setFont(qFont);
-    ui->blocktimeText->setFont(qFont);
-    ui->blocktime->setFont(qFont);
-    ui->blockrewardText->setFont(qFont);
-    ui->blockreward->setFont(qFont);
-    ui->nethashrateText->setFont(qFont);
-    ui->nethashrate->setFont(qFont);
-    ui->hashrateText->setFont(qFont);
-    ui->hashrate->setFont(qFont);
-    ui->mineRateText->setFont(qFont);
-    ui->mineRate->setFont(qFont);
+    ui->interestRateText->setFont(qFont);
+    ui->interestRate->setFont(qFont);
+    ui->inflationRateText->setFont(qFont);
+    ui->inflationRate->setFont(qFont);
+    ui->netstakeweightText->setFont(qFont);
+    ui->netstakeweight->setFont(qFont);
+    ui->stakeRateText->setFont(qFont);
+    ui->stakeRate->setFont(qFont);
     ui->blocknumberText->setFont(qFont);
     ui->blocknumber->setFont(qFont);
 
@@ -194,20 +185,15 @@ OverviewPage::OverviewPage(QWidget *parent) :
     showOutOfSyncWarning(true);
 
     // set initial state of mining button
-    if (mining)
+    if (Staking)
     {
-        ui->mineButton->setIcon(QIcon(":/icons/miningon"));
-        ui->miningLabel->setText("Click to stop:");
+        ui->stakeButton->setIcon(QIcon(":/icons/miningon"));
+        ui->stakingLabel->setText("Click to stop:");
     }
     else{
-        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
-        ui->miningLabel->setText("Click to start:");
+        ui->stakeButton->setIcon(QIcon(":/icons/miningoff"));
+        ui->stakingLabel->setText("Click to start:");
     }
-
-    // set initial state of processor spin box
-    ui->spinBox->setRange(1,processors);
-    int procDefault = (processors-1);
-    ui->spinBox->setValue(procDefault);
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
@@ -252,24 +238,18 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
 
 void OverviewPage::setStatistics()
 {
-    // calculate stats
-    int minerate;
-    double nethashrate = GetPoWKHashPM();
-    double blocktime = (double)calculateBlocktime(pindexBest)/60;
-    double totalhashrate = hashrate;
-    if (totalhashrate == 0.0){ minerate = 0;}
-    else{
-        minerate = 0.694*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60*24
-    }
 
+    uint64_t nWeight = 0;
+    //pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
+    double nNetworkWeight = 0;//GetPoSKernelPS();
+    u_int64_t nEstimateTime = 60 * nNetworkWeight / nWeight;
+    double stakerate = nEstimateTime/(60*60*24);
     // display stats
-    ui->difficulty->setText(QString::number(GetDifficulty()));
-    ui->blocktime->setText(QString::number(blocktime));
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->nethashrate->setText(QString::number(nethashrate));
-    ui->hashrate->setText(QString::number(totalhashrate));
-    ui->mineRate->setText(QString::number(minerate));
-    ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
+    ui->netstakeweight->setText(QString::number((double)nNetworkWeight));
+    ui->stakeRate->setText(QString::number(((double)stakerate)));
+    ui->inflationRate->setText(QString::number((double)GetCurrentInflationRate(nNetworkWeight)));
+    ui->interestRate->setText(QString::number((double)GetCurrentInterestRate(pindexBest)));
 }
 
 void OverviewPage::setModel(WalletModel *model)
@@ -343,7 +323,7 @@ void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & 
     qnr->ignoreSslErrors();
 }
 
-void OverviewPage::on_mineButton_clicked()
+void OverviewPage::on_stakeButton_clicked()
 {
     // check client is in sync
     QDateTime lastBlockDate = clientmodel->getLastBlockDate();
@@ -351,55 +331,35 @@ void OverviewPage::on_mineButton_clicked()
     int count = clientmodel->getNumBlocks();
     int nTotalBlocks = clientmodel->getNumBlocksOfPeers();
     int peers = clientmodel->getNumConnections();
-    ui->mineButton->clearFocus();
-    if((secs > 90*60 && count < nTotalBlocks && !mining) || (peers < 1 && !mining))
+    ui->stakeButton->clearFocus();
+    if((secs > 90*60 && count < nTotalBlocks && !Staking) || (peers < 1 && !Staking))
     {
-        QMessageBox::warning(this, tr("Mining"),
-            tr("Please wait until fully in sync with network to mine."),
+        QMessageBox::warning(this, tr("Staking"),
+            tr("Please wait until fully in sync with network to stake."),
             QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
-    // check for recommended processor usage and warn
-    if (ui->spinBox->value() == processors && !mining)
-    {
-        QMessageBox::warning(this, tr("Mining"),
-            tr("For optimal performace and stability, it is recommended to keep one processor free for the operating system. Please reduce processor by one."),
-            QMessageBox::Ok, QMessageBox::Ok);
-    }
-
-    // toggle mining
+    // toggle staking
     bool onOrOff;
-    if (!mining)
+    if (!Staking)
     {
         onOrOff = true;
-        mining = onOrOff;
-        ui->miningLabel->setText("Click to stop:");
-        ui->mineButton->setIcon(QIcon(":/icons/miningon"));
+        Staking = onOrOff;
+        ui->stakingLabel->setText("Click to stop:");
+        ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
         MilliSleep(100);
-        GenerateVerium(onOrOff, pwalletMain);
+        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
+        p->unlockWalletPub();
+
     }
     else
     {
         onOrOff = false;
-        GenerateVerium(onOrOff, pwalletMain);
-        mining = onOrOff;
-        ui->miningLabel->setText("Click to start:");
-        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
+        BitcoinGUI *p = qobject_cast<BitcoinGUI *>(parent());
+        p->lockWalletPub();
+        Staking = onOrOff;
+        ui->stakingLabel->setText("Click to start:");
+        ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
     }
-}
-
-void OverviewPage::on_spinBox_valueChanged(int procs)
-{
-    if (mining)
-    {
-        bool onOrOff = false;
-        GenerateVerium(onOrOff, pwalletMain);
-        mining = onOrOff;
-        ui->miningLabel->setText("Click to start:");
-        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
-    }
-    QString qSprocs = QString::number(procs);
-    std::string Sprocs = qSprocs.toStdString();
-    SetArg("-genproclimit", Sprocs);
 }

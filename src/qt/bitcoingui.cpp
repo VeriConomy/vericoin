@@ -30,6 +30,7 @@
 #include "notificator.h"
 #include "guiutil.h"
 #include "rpcconsole.h"
+#include "forumspage.h"
 #include "ui_forumspage.h"
 #include "downloader.h"
 #include "updatedialog.h"
@@ -418,23 +419,11 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
-    getVeriCoinAction = new QAction(QIcon(":/icons/getvericoin"), tr("Get VeriCoin"), this);
-    getVeriCoinAction->setToolTip(tr("Buy VeriCoin with Fiat or Bitcoin"));
-    getVeriCoinAction->setCheckable(true);
-    getVeriCoinAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-    tabGroup->addAction(getVeriCoinAction);
-
-    forumsAction = new QAction(QIcon(":/icons/forum"), tr("Community"), this);
-    forumsAction->setToolTip(tr("Join the VeriCoin Community\nGet the Latest News"));
+    forumsAction = new QAction(QIcon(":/icons/chat"), tr("Support"), this);
+    forumsAction->setToolTip(tr("Get support\n"));
     forumsAction->setCheckable(true);
     forumsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(forumsAction);
-
-    blockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
-    blockchainAction->setToolTip(tr("Explore the VeriCoin Blockchain"));
-    blockchainAction->setCheckable(true);
-    blockchainAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
-    tabGroup->addAction(blockchainAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
@@ -444,12 +433,8 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
-    connect(getVeriCoinAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(getVeriCoinAction, SIGNAL(triggered()), this, SLOT(gotoGetVeriCoinPage()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(gotoForumsPage()));
-    connect(blockchainAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(blockchainAction, SIGNAL(triggered()), this, SLOT(gotoBlockchainPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit Application"));
@@ -599,9 +584,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(sendCoinsAction);
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
-    toolbar->addAction(getVeriCoinAction);
     toolbar->addAction(forumsAction);
-    toolbar->addAction(blockchainAction);
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -1471,6 +1454,11 @@ void BitcoinGUI::changePassphrase()
     dlg.exec();
 }
 
+void BitcoinGUI::lockWalletPub()
+{
+    lockWallet();
+}
+
 void BitcoinGUI::lockWallet()
 {
     if (!walletModel)
@@ -1485,6 +1473,11 @@ void BitcoinGUI::lockWallet()
         stakingLabel->setText("Staking off");
         updateStakingIcon();
     }
+}
+
+void BitcoinGUI::unlockWalletPub()
+{
+    unlockWallet();
 }
 
 void BitcoinGUI::unlockWallet()
