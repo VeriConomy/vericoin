@@ -5,16 +5,22 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include <openssl/sha.h>
 #include "util.h"
 
 
 static const int SCRYPT_SCRATCHPAD_SIZE = 131135;
 static const int N = 1024;
 
+typedef struct HMAC_SHA256Context {
+    SHA256_CTX ictx;
+    SHA256_CTX octx;
+} HMAC_SHA256_CTX;
+uint256 scrypt_salted_multiround_hash(const void* input, size_t inputlen, const void* salt, size_t saltlen, const unsigned int nRounds);
+
 int scrypt_best_throughput();
 
 bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone, unsigned char *scratchbuf);
-
 void scryptHash(const void *input, char *output);
 extern unsigned char *scrypt_buffer_alloc();
 extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
