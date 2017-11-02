@@ -90,16 +90,16 @@ Value getinfo(const Array& params, bool fHelp)
     if (PoSTprotocol(pindexBest->nHeight))
     {
         double nNetworkWeight = GetAverageStakeWeight(pindexBest->pprev);
-    obj.push_back(Pair("networkweight", nNetworkWeight));
+        obj.push_back(Pair("networkweight", nNetworkWeight));
         if (nNetworkWeight > 0)
         {
-    obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))));
-    obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev)));
+            obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))));
+            obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev)));
         }
         else
         {
-    obj.push_back(Pair("inflationrate", "n/a"));
-    obj.push_back(Pair("interestrate",  "n/a"));
+            obj.push_back(Pair("inflationrate", "n/a"));
+            obj.push_back(Pair("interestrate",  "n/a"));
         }
     }
 

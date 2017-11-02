@@ -22,6 +22,8 @@ LIBPATHS= \
 
 USE_UPNP:=1
 USE_IPV6:=1
+USE_AVX:=1
+USE_AVX2:=0
 
 LIBS= -dead_strip
 
@@ -50,7 +52,7 @@ endif
 
 DEFS=-DMAC_OSX -DMSG_NOSIGNAL=0 -DBOOST_SPIRIT_THREADSAFE -DUSE_IPV6 -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
 
-CFLAGS = -O3 -arch x86_64
+CFLAGS = -O3 -arch x86_64 -msse2
 
 # ppc doesn't work because we don't support big-endian
 CFLAGS += -Wall -Wextra -Wformat -Wno-ignored-qualifiers -Wformat-security -Wno-unused-parameter \
@@ -85,11 +87,8 @@ OBJS= \
     obj/wallet.o \
     obj/walletdb.o \
     obj/noui.o \
-    obj/pbkdf2.o \
     obj/kernel.o \
     obj/scrypt.o \
-    obj/scrypt-x86.o \
-    obj/scrypt-x86_64.o \
 
 ifndef USE_UPNP
 	override USE_UPNP = -
@@ -106,6 +105,12 @@ endif
 ifneq (${USE_IPV6}, -)
 	DEFS += -DUSE_IPV6=$(USE_IPV6)
 endif
+ifeq (${USE_AVX}, 1)
+	DEFS += -DUSE_AVX
+endif
+ifeq (${USE_AVX2}, 1)
+	DEFS += -DUSE_AVX2
+endif
 
 all: vericoind
 
@@ -116,6 +121,31 @@ OBJS += obj/txdb-leveldb.o
 leveldb/libleveldb.a:
 	@echo "Building LevelDB ..."; cd leveldb; make libleveldb.a libmemenv.a; cd ..
 obj/txdb-leveldb.o: leveldb/libleveldb.a
+
+#ASM source
+DEFS += -DUSE_ASM
+
+OBJS += obj/scrypt-arm.o obj/scrypt-x86.o obj/scrypt-x64.o
+
+obj/scrypt-x86.o: scrypt-x86.S
+	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
+
+obj/scrypt-x64.o: scrypt-x64.S
+	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
+
+obj/scrypt-arm.o: scrypt-arm.S
+	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
+	
+OBJS += obj/sha2-arm.o obj/sha2-x86.o obj/sha2-x64.o
+
+obj/sha2-x86.o: sha2-x86.S
+	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
+
+obj/sha2-x64.o: sha2-x64.S
+	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
+
+obj/sha2-arm.o: sha2-arm.S
+	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
 
 # auto-generated dependencies:
 -include obj/*.P
@@ -132,12 +162,6 @@ obj/%.o: %.cpp
 	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
 	  rm -f $(@:%.o=%.d)
 
-obj/scrypt-x86.o: scrypt-x86.S
-	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
-
-obj/scrypt-x86_64.o: scrypt-x86_64.S
-	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
-
 vericoind: $(OBJS:obj/%=obj/%)
 	$(CXX) $(CFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
 
@@ -145,6 +169,7 @@ clean:
 	-rm -f vericoind
 	-rm -f obj/*.o
 	-rm -f obj/*.P
+	-rm -f obj/*.d
 	-rm -f obj/build.h
 	cd leveldb; make clean; cd ..;
 
