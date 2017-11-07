@@ -67,6 +67,7 @@ map<uint256, uint256> mapProofOfStake;
 
 map<uint256, CTransaction> mapOrphanTransactions;
 map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
+vector <double> netStakeWeights;
 
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
@@ -980,6 +981,7 @@ int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, 
     {
         double stakeTimeFactor = pow(cos((PI*weightFraction)),2.0);
         factoredTimeWeight = stakeTimeFactor*timeWeight;
+
     }
     return factoredTimeWeight;
 }
@@ -998,15 +1000,28 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
     }
     nAverageStakeWeightHeightCached = pindexPrev->nHeight;
 
-    int i;
+    // Store previously calculated weights
     CBlockIndex* currentBlockIndex = pindexPrev;
-    for (i = 0; currentBlockIndex && i < 60; i++)
+    if (netStakeWeights.size() == 60)
     {
-        double tempWeight = GetPoSKernelPS(currentBlockIndex);
-        weightSum += tempWeight;
-        currentBlockIndex = currentBlockIndex->pprev;
+        netStakeWeights.erase(netStakeWeights.end()-1);
+        netStakeWeights.push_back(GetPoSKernelPS(currentBlockIndex));
+        for (int i = 0; i < 60; i++)
+        {
+            weightSum += netStakeWeights[i];
+        }
     }
-    weightAve = (weightSum/i)+21;
+    else
+    {
+        for (int i = 0; currentBlockIndex && i < 60; i++)
+        {
+            double tempWeight = GetPoSKernelPS(currentBlockIndex);
+            weightSum += tempWeight;
+            netStakeWeights.push_back(tempWeight);
+            currentBlockIndex = currentBlockIndex->pprev;
+        }
+    }
+    weightAve = (weightSum/60)+21;
 
     // Cache the stake weight value
     dAverageStakeWeightCached = weightAve;
@@ -1780,6 +1795,10 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 bool static Reorganize(CTxDB& txdb, CBlockIndex* pindexNew)
 {
     printf("REORGANIZE\n");
+
+    // reset netstakeweights buffer upon fork
+    netStakeWeights.clear();
+    netStakeWeights.resize(1);
 
     // Find the fork
     CBlockIndex* pfork = pindexBest;

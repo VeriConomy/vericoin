@@ -237,16 +237,15 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
 
 void OverviewPage::setStatistics()
 {
-
     uint64_t nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
     double nNetworkWeight = GetPoSKernelPS();
     u_int64_t nEstimateTime = 60 * nNetworkWeight / nWeight;
-    double stakerate = nEstimateTime/(60*60*24);
+    double stakerate = (nEstimateTime/(60*60))+1;
     // display stats
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->netstakeweight->setText(QString::number((double)nNetworkWeight));
-    ui->stakeRate->setText(QString::number(((double)stakerate)));
+    ui->netstakeweight->setText(QString::number((double)nNetworkWeight,'f'));
+    ui->stakeRate->setText(QString::number(((double)stakerate,'f')));
     ui->inflationRate->setText(QString::number((double)GetCurrentInflationRate(nNetworkWeight)));
     ui->interestRate->setText(QString::number((double)GetCurrentInterestRate(pindexBest)));
 }

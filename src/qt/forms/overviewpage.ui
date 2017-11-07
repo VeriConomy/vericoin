@@ -631,7 +631,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Time till stake (days):</string>
+          <string>Time till stake (hours):</string>
          </property>
         </widget>
        </item>
