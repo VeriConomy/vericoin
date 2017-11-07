@@ -81,13 +81,14 @@ const char *walletUrl = "https://www.vericoin.info/";
 const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
 const char *forumsUrl = "http://www.vericoinforums.com";
 bool fRestart = false;
-bool fBootstrapTurbo = false;
 bool fRescan = false;
 bool fEncrypt = false;
 bool fNewVersion = false;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 #endif
+bool fBootstrapTurbo = false;
+bool fBootstrapConfig = false;
 bool fFirstRun = true;
 bool fDebug = false;
 bool fDebugNet = false;

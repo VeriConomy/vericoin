@@ -101,6 +101,8 @@ void Shutdown(void* parg)
                     CTxDB().Destroy();
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                    if (fBootstrapConfig){
+                        boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetDataDir() / "vericoin.conf");}
                     boost::filesystem::remove_all(GetDataDir() / "bootstrap");
 
                     RestartWallet(NULL, true);

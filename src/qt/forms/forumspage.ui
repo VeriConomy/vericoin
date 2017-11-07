@@ -200,7 +200,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../bitcoin.qrc">:/icons/miningon</pixmap>
+        <pixmap>:/icons/miningon</pixmap>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -330,7 +330,7 @@
      <item row="11" column="1">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Stay up to date with news, wallet updates, media and learn more about Verium.</string>
+        <string>Stay up to date with news, updates, media and learn more about VeriCoin.</string>
        </property>
       </widget>
      </item>

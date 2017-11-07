@@ -276,6 +276,7 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
+                        fBootstrapConfig = true;
                         window.reloadBlockchain(true);
                     }
                 }

@@ -148,13 +148,14 @@ extern const char *walletUrl;
 extern const char *walletDownloadsUrl;
 extern const char *forumsUrl;
 extern bool fRestart;
-extern bool fBootstrapTurbo;
 extern bool fRescan;
 extern bool fEncrypt;
 extern bool fNewVersion;
 extern bool fMenuCheckForUpdate;
 extern bool fTimerCheckForUpdate;
 #endif
+extern bool fBootstrapTurbo;
+extern bool fBootstrapConfig;
 extern bool fFirstRun;
 extern bool fDebug;
 extern bool fDebugNet;
