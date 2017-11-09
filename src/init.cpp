@@ -925,8 +925,9 @@ bool AppInit2()
     RegisterWallet(pwalletMain);
 
     CBlockIndex *pindexRescan = pindexBest;
-    if (GetBoolArg("-rescan"))
-        pindexRescan = pindexGenesisBlock;
+    if (GetBoolArg("-rescan")){
+        pwalletMain->ClearOrphans();
+        pindexRescan = pindexGenesisBlock;}
     else
     {
         CWalletDB walletdb(strWalletFileName);
