@@ -1678,7 +1678,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 vwtxPrev.push_back(pcoin.first);
                 txNew.vout.push_back(CTxOut(0, scriptPubKeyOut));
 
-                if (GetWeight(block.GetBlockTime(), (int64_t)txNew.nTime, (int64_t)pcoin.first->vout[pcoin.second].nValue, pindexPrev) < nStakeSplitAge)
+                if (((int64_t)txNew.nTime - block.GetBlockTime()) < nStakeSplitAge)
                     txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinStake : added kernel type=%d\n", whichType);
@@ -1701,19 +1701,19 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         if (txNew.vout.size() == 2 && ((pcoin.first->vout[pcoin.second].scriptPubKey == scriptPubKeyKernel || pcoin.first->vout[pcoin.second].scriptPubKey == txNew.vout[1].scriptPubKey))
             && pcoin.first->GetHash() != txNew.vin[0].prevout.hash)
         {
-            int64_t nTimeWeight = GetWeight((int64_t)pcoin.first->nTime, (int64_t)txNew.nTime, (int64_t)pcoin.first->vout[pcoin.second].nValue, pindexPrev);
+            int64_t nTimeWeight = (int64_t)txNew.nTime - (int64_t)pcoin.first->nTime;
 
             // Stop adding more inputs if already too many inputs
-            if (txNew.vin.size() >= 100)
+            if (txNew.vin.size() >= 250)
                 break;
-            // Stop adding more inputs if value is already pretty significant
-            if (nCredit >= nStakeCombineThreshold)
+            // Stop adding more inputs if value is already pretty significant and has insignificant age
+            if (nCredit >= nStakeCombineThreshold && nTimeWeight < nStakeSplitAge)
                 break;
             // Stop adding inputs if reached reserve limit
             if (nCredit + pcoin.first->vout[pcoin.second].nValue > nBalance - nReserveBalance)
                 break;
-            // Do not add additional significant input
-            if (pcoin.first->vout[pcoin.second].nValue >= nStakeCombineThreshold)
+            // Do not add additional significant input if has insignificant age
+            if (pcoin.first->vout[pcoin.second].nValue >= nStakeCombineThreshold && nTimeWeight < nStakeSplitAge)
                 continue;
             // Do not add input that is still too young
             if (nTimeWeight < nStakeMinAge)

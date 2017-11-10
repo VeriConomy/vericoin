@@ -999,15 +999,15 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
     }
     nAverageStakeWeightHeightCached = pindexPrev->nHeight;
 
-    // Store previously calculated weights
+    int i;
     CBlockIndex* currentBlockIndex = pindexPrev;
-    for (int i = 0; currentBlockIndex && i < 60; i++)
+    for (i = 0; currentBlockIndex && i < 60; i++)
     {
         double tempWeight = GetPoSKernelPS(currentBlockIndex);
         weightSum += tempWeight;
         currentBlockIndex = currentBlockIndex->pprev;
     }
-    weightAve = (weightSum/60)+21;
+    weightAve = (weightSum/i)+21;
 
     // Cache the stake weight value
     dAverageStakeWeightCached = weightAve;
