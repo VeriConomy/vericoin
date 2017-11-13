@@ -238,16 +238,22 @@ void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBa
 void OverviewPage::setStatistics()
 {
     double nNetworkWeight = GetPoSKernelPS();
-    double stakerate = 0.0;
-    if (GetBoolArg("-staking")){
-        stakerate = (GetTimeToStake()/(60*60))+1;
+    int stakerate = 0;
+    if (Staking){
+        uint64_t timetillstake = GetTimeToStake();
+        if (timetillstake > 3600){
+            stakerate = GetTimeToStake()/(60*60);
+        }
+        else{
+            stakerate = 1;
+        }
     }
     // display stats
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->netstakeweight->setText(QString::number((double)nNetworkWeight,'f'));
-    ui->stakeRate->setText(QString::number(((double)stakerate,'f')));
-    ui->inflationRate->setText(QString::number((double)GetCurrentInflationRate(nNetworkWeight)));
-    ui->interestRate->setText(QString::number((double)GetCurrentInterestRate(pindexBest)));
+    ui->netstakeweight->setText(QString::number((double)nNetworkWeight,'f',2));
+    ui->stakeRate->setText(QString::number(((int)stakerate)));
+    ui->inflationRate->setText(QString::number((double)GetCurrentInflationRate(nNetworkWeight),'f',2));
+    ui->interestRate->setText(QString::number((double)GetCurrentInterestRate(pindexBest),'f',2));
 }
 
 void OverviewPage::setModel(WalletModel *model)

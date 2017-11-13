@@ -1033,20 +1033,6 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
     return interestRate;
 }
 
-// Get the block rate for one hour
-int GetBlockRatePerHour()
-{
-    int nRate = 0;
-    CBlockIndex* pindex = pindexBest;
-    int64_t nTargetTime = GetAdjustedTime() - 3600;
-
-    while (pindex && pindex->pprev && pindex->nTime > nTargetTime) {
-        nRate += 1;
-        pindex = pindex->pprev;
-    }
-    return nRate;
-}
-
 // Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
 int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev)
 {
@@ -1054,7 +1040,7 @@ int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex
     int64_t nSubsidy = nStakeTime * nInterestRate * 33 / (365 * 33 + 8);
 
     if (fDebug && GetBoolArg("-printcreation"))
-        printf("GetProofOfStakeTimeReward(): create=%s nStakeTime=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nStakeTime);
+        printf("GetProofOfStakeTimeReward(): create=%s nStakeTime=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nStakeTime);
 
     return nSubsidy + nFees;
 }
@@ -1078,6 +1064,21 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pind
 
     return nSubsidy + nFees;
 }
+
+// Get the block rate for one hour
+int GetBlockRatePerHour()
+{
+    int nRate = 0;
+    CBlockIndex* pindex = pindexBest;
+    int64_t nTargetTime = GetAdjustedTime() - 3600;
+
+    while (pindex && pindex->pprev && pindex->nTime > nTargetTime) {
+        nRate += 1;
+        pindex = pindex->pprev;
+    }
+    return nRate;
+}
+
 #ifdef fTestNet
 static const int64_t nTargetTimespan = 3 * 60;  // 3 mins
 #else
@@ -1192,35 +1193,6 @@ static unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool 
     return bnNew.GetCompact();
 }
 
-unsigned int static GetNextTargetRequiredVRM(const CBlockIndex* pindexLast, bool fProofOfStake)
-{
-    CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
-
-    if (pindexLast == NULL)
-        return bnTargetLimit.GetCompact(); // genesis block
-
-    const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
-    if (pindexPrev->pprev == NULL)
-        return bnTargetLimit.GetCompact(); // first block
-    const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
-    if (pindexPrevPrev->pprev == NULL)
-        return bnTargetLimit.GetCompact(); // second block
-
-    int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-    int64_t nVariableTarget = (nTargetSpacing - nActualSpacing) + nTargetSpacing;
-    // ppcoin: target change every block
-    // ppcoin: retarget with exponential moving toward target spacing
-    CBigNum bnNew;
-    bnNew.SetCompact(pindexPrev->nBits);
-    int64_t nInterval = nTargetTimespan / nVariableTarget;
-    bnNew *= ((nInterval - 1) * nVariableTarget);
-    bnNew /= ((nInterval + 1) * nVariableTarget);
-
-    if (bnNew <= 0 || bnNew > bnTargetLimit)
-        bnNew = bnTargetLimit;
-
-    return bnNew.GetCompact();
-}
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
