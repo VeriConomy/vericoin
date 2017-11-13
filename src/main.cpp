@@ -1040,7 +1040,7 @@ int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex
     int64_t nSubsidy = nStakeTime * nInterestRate * 33 / (365 * 33 + 8);
 
     if (fDebug && GetBoolArg("-printcreation"))
-        printf("GetProofOfStakeTimeReward(): create=%s nStakeTime=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nStakeTime);
+        printf("GetProofOfStakeTimeReward(): create=%s nStakeTime=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nStakeTime);
 
     return nSubsidy + nFees;
 }
@@ -1704,7 +1704,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         int64_t nCalculatedStakeReward;
         // ppcoin: coin stake tx earns reward instead of paying fee
         uint64_t nCoinAge;
-        if (!vtx[1].GetCoinAge(txdb, nCoinAge))
+        if (!vtx[1].GetCoinAge(txdb, nCoinAge, pindex->pprev))
             return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
         if (PoSTprotocol(pindex->pprev->nHeight+1)){
             nCalculatedStakeReward = GetProofOfStakeTimeReward(nCoinAge, nFees, pindex->pprev);
@@ -1999,10 +1999,12 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
 // might not find out about their coin age. Older transactions are
 // guaranteed to be in main chain by sync-checkpoint. This rule is
 // introduced to help nodes establish a consistent view of the coin
-// age (trust score) of competing branches. PoST
-bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
+// age (trust score) of competing branches. PoSTistent view of the coin
+// age (trust score) of competing branches.
+bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge, CBlockIndex* pindexPrev) const
 {
     CBigNum bnCentSecond = 0;  // coin age in the unit of cent-seconds
+    CBigNum bnCoinDay = 0;
     nCoinAge = 0;
 
     if (IsCoinBase())
@@ -2026,13 +2028,20 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
             continue; // only count coins meeting min age requirement
 
         int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
-        bnCentSecond += CBigNum(nValueIn) * GetWeight((int64_t)nTime,(int64_t)txPrev.nTime+nStakeMinAge, nValueIn, pindexBest->pprev) / CENT;
+        int64_t timeWeight = nTime-txPrev.nTime;
+        if (PoSTprotocol(pindexPrev->nHeight+1)){
+            int64_t CoinDay = nValueIn * timeWeight / COIN / (24 * 60 * 60);
+            int64_t factoredTimeWeight = GetStakeTimeFactoredWeight(timeWeight, CoinDay, pindexPrev);
+            bnCoinDay += CBigNum(nValueIn) * factoredTimeWeight / COIN / (24 * 60 * 60);
+        }
+        else{
+            bnCentSecond += CBigNum(nValueIn) * timeWeight / CENT;}
 
         if (fDebug && GetBoolArg("-printcoinage"))
-            printf("coin age nValueIn=%" PRId64 " nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
+            printf("coin age nValueIn=%"PRId64" nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
     }
-
-    CBigNum bnCoinDay = bnCentSecond * CENT / COIN / (24 * 60 * 60);
+    if (!PoSTprotocol(pindexPrev->nHeight+1)){
+        bnCoinDay = bnCentSecond * CENT / COIN / (24 * 60 * 60);}
     if (fDebug && GetBoolArg("-printcoinage"))
         printf("coin age bnCoinDay=%s\n", bnCoinDay.ToString().c_str());
     nCoinAge = bnCoinDay.getuint64();
@@ -3261,7 +3270,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         // Send the rest of the chain
         if (pindex)
             pindex = pindex->pnext;
-        int nLimit = 10000;
+        int nLimit = 200000;
         printf("getblocks %d to %s limit %d\n", (pindex ? pindex->nHeight : -1), hashStop.ToString().substr(0,20).c_str(), nLimit);
         for (; pindex; pindex = pindex->pnext)
         {
@@ -3310,7 +3319,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         }
 
         vector<CBlock> vHeaders;
-        int nLimit = 10000;
+        int nLimit = 200000;
         printf("getheaders %d to %s\n", (pindex ? pindex->nHeight : -1), hashStop.ToString().substr(0,20).c_str());
         for (; pindex; pindex = pindex->pnext)
         {
