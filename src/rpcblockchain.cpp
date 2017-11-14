@@ -6,6 +6,14 @@
 #include "main.h"
 #include "bitcoinrpc.h"
 
+#ifndef QT_GUI
+#include "util.h"
+#include "init.h"
+
+#include "miniunz.h"
+#include <curl/curl.h>
+#endif
+
 using namespace json_spirit;
 using namespace std;
 
@@ -293,3 +301,133 @@ Value getcheckpoint(const Array& params, bool fHelp)
 
     return result;
 }
+
+#ifndef QT_GUI
+static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+  size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+  return written;
+}
+
+int DownloadFile(std::string url, boost::filesystem::path target_file_path)
+{
+    int err = 0;
+
+    printf("bootstrap: Downloading blockchain from %s. \n", url.c_str());
+
+    CURL *curlHandle = curl_easy_init();
+    curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle, CURLOPT_NOPROGRESS, 1L);
+    curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, write_data);
+
+    FILE *file = fopen(target_file_path.c_str(), "wb");
+    if(file)
+    {
+        curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, file);
+        CURLcode curl_err = curl_easy_perform(curlHandle);
+        if (curl_err != CURLE_OK)
+            printf("bootstrap: Error downloading from %s. Error: %s.\n", url.c_str(), curl_easy_strerror(curl_err));
+        fclose(file);
+        err = (int)curl_err;
+    }
+    else
+    {
+        printf("bootstrap: Download error: Unable to open output file for writing: %s.\n", target_file_path.c_str());
+        err = -1;
+    }
+
+    curl_easy_cleanup(curlHandle);
+
+    return err;
+}
+
+int ExtractBootstrapFile(boost::filesystem::path& pathBootstrap)
+{
+    printf("bootstrap: Extracting bootstrap file\n");
+    if (!boost::filesystem::exists(pathBootstrap)) {
+        printf("bootstrap: Bootstrap file doesn't exist!\n");
+        return -1;
+    }
+
+    const char * zipfilename = pathBootstrap.c_str();
+    unzFile uf;
+#ifdef USEWIN32IOAPI
+    zlib_filefunc64_def ffunc;
+    fill_win32_filefunc64A(&ffunc);
+    uf = unzOpen2_64(zipfilename, &ffunc);
+#else
+    uf = unzOpen64(zipfilename);
+#endif
+
+    if (uf == NULL)
+    {
+        printf("bootstrap: Cannot open downloaded file: %s\n", zipfilename);
+        return -2;
+    }
+
+    int unzip_err = zip_extract_all(uf, GetDataDir(), "bootstrap");
+    if (unzip_err != UNZ_OK)
+    {
+        printf("bootstrap: Unzip failed\n");
+        return -3;
+    }
+
+    printf("bootstrap: Unzip successful\n");
+
+    if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
+        !boost::filesystem::exists(GetDataDir() / "bootstrap" / "txleveldb"))
+    {
+        printf("bootstrap: Downloaded zip file did not contain all necessary files!\n");
+        return -4;
+    }
+
+    return 0;
+}
+
+Value bootstrap(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "bootstrap [overwrite_vericoin_conf=false]\n"
+            "Download blockchain and optionally a current vericoin.conf from www.vericoin.info.\n"
+            "Daemon exits when finished."
+        );
+
+    if (params.size() == 1)
+    {
+        fBootstrapConfig = params[0].get_bool();
+    }
+
+    Object result;
+    boost::filesystem::path pathBootstrapZip = GetDataDir() / "bootstrap.zip";
+    int err = DownloadFile("https://www.vericoin.info/downloads/bootstrap.zip", pathBootstrapZip);
+    if (err != 0)
+    {
+        printf("bootstrap: Download failed!\n");
+        result.push_back(Pair("success", false));
+        result.push_back(Pair("error", "Download failed"));
+        result.push_back(Pair("error_code", err));
+        return result;
+    }
+    printf("bootstrap: Download successful\n");
+
+    err = ExtractBootstrapFile(pathBootstrapZip);
+    if (err != 0)
+    {
+        printf("bootstrap: Extracting failed!\n");
+        result.push_back(Pair("success", false));
+        result.push_back(Pair("error", "Extracting failed"));
+        result.push_back(Pair("error_code", err));
+        return result;
+    }
+
+    fBootstrapTurbo = true;
+    StartShutdown();
+
+    result.push_back(Pair("success", true));
+    result.push_back(Pair("comment", "Bootstrap successful; vericoind has been stopped, please restart."));
+
+    return result;
+}
+#endif
+

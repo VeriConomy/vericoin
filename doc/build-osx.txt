@@ -35,7 +35,7 @@ but you can get the current version from http://developer.apple.com
 
 5.  Install dependencies from MacPorts
 
-sudo port install boost db48 openssl miniupnpc
+sudo port install boost db48 openssl miniupnpc minizip curl
 
 6.  Clone the github tree to get the source code:
 
