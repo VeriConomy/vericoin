@@ -822,21 +822,23 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
     QString strStatusBarWarnings = clientModel->getStatusBarWarnings();
     QString tooltip;
-
+    QDateTime lastBlockDate = clientModel->getLastBlockDate();
+    QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int totalHours = GenBlockDate.daysTo(QDateTime::currentDateTime())*24;
+    int currentHour = totalHours - (secs/(60*60));
     if(count < nTotalBlocks)
     {
-        int nRemainingBlocks = nTotalBlocks - count;
-        float nPercentageDone = count / (nTotalBlocks * 0.01f);
+        float nPercentageDone = currentHour / (totalHours * 0.01f);
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("Synchronizing with Network: ~%1 Block%2 Remaining").arg(nRemainingBlocks).arg(nRemainingBlocks == 1 ? "" : "s"));
-            progressBar->setMaximum(nTotalBlocks);
-            progressBar->setValue(count);
+            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 1));
+            progressBar->setMaximum(totalHours);
+            progressBar->setValue(currentHour);
             progressBar->setVisible(true);
         }
-
-        tooltip = tr("Downloaded %1 of %2 blocks of transaction history (%3% done).").arg(count).arg(nTotalBlocks).arg(nPercentageDone, 0, 'f', 2);
+        tooltip = tr("Downloaded %1 blocks of transaction history (%2% done).").arg(count).arg(nPercentageDone, 0, 'f', 1);
     }
     else
     {
@@ -865,8 +867,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         progressBar->setVisible(true);
     }
 
-    QDateTime lastBlockDate = clientModel->getLastBlockDate();
-    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     QString text;
 
     // Represent time from last generated block in human readable text
@@ -892,7 +892,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
 
     // Set icon state: spinning if catching up, tick otherwise
-    if(secs < 90*60 && count >= nTotalBlocks)
+    if(secs < 60*60 && count >= nTotalBlocks)
     {
         overviewPage->setStatistics();
         overviewPage->showOutOfSyncWarning(false);
