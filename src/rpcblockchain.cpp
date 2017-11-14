@@ -11,30 +11,30 @@ using namespace std;
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, json_spirit::Object& entry);
 
-double GetDifficulty(const CBlockIndex* blockindex)
+mp_float GetDifficulty(const CBlockIndex* blockindex)
 {
     // Floating point number that is a multiple of the minimum difficulty,
     // minimum difficulty = 1.0.
     if (blockindex == NULL)
     {
         if (pindexBest == NULL)
-            return 1.0;
+            return mp_float(1);
         else
             blockindex = GetLastBlockIndex(pindexBest, false);
     }
 
     int nShift = (blockindex->nBits >> 24) & 0xff;
 
-    double dDiff =
-        (double)0x0000ffff / (double)(blockindex->nBits & 0x00ffffff);
+    mp_float dDiff =
+        mp_float(0x0000ffff) / mp_float(blockindex->nBits & 0x00ffffff);
     while (nShift < 29)
     {
-        dDiff *= 256.0;
+        dDiff *= 256;
         nShift++;
     }
     while (nShift > 29)
     {
-        dDiff /= 256.0;
+        dDiff /= 256;
         nShift--;
     }
     return dDiff;
@@ -64,7 +64,7 @@ double GetPoWMHashPS()
         pindex = pindex->pnext;
     }
 
-    return GetDifficulty() * 4294.967296 / nTargetSpacingWork;
+    return GetDifficulty().convert_to<double>() * 4294.967296 / nTargetSpacingWork;
 }
 
 mp_float GetPoSKernelPS(CBlockIndex* pindexPrev)
@@ -111,7 +111,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPri
     result.push_back(Pair("time", (boost::int64_t)block.GetBlockTime()));
     result.push_back(Pair("nonce", (boost::uint64_t)block.nNonce));
     result.push_back(Pair("bits", HexBits(block.nBits)));
-    result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
+    result.push_back(Pair("difficulty", GetDifficulty(blockindex).convert_to<double>()));
     result.push_back(Pair("blocktrust", leftTrim(blockindex->GetBlockTrust().GetHex(), '0')));
     result.push_back(Pair("chaintrust", leftTrim(blockindex->nChainTrust.GetHex(), '0')));
     if (blockindex->pprev)
@@ -177,8 +177,8 @@ Value getdifficulty(const Array& params, bool fHelp)
             "Returns the difficulty as a multiple of the minimum difficulty.");
 
     Object obj;
-    obj.push_back(Pair("proof-of-work",        GetDifficulty()));
-    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    obj.push_back(Pair("proof-of-work",        GetDifficulty().convert_to<double>()));
+    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true)).convert_to<double>()));
     obj.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
     return obj;
 }
