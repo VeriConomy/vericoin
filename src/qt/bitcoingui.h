@@ -15,7 +15,6 @@ class AskPassphrasePage;
 class OverviewPage;
 class AddressBookPage;
 class SendCoinsDialog;
-class SendBitCoinsDialog;
 class SignVerifyMessageDialog;
 class Notificator;
 class RPCConsole;
@@ -78,7 +77,6 @@ private:
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
-    SendBitCoinsDialog *sendBitCoinsPage;
     ForumsPage *forumsPage;
 
     QLabel *labelEncryptionIcon;
@@ -99,7 +97,6 @@ private:
     QAction *quitAction;
     QAction *logoutAction;
     QAction *sendCoinsAction;
-    QAction *sendBitCoinsAction;
     QAction *forumsAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
@@ -191,8 +188,6 @@ private slots:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage();
-    /** Switch to send coins page */
-    void gotoSendBitCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
 

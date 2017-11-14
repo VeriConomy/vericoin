@@ -2037,7 +2037,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge, CBlockIndex* pind
             bnCentSecond += CBigNum(nValueIn) * timeWeight / CENT;}
 
         if (fDebug && GetBoolArg("-printcoinage"))
-            printf("coin age nValueIn=%"PRId64" nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
+            printf("coin age nValueIn=%" PRId64 " nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
     }
     if (!PoSTprotocol(pindexPrev->nHeight+1)){
         bnCoinDay = bnCentSecond * CENT / COIN / (24 * 60 * 60);}

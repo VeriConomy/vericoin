@@ -55,7 +55,6 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
 
     addEntry();
 
-    connect(ui->btnBitcoin, SIGNAL(clicked()), this, SLOT(gotoSendBitCoinsPage()));
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
 
@@ -126,11 +125,6 @@ void SendCoinsDialog::setModel(WalletModel *model)
 SendCoinsDialog::~SendCoinsDialog()
 {
     delete ui;
-}
-
-void SendCoinsDialog::gotoSendBitCoinsPage()
-{
-    emit gotoSendBitCoins();
 }
 
 void SendCoinsDialog::on_sendButton_clicked()
