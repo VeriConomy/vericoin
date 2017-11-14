@@ -37,7 +37,7 @@ void ForumsPage::setModel(WalletModel *model)
 
 void ForumsPage::on_explorerButton_clicked()
 {
-    QDesktopServices::openUrl(QUrl("http://www.vericoin.info/wallet/blockchainVRM.php"));
+    QDesktopServices::openUrl(QUrl("http://www.vericoin.info/wallet/blockchain.php"));
 }
 
 void ForumsPage::on_chatButton_clicked()
