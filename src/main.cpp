@@ -56,7 +56,7 @@ CBlockIndex* pindexBest = NULL;
 int64_t nTimeBestReceived = 0;
 
 int nAverageStakeWeightHeightCached = 0;
-double dAverageStakeWeightCached = 0;
+mp_float dAverageStakeWeightCached = 0;
 
 CMedianFilter<int> cPeerBlockCounts(5, 0); // Amount of blocks that other nodes claim to have
 
@@ -971,24 +971,23 @@ int64_t GetProofOfWorkReward(int64_t nFees)
 int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, CBlockIndex* pindexPrev)
 {
     int64_t factoredTimeWeight;
-    double weightFraction = (bnCoinDayWeight+1) / (GetAverageStakeWeight(pindexPrev));
-    if (weightFraction > 0.45)
+    mp_float weightFraction = (bnCoinDayWeight+1) / (GetAverageStakeWeight(pindexPrev));
+    if (weightFraction*100 > 45)
     {
         factoredTimeWeight = nStakeMinAge+1;
     }
     else
     {
-        double stakeTimeFactor = pow(cos((PI*weightFraction)),2.0);
-        factoredTimeWeight = stakeTimeFactor*timeWeight;
-
+        mp_float stakeTimeFactor = pow(cos((PI*weightFraction)),2.0);
+        factoredTimeWeight = (stakeTimeFactor*timeWeight).convert_to<int64_t>();
     }
     return factoredTimeWeight;
 }
 
 // get average stake weight of last 60 blocks PoST
-double GetAverageStakeWeight(CBlockIndex* pindexPrev)
+mp_float GetAverageStakeWeight(CBlockIndex* pindexPrev)
 {
-    double weightSum = 0.0, weightAve = 0.0;
+    mp_float weightSum = 0, weightAve = 0;
     if (nBestHeight < 1)
         return weightAve;
 
@@ -1003,7 +1002,7 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
     CBlockIndex* currentBlockIndex = pindexPrev;
     for (i = 0; currentBlockIndex && i < 60; i++)
     {
-        double tempWeight = GetPoSKernelPS(currentBlockIndex);
+        mp_float tempWeight = GetPoSKernelPS(currentBlockIndex);
         weightSum += tempWeight;
         currentBlockIndex = currentBlockIndex->pprev;
     }
@@ -1016,19 +1015,19 @@ double GetAverageStakeWeight(CBlockIndex* pindexPrev)
 }
 
 // get current inflation rate using average stake weight ~1.5-2.5% (measure of liquidity) PoST
-double GetCurrentInflationRate(double nAverageWeight)
+mp_float GetCurrentInflationRate(mp_float nAverageWeight)
 {
-    double inflationRate = (17*(log(nAverageWeight/20)))/100;
+    mp_float inflationRate = (17*(log(nAverageWeight/20)))/100;
 
     return inflationRate;
 }
 
 // get current interest rate by targeting for network stake dependent inflation rate PoST
-double GetCurrentInterestRate(CBlockIndex* pindexPrev)
+mp_float GetCurrentInterestRate(CBlockIndex* pindexPrev)
 {
-    double nAverageWeight = GetAverageStakeWeight(pindexPrev);
-    double inflationRate = GetCurrentInflationRate(nAverageWeight)/100;
-    double interestRate = ((inflationRate*INITIAL_COIN_SUPPLY)/nAverageWeight)*100;
+    mp_float nAverageWeight = GetAverageStakeWeight(pindexPrev);
+    mp_float inflationRate = GetCurrentInflationRate(nAverageWeight)/100;
+    mp_float interestRate = ((inflationRate*INITIAL_COIN_SUPPLY)/nAverageWeight)*100;
 
     return interestRate;
 }
@@ -1036,7 +1035,7 @@ double GetCurrentInterestRate(CBlockIndex* pindexPrev)
 // Stakers coin reward based on coin stake time factor and targeted inflation rate PoST
 int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev)
 {
-    int64_t nInterestRate = GetCurrentInterestRate(pindexPrev)*CENT;
+    int64_t nInterestRate = (GetCurrentInterestRate(pindexPrev)*CENT).convert_to<int64_t>();
     int64_t nSubsidy = nStakeTime * nInterestRate * 33 / (365 * 33 + 8);
 
     if (fDebug && GetBoolArg("-printcreation"))
@@ -1049,14 +1048,14 @@ int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev)
 {
     int64_t nSubsidy;
-    double nNetworkWeight_ = GetPoSKernelPS(pindexPrev);
+    mp_float nNetworkWeight_ = GetPoSKernelPS(pindexPrev);
     if(nNetworkWeight_ < 21)
     {
         nSubsidy = 0;
     }
     else
     {
-        int64_t nInterestRate = (17*(log(nNetworkWeight_/20)))*10000;
+        int64_t nInterestRate = ((17*(log(nNetworkWeight_/20)))*10000).convert_to<int64_t>();
         nSubsidy = (nCoinAge * (nInterestRate) * 33 / (365 * 33 + 8));
     }
     if (fDebug && GetBoolArg("-printcreation"))
@@ -3850,7 +3849,7 @@ uint64_t GetTimeToStake()
 {
     uint64_t nWeight =0;
     pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
-    double nNetworkWeight = GetPoSKernelPS();
-    u_int64_t nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
+    mp_float nNetworkWeight = GetPoSKernelPS();
+    u_int64_t nEstimateTime = (nTargetSpacing * nNetworkWeight / nWeight).convert_to<int64_t>();
     return nEstimateTime;
 }

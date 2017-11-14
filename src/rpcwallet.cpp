@@ -89,12 +89,12 @@ Value getinfo(const Array& params, bool fHelp)
 
     if (PoSTprotocol(pindexBest->nHeight))
     {
-        double nNetworkWeight = GetAverageStakeWeight(pindexBest->pprev);
+        double nNetworkWeight = GetAverageStakeWeight(pindexBest->pprev).convert_to<double>();
         obj.push_back(Pair("networkweight", nNetworkWeight));
         if (nNetworkWeight > 0)
         {
-            obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))));
-            obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev)));
+            obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)).convert_to<double>()));
+            obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev).convert_to<double>()));
         }
         else
         {
@@ -122,7 +122,7 @@ Value getnetworkweight(const Array& params, bool fHelp)
             "getnetworkweight\n"
             "Returns the current average stake weight.");
 
-    return (GetAverageStakeWeight(pindexBest->pprev));
+    return (GetAverageStakeWeight(pindexBest->pprev)).convert_to<double>();
 }
 
 Value getinflationrate(const Array& params, bool fHelp)
@@ -132,7 +132,7 @@ Value getinflationrate(const Array& params, bool fHelp)
             "getinflationrate\n"
             "Returns the current inflation rate.");
 
-    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
+    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))).convert_to<double>();
 }
 
 Value getinterestrate(const Array& params, bool fHelp)
@@ -143,9 +143,9 @@ Value getinterestrate(const Array& params, bool fHelp)
             "Returns the current staking interest rate.");
 
     if (PoSTprotocol(pindexBest->nHeight))
-        return (GetCurrentInterestRate(pindexBest->pprev));
+        return (GetCurrentInterestRate(pindexBest->pprev)).convert_to<double>();
     else
-        return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
+        return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))).convert_to<double>();
 }
 
 Value getnewpubkey(const Array& params, bool fHelp)

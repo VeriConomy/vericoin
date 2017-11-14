@@ -10,9 +10,11 @@
 #include "net.h"
 #include "script.h"
 #include "scrypt.h"
+#include "util.h"
 
 #include <limits>
 #include <list>
+
 
 class CWallet;
 class CBlock;
@@ -37,7 +39,7 @@ static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 10000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
-static const double PI = 3.1415926535;
+static const mp_float PI = mp_float("3.1415926535");
 
 inline bool PoSTprotocol(int nHeight) { return nHeight > 608100; }
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
@@ -116,9 +118,9 @@ int64_t GetProofOfWorkReward(int64_t nFees);
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, CBlockIndex* pindexPrev);
 int64_t GetProofOfStakeTimeReward(int64_t nStakeTime, int64_t nFees, CBlockIndex* pindexPrev);
 int64_t GetStakeTimeFactoredWeight(int64_t timeWeight, int64_t bnCoinDayWeight, CBlockIndex *pindexPrev);
-double GetAverageStakeWeight(CBlockIndex* pindexPrev);
-double GetCurrentInterestRate(CBlockIndex* pindexPrev);
-double GetCurrentInflationRate(double nAverageWeight);
+mp_float GetAverageStakeWeight(CBlockIndex* pindexPrev);
+mp_float GetCurrentInterestRate(CBlockIndex* pindexPrev);
+mp_float GetCurrentInflationRate(mp_float nAverageWeight);
 int GetBlockRatePerHour();
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime);
 unsigned int ComputeMinStake(unsigned int nBase, int64_t nTime, unsigned int nBlockTime);

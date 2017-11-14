@@ -32,9 +32,12 @@
 // to obtain PRId64 on some old systems
 #define __STDC_FORMAT_MACROS 1
 
-
 #include <stdint.h>
 #include <inttypes.h>
+
+#include <boost/multiprecision/cpp_bin_float.hpp>
+
+typedef boost::multiprecision::cpp_bin_float_100 mp_float;
 
 static const int64_t COIN = 100000000;
 static const int64_t CENT = 1000000;
