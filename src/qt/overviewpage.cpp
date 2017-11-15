@@ -329,6 +329,7 @@ void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & 
 
 void OverviewPage::on_stakeButton_clicked()
 {
+    ui->stakeButton->clearFocus();
     if (!Staking)
     {
         model->requestUnlock();
