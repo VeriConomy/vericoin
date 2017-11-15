@@ -101,6 +101,8 @@ void Shutdown(void* parg)
                     CTxDB().Destroy();
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                    if (fBootstrapConfig){
+                        boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetDataDir() / "vericoin.conf");}
                     boost::filesystem::remove_all(GetDataDir() / "bootstrap");
 
                     RestartWallet(NULL, true);
@@ -116,6 +118,34 @@ void Shutdown(void* parg)
             else
             {
                 RestartWallet(NULL, true);
+            }
+        }
+#else
+        if (fBootstrapTurbo && boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat"))
+        {
+            try
+            {
+                // Leveldb instance destruction
+                CTxDB().Destroy();
+                boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
+                boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                if (fBootstrapConfig)
+                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetConfigFile());
+                boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+
+                boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap.zip");
+                boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.dat");
+                if (boost::filesystem::exists(pathBootstrapTurbo))
+                {
+                    boost::filesystem::remove(pathBootstrapTurbo);
+                }
+                if (boost::filesystem::exists(pathBootstrap))
+                {
+                    boost::filesystem::remove(pathBootstrap);
+                }
+            }
+            catch (std::exception &e) {
+                printf("Bootstrapturbo filesystem error!\n");
             }
         }
 #endif
@@ -827,7 +857,7 @@ bool AppInit2()
         printf("Shutdown requested. Exiting.\n");
         return false;
     }
-    printf(" block index %15"PRId64"ms\n", GetTimeMillis() - nStart);
+    printf(" block index %15" PRId64 "ms\n", GetTimeMillis() - nStart);
 
     if (GetBoolArg("-printblockindex") || GetBoolArg("-printblocktree"))
     {
@@ -918,13 +948,14 @@ bool AppInit2()
     }
 
     printf("%s", strErrors.str().c_str());
-    printf(" wallet      %15"PRId64"ms\n", GetTimeMillis() - nStart);
+    printf(" wallet      %15" PRId64 "ms\n", GetTimeMillis() - nStart);
 
     RegisterWallet(pwalletMain);
 
     CBlockIndex *pindexRescan = pindexBest;
-    if (GetBoolArg("-rescan"))
-        pindexRescan = pindexGenesisBlock;
+    if (GetBoolArg("-rescan")){
+        pwalletMain->ClearOrphans();
+        pindexRescan = pindexGenesisBlock;}
     else
     {
         CWalletDB walletdb(strWalletFileName);
@@ -938,7 +969,7 @@ bool AppInit2()
         printf("Rescanning last %i blocks (from block %i)...\n", pindexBest->nHeight - pindexRescan->nHeight, pindexRescan->nHeight);
         nStart = GetTimeMillis();
         pwalletMain->ScanForWalletTransactions(pindexRescan, true);
-        printf(" rescan      %15"PRId64"ms\n", GetTimeMillis() - nStart);
+        printf(" rescan      %15" PRId64 "ms\n", GetTimeMillis() - nStart);
     }
 
     // ********************************************************* Step 9: import blocks
@@ -980,7 +1011,7 @@ bool AppInit2()
             printf("Invalid or missing peers.dat; recreating\n");
     }
 
-    printf("Loaded %i addresses from peers.dat  %"PRId64"ms\n",
+    printf("Loaded %i addresses from peers.dat  %" PRId64 "ms\n",
            addrman.size(), GetTimeMillis() - nStart);
 
     // ********************************************************* Step 11: start node
@@ -991,11 +1022,11 @@ bool AppInit2()
     RandAddSeedPerfmon();
 
     //// debug print
-    printf("mapBlockIndex.size() = %"PRIszu"\n",   mapBlockIndex.size());
+    printf("mapBlockIndex.size() = %" PRIszu "\n",   mapBlockIndex.size());
     printf("nBestHeight = %d\n",            nBestHeight);
-    printf("setKeyPool.size() = %"PRIszu"\n",      pwalletMain->setKeyPool.size());
-    printf("mapWallet.size() = %"PRIszu"\n",       pwalletMain->mapWallet.size());
-    printf("mapAddressBook.size() = %"PRIszu"\n",  pwalletMain->mapAddressBook.size());
+    printf("setKeyPool.size() = %" PRIszu "\n",      pwalletMain->setKeyPool.size());
+    printf("mapWallet.size() = %" PRIszu "\n",       pwalletMain->mapWallet.size());
+    printf("mapAddressBook.size() = %" PRIszu "\n",  pwalletMain->mapAddressBook.size());
 
     if (!NewThread(StartNode, NULL))
         InitError(_("Error: could not start node"));

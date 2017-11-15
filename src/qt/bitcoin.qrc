@@ -81,22 +81,15 @@
         <file alias="stake75">res/icons/stake75.png</file>
         <file alias="stake100">res/icons/stake100.png</file>
         <file alias="PoSTicon">res/icons/PoSTicon.png</file>
+        <file alias="stakingon">res/icons/stakingon.png</file>
+        <file alias="stakingoff">res/icons/stakingoff.png</file>
+        <file alias="chat">res/icons/chat.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="askPassphraseBackground">res/images/askpassphrasepage-background.png</file>
         <file alias="post">res/images/post.png</file>
         <file alias="aboutBackground">res/images/aboutBackground.png</file>
         <file alias="splash">res/images/splash.png</file>
-        <file alias="headerOverview">res/images/headerOverview.png</file>
-        <file alias="headerSend">res/images/headerSend.png</file>
-        <file alias="headerReceive">res/images/headerReceive.png</file>
-        <file alias="headerHistory">res/images/headerHistory.png</file>
-        <file alias="headerAddress">res/images/headerAddress.png</file>
-        <file alias="headerVeriBit">res/images/headerVeriBit.png</file>
-        <file alias="headerGetVeriCoin">res/images/headerGetVeriCoin.png</file>
-        <file alias="headerForums">res/images/headerForums.png</file>
-        <file alias="headerChat">res/images/headerChat.png</file>
-        <file alias="headerBlockchain">res/images/headerBlockchain.png</file>
     </qresource>
     <qresource prefix="/translations">
         <file alias="en">locale/bitcoin_en.qm</file>

@@ -35,7 +35,6 @@ bool CCrypter::SetKeyFromPassphrase(const SecureString& strKeyData, const std::v
         OPENSSL_cleanse(&scryptHash, sizeof scryptHash);
     }
 
-
     if (i != (int)WALLET_CRYPTO_KEY_SIZE)
     {
         OPENSSL_cleanse(&chKey, sizeof chKey);

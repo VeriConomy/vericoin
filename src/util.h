@@ -32,9 +32,12 @@
 // to obtain PRId64 on some old systems
 #define __STDC_FORMAT_MACROS 1
 
-
 #include <stdint.h>
 #include <inttypes.h>
+
+#include <boost/multiprecision/cpp_bin_float.hpp>
+
+typedef boost::multiprecision::cpp_bin_float_100 mp_float;
 
 static const int64_t COIN = 100000000;
 static const int64_t CENT = 1000000;
@@ -148,13 +151,14 @@ extern const char *walletUrl;
 extern const char *walletDownloadsUrl;
 extern const char *forumsUrl;
 extern bool fRestart;
-extern bool fBootstrapTurbo;
 extern bool fRescan;
 extern bool fEncrypt;
 extern bool fNewVersion;
 extern bool fMenuCheckForUpdate;
 extern bool fTimerCheckForUpdate;
 #endif
+extern bool fBootstrapTurbo;
+extern bool fBootstrapConfig;
 extern bool fFirstRun;
 extern bool fDebug;
 extern bool fDebugNet;
@@ -266,7 +270,7 @@ void runCommand(std::string strCommand);
 
 inline std::string i64tostr(int64_t n)
 {
-    return strprintf("%"PRId64, n);
+    return strprintf("%" PRId64, n);
 }
 
 inline std::string itostr(int n)

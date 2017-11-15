@@ -126,11 +126,11 @@ extern const CRPCTable tableRPC;
 extern int64_t nWalletUnlockTime;
 extern int64_t AmountFromValue(const json_spirit::Value& value);
 extern json_spirit::Value ValueFromAmount(int64_t amount);
-extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
+extern mp_float GetDifficulty(const CBlockIndex* blockindex = NULL);
 
 extern double GetPoWMHashPS();
-extern double GetPoSKernelPS();
-extern double GetPoSKernelPS(CBlockIndex* pindexPrev);
+extern mp_float GetPoSKernelPS();
+extern mp_float GetPoSKernelPS(CBlockIndex* pindexPrev);
 
 extern std::string HexBits(unsigned int nBits);
 extern std::string HelpRequiringPassphrase();
@@ -213,6 +213,9 @@ extern json_spirit::Value decodescript(const json_spirit::Array& params, bool fH
 extern json_spirit::Value signrawtransaction(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value sendrawtransaction(const json_spirit::Array& params, bool fHelp);
 
+#ifndef QT_GUI
+extern json_spirit::Value bootstrap(const json_spirit::Array& params, bool fHelp); // in rpcblockchain.cpp
+#endif
 extern json_spirit::Value getbestblockhash(const json_spirit::Array& params, bool fHelp); // in rpcblockchain.cpp
 extern json_spirit::Value getblockcount(const json_spirit::Array& params, bool fHelp); // in rpcblockchain.cpp
 extern json_spirit::Value getdifficulty(const json_spirit::Array& params, bool fHelp);

@@ -84,6 +84,7 @@ private slots:
     void cancelDownload();
     void reloadBlockchain();
     void checkForUpdate();
+    void on_confCheckBox_clicked(bool checked);
 };
 
 #endif // DOWNLOADER_H

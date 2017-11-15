@@ -123,6 +123,7 @@ public:
     };
 
     UnlockContext requestUnlock();
+    UnlockContext requestLock();
 
     bool getPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const;
     void getOutputs(const std::vector<COutPoint>& vOutpoints, std::vector<COutput>& vOutputs);

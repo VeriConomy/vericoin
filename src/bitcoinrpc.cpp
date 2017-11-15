@@ -25,6 +25,10 @@
 #include <boost/shared_ptr.hpp>
 #include <list>
 
+#ifndef QT_GUI
+#include <curl/curl.h>
+#endif
+
 #define printf OutputDebugStringF
 
 using namespace std;
@@ -238,6 +242,9 @@ static const CRPCCommand vRPCCommands[] =
   //  ------------------------  -----------------------  ------  --------
     { "help",                   &help,                   true,   true },
     { "stop",                   &stop,                   true,   true },
+#ifndef QT_GUI
+    { "bootstrap",              &bootstrap,              true,   false },
+#endif
     { "getbestblockhash",       &getbestblockhash,       true,   false },
     { "getblockcount",          &getblockcount,          true,   false },
     { "getconnectioncount",     &getconnectioncount,     true,   false },
@@ -407,7 +414,7 @@ static string HTTPReply(int nStatus, const string& strMsg, bool keepalive)
             "HTTP/1.1 %d %s\r\n"
             "Date: %s\r\n"
             "Connection: %s\r\n"
-            "Content-Length: %"PRIszu"\r\n"
+            "Content-Length: %" PRIszu "\r\n"
             "Content-Type: application/json\r\n"
             "Access-Control-Allow-Origin: http://localhost:7876\r\n"
             "Access-Control-Allow-Headers: Authorization, Content-Type\r\n"
@@ -837,6 +844,10 @@ void ThreadRPCServer2(void* parg)
     boost::system::error_code v6_only_error;
     boost::shared_ptr<ip::tcp::acceptor> acceptor(new ip::tcp::acceptor(io_service));
 
+#ifndef QT_GUI
+    curl_global_init(CURL_GLOBAL_ALL); // needed for bootstrap RPC command
+#endif
+
     boost::signals2::signal<void ()> StopRequests;
 
     bool fListening = false;
@@ -1204,6 +1215,7 @@ Array RPCConvertValues(const std::string &strMethod, const std::vector<std::stri
     if (strMethod == "settxfee"               && n > 0) ConvertTo<double>(params[0]);
     if (strMethod == "getreceivedbyaddress"   && n > 1) ConvertTo<boost::int64_t>(params[1]);
     if (strMethod == "getreceivedbyaccount"   && n > 1) ConvertTo<boost::int64_t>(params[1]);
+    if (strMethod == "bootstrap"              && n > 0) ConvertTo<bool>(params[0]);
     if (strMethod == "listreceivedbyaddress"  && n > 0) ConvertTo<boost::int64_t>(params[0]);
     if (strMethod == "listreceivedbyaddress"  && n > 1) ConvertTo<bool>(params[1]);
     if (strMethod == "listreceivedbyaccount"  && n > 0) ConvertTo<boost::int64_t>(params[0]);

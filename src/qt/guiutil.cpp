@@ -47,23 +47,23 @@ static boost::filesystem::detail::utf8_codecvt_facet utf8;
 
 namespace GUIUtil {
 
-bool fNoHeaders = false;
-int TOOLBAR_WIDTH = 110;
+bool fNoHeaders = true;
+int TOOLBAR_WIDTH = 100;
 int TOOLBAR_ICON_WIDTH = TOOLBAR_WIDTH;
 int TOOLBAR_ICON_HEIGHT = 48;
-int HEADER_WIDTH = 1024;
-int HEADER_HEIGHT = 110;
+int HEADER_WIDTH = 900;
+int HEADER_HEIGHT = 0;
 int BUTTON_WIDTH = 140;
 int BUTTON_HEIGHT = 27;
 int FRAMEBLOCKS_LABEL_WIDTH = 100;
 int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
-int WINDOW_MIN_HEIGHT = 693;
+int WINDOW_MIN_HEIGHT = 476;
 #else
 #ifdef Q_OS_MAC
-int WINDOW_MIN_HEIGHT = 673;
+int WINDOW_MIN_HEIGHT = 480;
 #else
-int WINDOW_MIN_HEIGHT = 697;
+int WINDOW_MIN_HEIGHT = 480;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;

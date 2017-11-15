@@ -15,15 +15,11 @@ class AskPassphrasePage;
 class OverviewPage;
 class AddressBookPage;
 class SendCoinsDialog;
-class SendBitCoinsDialog;
 class SignVerifyMessageDialog;
 class Notificator;
 class RPCConsole;
 class Downloader;
-class WebView;
-class GetVeriCoinPage;
 class ForumsPage;
-class BlockchainPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -81,10 +77,7 @@ private:
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
-    SendBitCoinsDialog *sendBitCoinsPage;
-    GetVeriCoinPage *getVeriCoinPage;
     ForumsPage *forumsPage;
-    BlockchainPage *blockchainPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelBalanceIcon;
@@ -104,10 +97,7 @@ private:
     QAction *quitAction;
     QAction *logoutAction;
     QAction *sendCoinsAction;
-    QAction *sendBitCoinsAction;
-    QAction *getVeriCoinAction;
     QAction *forumsAction;
-    QAction *blockchainAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -198,14 +188,8 @@ private slots:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage();
-    /** Switch to send coins page */
-    void gotoSendBitCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
-    /** Switch to Blockchain page */
-    void gotoBlockchainPage();
-    /** Switch to GetVeriCoin page */
-    void gotoGetVeriCoinPage();
 
     void resizeGUI();
     void logout();
@@ -244,10 +228,6 @@ private slots:
     void importPrivKey();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
-    /** Ask for passphrase to lock wallet temporarily */
-    void lockWallet();
-    /** Ask for passphrase to unlock wallet temporarily */
-    void unlockWallet();
     /** Rescan the blockchain */
     void rescanWallet();
     /** Check for wallet update from Help menu */
@@ -259,6 +239,11 @@ private slots:
     void showNormalIfMinimized(bool fToggleHidden = false);
     /** simply calls showNormalIfMinimized(true) for use in SLOT() macro */
     void toggleHidden();
+
+    /** Ask for passphrase to lock wallet temporarily */
+    void lockWallet();
+    /** Ask for passphrase to unlock wallet temporarily */
+    void unlockWallet();
 
     void updateStakingIcon();
 };

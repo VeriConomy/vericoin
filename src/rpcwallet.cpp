@@ -82,24 +82,24 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("proxy",         (proxy.first.IsValid() ? proxy.first.ToStringIPPort() : string())));
     obj.push_back(Pair("ip",            addrSeenByPeer.ToStringIP()));
 
-    diff.push_back(Pair("proof-of-work",  GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    diff.push_back(Pair("proof-of-work",  GetDifficulty().convert_to<double>()));
+    diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex(pindexBest, true)).convert_to<double>()));
     
     obj.push_back(Pair("difficulty",    diff));
 
     if (PoSTprotocol(pindexBest->nHeight))
     {
-        double nNetworkWeight = GetAverageStakeWeight(pindexBest->pprev);
-    obj.push_back(Pair("networkweight", nNetworkWeight));
+        double nNetworkWeight = GetAverageStakeWeight(pindexBest->pprev).convert_to<double>();
+        obj.push_back(Pair("networkweight", nNetworkWeight));
         if (nNetworkWeight > 0)
         {
-    obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))));
-    obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev)));
+            obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)).convert_to<double>()));
+            obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev).convert_to<double>()));
         }
         else
         {
-    obj.push_back(Pair("inflationrate", "n/a"));
-    obj.push_back(Pair("interestrate",  "n/a"));
+            obj.push_back(Pair("inflationrate", "n/a"));
+            obj.push_back(Pair("interestrate",  "n/a"));
         }
     }
 
@@ -122,7 +122,7 @@ Value getnetworkweight(const Array& params, bool fHelp)
             "getnetworkweight\n"
             "Returns the current average stake weight.");
 
-    return (GetAverageStakeWeight(pindexBest->pprev));
+    return (GetAverageStakeWeight(pindexBest->pprev)).convert_to<double>();
 }
 
 Value getinflationrate(const Array& params, bool fHelp)
@@ -132,7 +132,7 @@ Value getinflationrate(const Array& params, bool fHelp)
             "getinflationrate\n"
             "Returns the current inflation rate.");
 
-    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
+    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))).convert_to<double>();
 }
 
 Value getinterestrate(const Array& params, bool fHelp)
@@ -143,9 +143,9 @@ Value getinterestrate(const Array& params, bool fHelp)
             "Returns the current staking interest rate.");
 
     if (PoSTprotocol(pindexBest->nHeight))
-        return (GetCurrentInterestRate(pindexBest->pprev));
+        return (GetCurrentInterestRate(pindexBest->pprev)).convert_to<double>();
     else
-        return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
+        return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))).convert_to<double>();
 }
 
 Value getnewpubkey(const Array& params, bool fHelp)
@@ -818,7 +818,7 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     if ((int)keys.size() < nRequired)
         throw runtime_error(
             strprintf("not enough keys supplied "
-                      "(got %"PRIszu" keys, but need at least %d to redeem)", keys.size(), nRequired));
+                      "(got %" PRIszu " keys, but need at least %d to redeem)", keys.size(), nRequired));
     std::vector<CKey> pubkeys;
     pubkeys.resize(keys.size());
     for (unsigned int i = 0; i < keys.size(); i++)

@@ -6,35 +6,43 @@
 #include "main.h"
 #include "bitcoinrpc.h"
 
+#ifndef QT_GUI
+#include "util.h"
+#include "init.h"
+
+#include "miniunz.h"
+#include <curl/curl.h>
+#endif
+
 using namespace json_spirit;
 using namespace std;
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, json_spirit::Object& entry);
 
-double GetDifficulty(const CBlockIndex* blockindex)
+mp_float GetDifficulty(const CBlockIndex* blockindex)
 {
     // Floating point number that is a multiple of the minimum difficulty,
     // minimum difficulty = 1.0.
     if (blockindex == NULL)
     {
         if (pindexBest == NULL)
-            return 1.0;
+            return mp_float(1);
         else
             blockindex = GetLastBlockIndex(pindexBest, false);
     }
 
     int nShift = (blockindex->nBits >> 24) & 0xff;
 
-    double dDiff =
-        (double)0x0000ffff / (double)(blockindex->nBits & 0x00ffffff);
+    mp_float dDiff =
+        mp_float(0x0000ffff) / mp_float(blockindex->nBits & 0x00ffffff);
     while (nShift < 29)
     {
-        dDiff *= 256.0;
+        dDiff *= 256;
         nShift++;
     }
     while (nShift > 29)
     {
-        dDiff /= 256.0;
+        dDiff /= 256;
         nShift--;
     }
     return dDiff;
@@ -64,13 +72,13 @@ double GetPoWMHashPS()
         pindex = pindex->pnext;
     }
 
-    return GetDifficulty() * 4294.967296 / nTargetSpacingWork;
+    return GetDifficulty().convert_to<double>() * 4294.967296 / nTargetSpacingWork;
 }
 
-double GetPoSKernelPS(CBlockIndex* pindexPrev)
+mp_float GetPoSKernelPS(CBlockIndex* pindexPrev)
 {
     int nPoSInterval = 72;
-    double dStakeKernelsTriedAvg = 0;
+    mp_float dStakeKernelsTriedAvg = 0;
     int nStakesHandled = 0, nStakesTime = 0;
 
     CBlockIndex* pindexPrevStake = NULL;
@@ -79,7 +87,7 @@ double GetPoSKernelPS(CBlockIndex* pindexPrev)
     {
         if (pindexPrev->IsProofOfStake())
         {
-            dStakeKernelsTriedAvg += GetDifficulty(pindexPrev) * 4294967296.0;
+            dStakeKernelsTriedAvg += GetDifficulty(pindexPrev) * UINT64_C(4294967296);
             nStakesTime += pindexPrevStake ? (pindexPrevStake->nTime - pindexPrev->nTime) : 0;
             pindexPrevStake = pindexPrev;
             nStakesHandled++;
@@ -90,7 +98,7 @@ double GetPoSKernelPS(CBlockIndex* pindexPrev)
 
    return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
 }
-double GetPoSKernelPS()
+mp_float GetPoSKernelPS()
 {
     return GetPoSKernelPS(pindexBest);
 }
@@ -111,7 +119,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPri
     result.push_back(Pair("time", (boost::int64_t)block.GetBlockTime()));
     result.push_back(Pair("nonce", (boost::uint64_t)block.nNonce));
     result.push_back(Pair("bits", HexBits(block.nBits)));
-    result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
+    result.push_back(Pair("difficulty", GetDifficulty(blockindex).convert_to<double>()));
     result.push_back(Pair("blocktrust", leftTrim(blockindex->GetBlockTrust().GetHex(), '0')));
     result.push_back(Pair("chaintrust", leftTrim(blockindex->nChainTrust.GetHex(), '0')));
     if (blockindex->pprev)
@@ -122,7 +130,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPri
     result.push_back(Pair("flags", strprintf("%s%s", blockindex->IsProofOfStake()? "proof-of-stake" : "proof-of-work", blockindex->GeneratedStakeModifier()? " stake-modifier": "")));
     result.push_back(Pair("proofhash", blockindex->IsProofOfStake()? blockindex->hashProofOfStake.GetHex() : blockindex->GetBlockHash().GetHex()));
     result.push_back(Pair("entropybit", (int)blockindex->GetStakeEntropyBit()));
-    result.push_back(Pair("modifier", strprintf("%016"PRIx64, blockindex->nStakeModifier)));
+    result.push_back(Pair("modifier", strprintf("%016" PRIx64, blockindex->nStakeModifier)));
     result.push_back(Pair("modifierchecksum", strprintf("%08x", blockindex->nStakeModifierChecksum)));
     Array txinfo;
     BOOST_FOREACH (const CTransaction& tx, block.vtx)
@@ -177,8 +185,8 @@ Value getdifficulty(const Array& params, bool fHelp)
             "Returns the difficulty as a multiple of the minimum difficulty.");
 
     Object obj;
-    obj.push_back(Pair("proof-of-work",        GetDifficulty()));
-    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    obj.push_back(Pair("proof-of-work",        GetDifficulty().convert_to<double>()));
+    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true)).convert_to<double>()));
     obj.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
     return obj;
 }
@@ -293,3 +301,133 @@ Value getcheckpoint(const Array& params, bool fHelp)
 
     return result;
 }
+
+#ifndef QT_GUI
+static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+  size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+  return written;
+}
+
+int DownloadFile(std::string url, boost::filesystem::path target_file_path)
+{
+    int err = 0;
+
+    printf("bootstrap: Downloading blockchain from %s. \n", url.c_str());
+
+    CURL *curlHandle = curl_easy_init();
+    curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle, CURLOPT_NOPROGRESS, 1L);
+    curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, write_data);
+
+    FILE *file = fopen(target_file_path.c_str(), "wb");
+    if(file)
+    {
+        curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, file);
+        CURLcode curl_err = curl_easy_perform(curlHandle);
+        if (curl_err != CURLE_OK)
+            printf("bootstrap: Error downloading from %s. Error: %s.\n", url.c_str(), curl_easy_strerror(curl_err));
+        fclose(file);
+        err = (int)curl_err;
+    }
+    else
+    {
+        printf("bootstrap: Download error: Unable to open output file for writing: %s.\n", target_file_path.c_str());
+        err = -1;
+    }
+
+    curl_easy_cleanup(curlHandle);
+
+    return err;
+}
+
+int ExtractBootstrapFile(boost::filesystem::path& pathBootstrap)
+{
+    printf("bootstrap: Extracting bootstrap file\n");
+    if (!boost::filesystem::exists(pathBootstrap)) {
+        printf("bootstrap: Bootstrap file doesn't exist!\n");
+        return -1;
+    }
+
+    const char * zipfilename = pathBootstrap.c_str();
+    unzFile uf;
+#ifdef USEWIN32IOAPI
+    zlib_filefunc64_def ffunc;
+    fill_win32_filefunc64A(&ffunc);
+    uf = unzOpen2_64(zipfilename, &ffunc);
+#else
+    uf = unzOpen64(zipfilename);
+#endif
+
+    if (uf == NULL)
+    {
+        printf("bootstrap: Cannot open downloaded file: %s\n", zipfilename);
+        return -2;
+    }
+
+    int unzip_err = zip_extract_all(uf, GetDataDir(), "bootstrap");
+    if (unzip_err != UNZ_OK)
+    {
+        printf("bootstrap: Unzip failed\n");
+        return -3;
+    }
+
+    printf("bootstrap: Unzip successful\n");
+
+    if (!boost::filesystem::exists(GetDataDir() / "bootstrap" / "blk0001.dat") ||
+        !boost::filesystem::exists(GetDataDir() / "bootstrap" / "txleveldb"))
+    {
+        printf("bootstrap: Downloaded zip file did not contain all necessary files!\n");
+        return -4;
+    }
+
+    return 0;
+}
+
+Value bootstrap(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "bootstrap [overwrite_vericoin_conf=false]\n"
+            "Download blockchain and optionally a current vericoin.conf from www.vericoin.info.\n"
+            "Daemon exits when finished."
+        );
+
+    if (params.size() == 1)
+    {
+        fBootstrapConfig = params[0].get_bool();
+    }
+
+    Object result;
+    boost::filesystem::path pathBootstrapZip = GetDataDir() / "bootstrap.zip";
+    int err = DownloadFile("https://www.vericoin.info/downloads/bootstrap.zip", pathBootstrapZip);
+    if (err != 0)
+    {
+        printf("bootstrap: Download failed!\n");
+        result.push_back(Pair("success", false));
+        result.push_back(Pair("error", "Download failed"));
+        result.push_back(Pair("error_code", err));
+        return result;
+    }
+    printf("bootstrap: Download successful\n");
+
+    err = ExtractBootstrapFile(pathBootstrapZip);
+    if (err != 0)
+    {
+        printf("bootstrap: Extracting failed!\n");
+        result.push_back(Pair("success", false));
+        result.push_back(Pair("error", "Extracting failed"));
+        result.push_back(Pair("error_code", err));
+        return result;
+    }
+
+    fBootstrapTurbo = true;
+    StartShutdown();
+
+    result.push_back(Pair("success", true));
+    result.push_back(Pair("comment", "Bootstrap successful; vericoind has been stopped, please restart."));
+
+    return result;
+}
+#endif
+
