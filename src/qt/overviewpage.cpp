@@ -329,34 +329,12 @@ void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & 
 
 void OverviewPage::on_stakeButton_clicked()
 {
-    // check client is in sync
-    QDateTime lastBlockDate = clientmodel->getLastBlockDate();
-    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    int count = clientmodel->getNumBlocks();
-    int nTotalBlocks = clientmodel->getNumBlocksOfPeers();
-    int peers = clientmodel->getNumConnections();
-    ui->stakeButton->clearFocus();
-    if((secs > 90*60 && count < nTotalBlocks && !Staking) || (peers < 1 && !Staking))
-    {
-        QMessageBox::warning(this, tr("Staking"),
-            tr("Please wait until fully in sync with network to stake."),
-            QMessageBox::Ok, QMessageBox::Ok);
-        return;
-    }
-
-    // toggle staking
-    bool onOrOff;
     if (!Staking)
     {
         model->requestUnlock();
         if (model->getEncryptionStatus() == WalletModel::Unlocked)
         {
-            onOrOff = true;
-            Staking = onOrOff;
-            ui->stakingLabel->setText("Click to stop:");
-            ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
-            MilliSleep(100);
-            SetBoolArg("-staking",true);
+            startStaking();
         }
     }
     else
@@ -364,11 +342,25 @@ void OverviewPage::on_stakeButton_clicked()
         model->requestLock();
         if (model->getEncryptionStatus() == WalletModel::Locked)
         {
-            onOrOff = false;
-            Staking = onOrOff;
-            ui->stakingLabel->setText("Click to start:");
-            ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
-            SetBoolArg("-staking",false);
+            stopStaking();
         }
     }
+}
+
+void OverviewPage::startStaking()
+{
+        Staking = true;
+        ui->stakingLabel->setText("Click to stop:");
+        ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
+        MilliSleep(100);
+        setStatistics();
+}
+
+void OverviewPage::stopStaking()
+{
+        Staking = false;
+        ui->stakingLabel->setText("Click to start:");
+        ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
+        MilliSleep(100);
+        setStatistics();
 }

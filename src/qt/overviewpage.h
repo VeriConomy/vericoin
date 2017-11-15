@@ -34,6 +34,8 @@ public:
 public slots:
     void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance);
     void setStatistics();
+    void startStaking();
+    void stopStaking();
 
 signals:
     void transactionClicked(const QModelIndex &index);

@@ -1162,7 +1162,6 @@ void BitcoinGUI::dropEvent(QDropEvent *event)
     if(event->mimeData()->hasUrls())
     {
         int nValidUrisFound = 0;
-        int nValidUrisFoundBit = 0;
         QList<QUrl> uris = event->mimeData()->urls();
         foreach(const QUrl &uri, uris)
         {
@@ -1436,6 +1435,7 @@ void BitcoinGUI::lockWallet()
         dlg.exec();
         stakingLabel->setText("Staking off");
         updateStakingIcon();
+        overviewPage->stopStaking();
     }
 }
 
@@ -1452,6 +1452,7 @@ void BitcoinGUI::unlockWallet()
         dlg.exec();
         stakingLabel->setText("Staking on");
         updateStakingIcon();
+        overviewPage->startStaking();
     }
 }
 
