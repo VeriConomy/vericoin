@@ -1541,7 +1541,7 @@ bool CWallet::GetStakeWeight(const CKeyStore& keystore, uint64_t& nWeight)
 int CWallet::StakeTimeEarned(uint64_t nWeight, CBlockIndex* pindexPrev)
 {
     int factor;
-    double weightFraction = (nWeight+1) / (GetAverageStakeWeight(pindexPrev));
+    mp_float weightFraction = (nWeight+1) / (GetAverageStakeWeight(pindexPrev));
     // This function is only used in updateStakingIcon(),
     // so we don't care if the weightFraction is > 0.45.
     //if (weightFraction > 0.45)
@@ -1550,7 +1550,7 @@ int CWallet::StakeTimeEarned(uint64_t nWeight, CBlockIndex* pindexPrev)
     //}
     //else
     {
-        factor = ((pow(cos((PI*weightFraction)),2.0))*100);
+        factor = ((pow(cos((PI*weightFraction)),2.0))*100).convert_to<int>();
     }
     return factor;
 }
