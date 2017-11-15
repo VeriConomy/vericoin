@@ -3847,9 +3847,13 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
 
 uint64_t GetTimeToStake()
 {
-    uint64_t nWeight =0;
+    uint64_t nWeight=0;
+    u_int64_t nEstimateTime=0;
     pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
     mp_float nNetworkWeight = GetPoSKernelPS();
-    u_int64_t nEstimateTime = (nTargetSpacing * nNetworkWeight / nWeight).convert_to<int64_t>();
+    if (nWeight != 0)
+    {
+        nEstimateTime = (nTargetSpacing * nNetworkWeight / nWeight).convert_to<int64_t>();
+    }
     return nEstimateTime;
 }

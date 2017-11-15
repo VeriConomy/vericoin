@@ -53,13 +53,13 @@
       <number>10</number>
      </property>
      <property name="leftMargin">
-      <number>250</number>
+      <number>200</number>
      </property>
      <property name="topMargin">
       <number>480</number>
      </property>
      <property name="rightMargin">
-      <number>250</number>
+      <number>200</number>
      </property>
      <item row="1" column="1">
       <widget class="QLineEdit" name="passEdit1">
@@ -107,7 +107,7 @@
       <widget class="QLabel" name="messageLabel">
        <property name="minimumSize">
         <size>
-         <width>480</width>
+         <width>500</width>
          <height>20</height>
         </size>
        </property>
@@ -126,7 +126,7 @@
       <widget class="QLabel" name="warningLabel">
        <property name="minimumSize">
         <size>
-         <width>480</width>
+         <width>500</width>
          <height>20</height>
         </size>
        </property>

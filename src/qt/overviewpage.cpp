@@ -240,9 +240,13 @@ void OverviewPage::setStatistics()
     double nNetworkWeight = GetPoSKernelPS().convert_to<double>();
     int stakerate = 0;
     if (Staking){
+
         uint64_t timetillstake = GetTimeToStake();
         if (timetillstake > 3600){
-            stakerate = GetTimeToStake()/(60*60);
+            stakerate = timetillstake/(60*60);
+        }
+        else if (timetillstake == 0){
+            stakerate = 0;
         }
         else{
             stakerate = 1;
