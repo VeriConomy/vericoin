@@ -12,7 +12,7 @@
 #define ProgramName "VeriCoin"
 
 ; Enter the Version Number of your binaries
-#define VersionNumber "1.6.5"
+#define VersionNumber "1.7"
 
 ; Enter the Name of the Folder created in \Appdata\Roaming where your binaries will place the user files, including wallet, conf file, blockchain info etc.
 #define RoamingName "VeriCoin"
@@ -25,7 +25,12 @@
 ; If no subfolder is needed use #define SubDir ""
 #define SubDir ""
 
+; Enter the Name of the config file you wish to include                 
+#define configfile "vericoin.conf"
+
 [Setup]
+AppPublisher=VeriCoin
+AppPublisherURL=http://www.vericoin.info/
 AppName={#ProgramName}
 AppVersion={#VersionNumber}
 DefaultDirName={pf32}\{#ProgramName}
@@ -36,16 +41,13 @@ SolidCompression=yes
 OutputDir=SETUP
 
 [Dirs]
-Name: "imageformats";
-Name: "platforms";
 Name: "fonts";
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
-Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
+Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss" 
 Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main;
-Source: "imageformats\*"; DestDir: "{app}\imageformats"; Components: main;
-Source: "platforms\*"; DestDir: "{app}\platforms"; Components: main;
+Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
 Source: "fonts\Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
 
 [Icons]
@@ -61,6 +63,7 @@ Name: desktopicon\user; Description: "For the current user only"; GroupDescripti
 
 [Components]
 Name: main; Description: Main Program; Types: full compact custom; Flags: fixed
+Name: config; Description: A config file including nodes to synchronize with the network; Types: full custom; Flags: fixed
 
 [Code]
 var
