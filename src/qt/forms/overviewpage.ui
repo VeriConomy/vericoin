@@ -631,7 +631,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Staked Block within (hours):</string>
+          <string>Staked block within (hours):</string>
          </property>
         </widget>
        </item>
@@ -823,7 +823,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Network stakeweight:</string>
+          <string>Network coins staking (%):</string>
          </property>
         </widget>
        </item>

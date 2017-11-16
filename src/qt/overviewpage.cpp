@@ -240,7 +240,6 @@ void OverviewPage::setStatistics()
     double nNetworkWeight = GetPoSKernelPS().convert_to<double>();
     int stakerate = 0;
     if (Staking){
-
         uint64_t timetillstake = GetTimeToStake();
         if (timetillstake > 3600){
             stakerate = timetillstake/(60*60);
@@ -254,7 +253,7 @@ void OverviewPage::setStatistics()
     }
     // display stats
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->netstakeweight->setText(QString::number((double)nNetworkWeight,'f',2));
+    ui->netstakeweight->setText(QString::number((double)((nNetworkWeight/2)/30000000)*100,'f',2));
     ui->stakeRate->setText(QString::number(((int)stakerate)));
     ui->inflationRate->setText(QString::number(GetCurrentInflationRate(nNetworkWeight).convert_to<double>(),'f',2));
     ui->interestRate->setText(QString::number(GetCurrentInterestRate(pindexBest).convert_to<double>(),'f',2));

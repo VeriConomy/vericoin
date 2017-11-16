@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>768</height>
+    <height>512</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,152 +42,146 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
-     <property name="formAlignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-     <property name="verticalSpacing">
-      <number>10</number>
-     </property>
-     <property name="leftMargin">
-      <number>200</number>
-     </property>
-     <property name="topMargin">
-      <number>480</number>
-     </property>
-     <property name="rightMargin">
-      <number>200</number>
-     </property>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="passEdit1">
-       <property name="minimumSize">
-        <size>
-         <width>480</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="passEdit2">
-       <property name="minimumSize">
-        <size>
-         <width>480</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="passEdit3">
-       <property name="minimumSize">
-        <size>
-         <width>480</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLabel" name="messageLabel">
-       <property name="minimumSize">
-        <size>
-         <width>500</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::RichText</enum>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLabel" name="warningLabel">
-       <property name="minimumSize">
-        <size>
-         <width>500</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="minimumSize">
-        <size>
-         <width>480</width>
-         <height>27</height>
-        </size>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>150</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    <widget class="QFrame" name="frame">
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <property name="labelAlignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="formAlignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="verticalSpacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>250</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>250</number>
+      </property>
+      <property name="bottomMargin">
+       <number>50</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="QLabel" name="warningLabel">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="messageLabel">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::RichText</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="passEdit1">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>27</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Ok</set>
+        </property>
+        <property name="centerButtons">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>500</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="passEdit2">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="passEdit3">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>AskPassphrasePage</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
