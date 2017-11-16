@@ -98,11 +98,11 @@ mp_float GetPoSKernelPS(CBlockIndex* pindexPrev)
 
    return nStakesTime ? dStakeKernelsTriedAvg / nStakesTime : 0;
 }
+
 mp_float GetPoSKernelPS()
 {
     return GetPoSKernelPS(pindexBest);
 }
-
 
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPrintTransactionDetail)
 {

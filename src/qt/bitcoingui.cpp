@@ -814,29 +814,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
     QString strStatusBarWarnings = clientModel->getStatusBarWarnings();
     QString tooltip;
-    QDateTime lastBlockDate = clientModel->getLastBlockDate();
-    QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
-    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    int totalHours = GenBlockDate.daysTo(QDateTime::currentDateTime())*24;
-    int currentHour = totalHours - (secs/(60*60));
-    if(count < nTotalBlocks)
-    {
-        float nPercentageDone = currentHour / (totalHours * 0.01f);
-
-        if (strStatusBarWarnings.isEmpty())
-        {
-            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 1));
-            progressBar->setMaximum(totalHours);
-            progressBar->setValue(currentHour);
-            progressBar->setVisible(true);
-        }
-        tooltip = tr("Downloaded %1 blocks of transaction history (%2% done).").arg(count).arg(nPercentageDone, 0, 'f', 1);
-    }
-    else
-    {
-        progressBar->setVisible(false);
-        tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
-    }
 
     // Override progressBar text when we have warnings to display
     if (!strStatusBarWarnings.isEmpty())
@@ -844,7 +821,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         progressBar->setFormat(strStatusBarWarnings);
         progressBar->setValue(0);
         progressBar->setVisible(true);
-
     }
 
     // Show Alert message always.
@@ -860,6 +836,11 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
 
     QString text;
+    QDateTime lastBlockDate = clientModel->getLastBlockDate();
+    QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int totalHours = GenBlockDate.daysTo(QDateTime::currentDateTime())*24;
+    int currentHour = totalHours - (secs/(60*60));
 
     // Represent time from last generated block in human readable text
     if(secs <= 0)
@@ -888,15 +869,27 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     {
         overviewPage->setStatistics();
         overviewPage->showOutOfSyncWarning(false);
+        progressBar->setVisible(false);
+        tooltip = tr("Downloaded %1 blocks of transaction history.").arg(count);
     }
     else
     {
+        float nPercentageDone = currentHour / (totalHours * 0.01f);
+
+        if (strStatusBarWarnings.isEmpty())
+        {
+            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 1));
+            progressBar->setMaximum(totalHours);
+            progressBar->setValue(currentHour);
+            progressBar->setVisible(true);
+        }
+        tooltip = tr("Downloaded %1 blocks of transaction history (%2% done).").arg(count).arg(nPercentageDone, 0, 'f', 1);
+
         stakingLabel->setText(QString("Syncing..."));
         labelStakingIcon->hide();
         labelBlocksIcon->show();
         tooltip = tr("Syncing") + QString(".\n") + tooltip;
         labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-
         overviewPage->showOutOfSyncWarning(true);
     }
 
