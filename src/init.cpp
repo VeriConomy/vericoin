@@ -1036,9 +1036,6 @@ bool AppInit2()
 
     // ********************************************************* Step 12: finished
 
-    uiInterface.InitMessage(_("Done loading"));
-    printf("Done loading\n");
-
     if (!strErrors.str().empty())
         return InitError(strErrors.str());
 
@@ -1051,6 +1048,8 @@ bool AppInit2()
     while (1)
         MilliSleep(5000);
 #endif
+    uiInterface.InitMessage(_("Done loading"));
+    printf("Done loading\n");
 
     return true;
 }

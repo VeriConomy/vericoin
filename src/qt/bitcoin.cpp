@@ -240,14 +240,13 @@ int main(int argc, char *argv[])
 
                 optionsModel.Upgrade(); // Must be done after AppInit2
 
-                if (splashref)
-                    splash.finish(&window);
-
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
                 ReadVersionFile();
 
+                if (splashref)
+                    splash.finish(&window);
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel);
 
