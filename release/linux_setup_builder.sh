@@ -3,15 +3,15 @@
 # This script depends on the GNU script makeself.sh found at: http://megastep.org/makeself/
 # Note: The structure of this package depends on the -rpath,./lib to be set at compile/link time.
 
-version="1.6.4"
+version="1.7"
 arch=`uname -i`
 
 if [ "${arch}" = "x86_64" ]; then
     arch="64bit"
-    QtLIBPATH="${HOME}/Qt/5.4/gcc_64"
+    QtLIBPATH="${HOME}/Qt5.4.2/5.4/gcc_64"
 else
     arch="32bit"
-    QtLIBPATH="${HOME}/Qt/5.4/gcc"
+    QtLIBPATH="${HOME}/Qt5.4.2/5.4/gcc"
 fi
 
 if [ -f vericoin-qt ] && [ -f vericoin.conf ] && [ -f README ]; then
