@@ -1,6 +1,11 @@
 VeriCoin-qt: Qt5 GUI for VeriCoin
 ===============================
 
+Supported distributions
+=======================
+
+These instructions have been verified to work on Ubuntu 16.04 LTS.
+
 Build instructions
 ===================
 
@@ -16,9 +21,10 @@ distribution are installed, for Debian and Ubuntu these are:
 
 ::
 
-    apt-get install qt5-qmake libqt5-dev build-essential libboost-dev libboost-system-dev \
+    apt-get install qt5-qmake qtbase5-dev qttools5-dev-tools qt5-default \
+        build-essential libboost-dev libboost-system-dev \
         libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev \
-        libssl-dev libdb4.8++-dev
+        libssl-dev libdb++-dev
 
 then execute the following:
 
