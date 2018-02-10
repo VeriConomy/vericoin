@@ -61,6 +61,12 @@ Versions used in this release:
  Boost         1.55
  miniupnpc     1.9
 
+
+Dependency Build Instructions: Fedora & RHEL/CentOS
+---------------------------------------------------
+yum install libcurl-devel miniupnpc-devel libdb-cxx-devel openssl-devel boost-devel
+
+
 Dependency Build Instructions: Ubuntu & Debian
 ----------------------------------------------
 sudo apt-get install build-essential
