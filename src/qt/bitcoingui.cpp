@@ -1580,7 +1580,7 @@ void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
 void BitcoinGUI::reloadBlockchain(bool autoReload)
 {
     boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
-    QUrl url(QString(walletDownloadsUrl).append("bootstrap.zip"));
+    QUrl url(QString(bootstrapDownloadsUrl).append("bootstrap.zip"));
 
     // Don't auto-bootstrap if the file has already been downloaded, unless the wallet is being encrypted.
     if (boost::filesystem::exists(pathBootstrap) && autoReload && !fEncrypt)
