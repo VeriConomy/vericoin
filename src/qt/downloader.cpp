@@ -320,8 +320,10 @@ void Downloader::downloaderFinished()
         return;
     }
 
+    // get redirection url
+    QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
     // when partial
-    if (processBlockchain && file && file->size() < 1000)
+    if (processBlockchain && file && file->size() < 1000 && redirectionTarget.isNull())
     {
         if (file)
         {
@@ -342,8 +344,6 @@ void Downloader::downloaderFinished()
     file->flush();
     file->close();
 
-    // get redirection url
-    QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
     if (reply->error())
     {
         file->remove();
