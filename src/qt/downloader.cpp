@@ -361,17 +361,12 @@ void Downloader::downloaderFinished()
         if (!redirectionTarget.isNull())
         {
             QUrl newUrl = url.resolved(redirectionTarget.toUrl());
-            if (autoDownload || QMessageBox::question(this, tr("Downloader"),
-                                  tr("Redirect to %1 ?").arg(newUrl.toString()),
-                                  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-            {
-                url = newUrl;
-                reply->deleteLater();
-                file->open(QIODevice::WriteOnly);
-                file->resize(0);
-                startRequest(url);
-                return;
-            }
+            url = newUrl;
+            reply->deleteLater();
+            file->open(QIODevice::WriteOnly);
+            file->resize(0);
+            startRequest(url);
+            return;
         }
         else
         {
