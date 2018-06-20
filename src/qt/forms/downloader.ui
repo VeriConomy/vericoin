@@ -185,6 +185,9 @@
      <property name="text">
       <string>Install new vericoin.conf file? (It will overwrite current)</string>
      </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
    <item row="0" column="0">

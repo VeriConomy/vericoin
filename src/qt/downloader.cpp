@@ -66,6 +66,7 @@ Downloader::~Downloader()
 
 void Downloader::showEvent(QShowEvent *e)
 {
+    ui->confCheckBox->setChecked(processBlockchain);
     if (autoDownload)
     {
         ui->quitButton->setEnabled(true);
