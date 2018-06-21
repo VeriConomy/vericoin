@@ -26,7 +26,6 @@ private slots:
     void on_btnSaveAs_clicked();
     void on_btnCancel_clicked();
     void on_chkReqPayment_toggled(bool fChecked);
-
     void updateDisplayUnit();
 
 private:

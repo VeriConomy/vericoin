@@ -9,6 +9,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QFileInfo>
+#include <QQueue>
 #include <QDir>
 #include <QMessageBox>
 #include <QTimer>
@@ -37,9 +38,20 @@ private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QTimer *downloadTimer;
+    QTimer remainTimer;
+    QTime downloadTime;
     QFile *file;
     qint64 downloadProgress;
     qint64 fileSize;
+
+    //these variables are used to calculate download speed and estimated time to
+    //download finish
+    double currentSpeed;
+    QQueue<double> last30secsSpeed;
+    QQueue<double> last60secsSpeed;
+    quint64 currentTotalBytes;
+    quint64 currentBytesRead;
+    void startDownloadingStatsRecording();
 
 public:
     void setUrl(QUrl source);
@@ -62,11 +74,8 @@ protected:
 
 private slots:
     void on_downloadButton_clicked();
-
     void on_quitButton_clicked();
-
     void on_continueButton_clicked();
-
     void on_urlEdit_returnPressed();
 
     // slot for readyRead() signal
@@ -85,6 +94,7 @@ private slots:
     void reloadBlockchain();
     void checkForUpdate();
     void on_confCheckBox_clicked(bool checked);
+    void calculateRemainTime();
 };
 
 #endif // DOWNLOADER_H

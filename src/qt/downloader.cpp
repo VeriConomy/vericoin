@@ -38,7 +38,9 @@ Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
 
     // Create a timer to handle hung download requests
     downloadTimer = new QTimer(this);
+    remainTimer.setInterval(1000);
     connect(downloadTimer, SIGNAL(timeout()), this, SLOT(timerCheckDownloadProgress()));
+    connect(&remainTimer, SIGNAL(timeout()), this, SLOT(calculateRemainTime()));
 
     // These will be set true when Cancel/Continue/Quit pressed
     downloaderQuit = false;
@@ -55,6 +57,9 @@ Downloader::Downloader(QWidget *parent, WalletModel *walletModel) :
     file = 0;
     manager = 0;
 
+    //downloading stats values
+    currentSpeed = 0;
+
     connect(ui->urlEdit, SIGNAL(textChanged(QString)),
                 this, SLOT(enableDownloadButton()));
 }
@@ -67,6 +72,7 @@ Downloader::~Downloader()
 void Downloader::showEvent(QShowEvent *e)
 {
     ui->confCheckBox->setChecked(processBlockchain);
+    on_confCheckBox_clicked(processBlockchain);
     if (autoDownload)
     {
         ui->quitButton->setEnabled(true);
@@ -137,6 +143,8 @@ void Downloader::closeEvent(QCloseEvent *event)
 // Network error ocurred. Download cancelled
 void Downloader::networkError()
 {
+    QNetworkReply *reply = static_cast<QNetworkReply*>(sender());
+    qDebug()<<__PRETTY_FUNCTION__<<':'<<reply->error();
     if (!downloaderQuit)
         cancelDownload();
 }
@@ -148,6 +156,7 @@ void Downloader::cancelDownload()
     if (downloadTimer->isActive())
     {
         downloadTimer->stop();
+        remainTimer.stop();
     }
 
     if (!reply->errorString().isEmpty())
@@ -255,6 +264,7 @@ void Downloader::startRequest(QUrl url)
 
     // Start the timer
     downloadTimer->start(30000);
+    startDownloadingStatsRecording();
 
     // get() method posts a request
     // to obtain the contents of the target request
@@ -295,6 +305,17 @@ void Downloader::startRequest(QUrl url)
     ui->statusLabel->setText(statusText);
 }
 
+void Downloader::startDownloadingStatsRecording()
+{
+  currentTotalBytes = 0;
+  currentBytesRead = 0;
+  currentSpeed = 0;
+  last30secsSpeed.clear();
+  last60secsSpeed.clear();
+  remainTimer.start();
+  downloadTime.start();
+}
+
 // When download finished or canceled, this will be called
 void Downloader::downloaderFinished()
 {
@@ -302,6 +323,7 @@ void Downloader::downloaderFinished()
     if (downloadTimer->isActive())
     {
         downloadTimer->stop();
+        remainTimer.stop();
     }
 
     // when canceled
@@ -424,8 +446,29 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
     if (httpRequestAborted)
         return;
 
+    currentTotalBytes = totalBytes;
+    currentBytesRead = bytesRead;
+
     ui->progressBar->setMaximum(totalBytes);
     ui->progressBar->setValue(bytesRead);
+
+    // calculate the download speed
+    currentSpeed = bytesRead * 1000.0 / downloadTime.elapsed();
+    double speed = currentSpeed;
+    QString unit;
+    if (currentSpeed < 1024) {
+        unit = "bytes/sec";
+    } else if (currentSpeed < 1024*1024) {
+        speed /= 1024;
+        unit = "kB/s";
+    } else {
+        speed /= 1024*1024;
+        unit = "MB/s";
+    }
+
+    //speed=speedNow*0.5+speedLastHalfMinute*0.3+speedLastMinute*0.2
+    //totalBytes / speed = secs remaining
+    ui->downloadSpeedLabel->setText(QString("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
 }
 
 // This is called during the download to check for a hung state
@@ -440,6 +483,7 @@ void Downloader::timerCheckDownloadProgress()
     {
         if (!downloadFinished)
         {
+            qDebug()<<__PRETTY_FUNCTION__<<": We appear to be hung";
             // We appear to be hung.
             cancelDownload();
         }
@@ -632,4 +676,37 @@ void Downloader::on_confCheckBox_clicked(bool checked)
     {
         fBootstrapConfig = false;
     }
+}
+
+void Downloader::calculateRemainTime()
+{
+    last30secsSpeed.push_back(currentSpeed);
+    last60secsSpeed.push_back(currentSpeed);
+
+    if(last30secsSpeed.length() > 30)
+      last30secsSpeed.dequeue();
+
+    if(last60secsSpeed.length() > 60)
+      last60secsSpeed.dequeue();
+
+    double avg30 = 0;
+    for(double s : last30secsSpeed)
+      avg30 += s;
+    avg30 /= last30secsSpeed.size();
+
+    double avg60 = 0;
+    for(double s : last60secsSpeed)
+      avg60 += s;
+    avg60 /= last60secsSpeed.size();
+
+    double speed = currentSpeed * 0.5 + avg30 * 0.3 + avg60 * 0.2;
+    int remainSecs = (currentTotalBytes - currentBytesRead) / speed;
+
+    QTime time(0, 0);
+    time = time.addSecs(remainSecs);
+
+    if(remainSecs < 0)
+      ui->remainTimeLabel->setText(tr("Download Finished In N/A"));
+    else
+      ui->remainTimeLabel->setText(tr("Download Finished In %1 mins").arg(time.toString("mm:ss")));
 }
