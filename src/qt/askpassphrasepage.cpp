@@ -46,10 +46,10 @@ AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
             ui->passEdit2->show();
             ui->passEdit3->show();
             ui->passEdit2->setFocus();
-            ui->passEdit2->setPlaceholderText(tr("New passphrase..."));
-            ui->passEdit3->setPlaceholderText(tr("Repeat new passphrase..."));
-            ui->messageLabel->setText(tr("Welcome! Please enter a passphrase of 10 or more characters, or 8 or more words."));
-            ui->warningLabel->setText(tr("WARNING: IF YOU LOSE YOUR PASSPHRASE, YOU WILL LOSE ALL OF YOUR COINS!"));
+            ui->passEdit2->setPlaceholderText(tr("New password..."));
+            ui->passEdit3->setPlaceholderText(tr("Repeat new password..."));
+            ui->messageLabel->setText(tr("Welcome! Please enter a password of 10 or more characters, or 8 or more words."));
+            ui->warningLabel->setText(tr("WARNING: IF YOU LOSE YOUR PASSWORD, YOU WILL LOSE ALL OF YOUR COINS!"));
             break;
         case Lock: // Ask passphrase
             ui->passEdit1->hide();
@@ -62,8 +62,8 @@ AskPassphrasePage::AskPassphrasePage(Mode mode, QWidget *parent) :
             ui->passEdit2->hide();
             ui->passEdit3->hide();
             ui->passEdit1->setFocus();
-            ui->passEdit1->setPlaceholderText(tr("Enter passphrase..."));
-            ui->messageLabel->setText(tr("Please enter your passphrase to unlock the wallet."));
+            ui->passEdit1->setPlaceholderText(tr("Enter password..."));
+            ui->messageLabel->setText(tr("Please enter your password to unlock the wallet."));
             break;
     }
 
@@ -111,24 +111,28 @@ void AskPassphrasePage::accept()
     case Encrypt: // Encrypt wallet and set password
         if(newpass1.empty() || newpass2.empty())
         {
-            ui->messageLabel->setText(tr("The new passphrase cannot be blank."));
+            ui->messageLabel->setText(tr("The new password cannot be blank."));
             break;
         }
         if(newpass1.length() < 10)
         {
-            ui->messageLabel->setText(tr("The new passphrase must be 10 or more characters."));
+            ui->messageLabel->setText(tr("The new password must be 10 or more characters."));
+            ui->passEdit2->setText(QString(""));
+            ui->passEdit3->setText(QString(""));
             break;
         }
         if(newpass1 != newpass2)
         {
-            ui->messageLabel->setText(tr("The passphrases do not match."));
+            ui->messageLabel->setText(tr("The passwords do not match."));
+            ui->passEdit2->setText(QString(""));
+            ui->passEdit3->setText(QString(""));
             break;
         }
         else
         {
             if(model->setWalletEncrypted(true, newpass1))
             {
-                ui->messageLabel->setText(tr("VeriCoin will now restart to finish the encryption process."));
+                ui->messageLabel->setText(tr("VeriCoin will now restart to secure the wallet with your password."));
                 ui->warningLabel->setText(tr("IMPORTANT: Previous backups of your wallet should be replaced with the new one."));
                 ui->passEdit2->setText(QString(" ").repeated(ui->passEdit2->text().size()));
                 ui->passEdit2->setText(QString(""));
@@ -156,7 +160,8 @@ void AskPassphrasePage::accept()
     case Unlock: // Turn on staking
         if(!model->setWalletLocked(false, oldpass))
         {
-            ui->messageLabel->setText(tr("The passphrase entered for the wallet is incorrect."));
+            ui->messageLabel->setText(tr("The password entered for the wallet is incorrect."));
+            ui->passEdit1->setText(QString(""));
         }
         else
         {

@@ -77,8 +77,9 @@ using namespace std;
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
-const char *walletUrl = "https://www.vericoin.info/";
-const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
+const char *walletUrl = "https://vericoin.info";
+const char *walletDownloadsUrl = "https://downloads.vericoin.info/?prefix=vericoin/";
+const char *updateDownloadsUrl = "https://downloads.vericoin.info/?prefix=updates/";
 const char *bootstrapDownloadsUrl = "https://cdn.vericonomy.com/";
 const char *forumsUrl = "http://www.vericoinforums.com";
 bool fRestart = false;
@@ -1266,7 +1267,7 @@ int GetArchitecture()
 boost::filesystem::path GetVersionFile()
 {
     boost::filesystem::path versionFile("VERSION.json");
-    string versionUrl(walletDownloadsUrl);
+    string versionUrl(updateDownloadsUrl);
 
     versionUrl.append(boostPathToString(versionFile));
     versionFile = (GetDataDir() / versionFile);
