@@ -1048,8 +1048,8 @@ bool AppInit2()
     while (1)
         MilliSleep(5000);
 #endif
-    uiInterface.InitMessage(_("Done loading"));
-    printf("Done loading\n");
+    uiInterface.InitMessage(_("Loading..."));
+    printf("Loading...\n");
 
     return true;
 }
