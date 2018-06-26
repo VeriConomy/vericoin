@@ -33,7 +33,7 @@ AppPublisher=VeriCoin
 AppPublisherURL=http://www.vericoin.info/
 AppName={#ProgramName}
 AppVersion={#VersionNumber}
-DefaultDirName={pf32}\{#ProgramName}
+DefaultDirName={pf64}\{#ProgramName}
 DefaultGroupName={#ProgramName}
 UninstallDisplayIcon={app}\{#QTexe}
 Compression=lzma2
@@ -46,6 +46,12 @@ Name: "fonts";
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
 Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss" 
+Source: "bearer\*.dll"; DestDir: "{app}\bearer"; Components: main;
+Source: "iconengines\*.dll"; DestDir: "{app}\iconengines"; Components: main;
+Source: "imageformats\*.dll"; DestDir: "{app}\imageformats"; Components: main;
+Source: "platforms\*.dll"; DestDir: "{app}\platforms"; Components: main;
+Source: "styles\*.dll"; DestDir: "{app}\styles"; Components: main;
+Source: "translations\*.qm"; DestDir: "{app}\translations"; Components: main;
 Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main;
 Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
 Source: "fonts\Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
