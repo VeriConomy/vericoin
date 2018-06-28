@@ -109,7 +109,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         GUIUtil::refactorGUI(screenSize);
     }
     setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
-	setMaximumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
+    //setMaximumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
     resizeGUI();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
 

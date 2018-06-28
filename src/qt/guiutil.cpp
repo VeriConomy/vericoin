@@ -60,11 +60,7 @@ int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
 int WINDOW_MIN_HEIGHT = 476;
 #else
-#ifdef Q_OS_MAC
-int WINDOW_MIN_HEIGHT = 460;
-#else
-int WINDOW_MIN_HEIGHT = 480;
-#endif
+int WINDOW_MIN_HEIGHT = 450;
 #endif
 int STATUSBAR_ICONSIZE = 16;
 int STATUSBAR_MARGIN = 10;
@@ -76,11 +72,7 @@ void refactorGUI(QRect screenSize)
 #ifdef Q_OS_WIN
     int newHeight = screenSize.height() - 40;
 #else
-#ifdef Q_OS_MAC
     int newHeight = screenSize.height() - 30;
-#else
-    int newHeight = screenSize.height() - 25;
-#endif
 #endif
     int newWidth = WINDOW_MIN_WIDTH;
     if (screenSize.width() < newWidth - 2)

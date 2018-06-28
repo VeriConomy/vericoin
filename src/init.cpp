@@ -517,7 +517,7 @@ bool AppInit2()
 
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fUseFastIndex = GetBoolArg("-fastindex", true);
-    nMinerSleep = GetArg("-minersleep", 20000);
+    nMinerSleep = GetArg("-minersleep", 25000);
 
     nDerivationMethodIndex = 0;
 
