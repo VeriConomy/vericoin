@@ -840,7 +840,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     int totalHours = GenBlockDate.daysTo(QDateTime::currentDateTime())*24;
-    int currentHour = totalHours - (secs/(60*60));
+    int currentHour = (totalHours+1) - (secs/(60*60));
 
     // Represent time from last generated block in human readable text
     if(secs <= 0)
