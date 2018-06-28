@@ -472,7 +472,7 @@ void BitcoinGUI::createActions()
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumAction = new QAction(QIcon(":/icons/bitcoin"), tr("VeriCoin &Forums"), this);
     forumAction->setToolTip(tr("Go to the VeriCoin forums."));
-    webAction = new QAction(QIcon(":/icons/site"), tr("www.vericoin.info"), this);
+    webAction = new QAction(QIcon(":/icons/site"), tr("https://vericoin.info/"), this);
     webAction->setToolTip(tr("Go to VeriCoin website."));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export Data"), this);
