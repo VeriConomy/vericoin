@@ -4,7 +4,9 @@ VERSION = 1.7.2
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE __STDC_FORMAT_MACROS __STDC_LIMIT_MACROS
 CONFIG += no_include_pwd thread release
+!windows {
 CONFIG += static
+}
 QT += network widgets core gui
 greaterThan(QT_MAJOR_VERSION, 4) {
 	DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
@@ -47,21 +49,17 @@ LIBS += $$UNWIND_LIB_PATH $$PROFILER_LIB_PATH
 
 # win build dependencies
 windows {
-  lessThan(QT_VERSION, 5.4) {
-  BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
-  } else {
-  BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
-  }
+BOOST_LIB_SUFFIX=-mgw453-mt-1_57
 BOOST_INCLUDE_PATH=C:/deps/boost_1_57_0
 BOOST_LIB_PATH=C:/deps/boost_1_57_0/stage/lib
 BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
 BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
-OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1l/include
-OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1l
+OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.2n/include
+OPENSSL_LIB_PATH=C:/deps/openssl-1.0.2n
 MINIUPNPC_INCLUDE_PATH=C:/deps
 MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
-QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
-QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
+QRENCODE_INCLUDE_PATH=C:/deps/libqrencode
+QRENCODE_LIB_PATH=C:/deps/libqrencode/.libs
 }
 
 unix: contains(TARGET_BIT, m32) {
@@ -96,7 +94,7 @@ contains(RELEASE, 1) {
 	macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.9 -arch x86_64 -isysroot /Developer/SDKs/MacOSX.sdk
     !windows:!macx {
         # Linux: static link
-        LIBS += -Wl,-Bstatic
+		LIBS += -Wl,-Bstatic
     }
 }
 
@@ -108,8 +106,8 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./lib
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
-windows:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl, -static
-windows:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
+windows:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl
+#windows:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support

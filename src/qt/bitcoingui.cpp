@@ -1485,9 +1485,8 @@ void BitcoinGUI::updateStakingIcon()
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     int64_t currentBlock = clientModel->getNumBlocks();
     int peerBlock = clientModel->getNumBlocksOfPeers();
-    if ((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
+    if ((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain || clientModel->getNumConnections() == 0)
     {
-
         return;
     }
     uint64_t nWeight = 0;
@@ -1561,12 +1560,17 @@ void BitcoinGUI::updateStakingIcon()
         labelBlocksIcon->hide();
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1\n").arg(currentBlock));
-        else if (vNodes.empty())
+        if (pwalletMain && pwalletMain->IsLocked()){
+            labelStakingIcon->setToolTip(tr("In sync at block %1\n").arg(currentBlock));}
+        if (clientModel->getNumConnections() == 0){
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
-        else
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, earning Stake-Time.").arg(currentBlock));
+            labelStakingIcon->hide();
+            labelBlocksIcon->show();}
+        if (walletModel->getBalance() > 0){
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking yet, acquiring Stake-Time").arg(currentBlock));}
+        if (walletModel->getBalance() == 0){
+            labelStakingIcon->setToolTip(tr("In sync at block %1\nNo coins for staking.").arg(currentBlock));}
+
     }
     // Update balance in balanceLabel
     setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
