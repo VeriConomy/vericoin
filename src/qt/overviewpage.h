@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QNetworkReply>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -28,8 +29,10 @@ public:
     void setModel(WalletModel *model);
     void showOutOfSyncWarning(bool fShow);
     bool Staking;
+    QMovie *stakingIconMovie;
     QString stakingColor;
     QString notstakingColor;
+    QLabel *stakeButtonLabel;
 
 public slots:
     void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance);

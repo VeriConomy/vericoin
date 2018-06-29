@@ -18,7 +18,9 @@
 #include <QPainter>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMovie>
 #include <QGraphicsView>
+#include <QIcon>
 
 using namespace GUIUtil;
 
@@ -144,6 +146,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // staker section
     ui->stakingLabel->setFont(qFont);
+    stakingIconMovie = new QMovie(":/movies/stakingMovie", "gif", this);
+    stakeButtonLabel = new QLabel(ui->stakeButton);
 
     //statistics section
     ui->interestRateText->setFont(qFont);
@@ -186,11 +190,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     // set initial state of mining button
     if (Staking)
     {
-        ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
+        stakeButtonLabel->setPixmap(QPixmap(":/icons/stakingon"));
         ui->stakingLabel->setText("Click to stop:");
     }
     else{
-        ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
+        stakeButtonLabel->setPixmap(QPixmap(":/icons/stakeoff"));
         ui->stakingLabel->setText("Click to start:");
     }
 }
@@ -241,14 +245,18 @@ void OverviewPage::setStatistics()
     int stakerate = 0;
     if (Staking){
         uint64_t timetillstake = GetTimeToStake();
-        if (timetillstake > 3600){
-            stakerate = timetillstake/(60*60);
-        }
-        else if (timetillstake == 0){
-            stakerate = 0;
+        if (timetillstake > 0){
+            stakeButtonLabel->setMovie(stakingIconMovie);
+            stakingIconMovie->start();
+            stakerate = 1;
+            if (timetillstake > 3600){
+                stakerate = timetillstake/(60*60);
+            }
         }
         else{
-            stakerate = 1;
+            stakingIconMovie->stop();
+            stakeButtonLabel->setPixmap(QPixmap(":/icons/stakingon"));
+            stakerate = 0;
         }
     }
     // display stats
@@ -354,8 +362,11 @@ void OverviewPage::on_stakeButton_clicked()
 void OverviewPage::startStaking()
 {
         Staking = true;
+        if (GetTimeToStake() > 0){stakeButtonLabel->setMovie(stakingIconMovie);
+            stakingIconMovie->start();}
+        else{stakeButtonLabel->setPixmap(QPixmap(":/icons/stakingon"));
+        }
         ui->stakingLabel->setText("Click to stop:");
-        ui->stakeButton->setIcon(QIcon(":/icons/stakingon"));
         MilliSleep(100);
         setStatistics();
 }
@@ -363,8 +374,9 @@ void OverviewPage::startStaking()
 void OverviewPage::stopStaking()
 {
         Staking = false;
+        stakingIconMovie->stop();
         ui->stakingLabel->setText("Click to start:");
-        ui->stakeButton->setIcon(QIcon(":/icons/stakingoff"));
+        stakeButtonLabel->setPixmap(QPixmap(":/icons/stakeoff"));
         MilliSleep(100);
         setStatistics();
 }

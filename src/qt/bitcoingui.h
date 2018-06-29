@@ -83,7 +83,6 @@ private:
     QLabel *labelBalanceIcon;
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
-    QLabel *labelBlocksIcon;
     QLabel *labelVersionIcon;
     QLabel *versionLabel;
     QLabel *balanceLabel;
@@ -103,7 +102,6 @@ private:
     QAction *verifyMessageAction;
     QAction *aboutAction;
     QAction *aboutPostAction;
-    QAction *aboutQtAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
     QAction *forumAction;
@@ -126,7 +124,7 @@ private:
     Notificator *notificator;
     RPCConsole *rpcConsole;
 
-    QMovie *syncIconMovie;
+    QMovie *syncingIconMovie;
 
     qint64 currentTotal;
 

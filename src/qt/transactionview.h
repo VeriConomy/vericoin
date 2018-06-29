@@ -27,7 +27,6 @@ public:
     explicit TransactionView(QWidget *parent = 0);
 
     void setModel(WalletModel *model);
-    bool reset = true;
     // Date ranges for filter
     enum DateEnum
     {

@@ -97,7 +97,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     lockWalletAction(0),
     unlockWalletAction(0),
     encryptWalletAction(0),
-    aboutQtAction(0),
     trayIcon(0),
     notificator(0),
     rpcConsole(0)
@@ -231,7 +230,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     stakingLabel = new QLabel();
     stakingLabel->setFont(qFontSmall);
-    stakingLabel->setText(QString("Syncing..."));
+    stakingLabel->setText(QString("Connecting..."));
     QFontMetrics fm(stakingLabel->font());
     int labelWidth = fm.width(stakingLabel->text());
     stakingLabel->setFixedWidth(labelWidth + 10);
@@ -244,12 +243,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelBalanceIcon = new QLabel();
     labelBalanceIcon->setPixmap(QIcon(":/icons/balance").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
     labelStakingIcon = new QLabel();
-    labelStakingIcon->setVisible(false);
+    labelStakingIcon->setVisible(true);
+    labelStakingIcon ->setPixmap(QIcon(":/icons/remove").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
     labelConnectionsIcon = new QLabel();
     labelConnectionsIcon->setFont(qFontSmall);
-    labelBlocksIcon = new QLabel();
-    labelBlocksIcon->setVisible(true);
-    labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
 
     QFrame *frameBlocks = new QFrame();
     frameBlocks->setContentsMargins(0,0,0,0);
@@ -264,7 +261,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addWidget(labelBalanceIcon);
     frameBlocksLayout->addWidget(balanceLabel);
     frameBlocksLayout->addWidget(labelStakingIcon);
-    frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addWidget(stakingLabel);
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelConnectionsIcon);
@@ -292,7 +288,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
 
-    syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
+    syncingIconMovie = new QMovie(":/movies/syncingMovie", "gif", this);
 
     if (GetBoolArg("-staking", true))
     {
@@ -364,7 +360,7 @@ void BitcoinGUI::lockWalletFeatures(bool lock)
     {
         gotoOverviewPage();
 
-        QSettings settings("VeriCoin", "VeriCoin-Qt");
+        QSettings settings("VeriCoin", "VeriCoin");
         restoreGeometry(settings.value("geometry").toByteArray());
         restoreState(settings.value("windowState").toByteArray());
 
@@ -440,9 +436,6 @@ void BitcoinGUI::createActions()
     aboutPostAction = new QAction(QIcon(":/icons/PoSTicon"), tr("&About PoST"), this);
     aboutPostAction->setToolTip(tr("Show information about PoST protocol"));
     aboutPostAction->setMenuRole(QAction::AboutRole);
-    aboutQtAction = new QAction(QIcon(":icons/about-qt"), tr("About &Qt"), this);
-    aboutQtAction->setToolTip(tr("Show information about Qt"));
-    aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options"), this);
     optionsAction->setToolTip(tr("Modify configuration options for VeriCoin"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
@@ -484,7 +477,6 @@ void BitcoinGUI::createActions()
     connect(logoutAction, SIGNAL(triggered()), this, SLOT(logout()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutPostAction, SIGNAL(triggered()), this, SLOT(aboutPostClicked()));
-    connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
@@ -554,7 +546,6 @@ void BitcoinGUI::createMenuBar()
     help->addSeparator();
     help->addAction(aboutAction);
     help->addAction(aboutPostAction);
-    help->addAction(aboutQtAction);
 }
 
 void BitcoinGUI::createToolBars()
@@ -839,8 +830,8 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    int totalHours = GenBlockDate.daysTo(QDateTime::currentDateTime())*24;
-    int currentHour = (totalHours+1) - (secs/(60*60));
+    int totalHours = (GenBlockDate.daysTo(QDateTime::currentDateTime())*24);
+    int currentHour = (totalHours - (secs/(60*60)))-1;
 
     // Represent time from last generated block in human readable text
     if(secs <= 0)
@@ -878,7 +869,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 1));
+            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 2));
             progressBar->setMaximum(totalHours);
             progressBar->setValue(currentHour);
             progressBar->setVisible(true);
@@ -886,10 +877,9 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         tooltip = tr("Downloaded %1 blocks of transaction history (%2% done).").arg(count).arg(nPercentageDone, 0, 'f', 1);
 
         stakingLabel->setText(QString("Syncing..."));
-        labelStakingIcon->hide();
-        labelBlocksIcon->show();
         tooltip = tr("Syncing") + QString(".\n") + tooltip;
-        labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+        labelStakingIcon->setMovie(syncingIconMovie);
+        syncingIconMovie->start();
         overviewPage->showOutOfSyncWarning(true);
     }
 
@@ -901,8 +891,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
     // Don't word-wrap this (fixed-width) tooltip
     tooltip = QString("") + tooltip + QString("");
-
-    labelBlocksIcon->setToolTip(tooltip);
     progressBar->setToolTip(tooltip);
 }
 
@@ -938,7 +926,7 @@ void BitcoinGUI::changeEvent(QEvent *e)
 
 void BitcoinGUI::exitApp()
 {
-    QSettings settings("VeriCoin", "VeriCoin-Qt");
+    QSettings settings("VeriCoin", "VeriCoin");
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
 
@@ -1515,8 +1503,7 @@ void BitcoinGUI::updateStakingIcon()
             text = tr("%n day(s)", "", nEstimateTime/(60*60*24));
         }
         stakingLabel->setText(QString("Staking"));
-        labelBlocksIcon->hide();
-        labelStakingIcon->show();
+        syncingIconMovie->stop();
         int nStakeTimePower = pwalletMain->StakeTimeEarned(nWeight, pindexBest->pprev);
         if (PoSTprotocol(currentBlock) || fTestNet)
         {
@@ -1557,15 +1544,13 @@ void BitcoinGUI::updateStakingIcon()
     else
     {
         stakingLabel->setText(QString("In Sync"));
-        labelBlocksIcon->hide();
-        labelStakingIcon->show();
+        syncingIconMovie->stop();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         if (pwalletMain && pwalletMain->IsLocked()){
             labelStakingIcon->setToolTip(tr("In sync at block %1\n").arg(currentBlock));}
         if (clientModel->getNumConnections() == 0){
             labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
-            labelStakingIcon->hide();
-            labelBlocksIcon->show();}
+            labelStakingIcon ->setPixmap(QIcon(":/icons/remove").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));}
         if (walletModel->getBalance() > 0){
             labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking yet, acquiring Stake-Time").arg(currentBlock));}
         if (walletModel->getBalance() == 0){

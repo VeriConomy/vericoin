@@ -202,10 +202,10 @@ void TransactionView::setModel(WalletModel *model)
                 TransactionTableModel::Amount, 100 + (model->getOptionsModel()->getDecimalPoints() * 10));
         amountWidget->setFixedWidth(100 + (model->getOptionsModel()->getDecimalPoints() * 10));
 
-        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(showTotalAmount(reset)));
-        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(showTotalAmount(reset)));
-        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(showTotalAmount(reset)));
-        connect(model->getTransactionTableModel(), SIGNAL(updateTotalAmount(bool)), this, SLOT(showTotalAmount(reset)));
+       // connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(showTotalAmount(bool=true)));
+       // connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(showTotalAmount(bool=true)));
+       // connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(showTotalAmount(bool=true)));
+       // connect(model->getTransactionTableModel(), SIGNAL(updateTotalAmount(bool)), this, SLOT(showTotalAmount(bool=true)));
 
         showTotalAmount();
     }

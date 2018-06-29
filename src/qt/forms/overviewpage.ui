@@ -1258,11 +1258,23 @@
        <widget class="QPushButton" name="stakeButton">
         <property name="geometry">
          <rect>
-          <x>160</x>
+          <x>180</x>
           <y>30</y>
-          <width>151</width>
-          <height>131</height>
+          <width>125</width>
+          <height>125</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>125</width>
+          <height>125</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>125</width>
+          <height>125</height>
+         </size>
         </property>
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to start/stop staking&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1272,11 +1284,6 @@
         </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../bitcoin.qrc">
-          <normaloff>:/icons/stakingoff</normaloff>
-          <normalon>:/icons/stakingon</normalon>:/icons/stakingoff</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -1289,7 +1296,7 @@
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>90</y>
+          <y>80</y>
           <width>101</width>
           <height>21</height>
          </rect>
@@ -1307,8 +1314,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../bitcoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -158,9 +158,9 @@ int main(int argc, char *argv[])
     app.setOrganizationName("VeriCoin");
     //XXX app.setOrganizationDomain("");
     if(GetBoolArg("-testnet")) // Separate UI settings for testnet
-        app.setApplicationName("VeriCoin-Qt-testnet");
+        app.setApplicationName("VeriCoin-testnet");
     else
-        app.setApplicationName("VeriCoin-Qt");
+        app.setApplicationName("VeriCoin");
 
     // ... then GUI settings:
     OptionsModel optionsModel;
