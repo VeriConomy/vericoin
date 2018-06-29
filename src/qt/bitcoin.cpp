@@ -228,6 +228,7 @@ int main(int argc, char *argv[])
 
         BitcoinGUI window;
         guiref = &window;
+
         if(AppInit2())
         {
             {
