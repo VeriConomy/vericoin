@@ -454,21 +454,6 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
 
     // calculate the download speed
     currentSpeed = bytesRead * 1000.0 / downloadTime.elapsed();
-    double speed = currentSpeed;
-    QString unit;
-    if (currentSpeed < 1024) {
-        unit = "bytes/sec";
-    } else if (currentSpeed < 1024*1024) {
-        speed /= 1024;
-        unit = "kB/s";
-    } else {
-        speed /= 1024*1024;
-        unit = "MB/s";
-    }
-
-    //speed=speedNow*0.5+speedLastHalfMinute*0.3+speedLastMinute*0.2
-    //totalBytes / speed = secs remaining
-    ui->downloadSpeedLabel->setText(QString("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
 }
 
 // This is called during the download to check for a hung state
@@ -511,6 +496,7 @@ void Downloader::setUrl(QUrl source)
 void Downloader::setDest(std::string dest)
 {
     QString d = QString::fromStdString(dest);
+    qDebug()<<d;
     setDest(d);
 }
 
@@ -705,8 +691,20 @@ void Downloader::calculateRemainTime()
     QTime time(0, 0);
     time = time.addSecs(remainSecs);
 
+    double s = currentSpeed;
+    QString unit;
+    if (currentSpeed < 1024) {
+        unit = "bytes/sec";
+    } else if (currentSpeed < 1024*1024) {
+        s /= 1024;
+        unit = "kB/s";
+    } else {
+        s /= 1024*1024;
+        unit = "MB/s";
+    }
+
     if(remainSecs < 0)
-      ui->remainTimeLabel->setText(tr("Download Finished In N/A"));
+      ui->remainTimeLabel->setText(tr("%1 %2 Download Finished In N/A").arg(s, 3, 'f', 1).arg(unit));
     else
-      ui->remainTimeLabel->setText(tr("Download Finished In %1 mins").arg(time.toString("mm:ss")));
+      ui->remainTimeLabel->setText(tr("%1 %2 Download Finished In %3 mins").arg(s, 3, 'f', 1).arg(unit).arg(time.toString("mm:ss")));
 }
