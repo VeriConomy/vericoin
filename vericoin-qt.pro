@@ -49,7 +49,7 @@ LIBS += $$UNWIND_LIB_PATH $$PROFILER_LIB_PATH
 
 # win build dependencies
 windows {
-BOOST_LIB_SUFFIX=-mgw453-mt-1_57
+BOOST_LIB_SUFFIX=-mgw53-mt-1_57
 BOOST_INCLUDE_PATH=C:/deps/boost_1_57_0
 BOOST_LIB_PATH=C:/deps/boost_1_57_0/stage/lib
 BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
@@ -106,7 +106,7 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./lib
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
-windows:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl
+windows:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
 #windows:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
