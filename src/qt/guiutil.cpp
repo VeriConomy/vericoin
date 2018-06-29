@@ -58,7 +58,7 @@ int BUTTON_HEIGHT = 27;
 int FRAMEBLOCKS_LABEL_WIDTH = 100;
 int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
-int WINDOW_MIN_HEIGHT = 476;
+int WINDOW_MIN_HEIGHT = 460;
 #else
 int WINDOW_MIN_HEIGHT = 450;
 #endif
@@ -70,7 +70,7 @@ void refactorGUI(QRect screenSize)
 {
     // Set the new geometry
 #ifdef Q_OS_WIN
-    int newHeight = screenSize.height() - 40;
+    int newHeight = screenSize.height() - 35;
 #else
     int newHeight = screenSize.height() - 30;
 #endif
