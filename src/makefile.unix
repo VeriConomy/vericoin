@@ -8,7 +8,7 @@ USE_AVX:=1
 USE_AVX2:=0
 
 LINK:=$(CXX)
-ARCH:=$(system lscpu | head -n 1 | awk '{print $2}')
+ARCH:=$(shell uname -m)
 
 DEFS=-DBOOST_SPIRIT_THREADSAFE -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
 
@@ -159,7 +159,7 @@ obj/txdb-leveldb.o: leveldb/libleveldb.a
 # Assembler implementation
 DEFS += -DUSE_ASM
 
-OBJS += obj/scrypt-arm.o obj/scrypt-x86.o obj/scrypt-x64.o obj/scrypt-armv8.o
+OBJS += obj/scrypt-arm.o obj/scrypt-x86.o obj/scrypt-x64.o
 
 obj/scrypt-x86.o: scrypt-x86.S
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
@@ -170,10 +170,7 @@ obj/scrypt-x64.o: scrypt-x64.S
 obj/scrypt-arm.o: scrypt-arm.S
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
 
-obj/scrypt-armv8.o: scrypt-armv8.c
-	$(CC) -c $(CFLAGS) -march=armv8.1-a+crypto -MMD -o $@ $<
-
-OBJS += obj/sha2-arm.o obj/sha2-x86.o obj/sha2-x64.o obj/sha2-armv8.o
+OBJS += obj/sha2-arm.o obj/sha2-x86.o obj/sha2-x64.o
 
 obj/sha2-x86.o: sha2-x86.S
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
@@ -184,8 +181,17 @@ obj/sha2-x64.o: sha2-x64.S
 obj/sha2-arm.o: sha2-arm.S
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
 
+ifeq (${ARCH}, aarch64)
+
 obj/sha2-armv8.o: sha2-armv8.c
 	$(CC) -c $(CFLAGS) -march=armv8.1-a+crypto -MMD -o $@ $<
+
+obj/scrypt-armv8.o: scrypt-armv8.c
+	$(CC) -c $(CFLAGS) -march=armv8.1-a+crypto -MMD -o $@ $<
+
+OBJS += obj/sha2-armv8.o obj/scrypt-armv8.o
+
+endif
 
 # auto-generated dependencies:
 -include obj/*.P
