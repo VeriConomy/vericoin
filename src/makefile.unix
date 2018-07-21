@@ -8,7 +8,7 @@ USE_AVX:=1
 USE_AVX2:=0
 
 LINK:=$(CXX)
-ARCH:=$(system lscpu | head -n 1 | awk '{print $2}')
+ARCH:=$(shell uname -m)
 
 DEFS=-DBOOST_SPIRIT_THREADSAFE -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
 
@@ -180,6 +180,18 @@ obj/sha2-x64.o: sha2-x64.S
 
 obj/sha2-arm.o: sha2-arm.S
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
+
+ifeq (${ARCH}, aarch64)
+
+obj/sha2-armv8.o: sha2-armv8.c
+	$(CC) -c $(CFLAGS) -march=armv8.1-a+crypto -MMD -o $@ $<
+
+obj/scrypt-armv8.o: scrypt-armv8.c
+	$(CC) -c $(CFLAGS) -march=armv8.1-a+crypto -MMD -o $@ $<
+
+OBJS += obj/sha2-armv8.o obj/scrypt-armv8.o
+
+endif
 
 # auto-generated dependencies:
 -include obj/*.P
