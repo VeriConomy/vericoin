@@ -244,8 +244,6 @@ int main(int argc, char *argv[])
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
-                ReadVersionFile();
-
                 if (splashref)
                     splash.finish(&window);
                 window.setClientModel(&clientModel);
@@ -263,7 +261,7 @@ int main(int argc, char *argv[])
 
                 // Place this here as guiref has to be defined if we don't want to lose URIs
                 ipcInit(argc, argv);
-
+                ReadVersionFile();
                 // Heirarchical order for special events and first runs:
                 // 1. Bootstrap wallet and restart
                 // 2. Encrypt wallet and restart (happens in BitcoinGUI:setModel())
