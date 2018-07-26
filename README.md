@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/vericoin/vericoin.svg?branch=master)](https://travis-ci.org/vericoin/vericoin) (Ubuntu Server Xenial 16.04)
+[![Build Status](https://travis-ci.org/vericoin/vericoin.svg?branch=master)](https://travis-ci.org/vericoin/vericoin) Ubuntu Server Xenial 16.04
 
 VeriCoin official development tree
 
