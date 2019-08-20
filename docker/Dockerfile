@@ -5,8 +5,7 @@ RUN apt update -y && \
 
 RUN apt-get install -y git
 
-RUN git clone -v https://github.com/vericoin/vericoin.git 
-~/git/vericoin/
+RUN git clone -v https://github.com/vericoin/vericoin.git ~/git/vericoin/
 
 RUN apt-get install -y build-essential \
                        libboost-all-dev \
