@@ -1,4 +1,5 @@
 Copyright (c) 2009-2012 Bitcoin Developers
+Copyright (c) 2014-2020 Vericoin Developers
 Distributed under the MIT/X11 software license, see the accompanying
 file license.txt or http://www.opensource.org/licenses/mit-license.php.
 This product includes software developed by the OpenSSL Project for use in
@@ -69,14 +70,14 @@ yum install libcurl-devel miniupnpc-devel libdb-cxx-devel openssl-devel boost-de
 
 Dependency Build Instructions: Ubuntu & Debian
 ----------------------------------------------
-sudo apt-get install build-essential
-#sudo apt-get install libssl-dev
-#sudo apt-get install libdb++-dev
-#sudo apt-get install libboost-all-dev
-#sudo apt-get install libqrencode-dev
-#sudo apt-get install libcurl4-gnutls-dev
-#sudo apt-get install libminizip-dev
-
+sudo apt install build-essential
+sudo apt install libboost-all-dev
+sudo apt install libssl1.0-dev
+sudo apt install libdb++-dev
+sudo apt install libminiupmpc-dev 
+sudo apt install libcurl4-gnutls-dev
+sudo apt install libminizip-dev
+#sudo apt install libqrencode-dev
 
 If using Boost 1.37, append -mt to the boost libraries in the makefile.
 
