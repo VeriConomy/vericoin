@@ -63,6 +63,27 @@ void StartShutdown()
 #endif
 }
 
+void MoveBoostrapFiles()
+{
+    filesystem::path filepath(GetDataDir() / "bootstrap");
+    filesystem::directory_iterator it(filepath);
+    filesystem::directory_iterator end;
+    BOOST_FOREACH(filesystem::path const &p, make_pair(it, end))
+    {
+        if (it->path().stem().string().find("blk") == 0 && it->path().extension().string().compare(".dat") == 0)
+        {
+            string file_name = it->path().filename().string();
+            boost::filesystem::rename(GetDataDir() / "bootstrap" / file_name, GetDataDir() / file_name);
+        }
+    }
+
+    boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+    if (fBootstrapConfig) {
+        boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetDataDir() / "vericoin.conf");
+    }
+    boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+}
+
 void Shutdown(void* parg)
 {
     static CCriticalSection cs_Shutdown;
@@ -99,11 +120,7 @@ void Shutdown(void* parg)
                 {
                     // Leveldb instance destruction
                     CTxDB().Destroy();
-                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
-                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
-                    if (fBootstrapConfig){
-                        boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetDataDir() / "vericoin.conf");}
-                    boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+                    MoveBoostrapFiles();
 
                     RestartWallet(NULL, true);
                 }
@@ -127,11 +144,8 @@ void Shutdown(void* parg)
             {
                 // Leveldb instance destruction
                 CTxDB().Destroy();
-                boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
-                boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
-                if (fBootstrapConfig)
-                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "vericoin.conf", GetConfigFile());
-                boost::filesystem::remove_all(GetDataDir() / "bootstrap");
+
+                MoveBoostrapFiles();
 
                 boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap.zip");
                 boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.dat");
