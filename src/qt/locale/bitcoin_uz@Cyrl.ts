@@ -206,8 +206,8 @@
         <translation>Ички ойналар асбоблар панели</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and bitcoin: URIs)</source>
-        <translation>Тўловлар (QR кодлари ва bitcoin ёрдамида яратишлар: URI’лар) сўраш</translation>
+        <source>Request payments (generates QR codes and verium: URIs)</source>
+        <translation>Тўловлар (QR кодлари ва verium ёрдамида яратишлар: URI’лар) сўраш</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -218,7 +218,7 @@
         <translation>Фойдаланилган қабул қилинган манзиллар ва ёрлиқлар рўйхатини кўрсатиш</translation>
     </message>
     <message>
-        <source>Open a bitcoin: URI or payment request</source>
+        <source>Open a verium: URI or payment request</source>
         <translation>Verium’ни очиш: URI ёки тўлов сўрови</translation>
     </message>
     <message>
@@ -1208,7 +1208,7 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>verium-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>Кам миқдор</translation>

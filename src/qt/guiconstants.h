@@ -43,7 +43,7 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 #define SPINNER_FRAMES 36
 
 #define QAPP_ORG_NAME "Verium"
-#define QAPP_ORG_DOMAIN "bitcoin.org"
+#define QAPP_ORG_DOMAIN "vericoin.info"
 #define QAPP_APP_NAME_DEFAULT "Verium-Qt"
 #define QAPP_APP_NAME_TESTNET "Verium-Qt-testnet"
 #define QAPP_APP_NAME_REGTEST "Verium-Qt-regtest"

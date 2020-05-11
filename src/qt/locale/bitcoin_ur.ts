@@ -344,7 +344,7 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>verium-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>ناکافی فنڈز</translation>

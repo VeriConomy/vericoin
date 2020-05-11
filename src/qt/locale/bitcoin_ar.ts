@@ -400,6 +400,6 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>verium-core</name>
     </context>
 </TS>
