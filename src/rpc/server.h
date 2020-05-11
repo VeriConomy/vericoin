@@ -116,7 +116,7 @@ public:
 };
 
 /**
- * Bitcoin RPC command dispatcher.
+ * Verium RPC command dispatcher.
  */
 class CRPCTable
 {

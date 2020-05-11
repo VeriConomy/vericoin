@@ -120,7 +120,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>BitcoinGUI</name>
+    <name>VeriumGUI</name>
     <message>
         <source>Error</source>
         <translation>نقص</translation>
