@@ -1,6 +1,6 @@
 all:
-	$(MAKE) -C .. bitcoin_test
+	$(MAKE) -C .. verium_test
 clean:
-	$(MAKE) -C .. bitcoin_test_clean
+	$(MAKE) -C .. verium_test_clean
 check:
-	$(MAKE) -C .. bitcoin_test_check
+	$(MAKE) -C .. verium_test_check

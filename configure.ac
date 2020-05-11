@@ -6,21 +6,21 @@ define(_CLIENT_VERSION_REVISION, 1)
 define(_CLIENT_VERSION_BUILD, 0)
 define(_CLIENT_VERSION_RC, 0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
-define(_COPYRIGHT_YEAR, 2019)
+define(_COPYRIGHT_YEAR, 2020)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
-define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Bitcoin Core]])
-AC_INIT([Bitcoin Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_REVISION, m4_if(_CLIENT_VERSION_BUILD, [0], [], _CLIENT_VERSION_BUILD))m4_if(_CLIENT_VERSION_RC, [0], [], [rc]_CLIENT_VERSION_RC),[https://github.com/bitcoin/bitcoin/issues],[bitcoin],[https://bitcoincore.org/])
+define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Verium Core]])
+AC_INIT([Verium Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_REVISION, m4_if(_CLIENT_VERSION_BUILD, [0], [], _CLIENT_VERSION_BUILD))m4_if(_CLIENT_VERSION_RC, [0], [], [rc]_CLIENT_VERSION_RC),[https://github.com/VeriumReserve/verium/issues],[verium],[https://vericoin.info/])
 AC_CONFIG_SRCDIR([src/validation.cpp])
 AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 AM_PROG_AS
 
-BITCOIN_DAEMON_NAME=bitcoind
-BITCOIN_GUI_NAME=bitcoin-qt
-BITCOIN_CLI_NAME=bitcoin-cli
-BITCOIN_TX_NAME=bitcoin-tx
-BITCOIN_WALLET_TOOL_NAME=bitcoin-wallet
+BITCOIN_DAEMON_NAME=veriumd
+BITCOIN_GUI_NAME=verium-qt
+BITCOIN_CLI_NAME=verium-cli
+BITCOIN_TX_NAME=verium-tx
+BITCOIN_WALLET_TOOL_NAME=verium-wallet
 
 dnl Unless the user specified ARFLAGS, force it to be cr
 AC_ARG_VAR(ARFLAGS, [Flags for the archiver, defaults to <cr> if not set])
@@ -436,25 +436,25 @@ CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build bitcoin-cli bitcoin-tx bitcoin-wallet (default=yes)])],
+  [build verium-cli verium-tx verium-wallet (default=yes)])],
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
 AC_ARG_ENABLE([util-cli],
   [AS_HELP_STRING([--enable-util-cli],
-  [build bitcoin-cli])],
+  [build verium-cli])],
   [build_bitcoin_cli=$enableval],
   [build_bitcoin_cli=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-tx],
   [AS_HELP_STRING([--enable-util-tx],
-  [build bitcoin-tx])],
+  [build verium-tx])],
   [build_bitcoin_tx=$enableval],
   [build_bitcoin_tx=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-wallet],
   [AS_HELP_STRING([--enable-util-wallet],
-  [build bitcoin-wallet])],
+  [build verium-wallet])],
   [build_bitcoin_wallet=$enableval],
   [build_bitcoin_wallet=$build_bitcoin_utils])
 
@@ -466,7 +466,7 @@ AC_ARG_WITH([libs],
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
-  [build bitcoind daemon (default=yes)])],
+  [build veriumd daemon (default=yes)])],
   [build_bitcoind=$withval],
   [build_bitcoind=yes])
 
@@ -1379,19 +1379,19 @@ if test x$have_protobuf != xno &&
   BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 fi
 
-AC_MSG_CHECKING([whether to build bitcoind])
+AC_MSG_CHECKING([whether to build veriumd])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build bitcoin-cli])
+AC_MSG_CHECKING([whether to build verium-cli])
 AM_CONDITIONAL([BUILD_BITCOIN_CLI], [test x$build_bitcoin_cli = xyes])
 AC_MSG_RESULT($build_bitcoin_cli)
 
-AC_MSG_CHECKING([whether to build bitcoin-tx])
+AC_MSG_CHECKING([whether to build verium-tx])
 AM_CONDITIONAL([BUILD_BITCOIN_TX], [test x$build_bitcoin_tx = xyes])
 AC_MSG_RESULT($build_bitcoin_tx)
 
-AC_MSG_CHECKING([whether to build bitcoin-wallet])
+AC_MSG_CHECKING([whether to build verium-wallet])
 AM_CONDITIONAL([BUILD_BITCOIN_WALLET], [test x$build_bitcoin_wallet = xyes])
 AC_MSG_RESULT($build_bitcoin_wallet)
 
@@ -1493,7 +1493,7 @@ if test x$bitcoin_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
-  AC_MSG_CHECKING([whether to build test_bitcoin-qt])
+  AC_MSG_CHECKING([whether to build test_verium-qt])
   if test x$use_gui_tests$bitcoin_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"
@@ -1521,7 +1521,7 @@ fi
 
 AM_CONDITIONAL([ENABLE_ZMQ], [test "x$use_zmq" = "xyes"])
 
-AC_MSG_CHECKING([whether to build test_bitcoin])
+AC_MSG_CHECKING([whether to build test_verium])
 if test x$use_tests = xyes; then
   AC_MSG_RESULT([yes])
   BUILD_TEST="yes"

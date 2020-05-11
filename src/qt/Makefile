@@ -1,9 +1,9 @@
 .PHONY: FORCE
 all: FORCE
-	$(MAKE) -C .. bitcoin_qt test_bitcoin_qt
+	$(MAKE) -C .. verium_qt test_verium_qt
 clean: FORCE
-	$(MAKE) -C .. bitcoin_qt_clean test_bitcoin_qt_clean
+	$(MAKE) -C .. verium_qt_clean test_verium_qt_clean
 check: FORCE
-	$(MAKE) -C .. test_bitcoin_qt_check
-bitcoin-qt bitcoin-qt.exe: FORCE
-	 $(MAKE) -C .. bitcoin_qt
+	$(MAKE) -C .. test_verium_qt_check
+verium-qt verium-qt.exe: FORCE
+	 $(MAKE) -C .. verium_qt
