@@ -2925,29 +2925,6 @@ static uint32_t GetLocktimeForNewTransaction(interfaces::Chain& chain, interface
 
 OutputType CWallet::TransactionChangeType(OutputType change_type, const std::vector<CRecipient>& vecSend)
 {
-    // If -changetype is specified, always use that change type.
-    if (change_type != OutputType::CHANGE_AUTO) {
-        return change_type;
-    }
-
-    // if m_default_address_type is legacy, use legacy address as change (even
-    // if some of the outputs are P2WPKH or P2WSH).
-    if (m_default_address_type == OutputType::LEGACY) {
-        return OutputType::LEGACY;
-    }
-
-    // if any destination is P2WPKH or P2WSH, use P2WPKH for the change
-    // output.
-    for (const auto& recipient : vecSend) {
-        // Check if any destination contains a witness program:
-        int witnessversion = 0;
-        std::vector<unsigned char> witnessprogram;
-        if (recipient.scriptPubKey.IsWitnessProgram(witnessversion, witnessprogram)) {
-            return OutputType::BECH32;
-        }
-    }
-
-    // else use m_default_address_type for change
     return m_default_address_type;
 }
 
@@ -4723,19 +4700,12 @@ bool CWalletTx::IsImmatureCoinBase(interfaces::Chain::Lock& locked_chain) const
 
 void CWallet::LearnRelatedScripts(const CPubKey& key, OutputType type)
 {
-    if (key.IsCompressed() && (type == OutputType::P2SH_SEGWIT || type == OutputType::BECH32)) {
-        CTxDestination witdest = WitnessV0KeyHash(key.GetID());
-        CScript witprog = GetScriptForDestination(witdest);
-        // Make sure the resulting program is solvable.
-        assert(IsSolvable(*this, witprog));
-        AddCScript(witprog);
-    }
+    // XXX - TODO: Remove Call to that
 }
 
 void CWallet::LearnAllRelatedScripts(const CPubKey& key)
 {
-    // OutputType::P2SH_SEGWIT always adds all necessary scripts for all types.
-    LearnRelatedScripts(key, OutputType::P2SH_SEGWIT);
+    // XXX - TODO: Remove call to that
 }
 
 std::vector<OutputGroup> CWallet::GroupOutputs(const std::vector<COutput>& outputs, bool single_coin) const {

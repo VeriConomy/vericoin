@@ -469,7 +469,7 @@ BOOST_FIXTURE_TEST_CASE(wallet_disableprivkeys, TestChain100Setup)
     BOOST_CHECK(!wallet->TopUpKeyPool(1000));
     CTxDestination dest;
     std::string error;
-    BOOST_CHECK(!wallet->GetNewDestination(OutputType::BECH32, "", dest, error));
+    BOOST_CHECK(!wallet->GetNewDestination(OutputType::LEGACY, "", dest, error));
 }
 
 // Explicit calculation which is used to test the wallet constant
