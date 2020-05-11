@@ -8,6 +8,8 @@
 
 #include <amount.h>
 
+static const int64_t MIN_TX_FEE = 20000000;
+
 class CCoinControl;
 class CFeeRate;
 class CWallet;
