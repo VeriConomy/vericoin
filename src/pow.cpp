@@ -10,7 +10,6 @@
 #include <primitives/block.h>
 #include <uint256.h>
 #include <math.h>
-#include <bignum.h>
 #include <util/system.h>
 
 #include <inttypes.h>
@@ -38,7 +37,7 @@ unsigned int calculateBlocktime(const CBlockIndex* pindex)
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
 {
-    CBigNum bnTargetLimit ( ArithToUint256( bnProofOfWorkLimit ) );
+    arith_uint256 bnTargetLimit ( bnProofOfWorkLimit );
     if (pindexLast->nHeight <= 2)
         return bnTargetLimit.GetCompact(); // first few blocks
     const CBlockIndex* pindexPrev = pindexLast->pprev;
@@ -56,7 +55,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     }
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
-    CBigNum bnNew;
+    arith_uint256 bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
     int64_t nInterval = targetTimespan / nTargetSpacing;
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
@@ -70,15 +69,15 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
 {
-    CBigNum bnTarget;
+    arith_uint256 bnTarget;
     bnTarget.SetCompact(nBits);
 
     // Check range
-    if (bnTarget <= 0 || bnTarget > CBigNum(ArithToUint256(bnProofOfWorkLimit)))
+    if (bnTarget <= 0 || bnTarget > arith_uint256(bnProofOfWorkLimit))
         return error("CheckProofOfWork() : nBits below minimum work");
 
     // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > UintToArith256(bnTarget.getuint256()))
+    if (UintToArith256(hash) > bnTarget)
         return error("CheckProofOfWork() : hash doesn't match nBits");
 
     return true;
