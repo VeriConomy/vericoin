@@ -60,7 +60,17 @@ static CUpdatedBlock latestblock;
  */
 double GetDifficulty(const CBlockIndex* blockindex)
 {
-    assert(blockindex);
+    if (blockindex == nullptr)
+    {
+        if (::ChainActive().Tip() == nullptr)
+            return dminDifficulty;
+        else if (::ChainActive().Tip()->pprev == nullptr)
+            return dminDifficulty;
+        else if (::ChainActive().Tip()->pprev->pprev == nullptr)
+            return dminDifficulty;
+        else
+            blockindex = ::ChainActive().Tip()->pprev;
+    }
 
     int nShift = (blockindex->nBits >> 24) & 0xff;
     double dDiff =
