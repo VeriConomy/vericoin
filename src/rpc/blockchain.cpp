@@ -18,6 +18,7 @@
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
+#include <pow.h>
 #include <primitives/transaction.h>
 #include <rpc/server.h>
 #include <rpc/util.h>
@@ -100,6 +101,51 @@ static int ComputeNextBlockAndDepth(const CBlockIndex* tip, const CBlockIndex* b
     return blockindex == tip ? 1 : -1;
 }
 
+UniValue getsubsidy(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"getsubsidy",
+        "\nReturns proof-of-work subsidy value.\n",
+        {},
+        RPCResult{
+    "\"value\"         (numeric) proof-of-work subsidy value\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getsubsidy", "")
+    + HelpExampleRpc("getsubsidy", "")
+        },
+    }.Check(request);
+
+
+    LOCK(cs_main);
+
+    return (uint64_t)GetProofOfWorkReward(0, ::ChainActive().Tip()->pprev);
+}
+
+UniValue getblocktime(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+            "getblocktime\n"
+            "Returns an integer of current blocktime in seconds."
+        );
+
+    RPCHelpMan{"getblocktime",
+        "\nReturns an integer of current blocktime in seconds.\n",
+        {},
+        RPCResult{
+    "\"value\"         (numeric) blocktime in seconds\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getblocktime", "")
+    + HelpExampleRpc("getblocktime", "")
+        },
+    }.Check(request);
+
+    LOCK(cs_main);
+    return (uint64_t)calculateBlocktime(::ChainActive().Tip()->pprev);
+}
+
+
 UniValue blockheaderToJSON(const CBlockIndex* tip, const CBlockIndex* blockindex)
 {
     // Serialize passed information without accessing chain state of the active chain!
@@ -141,6 +187,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* tip, const CBlockIn
     result.pushKV("confirmations", confirmations);
     result.pushKV("strippedsize", (int)::GetSerializeSize(block, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS));
     result.pushKV("size", (int)::GetSerializeSize(block, PROTOCOL_VERSION));
+    result.pushKV("mint", ValueFromAmount(blockindex->nMint));
     result.pushKV("weight", (int)::GetBlockWeight(block));
     result.pushKV("height", blockindex->nHeight);
     result.pushKV("version", block.nVersion);
@@ -848,6 +895,7 @@ static UniValue getblock(const JSONRPCRequest& request)
             "  \"confirmations\" : n,   (numeric) The number of confirmations, or -1 if the block is not on the main chain\n"
             "  \"size\" : n,            (numeric) The block size\n"
             "  \"strippedsize\" : n,    (numeric) The block size excluding witness data\n"
+            "  \"mint\" : n,            (numeric) The mint\n"
             "  \"weight\" : n           (numeric) The block weight as defined in BIP 141\n"
             "  \"height\" : n,          (numeric) The block height or index\n"
             "  \"version\" : n,         (numeric) The block version\n"
@@ -1205,6 +1253,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "{\n"
             "  \"chain\": \"xxxx\",              (string) current network name as defined in BIP70 (main, test, regtest)\n"
             "  \"blocks\": xxxxxx,             (numeric) the height of the most-work fully-validated chain. The genesis block has height 0\n"
+            "  \"totalsupply\": xxxxxx,        (numeric) current total supply\n"
             "  \"headers\": xxxxxx,            (numeric) the current number of headers we have validated\n"
             "  \"bestblockhash\": \"...\",       (string) the hash of the currently best block\n"
             "  \"difficulty\": xxxxxx,         (numeric) the current difficulty\n"
@@ -1253,6 +1302,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("chain",                 Params().NetworkIDString());
     obj.pushKV("blocks",                (int)::ChainActive().Height());
+    obj.pushKV("totalsupply",           (double)::ChainActive().Tip()->nMoneySupply/COIN);
     obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
     obj.pushKV("bestblockhash",         tip->GetBlockHash().GetHex());
     obj.pushKV("difficulty",            (double)GetDifficulty(tip));
@@ -2274,6 +2324,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getblock",               &getblock,               {"blockhash","verbosity|verbose"} },
     { "blockchain",         "getblockhash",           &getblockhash,           {"height"} },
     { "blockchain",         "getblockheader",         &getblockheader,         {"blockhash","verbose"} },
+    { "blockchain",         "getblocktime",           &getblocktime,           {} },
     { "blockchain",         "getchaintips",           &getchaintips,           {} },
     { "blockchain",         "getdifficulty",          &getdifficulty,          {} },
     { "blockchain",         "getmempoolancestors",    &getmempoolancestors,    {"txid","verbose"} },
@@ -2281,6 +2332,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getmempoolentry",        &getmempoolentry,        {"txid"} },
     { "blockchain",         "getmempoolinfo",         &getmempoolinfo,         {} },
     { "blockchain",         "getrawmempool",          &getrawmempool,          {"verbose"} },
+    { "blockchain",         "getsubsidy",             &getsubsidy,             {} },
     { "blockchain",         "gettxout",               &gettxout,               {"txid","n","include_mempool"} },
     { "blockchain",         "gettxoutsetinfo",        &gettxoutsetinfo,        {} },
     { "blockchain",         "pruneblockchain",        &pruneblockchain,        {"height"} },

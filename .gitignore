@@ -60,6 +60,11 @@ src/qt/bitcoin-qt.creator
 src/qt/bitcoin-qt.creator.user
 src/qt/bitcoin-qt.files
 src/qt/bitcoin-qt.includes
+src/qt/verium-qt.config
+src/qt/verium-qt.creator
+src/qt/verium-qt.creator.user
+src/qt/verium-qt.files
+src/qt/verium-qt.includes
 
 .deps
 .dirstamp

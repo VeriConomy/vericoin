@@ -1948,8 +1948,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // Now that the whole chain is irreversibly beyond that time it is applied to all blocks except the
     // two in the chain that violate it. This prevents exploiting the issue against nodes during their
     // initial block download.
-    bool fEnforceBIP30 = !((pindex->nHeight==91842 && pindex->GetBlockHash() == uint256S("0x00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec")) ||
-                           (pindex->nHeight==91880 && pindex->GetBlockHash() == uint256S("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
+    bool fEnforceBIP30 = true;
 
     // Once BIP34 activated it was not possible to create new duplicate coinbases and thus other than starting
     // with the 2 existing duplicate coinbase pairs, not possible to create overwriting txs.  But by the
@@ -2008,9 +2007,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // be reset before it reaches block 1,983,702 and starts doing unnecessary
     // BIP30 checking again.
     assert(pindex->pprev);
-    CBlockIndex *pindexBIP34height = pindex->pprev->GetAncestor(chainparams.GetConsensus().BIP34Height);
-    //Only continue to enforce if we're below BIP34 activation height or the block hash at that height doesn't correspond.
-    fEnforceBIP30 = fEnforceBIP30 && (!pindexBIP34height || !(pindexBIP34height->GetBlockHash() == chainparams.GetConsensus().BIP34Hash));
 
     // TODO: Remove BIP30 checking from block height 1,983,702 on, once we have a
     // consensus change that ensures coinbases at those heights can not
@@ -2055,8 +2051,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
         nInputs += tx.vin.size();
 
-        if (!tx.IsCoinBase())
+        if (tx.IsCoinBase())
         {
+            nValueOut += tx.GetValueOut();
+        } else {
             CAmount txfee = 0;
             if (!Consensus::CheckTxInputs(tx, state, view, pindex->nHeight, txfee)) {
                 if (!IsBlockReason(state.GetReason())) {
@@ -2088,7 +2086,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                                  REJECT_INVALID, "bad-txns-nonfinal");
             }
 
-            // XXX nValueIn += tx.GetValueIn(mapInputs);
+            nValueIn += view.GetValueIn(tx);
             nValueOut += tx.GetValueOut();
         }
 
@@ -2131,17 +2129,9 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint(BCLog::BENCH, "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs (%.2fms/blk)]\n", (unsigned)block.vtx.size(), MILLI * (nTime3 - nTime2), MILLI * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : MILLI * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * MICRO, nTimeConnect * MILLI / nBlocksTotal);
 
-    CAmount blockReward = GetProofOfWorkReward(nFees, pindex->pprev);
-    printf("block reward check :  %d\n", pindex->nHeight);
-    if (block.vtx[0]->GetValueOut() > blockReward)
-        return state.Invalid(ValidationInvalidReason::CONSENSUS,
-                         error("ConnectBlock(): coinbase pays too much (actual=%d vs limit=%d)",
-                               block.vtx[0]->GetValueOut(), blockReward),
-                               REJECT_INVALID, "bad-cb-amount");
-
     // ppcoin: track money supply and mint amount info
-    // XXX pindex->nMint = nValueOut - nValueIn + nFees;
-    // XXX pindex->nMoneySupply = (pindex->pprev ? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
+    pindex->nMint = nValueOut - nValueIn + nFees;
+    pindex->nMoneySupply = (pindex->pprev ? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;    
 
     int64_t nTime4 = GetTimeMicros(); nTimeVerify += nTime4 - nTime2;
     LogPrint(BCLog::BENCH, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
@@ -2358,8 +2348,8 @@ void static UpdateTip(const CBlockIndex* pindexNew, const CChainParams& chainPar
         if (nUpgraded > 0)
             AppendWarning(warningMessages, strprintf(_("%d of last 100 blocks have unexpected version").translated, nUpgraded));
     }
-    LogPrintf("%s: new best=%s height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)%s\n", __func__,
-      pindexNew->GetBlockHash().ToString(), pindexNew->nHeight, pindexNew->nVersion,
+    LogPrintf("%s: height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)%s\n", __func__,
+      pindexNew->nHeight, pindexNew->nVersion,
       log(pindexNew->nChainWork.getdouble())/log(2.0), (unsigned long)pindexNew->nChainTx,
       FormatISO8601DateTime(pindexNew->GetBlockTime()),
       GuessVerificationProgress(chainParams.TxData(), pindexNew), ::ChainstateActive().CoinsTip().DynamicMemoryUsage() * (1.0 / (1<<20)), ::ChainstateActive().CoinsTip().GetCacheSize(),
@@ -4131,8 +4121,7 @@ bool CChainState::LoadChainTip(const CChainParams& chainparams)
     PruneBlockIndexCandidates();
 
     tip = m_chain.Tip();
-    LogPrintf("Loaded best chain: hashBestChain=%s height=%d date=%s progress=%f\n",
-        tip->GetBlockHash().ToString(),
+    LogPrintf("Loaded best chain: height=%d date=%s progress=%f\n",
         m_chain.Height(),
         FormatISO8601DateTime(tip->GetBlockTime()),
         GuessVerificationProgress(chainparams.TxData(), tip));
