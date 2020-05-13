@@ -48,12 +48,9 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
     int64_t targetTimespan;
-    if (pindexLast->nHeight+1 > 2394)
-    {
+    if (pindexLast->nHeight+1 > 2394) {
         targetTimespan = nTargetTimespan * 24;
-    }
-    else
-    {
+    } else {
         targetTimespan = nTargetTimespan;
     }
     // ppcoin: target change every block
@@ -86,7 +83,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     return true;
 }
 
-static int64_t calculateMinerReward(const CBlockIndex* pindex)
+CAmount calculateMinerReward(const CBlockIndex* pindex)
 {
     int64_t nReward;
     unsigned int nBlockTime = calculateBlocktime(pindex);
@@ -112,8 +109,7 @@ static int64_t calculateMinerReward(const CBlockIndex* pindex)
 int64_t GetProofOfWorkReward(int64_t nFees,const CBlockIndex* pindex)
 {
     bool fDebug = true;
-    int64_t nSubsidy;
-    nSubsidy = calculateMinerReward(pindex);
+    CAmount nSubsidy = calculateMinerReward(pindex);
     if (fDebug && gArgs.GetBoolArg("-printcreation", false))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
     return nSubsidy + nFees;

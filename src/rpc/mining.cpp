@@ -35,71 +35,6 @@
 #include <memory>
 #include <stdint.h>
 
-/**
- * Return average network hashes per second based on the last 'lookup' blocks,
- * or from the last difficulty change if 'lookup' is nonpositive.
- * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
- */
-static UniValue GetNetworkHashPS(int lookup, int height) {
-    CBlockIndex *pb = ::ChainActive().Tip();
-
-    if (height >= 0 && height < ::ChainActive().Height())
-        pb = ::ChainActive()[height];
-
-    if (pb == nullptr || !pb->nHeight)
-        return 0;
-
-    // If lookup is -1, then use blocks since last difficulty change.
-    if (lookup <= 0)
-        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval() + 1;
-
-    // If lookup is larger than chain, then set it to chain length.
-    if (lookup > pb->nHeight)
-        lookup = pb->nHeight;
-
-    CBlockIndex *pb0 = pb;
-    int64_t minTime = pb0->GetBlockTime();
-    int64_t maxTime = minTime;
-    for (int i = 0; i < lookup; i++) {
-        pb0 = pb0->pprev;
-        int64_t time = pb0->GetBlockTime();
-        minTime = std::min(time, minTime);
-        maxTime = std::max(time, maxTime);
-    }
-
-    // In case there's a situation where minTime == maxTime, we don't want a divide by zero exception.
-    if (minTime == maxTime)
-        return 0;
-
-    arith_uint256 workDiff = pb->nChainWork - pb0->nChainWork;
-    int64_t timeDiff = maxTime - minTime;
-
-    return workDiff.getdouble() / timeDiff;
-}
-
-static UniValue getnetworkhashps(const JSONRPCRequest& request)
-{
-            RPCHelpMan{"getnetworkhashps",
-                "\nReturns the estimated network hashes per second based on the last n blocks.\n"
-                "Pass in [blocks] to override # of blocks, -1 specifies since last difficulty change.\n"
-                "Pass in [height] to estimate the network speed at the time when a certain block was found.\n",
-                {
-                    {"nblocks", RPCArg::Type::NUM, /* default */ "120", "The number of blocks, or -1 for blocks since last difficulty change."},
-                    {"height", RPCArg::Type::NUM, /* default */ "-1", "To estimate at the time of the given height."},
-                },
-                RPCResult{
-            "x             (numeric) Hashes per second estimated\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("getnetworkhashps", "")
-            + HelpExampleRpc("getnetworkhashps", "")
-                },
-            }.Check(request);
-
-    LOCK(cs_main);
-    return GetNetworkHashPS(!request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
-}
-
 static UniValue generateBlocks(const CScript& coinbase_script, int nGenerate, uint64_t nMaxTries)
 {
     int nHeightEnd = 0;
@@ -211,19 +146,13 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
-    auto GetPoWKHashPM = [](){ return 0.; };  // XXX XXX XXX XXX
     double nethashrate = GetPoWKHashPM();
-
     double blockreward = (double)GetProofOfWorkReward(0,::ChainActive().Tip()->pprev)/COIN;
     double blocktime = (double)calculateBlocktime(::ChainActive().Tip())/60;
     double totalhashrate = hashrate;
     double minerate;
-    if (totalhashrate == 0.0)
-    {
-        minerate = 0.0;
-    }
-    else
-    {
+    if (totalhashrate == 0.0){minerate = 0.0;}
+    else{
         minerate = 16.666667*(nethashrate*blocktime)/(totalhashrate);
     }
 
@@ -260,9 +189,14 @@ UniValue minerstart(const JSONRPCRequest& request)
 
     RPCHelpMan{"minerstart",
         "\nStart mining Verium.",
-        {},
+        {
+            {"nthreads", RPCArg::Type::NUM, RPCArg::Optional::NO, "Number of thread to allocate to mining."},
+        },
         RPCResult{
-            "true|false       (boolean) success\n"
+    "{                           (json object)\n"
+    "  \"status\" : {       (string) Mining status (active/stopped)\n"
+    "  \"nthreads\" : {     (int) Number of thread allocated\n"
+    "}\n"
         },
         RPCExamples{
             HelpExampleCli("minerstart", "")
@@ -270,11 +204,17 @@ UniValue minerstart(const JSONRPCRequest& request)
         },
     }.Check(request);
 
+    int nThreads = request.params[0].get_int();
+
 
     LOCK(cs_main);
 
-    GenerateVerium(true, pwallet);
-    return true;
+    GenerateVerium(true, pwallet, nThreads);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("status",   "active");
+    obj.pushKV("nthreads", nThreads);
+    return obj;
 }
 
 UniValue minerstop(const JSONRPCRequest& request)
@@ -290,7 +230,10 @@ UniValue minerstop(const JSONRPCRequest& request)
         "\nStop mining Verium.",
         {},
         RPCResult{
-            "true|false       (boolean) success\n"
+    "{                           (json object)\n"
+    "  \"status\" : {       (string) Mining status (active/stopped)\n"
+    "  \"nthreads\" : {     (int) Number of thread allocated\n"
+    "}\n"
         },
         RPCExamples{
             HelpExampleCli("minerstop", "")
@@ -301,8 +244,12 @@ UniValue minerstop(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
-    GenerateVerium(false, pwallet);
-    return true;
+    GenerateVerium(false, pwallet, 0);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("status",   "stopped");
+    obj.pushKV("nthreads", 0);
+    return obj;
 }
 
 
@@ -1044,7 +991,6 @@ static UniValue estimaterawfee(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    { "mining",             "getnetworkhashps",       &getnetworkhashps,       {"nblocks","height"} },
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","dummy","fee_delta"} },
     { "mining",             "getblocktemplate",       &getblocktemplate,       {"template_request"} },
@@ -1052,7 +998,7 @@ static const CRPCCommand commands[] =
     { "mining",             "submitheader",           &submitheader,           {"hexdata"} },
 
     { "miner",              "minerstop",              &minerstop,              {} },
-    { "miner",              "minerstart",             &minerstart,             {} },
+    { "miner",              "minerstart",             &minerstart,             {"nthreads"} },
 
     { "generating",         "generatetoaddress",      &generatetoaddress,      {"nblocks","address","maxtries"} },
 

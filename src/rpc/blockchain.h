@@ -28,6 +28,7 @@ static constexpr double dminDifficulty = 0.00000048; //standard scrypt^2 difficu
  * difficulty (4295032833 hashes).
  */
 double GetDifficulty(const CBlockIndex* blockindex);
+double GetPoWKHashPM();
 
 /** Callback for when block tip changed. */
 void RPCNotifyBlockChange(bool ibd, const CBlockIndex *);

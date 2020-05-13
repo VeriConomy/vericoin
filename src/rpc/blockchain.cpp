@@ -101,6 +101,24 @@ static int ComputeNextBlockAndDepth(const CBlockIndex* tip, const CBlockIndex* b
     return blockindex == tip ? 1 : -1;
 }
 
+double GetPoWKHashPM()
+{
+    int nPoWInterval = 72;
+    int64_t nTargetSpacingWorkMin = 30, nTargetSpacingWork = 30;
+    CBlockIndex* pindex = ::ChainActive().Genesis();
+    CBlockIndex* pindexPrevWork = ::ChainActive().Genesis();
+     while (pindex)
+    {
+        int64_t nActualSpacingWork = pindex->GetBlockTime() - pindexPrevWork->GetBlockTime();
+        nTargetSpacingWork = ((nPoWInterval - 1) * nTargetSpacingWork + nActualSpacingWork + nActualSpacingWork) / (nPoWInterval + 1);
+        nTargetSpacingWork = std::max(nTargetSpacingWork, nTargetSpacingWorkMin);
+        pindexPrevWork = pindex;
+        pindex = ::ChainActive()[pindex->nHeight+1];
+    }
+
+    return (GetDifficulty(::ChainActive().Tip()) * 1024 * 4294.967296  / nTargetSpacingWork) * 60;  // 60= sec to min, 1024= standard scrypt work to scrypt^2
+}
+
 UniValue getsubsidy(const JSONRPCRequest& request)
 {
     RPCHelpMan{"getsubsidy",
@@ -1977,7 +1995,7 @@ static UniValue getblockstats(const JSONRPCRequest& request)
     ret_all.pushKV("minfeerate", (minfeerate == MAX_MONEY) ? 0 : minfeerate);
     ret_all.pushKV("mintxsize", mintxsize == MAX_BLOCK_SERIALIZED_SIZE ? 0 : mintxsize);
     ret_all.pushKV("outs", outputs);
-    ret_all.pushKV("subsidy", GetBlockSubsidy(pindex->nHeight, Params().GetConsensus()));
+    ret_all.pushKV("subsidy", GetBlockSubsidy(pindex));
     ret_all.pushKV("swtotal_size", swtotal_size);
     ret_all.pushKV("swtotal_weight", swtotal_weight);
     ret_all.pushKV("swtxs", swtxs);

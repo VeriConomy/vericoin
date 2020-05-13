@@ -14,6 +14,7 @@
 #include <consensus/tx_verify.h>
 #include <consensus/validation.h>
 #include <crypto/scrypt.h>
+#include <logging.h>
 #include <net.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
@@ -155,14 +156,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vin[0].prevout.SetNull();
     coinbaseTx.vout.resize(1);
     coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
-    coinbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
+    coinbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(pindexPrev);
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
     pblocktemplate->vTxFees[0] = -nFees;
-
-    LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
-    coinbaseTx.print();  // XXX
 
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
@@ -588,6 +586,11 @@ int GetNumBlocksOfPeers()
 //    return std::max(cPeerBlockCounts.median(), GetTotalBlocksEstimate()); XXX
     return GetTotalBlocksEstimate(Params().Checkpoints());
 }
+int GetNumPeers()
+{
+    return g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL);
+}
+
 
 void Miner(CWallet *pwallet)
 {
@@ -618,12 +621,10 @@ void Miner(CWallet *pwallet)
     {
         while (fGenerateVerium && memory)
         {
-            auto nBestHeight = g_connman->GetBestHeight();
-
-            while ((g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) < 2) || pwallet->chain().isInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
-            {
-                MilliSleep(5000);
-            }
+			while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
+				LogPrint("Mining inactive while chain is syncing...");
+				MilliSleep(5000);
+			}
 
             // Create new block
             unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
@@ -636,8 +637,7 @@ void Miner(CWallet *pwallet)
                 
             CBlock *pblock = &pblocktemplate->block;
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
-            printf("Running Miner with \%" PRIszu " transactions in block (%lu bytes)\n", pblock->vtx.size(),
-                   ::GetSerializeSize(*pblock, PROTOCOL_VERSION));
+            LogPrintf("Miner thread running on block %s (%lu bytes)\n", pindexPrev->nHeight, ::GetSerializeSize(*pblock, PROTOCOL_VERSION));
 
             // Pre-build hash buffers
             char pmidstatebuf[32+16]; char* pmidstate = alignup<16>(pmidstatebuf);
@@ -688,7 +688,7 @@ void Miner(CWallet *pwallet)
                             nHPSTimerStart = GetTimeMillis();
                             nHashCounter = 0;
                             updateHashrate(dHashesPerMin);
-                            printf("Total local hashrate %6.0f hashes/min\n", hashrate);
+                            LogPrintf("Total local hashrate: %6.0f hashes/min\n", hashrate);
                         }
                     }
                 }
@@ -699,7 +699,7 @@ void Miner(CWallet *pwallet)
                     break;
                 if (ShutdownRequested())
                     return;
-                if (/* XXX !fTestNet && */ g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) < 2)
+                if ( GetNumPeers() < 1)
                     break;
                 if (pblock->nNonce >= 0xffff0000)
                     break;
@@ -724,12 +724,11 @@ void Miner(CWallet *pwallet)
     }
 }
 
-void GenerateVerium(bool fGenerate, CWallet* pwallet)
+void GenerateVerium(bool fGenerate, CWallet* pwallet, int nThreads)
 {
     fGenerateVerium = fGenerate;
     static boost::thread_group* minerThreads = NULL;
 
-    int nThreads = gArgs.GetArg("-genproclimit", -1);
     if (nThreads < 0)
         nThreads = std::thread::hardware_concurrency();
 
