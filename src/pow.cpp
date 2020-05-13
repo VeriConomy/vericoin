@@ -11,6 +11,9 @@
 #include <uint256.h>
 #include <math.h>
 #include <util/system.h>
+#include <timedata.h>
+#include <validation.h>
+
 
 #include <inttypes.h>
 
@@ -114,4 +117,18 @@ int64_t GetProofOfWorkReward(int64_t nFees,const CBlockIndex* pindex)
     if (fDebug && gArgs.GetBoolArg("-printcreation", false))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
     return nSubsidy + nFees;
+}
+
+// Get the block rate for one hour
+int GetBlockRatePerHour()
+{
+    int nRate = 0;
+    CBlockIndex* pindex = ::ChainActive().Tip();
+    int64_t nTargetTime = GetAdjustedTime() - 3600;
+
+    while (pindex && pindex->pprev && pindex->nTime > nTargetTime) {
+        nRate += 1;
+        pindex = pindex->pprev;
+    }
+    return nRate;
 }

@@ -3349,6 +3349,16 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
     return commitment;
 }
 
+int GetTotalBlocksEstimate(const CCheckpointData& data) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+{
+    const MapCheckpoints& checkpoints = data.mapCheckpoints;
+
+    if (checkpoints.empty())
+        return 0;
+
+    return checkpoints.rbegin()->first;
+}
+
 //! Returns last CBlockIndex* that is a checkpoint
 static CBlockIndex* GetLastCheckpoint(const CCheckpointData& data) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {

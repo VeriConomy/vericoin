@@ -30,6 +30,7 @@
 #include <validationinterface.h>
 #include <versionbitsinfo.h>
 #include <warnings.h>
+#include <wallet/rpcwallet.h>
 
 #include <memory>
 #include <stdint.h>
@@ -178,39 +179,130 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
 
 static UniValue getmininginfo(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"getmininginfo",
-                "\nReturns a json object containing mining-related information.",
-                {},
-                RPCResult{
-                    "{\n"
-                    "  \"blocks\": nnn,             (numeric) The current block\n"
-                    "  \"currentblockweight\": nnn, (numeric, optional) The block weight of the last assembled block (only present if a block was ever assembled)\n"
-                    "  \"currentblocktx\": nnn,     (numeric, optional) The number of block transactions of the last assembled block (only present if a block was ever assembled)\n"
-                    "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
-                    "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
-                    "  \"pooledtx\": n              (numeric) The size of the mempool\n"
-                    "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
-                    "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
-                    "}\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("getmininginfo", "")
-            + HelpExampleRpc("getmininginfo", "")
-                },
-            }.Check(request);
+    RPCHelpMan{"getmininginfo",
+        "\nReturns a json object containing mining-related information.",
+        {},
+        RPCResult{
+            "{\n"
+            "  \"blockreward (VRM)\": x.xxxx,          (numeric) DEPREACED, use 'blockreward'. Current block reward \n"
+            "  \"blockreward\": x.xxxx,                (numeric) Current block reward \n"
+            "  \"blocks\": nnn,                        (numeric) The current block\n"
+            "  \"blocksperhour\": nnn                  (numeric) Number of blocks per hour\n"
+            "  \"blocktime (min)\": x.xxxx,            (numeric) DEPREACED, use 'blocktime'. Current time between blocks in minutes \n"
+            "  \"blocktime\": x.xxxx,                  (numeric) Current time between blocks in minutes \n"
+            "  \"chain\": \"xxxx\",                    (string) current network name as defined in BIP70 (main, test, regtest)\n"
+            "  \"currentblocktx\": nnn,                (numeric, optional) The number of block transactions of the last assembled block (only present if a block was ever assembled)\n"
+            "  \"difficulty\": xxx.xxxxx               (numeric) The current difficulty\n"
+            "  \"est. block rate (hrs)\": xxx.xxxxx    (numeric) DEPRECATED, use 'estimateblockrate'. Estimated block rate of your miner in hours\n"
+            "  \"estimateblockrate\": xxx.xxxxx        (numeric) Estimated block rate of your miner in hours\n"
+            "  \"hashrate (H/m)\": xxx.xxxxx           (numeric) DEPREACED, use 'hashrate'. Your miner hashrate in H/m \n"
+            "  \"hashrate\": xxx.xxxxx                 (numeric) Your miner hashrate in H/m \n"
+            "  \"nethashrate (kH/m)\": xxx.xx,         (numeric) DEPRECATED, use 'networkhashps'. The network hashes per second\n"
+            "  \"networkhashps\": nnn,                 (numeric) The network hashes per second\n"
+            "  \"pooledtx\": n                         (numeric) The size of the mempool\n"
+            "  \"warnings\": \"...\"                   (string) any network and blockchain warnings\n"
+            "}\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getmininginfo", "")
+    + HelpExampleRpc("getmininginfo", "")
+        },
+    }.Check(request);
 
     LOCK(cs_main);
 
+    auto GetPoWKHashPM = [](){ return 0.; };  // XXX XXX XXX XXX
+    double nethashrate = GetPoWKHashPM();
+
+    double blockreward = (double)GetProofOfWorkReward(0,::ChainActive().Tip()->pprev)/COIN;
+    double blocktime = (double)calculateBlocktime(::ChainActive().Tip())/60;
+    double totalhashrate = hashrate;
+    double minerate;
+    if (totalhashrate == 0.0)
+    {
+        minerate = 0.0;
+    }
+    else
+    {
+        minerate = 16.666667*(nethashrate*blocktime)/(totalhashrate);
+    }
+
     UniValue obj(UniValue::VOBJ);
+
+    obj.pushKV("blockreward (VRM)",           blockreward);
+    obj.pushKV("blockreward",           blockreward);
     obj.pushKV("blocks",           (int)::ChainActive().Height());
-    if (BlockAssembler::m_last_block_weight) obj.pushKV("currentblockweight", *BlockAssembler::m_last_block_weight);
+    obj.pushKV("blocksperhour",           GetBlockRatePerHour());
+    obj.pushKV("blocktime (min)",           (double)blocktime);
+    obj.pushKV("blocktime",           (double)blocktime);
+    obj.pushKV("chain",            Params().NetworkIDString());
     if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
     obj.pushKV("difficulty",       (double)GetDifficulty(::ChainActive().Tip()));
-    obj.pushKV("networkhashps",    getnetworkhashps(request));
+    obj.pushKV("est. block rate (hrs)",           (double)minerate);
+    obj.pushKV("estimateblockrate",           (double)minerate);
+    obj.pushKV("hashrate (H/m)",           (double)totalhashrate);
+    obj.pushKV("hashrate",           (double)totalhashrate);
+    obj.pushKV("nethashrate (kH/m)",           nethashrate);
+    obj.pushKV("networkhashps",    ((nethashrate*1000)/60));
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
-    obj.pushKV("chain",            Params().NetworkIDString());
     obj.pushKV("warnings",         GetWarnings("statusbar"));
     return obj;
+}
+
+UniValue minerstart(const JSONRPCRequest& request)
+{
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = wallet.get();
+
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return false;
+    }
+
+    RPCHelpMan{"minerstart",
+        "\nStart mining Verium.",
+        {},
+        RPCResult{
+            "true|false       (boolean) success\n"
+        },
+        RPCExamples{
+            HelpExampleCli("minerstart", "")
+    + HelpExampleRpc("minerstart", "")
+        },
+    }.Check(request);
+
+
+    LOCK(cs_main);
+
+    GenerateVerium(true, pwallet);
+    return true;
+}
+
+UniValue minerstop(const JSONRPCRequest& request)
+{
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = wallet.get();
+
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return false;
+    }
+
+    RPCHelpMan{"minerstop",
+        "\nStop mining Verium.",
+        {},
+        RPCResult{
+            "true|false       (boolean) success\n"
+        },
+        RPCExamples{
+            HelpExampleCli("minerstop", "")
+    + HelpExampleRpc("minerstop", "")
+        },
+    }.Check(request);
+
+
+    LOCK(cs_main);
+
+    GenerateVerium(false, pwallet);
+    return true;
 }
 
 
@@ -959,6 +1051,8 @@ static const CRPCCommand commands[] =
     { "mining",             "submitblock",            &submitblock,            {"hexdata","dummy"} },
     { "mining",             "submitheader",           &submitheader,           {"hexdata"} },
 
+    { "miner",              "minerstop",              &minerstop,              {} },
+    { "miner",              "minerstart",             &minerstart,             {} },
 
     { "generating",         "generatetoaddress",      &generatetoaddress,      {"nblocks","address","maxtries"} },
 

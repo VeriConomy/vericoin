@@ -308,12 +308,12 @@ public:
 
     bool HasWitness() const
     {
-        for (size_t i = 0; i < vin.size(); i++) {
-            if (!vin[i].scriptWitness.IsNull()) {
-                return true;
-            }
-        }
         return false;
+    }
+
+    void print() const
+    {
+        printf("%s", ToString().c_str());
     }
 };
 
@@ -350,14 +350,16 @@ struct CMutableTransaction
      */
     uint256 GetHash() const;
 
+    std::string ToString() const;
+
     bool HasWitness() const
     {
-        for (size_t i = 0; i < vin.size(); i++) {
-            if (!vin[i].scriptWitness.IsNull()) {
-                return true;
-            }
-        }
         return false;
+    }
+    
+    void print() const
+    {
+        printf("%s", ToString().c_str());
     }
 };
 

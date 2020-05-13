@@ -38,6 +38,7 @@
 
 class CScheduler;
 class CNode;
+class CWallet;
 class BanMan;
 
 /** Default for -whitelistrelay. */
@@ -479,6 +480,7 @@ private:
     std::atomic<int64_t> m_next_send_inv_to_incoming{0};
 
     friend struct CConnmanTest;
+    friend void Miner(CWallet *pwallet);
 };
 extern std::unique_ptr<CConnman> g_connman;
 extern std::unique_ptr<BanMan> g_banman;
