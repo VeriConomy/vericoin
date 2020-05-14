@@ -1233,8 +1233,7 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
 
 CAmount GetBlockSubsidy(CBlockIndex *pindexPrev)
 {
-    CAmount nSubsidy = calculateMinerReward(pindexPrev);
-    return nSubsidy;
+    return GetProofOfWorkReward(0, pindexPrev);
 }
 
 CoinsViews::CoinsViews(
@@ -1823,14 +1822,6 @@ public:
 
 static ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS] GUARDED_BY(cs_main);
 
-// 0.13.0 was shipped with a segwit deployment defined for testnet, but not for
-// mainnet. We no longer need to support disabling the segwit deployment
-// except for testing purposes, due to limitations of the functional test
-// environment. See test/functional/p2p-segwit.py.
-static bool IsScriptWitnessEnabled(const Consensus::Params& params)
-{
-    return params.SegwitHeight != std::numeric_limits<int>::max();
-}
 
 static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consensus::Params& consensusparams) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
     return SCRIPT_VERIFY_NONE;
@@ -2046,45 +2037,13 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
         if (tx.IsCoinBase())
         {
-			if (tx.GetValueOut() > calculateMinerReward(pindex->pprev)) {
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, error("%s: reward in the block out of range.", __func__),
-                    REJECT_INVALID, "reward-outofrange");
-			}
             nValueOut += tx.GetValueOut();
         } else {
-            CAmount txfee = 0;
-            if (!Consensus::CheckTxInputs(tx, state, view, pindex->nHeight, txfee)) {
-                if (!IsBlockReason(state.GetReason())) {
-                    // CheckTxInputs may return MISSING_INPUTS or
-                    // PREMATURE_SPEND but we can't return that, as it's not
-                    // defined for a block, so we reset the reason flag to
-                    // CONSENSUS here.
-                    state.Invalid(ValidationInvalidReason::CONSENSUS, false,
-                            state.GetRejectCode(), state.GetRejectReason(), state.GetDebugMessage());
-                }
-                return error("%s: Consensus::CheckTxInputs: %s, %s", __func__, tx.GetHash().ToString(), FormatStateMessage(state));
-            }
-            nFees += txfee;
-            if (!MoneyRange(nFees)) {
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, error("%s: accumulated fee in the block out of range.", __func__),
-                                 REJECT_INVALID, "bad-txns-accumulated-fee-outofrange");
-            }
-
-            // Check that transaction is BIP68 final
-            // BIP68 lock checks (as opposed to nLockTime checks) must
-            // be in ConnectBlock because they require the UTXO set
-            prevheights.resize(tx.vin.size());
-            for (size_t j = 0; j < tx.vin.size(); j++) {
-                prevheights[j] = view.AccessCoin(tx.vin[j].prevout).nHeight;
-            }
-
-            if (!SequenceLocks(tx, nLockTimeFlags, &prevheights, *pindex)) {
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, error("%s: contains a non-BIP68-final transaction", __func__),
-                                 REJECT_INVALID, "bad-txns-nonfinal");
-            }
-
-            nValueIn += view.GetValueIn(tx);
-            nValueOut += tx.GetValueOut();
+            int64_t nTxValueIn = view.GetValueIn(tx);
+            int64_t nTxValueOut = tx.GetValueOut();
+            nValueIn += nTxValueIn;
+            nValueOut += nTxValueOut;
+            nFees += nTxValueIn - nTxValueOut;
         }
 
         // GetTransactionSigOpCost counts 3 types of sigops:
@@ -2128,10 +2087,14 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     // ppcoin: track money supply and mint amount info
     pindex->nMint = nValueOut - nValueIn + nFees;
-    pindex->nMoneySupply = (pindex->pprev ? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;    
+    pindex->nMoneySupply = (pindex->pprev ? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
 
     int64_t nTime4 = GetTimeMicros(); nTimeVerify += nTime4 - nTime2;
     LogPrint(BCLog::BENCH, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
+
+    CAmount blockReward = GetProofOfWorkReward(nFees, pindex->pprev);
+    if (block.vtx[0]->GetValueOut() > blockReward)
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, error("ConnectBlock(): coinbase pays too much (actual=%d vs limit=%d)", block.vtx[0]->GetValueOut(), blockReward), REJECT_INVALID, "bad-cb-amount");
 
     if (fJustCheck)
         return true;
@@ -3390,7 +3353,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     // XXX - TODO: maybe create a custom ValidationInvalidReason
     const Consensus::Params& consensusParams = params.GetConsensus();
     if (block.nBits != GetNextTargetRequired(pindexPrev))
-        return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "bad-diffbits", "incorrect proof of work");
+        return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "bad-diffbits", strprintf("incorrect proof of work %lu - %lu", block.nBits, GetNextTargetRequired(pindexPrev)));
      
     // Check against checkpoints
     if (fCheckpointsEnabled) {

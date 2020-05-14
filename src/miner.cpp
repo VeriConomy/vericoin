@@ -156,7 +156,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vin[0].prevout.SetNull();
     coinbaseTx.vout.resize(1);
     coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
-    coinbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(pindexPrev);
+    coinbaseTx.vout[0].nValue = GetProofOfWorkReward(nFees, pindexPrev);
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
@@ -457,7 +457,6 @@ bool fGenerateVerium = false;
 static int64_t timeElapsed = 30000;
 double dHashesPerMin = 0.0;
 int64_t nHPSTimerStart = 0;
-unsigned int nExtraNonce = 0;
 
 static const unsigned int pSHA256InitState[8] =
 {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
@@ -522,38 +521,25 @@ void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash
     memcpy(phash1, &tmp.hash1, 64);
 }
 
-bool CheckWork(CBlock* pblock, CWallet& wallet, ReserveDestination& reservedest)
+bool CheckWork(CBlock* pblock)
 {
     arith_uint256 hashBlock = UintToArith256(pblock->GetWorkHash());
     arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+    CBlockIndex* pindexPrev = ::ChainActive().Tip();
 
-    printf("CheckWork() : new proof-of-work block found  \n  hash: %s  \ntarget: %s\n", hashBlock.GetHex().c_str(), hashTarget.GetHex().c_str());
-
-    if (hashBlock > hashTarget)
+    if (hashBlock > hashTarget){
         return error("CheckWork() : proof-of-work not meeting target");
+    } else {
+	    if (pblock->hashPrevBlock != pindexPrev->GetBlockHash()){
+			return error("CheckWork() : generated block is stale");
+		}
 
-    //// debug print
-    pblock->print();
-    // XXX printf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue).c_str());
-
-    // Found a solution
-    {
+        pblock->print();
+        LogPrintf("New proof-of-work block found with: %s coins generated.\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
+	
         LOCK(cs_main);
-        auto hashBestChain = ::ChainstateActive().CoinsTip().GetBestBlock();
-        if (pblock->hashPrevBlock != hashBestChain)
-            return error("CheckWork() : generated block is stale");
-
-        // Remove destination from key pool
-        reservedest.KeepDestination();
-
-        // Track how many getdata requests this block gets
-        {
-            LOCK(wallet.cs_wallet);
-            // XXX wallet.mapRequestCount[hashBlock] = 0;
-        }
-
+		
         // Process this block the same as if we had received it from another node
-        // XXX ???
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
         if (!ProcessNewBlock(Params(), shared_pblock, true, nullptr))
             return error("CheckWork() : ProcessBlock, block not accepted");
@@ -580,11 +566,10 @@ void SHA256Transform(void* pstate, void* pinput, const void* pinit)
         ((uint32_t*)pstate)[i] = ctx.h[i];
 }
 
-static // Return maximum amount of blocks that other nodes claim to have
+// Return maximum amount of blocks that other nodes claim to have
 int GetNumBlocksOfPeers()
 {
-//    return std::max(cPeerBlockCounts.median(), GetTotalBlocksEstimate()); XXX
-    return GetTotalBlocksEstimate(Params().Checkpoints());
+    return g_connman->GetBestHeight();
 }
 int GetNumPeers()
 {
@@ -610,27 +595,25 @@ void Miner(CWallet *pwallet)
     CTxDestination dest;
     bool ret = reservedest.GetReservedDestination(DEFAULT_ADDRESS_TYPE, dest, true);
     if (!ret)
-    {
         return;
-    }
+
     CScript scriptChange;
     scriptChange = GetScriptForDestination(dest);
 
-    nExtraNonce += 1;
+    unsigned int nExtraNonce = 0;
     try
     {
         while (fGenerateVerium && memory)
         {
 			while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
-				LogPrint("Mining inactive while chain is syncing...");
+				LogPrintf("Mining inactive while chain is syncing...");
 				MilliSleep(5000);
 			}
 
             // Create new block
             unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
             CBlockIndex* pindexPrev = ::ChainActive().Tip();
-            // XXX auto_ptr<CBlock> pblock(CreateNewBlock(pwallet, &nFees));
-            // XXX What to do with the fees.???
+
             std::unique_ptr<CBlockTemplate> pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptChange);
             if (!pblocktemplate.get())
                 return;
@@ -661,7 +644,7 @@ void Miner(CWallet *pwallet)
                         // Found a solution
                         printf("Miner found a solution\n");
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        CheckWork(pblock, *pwallet, reservedest);
+                        CheckWork(pblock);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                     }
                     nHashesDone += nHashes;

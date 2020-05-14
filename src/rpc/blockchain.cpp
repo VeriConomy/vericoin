@@ -42,6 +42,7 @@
 #include <univalue.h>
 
 #include <boost/thread/thread.hpp> // boost::thread::interrupt
+#include <openssl/ssl.h>
 
 #include <condition_variable>
 #include <memory>
