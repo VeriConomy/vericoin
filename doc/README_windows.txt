@@ -1,4 +1,4 @@
-Verium Core
+Verium
 =============
 
 Intro
@@ -13,7 +13,7 @@ Setup
 -----
 Download the [installation file](https://cdn.vericonomy.com/verium/Verium_0.16_64bit.exe) and launch it
 
-Verium Core is the original Verium client and it builds the backbone of the network.
+Verium is the original Verium client and it builds the backbone of the network.
 However, it downloads and stores the entire history of Verium transactions;
 depending on the speed of your computer and network connection, the synchronization
 process can take anywhere from a few hours to a day or more.

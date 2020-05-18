@@ -40,7 +40,7 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see the section *Disable-Wallet mode* below).
 
-Build Verium Core
+Build Verium
 ------------------------
 
 1. Clone the verium source code and cd into `verium`
@@ -69,7 +69,7 @@ Build Verium Core
 Running
 -------
 
-Verium Core is now available at `./src/veriumd`
+Verium is now available at `./src/veriumd`
 
 Before running, it's recommended you create an RPC configuration file.
 

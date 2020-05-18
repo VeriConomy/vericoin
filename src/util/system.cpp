@@ -1211,9 +1211,9 @@ std::string CopyrightHolders(const std::string& strPrefix)
     const auto copyright_devs = strprintf(_(COPYRIGHT_HOLDERS).translated, COPYRIGHT_HOLDERS_SUBSTITUTION);
     std::string strCopyrightHolders = strPrefix + copyright_devs;
 
-    // Make sure Verium Core copyright is not removed by accident
-    if (copyright_devs.find("Verium Core") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + "The Verium Core developers";
+    // Make sure Verium copyright is not removed by accident
+    if (copyright_devs.find("Verium") == std::string::npos) {
+        strCopyrightHolders += "\n" + strPrefix + "The Verium developers";
     }
     return strCopyrightHolders;
 }

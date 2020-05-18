@@ -9,7 +9,7 @@ define(_CLIENT_VERSION_IS_RELEASE, true)
 define(_COPYRIGHT_YEAR, 2020)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
 define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Verium]])
-AC_INIT([Verium Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_REVISION, m4_if(_CLIENT_VERSION_BUILD, [0], [], _CLIENT_VERSION_BUILD))m4_if(_CLIENT_VERSION_RC, [0], [], [rc]_CLIENT_VERSION_RC),[https://github.com/VeriumReserve/verium/issues],[verium],[https://vericoin.info/])
+AC_INIT([Verium],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_REVISION, m4_if(_CLIENT_VERSION_BUILD, [0], [], _CLIENT_VERSION_BUILD))m4_if(_CLIENT_VERSION_RC, [0], [], [rc]_CLIENT_VERSION_RC),[https://github.com/VeriumReserve/verium/issues],[verium],[https://vericoin.info/])
 AC_CONFIG_SRCDIR([src/validation.cpp])
 AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -1219,6 +1219,11 @@ fi
 
 fi
 
+AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR(curl headers missing),)
+AC_CHECK_LIB([curl],         [main],CURL_LIBS=-lcurl, AC_MSG_ERROR(libcurl missing))
+AC_CHECK_HEADER([minizip/unzip.h],, AC_MSG_ERROR(minizip headers missing),)
+AC_CHECK_LIB([minizip],         [main],MINIZIP_LIBS=-lminizip, AC_MSG_ERROR(libminizip missing))
+
 if test x$use_pkgconfig = xyes; then
   : dnl
   m4_ifdef(
@@ -1611,6 +1616,8 @@ AC_SUBST(MINIUPNPC_CPPFLAGS)
 AC_SUBST(MINIUPNPC_LIBS)
 AC_SUBST(CRYPTO_LIBS)
 AC_SUBST(SSL_LIBS)
+AC_SUBST(MINIZIP_LIBS)
+AC_SUBST(CURL_LIBS)
 AC_SUBST(EVENT_LIBS)
 AC_SUBST(EVENT_PTHREADS_LIBS)
 AC_SUBST(ZMQ_LIBS)

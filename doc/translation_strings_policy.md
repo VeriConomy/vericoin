@@ -1,7 +1,7 @@
 Translation Strings Policy
 ===========================
 
-This document provides guidelines for internationalization of the Verium Core software.
+This document provides guidelines for internationalization of the Verium software.
 
 How to translate?
 ------------------

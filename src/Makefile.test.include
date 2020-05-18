@@ -111,7 +111,6 @@ BITCOIN_TESTS =\
   test/key_tests.cpp \
   test/limitedmap_tests.cpp \
   test/dbwrapper_tests.cpp \
-  test/validation_tests.cpp \
   test/mempool_tests.cpp \
   test/merkle_tests.cpp \
   test/merkleblock_tests.cpp \
@@ -188,7 +187,7 @@ test_test_verium_LDADD += $(LIBBITCOIN_SERVER) $(LIBBITCOIN_CLI) $(LIBBITCOIN_CO
   $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) $(BOOST_LIBS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(LIBSECP256K1) $(EVENT_LIBS) $(EVENT_PTHREADS_LIBS)
 test_test_verium_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
-test_test_verium_LDADD += $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(RAPIDCHECK_LIBS)
+test_test_verium_LDADD += $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(RAPIDCHECK_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 test_test_verium_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static
 
 if ENABLE_ZMQ

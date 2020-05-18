@@ -12,12 +12,12 @@
  * for both bitcoind and bitcoin-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Veritoshi");
+const std::string CLIENT_NAME("Verium");
 
 /**
  * Client version number
  */
-#define CLIENT_VERSION_SUFFIX "-mderasse"
+#define CLIENT_VERSION_SUFFIX ""
 
 
 /**

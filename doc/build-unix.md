@@ -1,6 +1,6 @@
 # UNIX BUILD NOTES
 
-Some notes on how to build Verium Core in Unix.
+Some notes on how to build Verium in Unix.
 
 (for OpenBSD specific instructions, see [build-openbsd.md](build-openbsd.md))
 
@@ -80,7 +80,7 @@ For the versions used, see [dependencies.md](dependencies.md)
 ----------------------------------------------
 
 C++ compilers are memory-hungry. It is recommended to have at least 1.5 GB of
-memory available when compiling Verium Core. On systems with less, gcc can be
+memory available when compiling Verium. On systems with less, gcc can be
 tuned to conserve memory with additional CXXFLAGS:
 
 
@@ -115,7 +115,7 @@ pass `--with-incompatible-bdb` to configure.
 
 To build and use BerkeleyDB 4.8 please referer to the [Berkeley DB](#berkeley-db)
 
-See the section "Disable-wallet mode" to build Verium Core without wallet.
+See the section "Disable-wallet mode" to build Verium without wallet.
 
 Optional (see --with-miniupnpc and --enable-upnp-default):
 

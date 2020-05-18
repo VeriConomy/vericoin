@@ -976,7 +976,7 @@
     </message>
     <message>
         <source>Verium</source>
-        <translation>Verium Core</translation>
+        <translation>Verium</translation>
     </message>
     <message>
         <source>Discard blocks after verification, except most recent %1 GB (prune)</source>

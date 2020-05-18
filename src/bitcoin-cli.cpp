@@ -17,6 +17,7 @@
 #include <util/system.h>
 #include <util/translation.h>
 
+#include <curl/curl.h>
 #include <functional>
 #include <memory>
 #include <stdio.h>
@@ -99,6 +100,7 @@ static int AppInitRPC(int argc, char* argv[])
     //
     // Parameters
     //
+    curl_global_init(CURL_GLOBAL_ALL);
     SetupCliArgs();
     std::string error;
     if (!gArgs.ParseParameters(argc, argv, error)) {

@@ -176,6 +176,7 @@ BITCOIN_CORE_H = \
   reverselock.h \
   rpc/blockchain.h \
   rpc/client.h \
+  rpc/miniunz.h \
   rpc/protocol.h \
   rpc/rawtransaction_util.h \
   rpc/register.h \
@@ -291,6 +292,7 @@ libbitcoin_server_a_SOURCES = \
   rest.cpp \
   rpc/blockchain.cpp \
   rpc/mining.cpp \
+  rpc/miniunz.cpp \
   rpc/misc.cpp \
   rpc/net.cpp \
   rpc/rawtransaction.cpp \
@@ -564,7 +566,7 @@ veriumd_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-veriumd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+veriumd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 
 # verium-cli binary #
 verium_cli_SOURCES = bitcoin-cli.cpp
@@ -582,7 +584,7 @@ verium_cli_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-verium_cli_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+verium_cli_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 #
 
 # verium-tx binary #
@@ -603,7 +605,7 @@ verium_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-verium_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+verium_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 #
 
 # verium-wallet binary #
@@ -630,7 +632,7 @@ verium_wallet_LDADD = \
   $(LIBSECP256K1) \
   $(LIBUNIVALUE)
 
-verium_wallet_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(MINIUPNPC_LIBS) $(ZMQ_LIBS)
+verium_wallet_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(MINIUPNPC_LIBS) $(ZMQ_LIBS)  $(MINIZIP_LIBS) $(CURL_LIBS)
 #
 
 # bitcoinconsensus library #

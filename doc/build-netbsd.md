@@ -30,7 +30,7 @@ git clone https://github.com/VeriumReserve/verium.git
 
 See [dependencies.md](dependencies.md) for a complete overview.
 
-### Building Verium Core
+### Building Verium
 
 **Important**: Use `gmake` (the non-GNU `make` will exit with an error).
 

@@ -1,4 +1,4 @@
-Verium Core version 0.16.x is now available from:
+Verium version 0.16.x is now available from:
 
   <https://vericoin.info/verium-digital-reserve/>
 
@@ -30,10 +30,10 @@ wallets that were created with older versions are not affected by this.
 Compatibility
 ==============
 
-Verium Core is extensively tested on multiple operating systems using
+Verium is extensively tested on multiple operating systems using
 the Linux kernel, macOS 10.8+, and Windows 10 and later.
 
-Verium Core should also work on most other Unix-like systems but is not
+Verium should also work on most other Unix-like systems but is not
 frequently tested on them.
 
 Notable changes

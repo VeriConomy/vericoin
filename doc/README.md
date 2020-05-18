@@ -1,13 +1,13 @@
-Verium Core
+Verium
 =============
 
 Setup
 ---------------------
-Verium Core is the original Verium client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Verium transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+Verium is the original Verium client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Verium transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
 In order to help you to be able to sync as fast as possible we have implemented a bootstrap system explain in the documentation below
 
-To download Verium Core, visit [vericoin.info](https://vericoin.info/verium-digital-reserve/).
+To download Verium, visit [vericoin.info](https://vericoin.info/verium-digital-reserve/).
 
 Running
 ---------------------
@@ -30,7 +30,7 @@ Drag Verium_0.16_64bit.pkg to your applications folder, and then run Verium Wall
 
 Bootstrap
 ---------------------
-In order to speed up the download of the blockchain and to let you discover the full potential of the Verium Wallet, a bootstrap process is implemented in the Verium Core.
+In order to speed up the download of the blockchain and to let you discover the full potential of the Verium Wallet, a bootstrap process is implemented in the Verium.
 
 * You can launch it by different methods base on how you are using you wallet:
   - Command line: src/verium-cli bootstrap

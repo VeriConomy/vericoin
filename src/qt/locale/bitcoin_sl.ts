@@ -1490,7 +1490,7 @@
     </message>
     <message>
         <source>Cannot process payment request because BIP70 support was not compiled in.</source>
-        <translation>Zahteve za plačilo ni mogoče obdelati, ker podpora za BIP70 ni bila sestavljena v Verium Core.</translation>
+        <translation>Zahteve za plačilo ni mogoče obdelati, ker podpora za BIP70 ni bila sestavljena v Verium.</translation>
     </message>
     <message>
         <source>Due to widespread security flaws in BIP70 it's strongly recommended that any merchant instructions to switch wallets be ignored.</source>
