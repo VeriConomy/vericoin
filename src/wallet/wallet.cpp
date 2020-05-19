@@ -2863,91 +2863,8 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, int& nC
     return true;
 }
 
-static bool IsCurrentForAntiFeeSniping(interfaces::Chain& chain, interfaces::Chain::Lock& locked_chain)
-{
-    if (chain.isInitialBlockDownload()) {
-        return false;
-    }
-    constexpr int64_t MAX_ANTI_FEE_SNIPING_TIP_AGE = 8 * 60 * 60; // in seconds
-    if (locked_chain.getBlockTime(*locked_chain.getHeight()) < (GetTime() - MAX_ANTI_FEE_SNIPING_TIP_AGE)) {
-        return false;
-    }
-    return true;
-}
-
-/**
- * Return a height-based locktime for new transactions (uses the height of the
- * current chain tip unless we are not synced with the current chain
- */
-static uint32_t GetLocktimeForNewTransaction(interfaces::Chain& chain, interfaces::Chain::Lock& locked_chain)
-{
-    uint32_t const height = locked_chain.getHeight().get_value_or(-1);
-    uint32_t locktime;
-    // Discourage fee sniping.
-    //
-    // For a large miner the value of the transactions in the best block and
-    // the mempool can exceed the cost of deliberately attempting to mine two
-    // blocks to orphan the current best block. By setting nLockTime such that
-    // only the next block can include the transaction, we discourage this
-    // practice as the height restricted and limited blocksize gives miners
-    // considering fee sniping fewer options for pulling off this attack.
-    //
-    // A simple way to think about this is from the wallet's point of view we
-    // always want the blockchain to move forward. By setting nLockTime this
-    // way we're basically making the statement that we only want this
-    // transaction to appear in the next block; we don't want to potentially
-    // encourage reorgs by allowing transactions to appear at lower heights
-    // than the next block in forks of the best chain.
-    //
-    // Of course, the subsidy is high enough, and transaction volume low
-    // enough, that fee sniping isn't a problem yet, but by implementing a fix
-    // now we ensure code won't be written that makes assumptions about
-    // nLockTime that preclude a fix later.
-    if (IsCurrentForAntiFeeSniping(chain, locked_chain)) {
-        locktime = height;
-
-        // Secondly occasionally randomly pick a nLockTime even further back, so
-        // that transactions that are delayed after signing for whatever reason,
-        // e.g. high-latency mix networks and some CoinJoin implementations, have
-        // better privacy.
-        if (GetRandInt(10) == 0)
-            locktime = std::max(0, (int)locktime - GetRandInt(100));
-    } else {
-        // If our chain is lagging behind, we can't discourage fee sniping nor help
-        // the privacy of high-latency transactions. To avoid leaking a potentially
-        // unique "nLockTime fingerprint", set nLockTime to a constant.
-        locktime = 0;
-    }
-    assert(locktime <= height);
-    assert(locktime < LOCKTIME_THRESHOLD);
-    return locktime;
-}
-
 OutputType CWallet::TransactionChangeType(OutputType change_type, const std::vector<CRecipient>& vecSend)
 {
-    // If -changetype is specified, always use that change type.
-    if (change_type != OutputType::CHANGE_AUTO) {
-        return change_type;
-    }
-
-    // if m_default_address_type is legacy, use legacy address as change (even
-    // if some of the outputs are P2WPKH or P2WSH).
-    if (m_default_address_type == OutputType::LEGACY) {
-        return OutputType::LEGACY;
-    }
-
-    // if any destination is P2WPKH or P2WSH, use P2WPKH for the change
-    // output.
-    for (const auto& recipient : vecSend) {
-        // Check if any destination contains a witness program:
-        int witnessversion = 0;
-        std::vector<unsigned char> witnessprogram;
-        if (recipient.scriptPubKey.IsWitnessProgram(witnessversion, witnessprogram)) {
-            return OutputType::BECH32;
-        }
-    }
-
-    // else use m_default_address_type for change
     return m_default_address_type;
 }
 
@@ -2978,7 +2895,8 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
 
     CMutableTransaction txNew;
 
-    txNew.nLockTime = GetLocktimeForNewTransaction(chain(), locked_chain);
+    txNew.nTime = chain().getAdjustedTime();;
+    txNew.nLockTime = 0;
 
     FeeCalculation feeCalc;
     CAmount nFeeNeeded;
@@ -3240,15 +3158,7 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
         std::vector<CInputCoin> selected_coins(setCoins.begin(), setCoins.end());
         Shuffle(selected_coins.begin(), selected_coins.end(), FastRandomContext());
 
-        // Note how the sequence number is set to non-maxint so that
-        // the nLockTime set above actually works.
-        //
-        // BIP125 defines opt-in RBF as any nSequence < maxint-1, so
-        // we use the highest possible value in that range (maxint-2)
-        // to avoid conflicting with other possible uses of nSequence,
-        // and in the spirit of "smallest possible change from prior
-        // behavior."
-        const uint32_t nSequence = coin_control.m_signal_bip125_rbf.get_value_or(m_signal_rbf) ? MAX_BIP125_RBF_SEQUENCE : (CTxIn::SEQUENCE_FINAL - 1);
+        const uint32_t nSequence = std::numeric_limits<unsigned int>::max();
         for (const auto& coin : selected_coins) {
             txNew.vin.push_back(CTxIn(coin.outpoint, CScript(), nSequence));
         }
@@ -4723,19 +4633,12 @@ bool CWalletTx::IsImmatureCoinBase(interfaces::Chain::Lock& locked_chain) const
 
 void CWallet::LearnRelatedScripts(const CPubKey& key, OutputType type)
 {
-    if (key.IsCompressed() && (type == OutputType::P2SH_SEGWIT || type == OutputType::BECH32)) {
-        CTxDestination witdest = WitnessV0KeyHash(key.GetID());
-        CScript witprog = GetScriptForDestination(witdest);
-        // Make sure the resulting program is solvable.
-        assert(IsSolvable(*this, witprog));
-        AddCScript(witprog);
-    }
+    // XXX - TODO: Remove Call to that
 }
 
 void CWallet::LearnAllRelatedScripts(const CPubKey& key)
 {
-    // OutputType::P2SH_SEGWIT always adds all necessary scripts for all types.
-    LearnRelatedScripts(key, OutputType::P2SH_SEGWIT);
+    // XXX - TODO: Remove call to that
 }
 
 std::vector<OutputGroup> CWallet::GroupOutputs(const std::vector<COutput>& outputs, bool single_coin) const {

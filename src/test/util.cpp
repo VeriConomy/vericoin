@@ -22,7 +22,7 @@ const std::string ADDRESS_BCRT1_UNSPENDABLE = "bcrt1qqqqqqqqqqqqqqqqqqqqqqqqqqqq
 #ifdef ENABLE_WALLET
 std::string getnewaddress(CWallet& w)
 {
-    constexpr auto output_type = OutputType::BECH32;
+    constexpr auto output_type = OutputType::LEGACY;
     CTxDestination dest;
     std::string error;
     if (!w.GetNewDestination(output_type, "", dest, error)) assert(false);

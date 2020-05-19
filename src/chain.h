@@ -12,6 +12,7 @@
 #include <primitives/block.h>
 #include <tinyformat.h>
 #include <uint256.h>
+#include <util/moneystr.h>
 
 #include <vector>
 
@@ -175,6 +176,9 @@ public:
     //! Verification status of this block. See enum BlockStatus
     uint32_t nStatus;
 
+    int64_t nMint;
+    int64_t nMoneySupply;
+
     //! block header
     int32_t nVersion;
     uint256 hashMerkleRoot;
@@ -203,6 +207,8 @@ public:
         nStatus = 0;
         nSequenceId = 0;
         nTimeMax = 0;
+        nMint = 0;
+        nMoneySupply = 0;
 
         nVersion       = 0;
         hashMerkleRoot = uint256();
@@ -300,8 +306,9 @@ public:
 
     std::string ToString() const
     {
-        return strprintf("CBlockIndex(pprev=%p, nHeight=%d, merkle=%s, hashBlock=%s)",
+        return strprintf("CBlockIndex(pprev=%p, nHeight=%d, nMint=%s, nMoneySupply=%s, merkle=%s, hashBlock=%s)",
             pprev, nHeight,
+            FormatMoney(nMint).c_str(), FormatMoney(nMoneySupply).c_str(),
             hashMerkleRoot.ToString(),
             GetBlockHash().ToString());
     }
@@ -375,6 +382,10 @@ public:
             READWRITE(VARINT(nDataPos));
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
+
+        // Verium: properties.
+        READWRITE(nMint);
+        READWRITE(nMoneySupply);
 
         // block header
         READWRITE(this->nVersion);

@@ -54,7 +54,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Bitcoin cannot be compiled without assertions."
+# error "Verium cannot be compiled without assertions."
 #endif
 
 #define MICRO 0.000001
@@ -989,7 +989,7 @@ bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
     // Remove conflicting transactions from the mempool
     for (CTxMemPool::txiter it : allConflicting)
     {
-        LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s BTC additional fees, %d delta bytes\n",
+        LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s VRM additional fees, %d delta bytes\n",
                 it->GetTx().GetHash().ToString(),
                 hash.ToString(),
                 FormatMoney(nModifiedFees - nConflictingFees),
@@ -1163,7 +1163,7 @@ bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::P
     }
 
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+    if (!CheckProofOfWork(block.GetWorkHash(), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -1231,17 +1231,9 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
-CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
+CAmount GetBlockSubsidy(CBlockIndex *pindexPrev)
 {
-    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
-    // Force block reward to zero when right shift is undefined.
-    if (halvings >= 64)
-        return 0;
-
-    CAmount nSubsidy = 50 * COIN;
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
-    nSubsidy >>= halvings;
-    return nSubsidy;
+    return GetProofOfWorkReward(0, pindexPrev);
 }
 
 CoinsViews::CoinsViews(
@@ -1830,59 +1822,9 @@ public:
 
 static ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS] GUARDED_BY(cs_main);
 
-// 0.13.0 was shipped with a segwit deployment defined for testnet, but not for
-// mainnet. We no longer need to support disabling the segwit deployment
-// except for testing purposes, due to limitations of the functional test
-// environment. See test/functional/p2p-segwit.py.
-static bool IsScriptWitnessEnabled(const Consensus::Params& params)
-{
-    return params.SegwitHeight != std::numeric_limits<int>::max();
-}
 
 static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consensus::Params& consensusparams) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
-    AssertLockHeld(cs_main);
-
-    unsigned int flags = SCRIPT_VERIFY_NONE;
-
-    // BIP16 didn't become active until Apr 1 2012 (on mainnet, and
-    // retroactively applied to testnet)
-    // However, only one historical block violated the P2SH rules (on both
-    // mainnet and testnet), so for simplicity, always leave P2SH
-    // on except for the one violating block.
-    if (consensusparams.BIP16Exception.IsNull() || // no bip16 exception on this chain
-        pindex->phashBlock == nullptr || // this is a new candidate block, eg from TestBlockValidity()
-        *pindex->phashBlock != consensusparams.BIP16Exception) // this block isn't the historical exception
-    {
-        flags |= SCRIPT_VERIFY_P2SH;
-    }
-
-    // Enforce WITNESS rules whenever P2SH is in effect (and the segwit
-    // deployment is defined).
-    if (flags & SCRIPT_VERIFY_P2SH && IsScriptWitnessEnabled(consensusparams)) {
-        flags |= SCRIPT_VERIFY_WITNESS;
-    }
-
-    // Start enforcing the DERSIG (BIP66) rule
-    if (pindex->nHeight >= consensusparams.BIP66Height) {
-        flags |= SCRIPT_VERIFY_DERSIG;
-    }
-
-    // Start enforcing CHECKLOCKTIMEVERIFY (BIP65) rule
-    if (pindex->nHeight >= consensusparams.BIP65Height) {
-        flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
-    }
-
-    // Start enforcing BIP112 (CHECKSEQUENCEVERIFY)
-    if (pindex->nHeight >= consensusparams.CSVHeight) {
-        flags |= SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
-    }
-
-    // Start enforcing BIP147 NULLDUMMY (activated simultaneously with segwit)
-    if (IsWitnessEnabled(pindex->pprev, consensusparams)) {
-        flags |= SCRIPT_VERIFY_NULLDUMMY;
-    }
-
-    return flags;
+    return SCRIPT_VERIFY_NONE;
 }
 
 
@@ -1990,8 +1932,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // Now that the whole chain is irreversibly beyond that time it is applied to all blocks except the
     // two in the chain that violate it. This prevents exploiting the issue against nodes during their
     // initial block download.
-    bool fEnforceBIP30 = !((pindex->nHeight==91842 && pindex->GetBlockHash() == uint256S("0x00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec")) ||
-                           (pindex->nHeight==91880 && pindex->GetBlockHash() == uint256S("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
+    bool fEnforceBIP30 = true;
 
     // Once BIP34 activated it was not possible to create new duplicate coinbases and thus other than starting
     // with the 2 existing duplicate coinbase pairs, not possible to create overwriting txs.  But by the
@@ -2050,9 +1991,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // be reset before it reaches block 1,983,702 and starts doing unnecessary
     // BIP30 checking again.
     assert(pindex->pprev);
-    CBlockIndex *pindexBIP34height = pindex->pprev->GetAncestor(chainparams.GetConsensus().BIP34Height);
-    //Only continue to enforce if we're below BIP34 activation height or the block hash at that height doesn't correspond.
-    fEnforceBIP30 = fEnforceBIP30 && (!pindexBIP34height || !(pindexBIP34height->GetBlockHash() == chainparams.GetConsensus().BIP34Hash));
 
     // TODO: Remove BIP30 checking from block height 1,983,702 on, once we have a
     // consensus change that ensures coinbases at those heights can not
@@ -2082,10 +2020,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     CBlockUndo blockundo;
 
-    CCheckQueueControl<CScriptCheck> control(fScriptChecks && nScriptCheckThreads ? &scriptcheckqueue : nullptr);
-
     std::vector<int> prevheights;
     CAmount nFees = 0;
+    CAmount nValueIn = 0;
+    CAmount nValueOut = 0;
     int nInputs = 0;
     int64_t nSigOpsCost = 0;
     blockundo.vtxundo.reserve(block.vtx.size() - 1);
@@ -2097,38 +2035,15 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
         nInputs += tx.vin.size();
 
-        if (!tx.IsCoinBase())
+        if (tx.IsCoinBase())
         {
-            CAmount txfee = 0;
-            if (!Consensus::CheckTxInputs(tx, state, view, pindex->nHeight, txfee)) {
-                if (!IsBlockReason(state.GetReason())) {
-                    // CheckTxInputs may return MISSING_INPUTS or
-                    // PREMATURE_SPEND but we can't return that, as it's not
-                    // defined for a block, so we reset the reason flag to
-                    // CONSENSUS here.
-                    state.Invalid(ValidationInvalidReason::CONSENSUS, false,
-                            state.GetRejectCode(), state.GetRejectReason(), state.GetDebugMessage());
-                }
-                return error("%s: Consensus::CheckTxInputs: %s, %s", __func__, tx.GetHash().ToString(), FormatStateMessage(state));
-            }
-            nFees += txfee;
-            if (!MoneyRange(nFees)) {
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, error("%s: accumulated fee in the block out of range.", __func__),
-                                 REJECT_INVALID, "bad-txns-accumulated-fee-outofrange");
-            }
-
-            // Check that transaction is BIP68 final
-            // BIP68 lock checks (as opposed to nLockTime checks) must
-            // be in ConnectBlock because they require the UTXO set
-            prevheights.resize(tx.vin.size());
-            for (size_t j = 0; j < tx.vin.size(); j++) {
-                prevheights[j] = view.AccessCoin(tx.vin[j].prevout).nHeight;
-            }
-
-            if (!SequenceLocks(tx, nLockTimeFlags, &prevheights, *pindex)) {
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, error("%s: contains a non-BIP68-final transaction", __func__),
-                                 REJECT_INVALID, "bad-txns-nonfinal");
-            }
+            nValueOut += tx.GetValueOut();
+        } else {
+            int64_t nTxValueIn = view.GetValueIn(tx);
+            int64_t nTxValueOut = tx.GetValueOut();
+            nValueIn += nTxValueIn;
+            nValueOut += nTxValueOut;
+            nFees += nTxValueIn - nTxValueOut;
         }
 
         // GetTransactionSigOpCost counts 3 types of sigops:
@@ -2159,7 +2074,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 return error("ConnectBlock(): CheckInputs on %s failed with %s",
                     tx.GetHash().ToString(), FormatStateMessage(state));
             }
-            control.Add(vChecks);
         }
 
         CTxUndo undoDummy;
@@ -2171,17 +2085,16 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint(BCLog::BENCH, "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs (%.2fms/blk)]\n", (unsigned)block.vtx.size(), MILLI * (nTime3 - nTime2), MILLI * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : MILLI * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * MICRO, nTimeConnect * MILLI / nBlocksTotal);
 
-    CAmount blockReward = nFees + GetBlockSubsidy(pindex->nHeight, chainparams.GetConsensus());
-    if (block.vtx[0]->GetValueOut() > blockReward)
-        return state.Invalid(ValidationInvalidReason::CONSENSUS,
-                         error("ConnectBlock(): coinbase pays too much (actual=%d vs limit=%d)",
-                               block.vtx[0]->GetValueOut(), blockReward),
-                               REJECT_INVALID, "bad-cb-amount");
+    // ppcoin: track money supply and mint amount info
+    pindex->nMint = nValueOut - nValueIn + nFees;
+    pindex->nMoneySupply = (pindex->pprev ? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
 
-    if (!control.Wait())
-        return state.Invalid(ValidationInvalidReason::CONSENSUS, error("%s: CheckQueue failed", __func__), REJECT_INVALID, "block-validation-failed");
     int64_t nTime4 = GetTimeMicros(); nTimeVerify += nTime4 - nTime2;
     LogPrint(BCLog::BENCH, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
+
+    CAmount blockReward = GetProofOfWorkReward(nFees, pindex->pprev);
+    if (block.vtx[0]->GetValueOut() > blockReward)
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, error("ConnectBlock(): coinbase pays too much (actual=%d vs limit=%d)", block.vtx[0]->GetValueOut(), blockReward), REJECT_INVALID, "bad-cb-amount");
 
     if (fJustCheck)
         return true;
@@ -2395,8 +2308,8 @@ void static UpdateTip(const CBlockIndex* pindexNew, const CChainParams& chainPar
         if (nUpgraded > 0)
             AppendWarning(warningMessages, strprintf(_("%d of last 100 blocks have unexpected version").translated, nUpgraded));
     }
-    LogPrintf("%s: new best=%s height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)%s\n", __func__,
-      pindexNew->GetBlockHash().ToString(), pindexNew->nHeight, pindexNew->nVersion,
+    LogPrintf("%s: height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)%s\n", __func__,
+      pindexNew->nHeight, pindexNew->nVersion,
       log(pindexNew->nChainWork.getdouble())/log(2.0), (unsigned long)pindexNew->nChainTx,
       FormatISO8601DateTime(pindexNew->GetBlockTime()),
       GuessVerificationProgress(chainParams.TxData(), pindexNew), ::ChainstateActive().CoinsTip().DynamicMemoryUsage() * (1.0 / (1<<20)), ::ChainstateActive().CoinsTip().GetCacheSize(),
@@ -3254,9 +3167,15 @@ static bool FindUndoPos(CValidationState &state, int nFile, FlatFilePos &pos, un
 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
-    // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, false, REJECT_INVALID, "high-hash", "proof of work failed");
+    /*
+     * Verium:
+     *
+     *   Header verification takes a long time due to having to compute scrypt hashes.
+     * This is a lengthy process, and so for this reason we skip it. This is acceptable
+     * since we're going to run a full validation of each and every block in the chain
+     * once the full data set is received.
+     *
+     */
 
     return true;
 }
@@ -3272,6 +3191,11 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // redundant with the call in AcceptBlockHeader.
     if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW))
         return false;
+
+    // Check proof of work matches claimed amount
+    // XXX - TODO: maybe create a custom ValidationInvalidReason
+    if (fCheckPOW && !CheckProofOfWork(block.GetWorkHash(), block.nBits, consensusParams))
+        return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "high-hash", "proof of work failed");
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -3385,6 +3309,16 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
     return commitment;
 }
 
+int GetTotalBlocksEstimate(const CCheckpointData& data) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+{
+    const MapCheckpoints& checkpoints = data.mapCheckpoints;
+
+    if (checkpoints.empty())
+        return 0;
+
+    return checkpoints.rbegin()->first;
+}
+
 //! Returns last CBlockIndex* that is a checkpoint
 static CBlockIndex* GetLastCheckpoint(const CCheckpointData& data) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {
@@ -3416,10 +3350,11 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     const int nHeight = pindexPrev->nHeight + 1;
 
     // Check proof of work
+    // XXX - TODO: maybe create a custom ValidationInvalidReason
     const Consensus::Params& consensusParams = params.GetConsensus();
-    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
-        return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, false, REJECT_INVALID, "bad-diffbits", "incorrect proof of work");
-
+    if (block.nBits != GetNextTargetRequired(pindexPrev))
+        return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "bad-diffbits", strprintf("incorrect proof of work %lu - %lu", block.nBits, GetNextTargetRequired(pindexPrev)));
+     
     // Check against checkpoints
     if (fCheckpointsEnabled) {
         // Don't accept any forks from the main chain prior to last checkpoint.
@@ -4156,8 +4091,7 @@ bool CChainState::LoadChainTip(const CChainParams& chainparams)
     PruneBlockIndexCandidates();
 
     tip = m_chain.Tip();
-    LogPrintf("Loaded best chain: hashBestChain=%s height=%d date=%s progress=%f\n",
-        tip->GetBlockHash().ToString(),
+    LogPrintf("Loaded best chain: height=%d date=%s progress=%f\n",
         m_chain.Height(),
         FormatISO8601DateTime(tip->GetBlockTime()),
         GuessVerificationProgress(chainparams.TxData(), tip));

@@ -64,15 +64,15 @@ WalletCreationStatus CreateWallet(interfaces::Chain& chain, const SecureString& 
 //! Default for -keypool
 static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 //! -paytxfee default
-constexpr CAmount DEFAULT_PAY_TX_FEE = 0;
+constexpr CAmount DEFAULT_PAY_TX_FEE = 20000000;
 //! -fallbackfee default
 static const CAmount DEFAULT_FALLBACK_FEE = 20000;
 //! -discardfee default
 static const CAmount DEFAULT_DISCARD_FEE = 10000;
 //! -mintxfee default
-static const CAmount DEFAULT_TRANSACTION_MINFEE = 1000;
+static const CAmount DEFAULT_TRANSACTION_MINFEE = 20000000;
 //! minimum recommended increment for BIP 125 replacement txs
-static const CAmount WALLET_INCREMENTAL_RELAY_FEE = 5000;
+static const CAmount WALLET_INCREMENTAL_RELAY_FEE = 20000000;
 //! Default for -spendzeroconfchange
 static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
 //! Default for -walletrejectlongchains
@@ -86,7 +86,7 @@ static const bool DEFAULT_WALLET_RBF = false;
 static const bool DEFAULT_WALLETBROADCAST = true;
 static const bool DEFAULT_DISABLE_WALLET = false;
 //! -maxtxfee default
-constexpr CAmount DEFAULT_TRANSACTION_MAXFEE{COIN / 10};
+constexpr CAmount DEFAULT_TRANSACTION_MAXFEE{COIN};
 //! Discourage users to set fees higher than this amount (in satoshis) per kB
 constexpr CAmount HIGH_TX_FEE_PER_KB{COIN / 100};
 //! -maxtxfee will warn if called with a higher fee than this amount (in satoshis)
@@ -123,10 +123,10 @@ enum WalletFeature
 };
 
 //! Default for -addresstype
-constexpr OutputType DEFAULT_ADDRESS_TYPE{OutputType::P2SH_SEGWIT};
+constexpr OutputType DEFAULT_ADDRESS_TYPE{OutputType::LEGACY};
 
 //! Default for -changetype
-constexpr OutputType DEFAULT_CHANGE_TYPE{OutputType::CHANGE_AUTO};
+constexpr OutputType DEFAULT_CHANGE_TYPE{OutputType::LEGACY};
 
 enum WalletFlags : uint64_t {
     // wallet flags in the upper section (> 1 << 31) will lead to not opening the wallet if flag is unknown

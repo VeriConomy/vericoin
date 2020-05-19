@@ -61,6 +61,7 @@ public:
     }
 
     uint256 GetHash() const;
+    uint256 GetWorkHash() const;
 
     int64_t GetBlockTime() const
     {
@@ -74,6 +75,9 @@ class CBlock : public CBlockHeader
 public:
     // network and disk
     std::vector<CTransactionRef> vtx;
+
+    // ppcoin: block signature - signed by one of the coin base txout[N]'s owner
+    std::vector<unsigned char> vchBlockSig;  // XXX set the reset val
 
     // memory only
     mutable bool fChecked;
@@ -95,6 +99,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITEAS(CBlockHeader, *this);
         READWRITE(vtx);
+        READWRITE(vchBlockSig);
     }
 
     void SetNull()
@@ -117,6 +122,11 @@ public:
     }
 
     std::string ToString() const;
+
+    void print() const
+    {
+        printf("%s", ToString().c_str());
+    }
 };
 
 /** Describes a place in the block chain to another node such that if the

@@ -18,6 +18,7 @@
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
+#include <pow.h>
 #include <primitives/transaction.h>
 #include <rpc/server.h>
 #include <rpc/util.h>
@@ -41,6 +42,7 @@
 #include <univalue.h>
 
 #include <boost/thread/thread.hpp> // boost::thread::interrupt
+#include <openssl/ssl.h>
 
 #include <condition_variable>
 #include <memory>
@@ -60,7 +62,17 @@ static CUpdatedBlock latestblock;
  */
 double GetDifficulty(const CBlockIndex* blockindex)
 {
-    assert(blockindex);
+    if (blockindex == nullptr)
+    {
+        if (::ChainActive().Tip() == nullptr)
+            return dminDifficulty;
+        else if (::ChainActive().Tip()->pprev == nullptr)
+            return dminDifficulty;
+        else if (::ChainActive().Tip()->pprev->pprev == nullptr)
+            return dminDifficulty;
+        else
+            blockindex = ::ChainActive().Tip()->pprev;
+    }
 
     int nShift = (blockindex->nBits >> 24) & 0xff;
     double dDiff =
@@ -89,6 +101,69 @@ static int ComputeNextBlockAndDepth(const CBlockIndex* tip, const CBlockIndex* b
     next = nullptr;
     return blockindex == tip ? 1 : -1;
 }
+
+double GetPoWKHashPM()
+{
+    int nPoWInterval = 72;
+    int64_t nTargetSpacingWorkMin = 30, nTargetSpacingWork = 30;
+    CBlockIndex* pindex = ::ChainActive().Genesis();
+    CBlockIndex* pindexPrevWork = ::ChainActive().Genesis();
+     while (pindex)
+    {
+        int64_t nActualSpacingWork = pindex->GetBlockTime() - pindexPrevWork->GetBlockTime();
+        nTargetSpacingWork = ((nPoWInterval - 1) * nTargetSpacingWork + nActualSpacingWork + nActualSpacingWork) / (nPoWInterval + 1);
+        nTargetSpacingWork = std::max(nTargetSpacingWork, nTargetSpacingWorkMin);
+        pindexPrevWork = pindex;
+        pindex = ::ChainActive()[pindex->nHeight+1];
+    }
+
+    return (GetDifficulty(::ChainActive().Tip()) * 1024 * 4294.967296  / nTargetSpacingWork) * 60;  // 60= sec to min, 1024= standard scrypt work to scrypt^2
+}
+
+UniValue getsubsidy(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"getsubsidy",
+        "\nReturns proof-of-work subsidy value.\n",
+        {},
+        RPCResult{
+    "\"value\"         (numeric) proof-of-work subsidy value\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getsubsidy", "")
+    + HelpExampleRpc("getsubsidy", "")
+        },
+    }.Check(request);
+
+
+    LOCK(cs_main);
+
+    return (uint64_t)GetProofOfWorkReward(0, ::ChainActive().Tip()->pprev);
+}
+
+UniValue getblocktime(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+            "getblocktime\n"
+            "Returns an integer of current blocktime in seconds."
+        );
+
+    RPCHelpMan{"getblocktime",
+        "\nReturns an integer of current blocktime in seconds.\n",
+        {},
+        RPCResult{
+    "\"value\"         (numeric) blocktime in seconds\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getblocktime", "")
+    + HelpExampleRpc("getblocktime", "")
+        },
+    }.Check(request);
+
+    LOCK(cs_main);
+    return (uint64_t)calculateBlocktime(::ChainActive().Tip()->pprev);
+}
+
 
 UniValue blockheaderToJSON(const CBlockIndex* tip, const CBlockIndex* blockindex)
 {
@@ -131,6 +206,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* tip, const CBlockIn
     result.pushKV("confirmations", confirmations);
     result.pushKV("strippedsize", (int)::GetSerializeSize(block, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS));
     result.pushKV("size", (int)::GetSerializeSize(block, PROTOCOL_VERSION));
+    result.pushKV("mint", ValueFromAmount(blockindex->nMint));
     result.pushKV("weight", (int)::GetBlockWeight(block));
     result.pushKV("height", blockindex->nHeight);
     result.pushKV("version", block.nVersion);
@@ -373,7 +449,7 @@ static UniValue getdifficulty(const JSONRPCRequest& request)
 static std::string EntryDescriptionString()
 {
     return "    \"vsize\" : n,            (numeric) virtual transaction size as defined in BIP 141. This is different from actual serialized size for witness transactions as witness data is discounted.\n"
-           "    \"size\" : n,             (numeric) (DEPRECATED) same as vsize. Only returned if bitcoind is started with -deprecatedrpc=size\n"
+           "    \"size\" : n,             (numeric) (DEPRECATED) same as vsize. Only returned if veriumd is started with -deprecatedrpc=size\n"
            "                              size will be completely removed in v0.20.\n"
            "    \"weight\" : n,           (numeric) transaction weight as defined in BIP 141.\n"
            "    \"fee\" : n,              (numeric) transaction fee in " + CURRENCY_UNIT + " (DEPRECATED)\n"
@@ -838,6 +914,7 @@ static UniValue getblock(const JSONRPCRequest& request)
             "  \"confirmations\" : n,   (numeric) The number of confirmations, or -1 if the block is not on the main chain\n"
             "  \"size\" : n,            (numeric) The block size\n"
             "  \"strippedsize\" : n,    (numeric) The block size excluding witness data\n"
+            "  \"mint\" : n,            (numeric) The mint\n"
             "  \"weight\" : n           (numeric) The block weight as defined in BIP 141\n"
             "  \"height\" : n,          (numeric) The block height or index\n"
             "  \"version\" : n,         (numeric) The block version\n"
@@ -1030,8 +1107,8 @@ UniValue gettxout(const JSONRPCRequest& request)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of bitcoin addresses\n"
-            "        \"address\"     (string) bitcoin address\n"
+            "     \"addresses\" : [          (array of string) array of verium addresses\n"
+            "        \"address\"     (string) verium address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"
@@ -1195,6 +1272,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "{\n"
             "  \"chain\": \"xxxx\",              (string) current network name as defined in BIP70 (main, test, regtest)\n"
             "  \"blocks\": xxxxxx,             (numeric) the height of the most-work fully-validated chain. The genesis block has height 0\n"
+            "  \"totalsupply\": xxxxxx,        (numeric) current total supply\n"
             "  \"headers\": xxxxxx,            (numeric) the current number of headers we have validated\n"
             "  \"bestblockhash\": \"...\",       (string) the hash of the currently best block\n"
             "  \"difficulty\": xxxxxx,         (numeric) the current difficulty\n"
@@ -1243,6 +1321,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("chain",                 Params().NetworkIDString());
     obj.pushKV("blocks",                (int)::ChainActive().Height());
+    obj.pushKV("totalsupply",           (double)::ChainActive().Tip()->nMoneySupply/COIN);
     obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
     obj.pushKV("bestblockhash",         tip->GetBlockHash().GetHex());
     obj.pushKV("difficulty",            (double)GetDifficulty(tip));
@@ -1917,7 +1996,7 @@ static UniValue getblockstats(const JSONRPCRequest& request)
     ret_all.pushKV("minfeerate", (minfeerate == MAX_MONEY) ? 0 : minfeerate);
     ret_all.pushKV("mintxsize", mintxsize == MAX_BLOCK_SERIALIZED_SIZE ? 0 : mintxsize);
     ret_all.pushKV("outs", outputs);
-    ret_all.pushKV("subsidy", GetBlockSubsidy(pindex->nHeight, Params().GetConsensus()));
+    ret_all.pushKV("subsidy", GetBlockSubsidy(pindex));
     ret_all.pushKV("swtotal_size", swtotal_size);
     ret_all.pushKV("swtotal_weight", swtotal_weight);
     ret_all.pushKV("swtxs", swtxs);
@@ -2264,6 +2343,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getblock",               &getblock,               {"blockhash","verbosity|verbose"} },
     { "blockchain",         "getblockhash",           &getblockhash,           {"height"} },
     { "blockchain",         "getblockheader",         &getblockheader,         {"blockhash","verbose"} },
+    { "blockchain",         "getblocktime",           &getblocktime,           {} },
     { "blockchain",         "getchaintips",           &getchaintips,           {} },
     { "blockchain",         "getdifficulty",          &getdifficulty,          {} },
     { "blockchain",         "getmempoolancestors",    &getmempoolancestors,    {"txid","verbose"} },
@@ -2271,6 +2351,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getmempoolentry",        &getmempoolentry,        {"txid"} },
     { "blockchain",         "getmempoolinfo",         &getmempoolinfo,         {} },
     { "blockchain",         "getrawmempool",          &getrawmempool,          {"verbose"} },
+    { "blockchain",         "getsubsidy",             &getsubsidy,             {} },
     { "blockchain",         "gettxout",               &gettxout,               {"txid","n","include_mempool"} },
     { "blockchain",         "gettxoutsetinfo",        &gettxoutsetinfo,        {} },
     { "blockchain",         "pruneblockchain",        &pruneblockchain,        {"height"} },

@@ -10,6 +10,14 @@ src/bitcoin-wallet
 src/test/test_bitcoin
 src/test/test_bitcoin_fuzzy
 src/qt/test/test_bitcoin-qt
+src/verium
+src/veriumd
+src/verium-cli
+src/verium-tx
+src/verium-wallet
+src/test/test_verium
+src/test/test_verium_fuzzy
+src/qt/test/test_verium-qt
 
 # autoreconf
 Makefile.in
@@ -52,6 +60,11 @@ src/qt/bitcoin-qt.creator
 src/qt/bitcoin-qt.creator.user
 src/qt/bitcoin-qt.files
 src/qt/bitcoin-qt.includes
+src/qt/verium-qt.config
+src/qt/verium-qt.creator
+src/qt/verium-qt.creator.user
+src/qt/verium-qt.files
+src/qt/verium-qt.includes
 
 .deps
 .dirstamp
@@ -89,6 +102,7 @@ src/qt/bitcoin-qt.includes
 Makefile
 !depends/Makefile
 bitcoin-qt
+verium-qt
 Bitcoin-Qt.app
 background.tiff*
 
@@ -98,6 +112,7 @@ Makefile.am.user
 # Unit-tests
 Makefile.test
 bitcoin-qt_test
+verium-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -111,6 +126,7 @@ build
 *.gcda
 /*.info
 test_bitcoin.coverage/
+test_verium.coverage/
 total.coverage/
 coverage_percent.txt
 

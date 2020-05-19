@@ -7,11 +7,20 @@
 
 #include <hash.h>
 #include <tinyformat.h>
+#include <util/strencodings.h>
 #include <crypto/common.h>
+#include <crypto/scrypt.h>
 
 uint256 CBlockHeader::GetHash() const
 {
     return SerializeHash(*this);
+}
+
+uint256 CBlockHeader::GetWorkHash() const
+{
+    uint256 thash;
+    scryptHash(BEGIN(nVersion), BEGIN(thash));
+    return thash;
 }
 
 std::string CBlock::ToString() const
