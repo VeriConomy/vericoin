@@ -17,7 +17,6 @@
 */
 
 #include "miniunz.h"
-#include "util.h"
 
 #include <sys/stat.h>
 

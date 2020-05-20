@@ -7,6 +7,7 @@
 
 #include <amount.h>
 #include <blockfilter.h>
+#include <bootstrap.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
@@ -23,6 +24,7 @@
 #include <rpc/server.h>
 #include <rpc/util.h>
 #include <script/descriptor.h>
+#include <shutdown.h>
 #include <streams.h>
 #include <sync.h>
 #include <txdb.h>
@@ -47,6 +49,8 @@
 #include <condition_variable>
 #include <memory>
 #include <mutex>
+#include <curl/curl.h>
+#include <openssl/ssl.h>
 
 struct CUpdatedBlock
 {
@@ -120,6 +124,42 @@ double GetPoWKHashPM()
     return (GetDifficulty(::ChainActive().Tip()) * 1024 * 4294.967296  / nTargetSpacingWork) * 60;  // 60= sec to min, 1024= standard scrypt work to scrypt^2
 }
 
+UniValue bootstrap(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"bootstrap",
+        "\nDownload blockchain from www.vericoin.info to speed up synchronization\n"
+        "\nDaemon will exit after bootstraping is done",
+        {},
+        RPCResult{
+    "{                           (json object)\n"
+    "  \"success\" : {       (bool) define if the bootstrap was a success\n"
+    "  \"message\" : {     (string) information message\n"
+    "}\n"
+        },
+        RPCExamples{
+            HelpExampleCli("bootstrap", "")
+    + HelpExampleRpc("bootstrap", "")
+        },
+    }.Check(request);
+
+    UniValue ret(UniValue::VOBJ);
+
+    try {
+        DownloadBootstrap();
+    } catch (const std::exception &e) {
+        ret.pushKV("success", false);
+        ret.pushKV("message", e.what());
+        return ret;
+    }
+
+    ret.pushKV("success", true);
+    ret.pushKV("message", "Bootstrap successful; veriumd has been stopped, please restart.");
+
+    StartShutdown();
+
+    return ret;
+}
+
 UniValue getsubsidy(const JSONRPCRequest& request)
 {
     RPCHelpMan{"getsubsidy",
@@ -142,12 +182,6 @@ UniValue getsubsidy(const JSONRPCRequest& request)
 
 UniValue getblocktime(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() != 0)
-        throw std::runtime_error(
-            "getblocktime\n"
-            "Returns an integer of current blocktime in seconds."
-        );
-
     RPCHelpMan{"getblocktime",
         "\nReturns an integer of current blocktime in seconds.\n",
         {},
@@ -2335,6 +2369,7 @@ static UniValue getblockfilter(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
+    { "blockchain",         "bootstrap",              &bootstrap,              {} },
     { "blockchain",         "getblockchaininfo",      &getblockchaininfo,      {} },
     { "blockchain",         "getchaintxstats",        &getchaintxstats,        {"nblocks", "blockhash"} },
     { "blockchain",         "getblockstats",          &getblockstats,          {"hash_or_height", "stats"} },

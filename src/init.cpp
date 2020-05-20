@@ -13,6 +13,7 @@
 #include <amount.h>
 #include <banman.h>
 #include <blockfilter.h>
+#include <bootstrap.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <compat/sanity.h>
@@ -150,6 +151,7 @@ NODISCARD static bool CreatePidFile()
 // shutdown thing.
 //
 
+bool fBootstrap = false;
 static std::unique_ptr<ECCVerifyHandle> globalVerifyHandle;
 
 static boost::thread_group threadGroup;
@@ -277,6 +279,14 @@ void Shutdown(InitInterfaces& interfaces)
         g_zmq_notification_interface = nullptr;
     }
 #endif
+
+    if(fBootstrap) {
+        try {
+            ApplyBootstrap();
+        } catch(std::exception &e) {
+			LogPrintf("%s: Unable to change databse: %s\n",__func__,e.what());
+		}
+    }
 
     try {
         if (!fs::remove(GetPidFile())) {
