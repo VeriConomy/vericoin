@@ -118,7 +118,6 @@ jobs:
       env: >-
         FILE_ENV="./ci/test/00_setup_env_mac.sh"
 
-
     - stage: test
       name: 'macOS 10.14 native [GOAL: install] [GUI] [no depends]'
       os: osx

@@ -110,7 +110,7 @@ BITCOIN_CORE_H = \
   bloom.h \
   blockencodings.h \
   blockfilter.h \
-  bootstrap.cpp \
+  bootstrap.h \
   chain.h \
   chainparams.h \
   chainparamsbase.h \

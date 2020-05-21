@@ -537,8 +537,6 @@ bool CheckWork(CBlock* pblock)
         pblock->print();
         LogPrintf("New proof-of-work block found with: %s coins generated.\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
 	
-        LOCK(cs_main);
-		
         // Process this block the same as if we had received it from another node
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
         if (!ProcessNewBlock(Params(), shared_pblock, true, nullptr))

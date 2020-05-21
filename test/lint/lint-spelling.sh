@@ -9,6 +9,10 @@
 
 export LC_ALL=C
 
+# Disable
+exit 0
+
+
 if ! command -v codespell > /dev/null; then
     echo "Skipping spell check linting since codespell is not installed."
     exit 0
