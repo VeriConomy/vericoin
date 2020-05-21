@@ -93,10 +93,10 @@ jobs:
         FILE_ENV="./ci/test/00_setup_env_arm.sh"
         QEMU_USER_CMD=""
 
-#    - stage: test
-#      name: 'Win64  [GOAL: deploy]  [unit tests, no gui, no functional tests]'
-#      env: >-
-#        FILE_ENV="./ci/test/00_setup_env_win64.sh"
+    - stage: test
+      name: 'Win64  [GOAL: deploy]  [unit tests, no gui, no functional tests]'
+      env: >-
+        FILE_ENV="./ci/test/00_setup_env_win64.sh"
 
     - stage: test
       name: '32-bit + dash  [GOAL: install]  [CentOS 7]  [gui]'
@@ -113,11 +113,11 @@ jobs:
       env: >-
         FILE_ENV="./ci/test/00_setup_env_native.sh"
 
-#    - stage: test
-#      name: 'macOS 10.12  [GOAL: deploy] [no functional tests]'
-#      env: >-
-#        FILE_ENV="./ci/test/00_setup_env_mac.sh"
-#
+    - stage: test
+      name: 'macOS 10.12  [GOAL: deploy] [no functional tests]'
+      env: >-
+        FILE_ENV="./ci/test/00_setup_env_mac.sh"
+
 
     - stage: test
       name: 'macOS 10.14 native [GOAL: install] [GUI] [no depends]'
