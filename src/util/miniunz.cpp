@@ -16,8 +16,9 @@
    See the accompanying COPYING file for the full text of the license.
 */
 
-#include "miniunz.h"
+#include <util/miniunz.h>
 
+#include <logging.h>
 #include <sys/stat.h>
 
 #ifdef _WIN32
@@ -58,7 +59,7 @@ int zip_extract_currentfile(unzFile uf, boost::filesystem::path root_file_path, 
     err = unzGetCurrentFileInfo64(uf, &file_info, filename_inzip, sizeof(filename_inzip), NULL, 0, NULL, 0);
     if (err != UNZ_OK)
     {
-        printf("error %d with zipfile in unzGetCurrentFileInfo64\n", err);
+        LogPrintf("error %d with zipfile in unzGetCurrentFileInfo64\n", err);
         return err;
     }
 
@@ -68,7 +69,7 @@ int zip_extract_currentfile(unzFile uf, boost::filesystem::path root_file_path, 
     /* Sanity check to prevent path traversal attacks in case of a malicious zip file */
     if (!is_file_within_path(file_path, bootstrap_dir_path))
     {
-        printf("invalid zipfile: file has invalid directory: %s\n", filename_inzip);
+        LogPrintf("invalid zipfile: file has invalid directory: %s\n", filename_inzip);
         return UNZ_BADZIPFILE;
     }
 
@@ -81,7 +82,7 @@ int zip_extract_currentfile(unzFile uf, boost::filesystem::path root_file_path, 
         char lastChar = curr_filename_str[curr_filename_len-1];
         if (lastChar == '/' || lastChar == '\\')
         {
-            printf(" extracting: creating dir %s\n", curr_filename);
+            LogPrintf(" extracting: creating dir %s\n", curr_filename);
             MKDIR(curr_filename);
             return UNZ_OK;
         }
@@ -90,13 +91,13 @@ int zip_extract_currentfile(unzFile uf, boost::filesystem::path root_file_path, 
     buf = (void*)malloc(size_buf);
     if (buf == NULL)
     {
-        printf("Error allocating memory\n");
+        LogPrintf("Error allocating memory\n");
         return UNZ_INTERNALERROR;
     }
 
     err = unzOpenCurrentFile(uf);
     if (err != UNZ_OK)
-        printf("error %d with zipfile in unzOpenCurrentFilePassword\n", err);
+        LogPrintf("error %d with zipfile in unzOpenCurrentFilePassword\n", err);
 
     /* Create the file on disk so we can unzip to it */
     if (err == UNZ_OK)
@@ -104,27 +105,27 @@ int zip_extract_currentfile(unzFile uf, boost::filesystem::path root_file_path, 
         fout = fopen64(curr_filename, "wb");
         /* Some zips don't contain directory alone before file */
         if (fout == NULL)
-            printf("error opening %s\n", curr_filename);
+            LogPrintf("error opening %s\n", curr_filename);
     }
 
     /* Read from the zip, unzip to buffer, and write to disk */
     if (fout != NULL)
     {
-        printf(" extracting: %s\n", curr_filename);
+        LogPrintf(" extracting: %s\n", curr_filename);
 
         do
         {
             err = unzReadCurrentFile(uf, buf, size_buf);
             if (err < 0)
             {
-                printf("error %d with zipfile in unzReadCurrentFile\n", err);
+                LogPrintf("error %d with zipfile in unzReadCurrentFile\n", err);
                 break;
             }
             if (err == 0)
                 break;
             if (fwrite(buf, err, 1, fout) != 1)
             {
-                printf("error %d in writing extracted file\n", errno);
+                LogPrintf("error %d in writing extracted file\n", errno);
                 err = UNZ_ERRNO;
                 break;
             }
@@ -137,7 +138,7 @@ int zip_extract_currentfile(unzFile uf, boost::filesystem::path root_file_path, 
 
     errclose = unzCloseCurrentFile(uf);
     if (errclose != UNZ_OK)
-        printf("error %d with zipfile in unzCloseCurrentFile\n", errclose);
+        LogPrintf("error %d with zipfile in unzCloseCurrentFile\n", errclose);
 
     free(buf);
     return err;
@@ -148,7 +149,7 @@ int zip_extract_all(unzFile uf, boost::filesystem::path root_file_path, const ch
     int err = unzGoToFirstFile(uf);
     if (err != UNZ_OK)
     {
-        printf("error %d with zipfile in unzGoToFirstFile\n", err);
+        LogPrintf("error %d with zipfile in unzGoToFirstFile\n", err);
         return 1;
     }
 
@@ -163,7 +164,7 @@ int zip_extract_all(unzFile uf, boost::filesystem::path root_file_path, const ch
 
     if (err != UNZ_END_OF_LIST_OF_FILE)
     {
-        printf("error %d with zipfile in unzGoToNextFile\n", err);
+        LogPrintf("error %d with zipfile in unzGoToNextFile\n", err);
         return 1;
     }
     return UNZ_OK;

@@ -107,10 +107,7 @@ CAmount calculateMinerReward(const CBlockIndex* pindex)
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees,const CBlockIndex* pindex)
 {
-    bool fDebug = true;
     CAmount nSubsidy = calculateMinerReward(pindex);
-    if (fDebug && gArgs.GetBoolArg("-printcreation", false))
-        printf("GetProofOfWorkReward() : create=%s nSubsidy=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
     return nSubsidy + nFees;
 }
 

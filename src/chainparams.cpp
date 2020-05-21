@@ -5,6 +5,7 @@
 
 #include <chainparams.h>
 
+#include <arith_uint256.h>
 #include <chainparamsseeds.h>
 #include <consensus/merkle.h>
 #include <tinyformat.h>
@@ -17,7 +18,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#include "arith_uint256.h"
+
 arith_uint256 proofOfWorkLimit(~arith_uint256(0) >> 11);  // standard scrypt^2 minimum difficulty (0.00000048)
 arith_uint256 proofOfWorkLimitTestNet(~arith_uint256(0) >> 11);
 

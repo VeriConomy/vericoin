@@ -11,11 +11,11 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
-#include <node/coinstats.h>
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <hash.h>
 #include <index/blockfilterindex.h>
+#include <node/coinstats.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -39,16 +39,13 @@
 #include <warnings.h>
 
 #include <assert.h>
-#include <stdint.h>
-
-#include <univalue.h>
-
-#include <boost/thread/thread.hpp> // boost::thread::interrupt
-#include <openssl/ssl.h>
-
 #include <condition_variable>
 #include <memory>
 #include <mutex>
+#include <stdint.h>
+#include <univalue.h>
+
+#include <boost/thread/thread.hpp>
 #include <curl/curl.h>
 #include <openssl/ssl.h>
 

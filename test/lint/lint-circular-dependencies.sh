@@ -31,6 +31,11 @@ EXPECTED_CIRCULAR_DEPENDENCIES=(
     "qt/guiutil -> qt/walletmodel -> qt/optionsmodel -> qt/guiutil"
     "txmempool -> validation -> validationinterface -> txmempool"
     "wallet/ismine -> wallet/wallet -> wallet/ismine"
+    # Verium
+    "bootstrap -> init -> bootstrap"
+    "pow -> validation -> pow"
+    "bootstrap -> init -> rpc/blockchain -> bootstrap"
+    "pow -> validation -> txdb -> pow"
 )
 
 EXIT_CODE=0

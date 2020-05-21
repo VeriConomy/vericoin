@@ -1,9 +1,9 @@
-#ifndef SCRYPT_H
-#define SCRYPT_H
+#ifndef BITCOIN_CRYPTO_SCRYPT_H
+#define BITCOIN_CRYPTO_SCRYPT_H
 
-#include "uint256.h"
-#include "compat/byteswap.h"
-#include "util/strencodings.h"
+#include <uint256.h>
+#include <compat/byteswap.h>
+#include <util/strencodings.h>
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -89,4 +89,4 @@ static inline uint32_t swab32(uint32_t v)
 {
     return bswap_32(v);
 }
-#endif
+#endif // BITCOIN_CRYPTO_SCRYPT_H
