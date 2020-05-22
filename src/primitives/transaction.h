@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include <amount.h>
+#include <logging.h>
 #include <script/script.h>
 #include <serialize.h>
 #include <uint256.h>
@@ -313,7 +314,7 @@ public:
 
     void print() const
     {
-        printf("%s", ToString().c_str());
+        LogPrintf("%s", ToString().c_str());
     }
 };
 
@@ -359,7 +360,7 @@ struct CMutableTransaction
     
     void print() const
     {
-        printf("%s", ToString().c_str());
+        LogPrintf("%s", ToString().c_str());
     }
 };
 

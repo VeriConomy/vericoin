@@ -6,10 +6,11 @@
 #ifndef BITCOIN_BIGNUM_H
 #define BITCOIN_BIGNUM_H
 
-#include "serialize.h"
-#include "uint256.h"
-#include "arith_uint256.h"
-#include "version.h"
+#include <arith_uint256.h>
+#include <serialize.h>
+#include <uint256.h>
+#include <util/strencodings.h>
+#include <version.h>
 
 #include <openssl/bn.h>
 
@@ -337,7 +338,7 @@ public:
     {
         // skip 0x
         const char* psz = str.c_str();
-        while (isspace(*psz))
+        while (IsSpace(*psz))
             psz++;
         bool fNegative = false;
         if (*psz == '-')
@@ -345,9 +346,9 @@ public:
             fNegative = true;
             psz++;
         }
-        if (psz[0] == '0' && tolower(psz[1]) == 'x')
+        if (psz[0] == '0' && ToLower(psz[1]) == 'x')
             psz += 2;
-        while (isspace(*psz))
+        while (IsSpace(*psz))
             psz++;
 
         // hex string to bignum

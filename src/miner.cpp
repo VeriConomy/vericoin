@@ -36,7 +36,7 @@
 #include <thread>
 #include <boost/thread/thread.hpp>
 
-#include "openssl/sha.h"
+#include <openssl/sha.h>
 
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
@@ -537,8 +537,6 @@ bool CheckWork(CBlock* pblock)
         pblock->print();
         LogPrintf("New proof-of-work block found with: %s coins generated.\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
 	
-        LOCK(cs_main);
-		
         // Process this block the same as if we had received it from another node
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
         if (!ProcessNewBlock(Params(), shared_pblock, true, nullptr))
@@ -579,7 +577,7 @@ int GetNumPeers()
 
 void Miner(CWallet *pwallet)
 {
-    printf("Miner started\n");
+    LogPrintf("Miner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     util::ThreadRename("verium-miner");
 
@@ -606,7 +604,7 @@ void Miner(CWallet *pwallet)
         while (fGenerateVerium && memory)
         {
 			while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
-				LogPrintf("Mining inactive while chain is syncing...");
+                LogPrintf("Mining inactive while chain is syncing...\n");
 				MilliSleep(5000);
 			}
 
@@ -642,7 +640,7 @@ void Miner(CWallet *pwallet)
                     if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes, scratchbuf))
                     {
                         // Found a solution
-                        printf("Miner found a solution\n");
+                        LogPrintf("Miner found a solution\n");
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
                         CheckWork(pblock);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -702,7 +700,7 @@ void Miner(CWallet *pwallet)
         free(scratchbuf);
         hashrate = 0;
         nExtraNonce = 0;
-        printf("Miner terminated\n");
+        LogPrintf("Miner terminated\n");
         throw;
     }
 }
