@@ -7,7 +7,6 @@
 #include <util/miniunz.h>
 #include <curl/curl.h>
 #include <openssl/ssl.h>
-#include <string>
 
 //bootstrap 
 
@@ -37,11 +36,11 @@ void set_xferinfo_data(void* d)
     xferinfo_data = d;
 }
 
-void downloadFile(std::string url, boost::filesystem::path target_file_path) {
+void downloadFile(std::string url, const fs::path& target_file_path) {
 
     LogPrintf("bootstrap: Downloading bootstrap from %s. \n", url);
 
-    FILE *file = fopen(target_file_path.c_str(), "wb");
+    FILE *file = fsbridge::fopen(target_file_path, "wb");
     if( ! file )
         throw std::runtime_error(strprintf("bootstrap: Download error: Unable to open output file for writing: %s.", target_file_path.c_str()));
 
@@ -83,13 +82,14 @@ void downloadFile(std::string url, boost::filesystem::path target_file_path) {
     return;
 }
 
-void extractBootstrap(boost::filesystem::path target_file_path) {
+void extractBootstrap(const fs::path& target_file_path) {
     LogPrintf("bootstrap: Extracting bootstrap %s.\n", target_file_path);
 
     if (!boost::filesystem::exists(target_file_path))
         throw std::runtime_error("bootstrap: Bootstrap archive not found");
 
-    const char * zipfilename = target_file_path.c_str();
+
+    const char * zipfilename = target_file_path.string().c_str();
     unzFile uf;
 #ifdef USEWIN32IOAPI
     zlib_filefunc64_def ffunc;
