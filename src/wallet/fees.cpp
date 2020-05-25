@@ -23,7 +23,7 @@ CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes)
 CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinControl& coin_control, FeeCalculation* feeCalc)
 {
     //TODO implement
-    return GetRequiredFee(nTxBytes);
+    return GetRequiredFee(wallet, nTxBytes);
 }
 
 CFeeRate GetRequiredFeeRate(const CWallet& wallet)
