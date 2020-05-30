@@ -1,9 +1,13 @@
 <!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/">
+        <file alias="style">res/style.qss</file>
+    </qresource>
     <qresource prefix="/icons">
         <file alias="verium">res/icons/bitcoin.png</file>
         <file alias="splashlogo">res/icons/bitcoin-splash.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
         <file alias="send">res/icons/send.png</file>
+        <file alias="community">res/icons/community.png</file>
         <file alias="connect_0">res/icons/connect0.png</file>
         <file alias="connect_1">res/icons/connect1.png</file>
         <file alias="connect_2">res/icons/connect2.png</file>
@@ -45,6 +49,9 @@
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
         <file alias="network_disabled">res/icons/network_disabled.png</file>
         <file alias="proxy">res/icons/proxy.png</file>
+        <file alias="close">res/icons/close.png</file>
+        <file alias="minimize">res/icons/minimize.png</file>
+        <file alias="move">res/icons/move.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

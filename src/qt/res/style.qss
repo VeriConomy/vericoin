@@ -1,0 +1,54 @@
+/** Global **/
+QMainWindow {
+    background-color: #103e60;
+}
+
+QWidget#central {
+    background: qlineargradient( x1: 0 y1: 0, x2: 1 y2: 0, stop: 0 #2fa1ff, stop: 1 #0070cc);
+}
+
+/** Left Toolbar **/
+QToolBar#mainToolbar {
+    background-color: #0a2c50;
+    padding: 0;
+}
+
+QToolBar#mainToolbar QToolButton {
+    margin: 0;
+    width: 65px;
+    padding-left: 5px;
+    height: 70px;
+}
+
+QToolBar#mainToolbar QToolButton:hover {
+    background-color: #ffffff;
+    margin: 0;
+}
+
+QToolBar#mainToolbar QToolButton:checked {
+    border: no;
+    padding-left: 0px;
+    background-color: #0a2c50;
+    border-left-style: solid;
+    border-left-width: 5px;
+    border-left-color: #48c4f2;
+    opacity: 223;
+}
+
+/** Top Menu**/
+
+QMenuBar#mainMenu {
+    background-color: transparent;
+    padding: 10px;
+    font-size: 14px;
+    color: white;
+    spacing: 15px;
+}
+
+QWidget#windowActionToolbar QToolButton {
+    padding: 5px;
+}
+
+/** Wallet Frame **/
+
+

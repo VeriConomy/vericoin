@@ -60,6 +60,8 @@
 #include <QUrlQuery>
 #include <QVBoxLayout>
 #include <QWindow>
+#include <QDockWidget>
+#include <QTextStream>
 
 
 const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
@@ -79,6 +81,26 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     platformStyle(_platformStyle),
     m_network_style(networkStyle)
 {
+    // Set window size
+    QRect screenSize = QGuiApplication::primaryScreen()->availableGeometry();
+    int mainHeight = screenSize.height() * 0.6f;
+    if( mainHeight < 480)
+        mainHeight = 480;
+
+    int mainWidth = screenSize.width() * 0.6f;
+    if( mainWidth < 800)
+        mainWidth = 800;
+
+    this->setFixedSize(QSize(mainWidth, mainHeight));
+
+    // apply style
+    QFile f(":/style");
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
+    setStyleSheet(ts.readAll());
+    f.close();
+
+
     QSettings settings;
     if (!restoreGeometry(settings.value("MainWindowGeometry").toByteArray())) {
         // Restore failed (perhaps missing setting), center the window
@@ -94,19 +116,37 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     rpcConsole = new RPCConsole(node, _platformStyle, nullptr);
     helpMessageDialog = new HelpMessageDialog(node, this, false);
+
+    // Make it frameless, we will handle minimize and co by ourself
+    setWindowFlags(Qt::FramelessWindowHint);
+
+    // Create layout for central
+    QWidget *centralWidget = new QWidget();
+    QVBoxLayout *centralLayout = new QVBoxLayout;
+    centralLayout->setMargin(0);
+    centralLayout->setSpacing(0);
+    centralWidget->setLayout(centralLayout);
+    centralWidget->setObjectName("central");
+    setCentralWidget(centralWidget);
+
+    // Prepare for MenuBar
+    QWidget *topCentralBar = new QWidget();
+    centralLayout->addWidget(topCentralBar);
+    topCentralBar->setObjectName("topCentralBar");
+
 #ifdef ENABLE_WALLET
     if(enableWallet)
     {
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
-        setCentralWidget(walletFrame);
+        centralLayout->addWidget(walletFrame);
     } else
 #endif // ENABLE_WALLET
     {
         /* When compiled without wallet or -disablewallet is provided,
          * the central widget is the rpc console.
          */
-        setCentralWidget(rpcConsole);
+        centralLayout->addWidget(rpcConsole);
         Q_EMIT consoleShown(rpcConsole);
     }
 
@@ -199,7 +239,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
         openOptionsDialogWithTab(OptionsDialog::TAB_NETWORK);
     });
 
-    modalOverlay = new ModalOverlay(this->centralWidget());
+    modalOverlay = new ModalOverlay(this->centralWidget()->layout()->itemAt(1)->widget());
 #ifdef ENABLE_WALLET
     if(enableWallet) {
         connect(walletFrame, &WalletFrame::requestedSyncWarningInfo, this, &BitcoinGUI::showModalOverlay);
@@ -271,6 +311,12 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
+    communityAction = new QAction(platformStyle->SingleColorIcon(":/icons/community"), tr("&Community"), this);
+    communityAction->setStatusTip(tr("Community"));
+    communityAction->setToolTip(communityAction->statusTip());
+    communityAction->setCheckable(true);
+    tabGroup->addAction(communityAction);
+
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -286,12 +332,15 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsMenuAction, &QAction::triggered, this, &BitcoinGUI::gotoReceiveCoinsPage);
     connect(historyAction, &QAction::triggered, [this]{ showNormalIfMinimized(); });
     connect(historyAction, &QAction::triggered, this, &BitcoinGUI::gotoHistoryPage);
+    connect(communityAction, &QAction::triggered, [this]{ showNormalIfMinimized(); });
+    connect(communityAction, &QAction::triggered, this, &BitcoinGUI::gotoCommunityPage);
 #endif // ENABLE_WALLET
 
-    quitAction = new QAction(tr("E&xit"), this);
+    quitAction = new QAction(platformStyle->SingleColorIcon(":/icons/close"), tr("E&xit"), this);
     quitAction->setStatusTip(tr("Quit application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
+    quitAction->setIconVisibleInMenu(false);
     aboutAction = new QAction(tr("&About %1").arg(PACKAGE_NAME), this);
     aboutAction->setStatusTip(tr("Show information about %1").arg(PACKAGE_NAME));
     aboutAction->setMenuRole(QAction::AboutRole);
@@ -414,17 +463,39 @@ void BitcoinGUI::createActions()
 
     connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_C), this), &QShortcut::activated, this, &BitcoinGUI::showDebugWindowActivateConsole);
     connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_D), this), &QShortcut::activated, this, &BitcoinGUI::showDebugWindow);
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_V), this), &QShortcut::activated, this, &BitcoinGUI::refreshStyle);
 }
 
 void BitcoinGUI::createMenuBar()
 {
+    QVBoxLayout *centralLayout = dynamic_cast<QVBoxLayout*>(centralWidget()->layout());
+    QHBoxLayout *topCentralLayout = new QHBoxLayout();
+    topCentralLayout->setMargin(0);
+    topCentralLayout->setSpacing(0);
+    centralLayout->itemAt(0)->widget()->setLayout(topCentralLayout);
+
 #ifdef Q_OS_MAC
     // Create a decoupled menu bar on Mac which stays even if the window is closed
     appMenuBar = new QMenuBar();
 #else
     // Get the main window's menu bar on other platforms
-    appMenuBar = menuBar();
+    appMenuBar = new QMenuBar(this);
+    appMenuBar->setContentsMargins(0,0,0,0);
+    appMenuBar->setObjectName("mainMenu");
+
+    topCentralLayout->addWidget(appMenuBar);
 #endif
+
+    QToolBar *windowActionToolbar = addToolBar(tr("Window Action toolbar"));
+    windowActionToolbar->setObjectName("windowActionToolbar");
+    // Window Action Toolbar style
+    windowActionToolbar->setContentsMargins(0,0,0,0);
+    windowActionToolbar->setIconSize(QSize(14, 14));
+    windowActionToolbar->setContextMenuPolicy(Qt::PreventContextMenu);
+    windowActionToolbar->setMovable(false);
+    windowActionToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    windowActionToolbar->setOrientation(Qt::Horizontal);
+    windowActionToolbar->setFixedSize(100, 40);
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
@@ -452,14 +523,13 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     QMenu* window_menu = appMenuBar->addMenu(tr("&Window"));
-
-    QAction* minimize_action = window_menu->addAction(tr("Minimize"));
-    minimize_action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
-    connect(minimize_action, &QAction::triggered, [] {
-        qApp->focusWindow()->showMinimized();
+    QAction* minimize_action_tray = window_menu->addAction(tr("Minimize"));
+    minimize_action_tray->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
+    connect(minimize_action_tray, &QAction::triggered, [this] {
+        toggleHidden();
     });
-    connect(qApp, &QApplication::focusWindowChanged, [minimize_action] (QWindow* window) {
-        minimize_action->setEnabled(window != nullptr && (window->flags() & Qt::Dialog) != Qt::Dialog && window->windowState() != Qt::WindowMinimized);
+    connect(qApp, &QApplication::focusWindowChanged, [minimize_action_tray] (QWindow* window) {
+        minimize_action_tray->setEnabled(window != nullptr && (window->flags() & Qt::Dialog) != Qt::Dialog && window->windowState() != Qt::WindowMinimized);
     });
 
 #ifdef Q_OS_MAC
@@ -505,6 +575,25 @@ void BitcoinGUI::createMenuBar()
     help->addSeparator();
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
+
+    // Declare Windows Action
+    QAction *moveAction = new QAction(QIcon(":/icons/move"), tr("&Move"), this);
+    connect(moveAction, &QAction::triggered, [] {
+        // XXX
+        QApplication::activeWindow()->showMinimized();
+    });
+    QAction *minimizeAction = new QAction(QIcon(":/icons/minimize"), tr("&Minimize"), this);
+    connect(minimizeAction, &QAction::triggered, [] {
+        QApplication::activeWindow()->showMinimized();
+    });
+
+    // Set Windows Action (minimize, close ...)
+    windowActionToolbar->addAction(moveAction);
+    windowActionToolbar->addAction(minimizeAction);
+    windowActionToolbar->addAction(quitAction);
+
+    // and add
+    topCentralLayout->addWidget(windowActionToolbar);
 }
 
 void BitcoinGUI::createToolBars()
@@ -512,14 +601,27 @@ void BitcoinGUI::createToolBars()
     if(walletFrame)
     {
         QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
+        addToolBar(Qt::LeftToolBarArea, toolbar);
         appToolBar = toolbar;
+        toolbar->setObjectName("mainToolbar");
+
+        // set toolbar style
+        toolbar->setIconSize(QSize(32, 32));
+        toolbar->setFixedWidth(70);
+        toolbar->setFixedHeight(height() * 0.7f);
+
+        // configure toolbar
         toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
         toolbar->setMovable(false);
-        toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        toolbar->setOrientation(Qt::Vertical);
+
+        // Add action and select main view
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
+        toolbar->addAction(communityAction);
         overviewAction->setChecked(true);
 
 #ifdef ENABLE_WALLET
@@ -696,6 +798,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     receiveCoinsAction->setEnabled(enabled);
     receiveCoinsMenuAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
+    communityAction->setEnabled(enabled);
     encryptWalletAction->setEnabled(enabled);
     backupWalletAction->setEnabled(enabled);
     changePassphraseAction->setEnabled(enabled);
@@ -789,6 +892,17 @@ void BitcoinGUI::aboutClicked()
     dlg.exec();
 }
 
+// Used for development
+// XXX: Remove before release
+void BitcoinGUI::refreshStyle() {
+    QString strPath(QCoreApplication::applicationDirPath() + "/res/style.qss");
+    QFile f(strPath);
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
+    setStyleSheet(ts.readAll());
+    f.close();
+}
+
 void BitcoinGUI::showDebugWindow()
 {
     GUIUtil::bringToFront(rpcConsole);
@@ -825,6 +939,13 @@ void BitcoinGUI::gotoOverviewPage()
 void BitcoinGUI::gotoHistoryPage()
 {
     historyAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoHistoryPage();
+}
+
+void BitcoinGUI::gotoCommunityPage()
+{
+    communityAction->setChecked(true);
+    // XXX
     if (walletFrame) walletFrame->gotoHistoryPage();
 }
 
