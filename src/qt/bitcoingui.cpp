@@ -602,34 +602,48 @@ void BitcoinGUI::createToolBars()
 {
     if(walletFrame)
     {
-        QToolBar *toolbar = new QToolBar();
-        addToolBar(Qt::LeftToolBarArea, toolbar);
-        appToolBar = toolbar;
-        toolbar->setObjectName("mainToolbar");
+        // create a left toolbar that will contain the tab bar, a spacer, and the network connection
+        // first let's style the main toolbar
+        QToolBar *mainToolBar = new QToolBar();
+        mainToolBar->setContentsMargins(0,0,0,0);
+        mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+        mainToolBar->setMovable(false);
+        mainToolBar->setObjectName("mainToolBar");
+        mainToolBar->setFixedWidth(70);
+        mainToolBar->setFixedHeight(height());
+        // adding the left bar
+        addToolBar(Qt::LeftToolBarArea, mainToolBar);
+        appToolBar = mainToolBar;
 
+        // Create the tab bar with style
+        QToolBar *tabBar = new QToolBar();
+        tabBar->setContextMenuPolicy(Qt::PreventContextMenu);
+        tabBar->setMovable(false);
+        tabBar->setContentsMargins(0,0,0,0);
+        tabBar->setObjectName("tabBar");
+        tabBar->setIconSize(QSize(30, 30));
+        tabBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        tabBar->setOrientation(Qt::Vertical);
+        tabBar->setFixedWidth(70);
+        tabBar->setFixedHeight(height() * 0.80f);
+        mainToolBar->addWidget(tabBar);
         // set toolbar style
-        toolbar->setIconSize(QSize(30, 30));
-        toolbar->setFixedWidth(70);
-        toolbar->setFixedHeight(height() * 0.80f);
 
         // configure toolbar
-        toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
-        toolbar->setMovable(false);
-        toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-        toolbar->setOrientation(Qt::Vertical);
+
 
         // Add action and select main view
-        toolbar->addAction(overviewAction);
-        toolbar->addAction(sendCoinsAction);
-        toolbar->addAction(receiveCoinsAction);
-        toolbar->addAction(historyAction);
-        toolbar->addAction(communityAction);
+        tabBar->addAction(overviewAction);
+        tabBar->addAction(sendCoinsAction);
+        tabBar->addAction(receiveCoinsAction);
+        tabBar->addAction(historyAction);
+        tabBar->addAction(communityAction);
         overviewAction->setChecked(true);
 
 #ifdef ENABLE_WALLET
         QWidget *spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        toolbar->addWidget(spacer);
+        mainToolBar->addWidget(spacer);
 
         m_wallet_selector = new QComboBox();
         m_wallet_selector->setSizeAdjustPolicy(QComboBox::AdjustToContents);
