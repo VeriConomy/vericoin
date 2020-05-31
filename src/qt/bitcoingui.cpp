@@ -180,7 +180,6 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     labelWalletEncryptionIcon = new QLabel();
     labelWalletHDStatusIcon = new QLabel();
     labelProxyIcon = new GUIUtil::ClickableLabel();
-    connectionsControl = new GUIUtil::ClickableLabel();
     labelBlocksIcon = new GUIUtil::ClickableLabel();
     if(enableWallet)
     {
@@ -192,12 +191,12 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     }
     frameBlocksLayout->addWidget(labelProxyIcon);
     frameBlocksLayout->addStretch();
-    frameBlocksLayout->addWidget(connectionsControl);
-    frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addStretch();
 
     // Progress bar and label for blocks download
+    QWidget *spacer = new QWidget();
+    spacer->setFixedWidth(100);
     progressBarLabel = new QLabel();
     progressBarLabel->setVisible(false);
     progressBar = new GUIUtil::ProgressBar();
@@ -213,6 +212,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
         progressBar->setStyleSheet("QProgressBar { background-color: #e8e8e8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 orange); border-radius: 7px; margin: 0px; }");
     }
 
+    statusBar()->addWidget(spacer);
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
@@ -247,7 +247,11 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 #endif
 
     // apply style
-    QFile f(":/style");
+    // XXX: Use local path for development
+    // XXX: To remove before for release
+    QString strPath(QCoreApplication::applicationDirPath() + "/res/style.qss");
+    QFile f(strPath);
+    //QFile f(":/style");
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream ts(&f);
     setStyleSheet(ts.readAll());
@@ -640,10 +644,20 @@ void BitcoinGUI::createToolBars()
         tabBar->addAction(communityAction);
         overviewAction->setChecked(true);
 
-#ifdef ENABLE_WALLET
         QWidget *spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         mainToolBar->addWidget(spacer);
+
+        connectionsControl = new GUIUtil::ClickableLabel();
+        connectionsControl->setContextMenuPolicy(Qt::PreventContextMenu);
+        connectionsControl->setContentsMargins(18,0,0,10);
+        connectionsControl->setObjectName("connectionsControl");
+        connectionsControl->setFixedWidth(70);
+        connectionsControl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        mainToolBar->addWidget(connectionsControl);
+
+#ifdef ENABLE_WALLET
+
 
         m_wallet_selector = new QComboBox();
         m_wallet_selector->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -1014,7 +1028,7 @@ void BitcoinGUI::updateNetworkState()
     tooltip = QString("<nobr>") + tooltip + QString("</nobr>");
     connectionsControl->setToolTip(tooltip);
 
-    connectionsControl->setPixmap(platformStyle->SingleColorIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+    connectionsControl->setPixmap(QIcon(icon).pixmap(35,35));
 }
 
 void BitcoinGUI::setNumConnections(int count)

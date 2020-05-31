@@ -1,10 +1,9 @@
 /** Set main colors **/
 QMainWindow { background-color: #586A7A; } /** Main surrounding color **/
 QToolBar#mainToolBar { background-color: #586A7A; } /** Main surrounding color **/
-QWidget#central { background-color: #418BCA; } /** Central color **/
+QWidget#central { background-color: #418bca; } /** Central color **/
 QToolBar#tabBar { background-color: #46505A; } /** Left toolbar color **/
 QToolBar#tabBar QToolButton:hover { background-color: #6A727A; } /** Left toolbar - hover button **/
-QToolBar#tabBar QToolButton:checked { border-left-color: #418BCA; } /** Left toolbar - selected button left border **/
 
 /** background: qlineargradient( x1: 0 y1: 0, x2: 1 y2: 0, stop: 0 #84b4dd, stop: 1 #418bca); **/
 
@@ -24,6 +23,7 @@ QToolBar#tabBar QToolButton:checked {
     padding-left: 0px;
     border-left-style: solid;
     border-left-width: 5px;
+    border-left-color: #418BCA;
 }
 
 /** Top Menu**/
