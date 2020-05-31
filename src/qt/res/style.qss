@@ -17,7 +17,7 @@ QToolBar#mainToolbar QToolButton {
     margin: 0;
     width: 65px;
     padding-left: 5px;
-    height: 70px;
+    height: 65px;
 }
 
 QToolBar#mainToolbar QToolButton:hover {
@@ -30,16 +30,15 @@ QToolBar#mainToolbar QToolButton:checked {
     padding-left: 0px;
     background-color: #0a2c50;
     border-left-style: solid;
-    border-left-width: 5px;
+    border-left-width: 3px;
     border-left-color: #48c4f2;
-    opacity: 223;
 }
 
 /** Top Menu**/
 
 QMenuBar#mainMenu {
     background-color: transparent;
-    padding: 10px;
+    padding: 5px;
     font-size: 14px;
     color: white;
     spacing: 15px;

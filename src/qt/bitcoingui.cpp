@@ -91,15 +91,9 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     if( mainWidth < 800)
         mainWidth = 800;
 
-    this->setFixedSize(QSize(mainWidth, mainHeight));
-
-    // apply style
-    QFile f(":/style");
-    f.open(QFile::ReadOnly | QFile::Text);
-    QTextStream ts(&f);
-    setStyleSheet(ts.readAll());
-    f.close();
-
+    // For Development, use the smallest size :)
+    //this->setFixedSize(QSize(mainWidth, mainHeight));
+    this->setFixedSize(QSize(800, 480));
 
     QSettings settings;
     if (!restoreGeometry(settings.value("MainWindowGeometry").toByteArray())) {
@@ -251,6 +245,14 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 #ifdef Q_OS_MAC
     m_app_nap_inhibitor = new CAppNapInhibitor;
 #endif
+
+    // apply style
+    QFile f(":/style");
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
+    setStyleSheet(ts.readAll());
+    f.close();
+
 }
 
 BitcoinGUI::~BitcoinGUI()
@@ -486,7 +488,7 @@ void BitcoinGUI::createMenuBar()
     topCentralLayout->addWidget(appMenuBar);
 #endif
 
-    QToolBar *windowActionToolbar = addToolBar(tr("Window Action toolbar"));
+    QToolBar *windowActionToolbar = new QToolBar();
     windowActionToolbar->setObjectName("windowActionToolbar");
     // Window Action Toolbar style
     windowActionToolbar->setContentsMargins(0,0,0,0);
@@ -495,7 +497,7 @@ void BitcoinGUI::createMenuBar()
     windowActionToolbar->setMovable(false);
     windowActionToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     windowActionToolbar->setOrientation(Qt::Horizontal);
-    windowActionToolbar->setFixedSize(100, 40);
+    windowActionToolbar->setFixedSize(100, 35);
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
@@ -600,15 +602,15 @@ void BitcoinGUI::createToolBars()
 {
     if(walletFrame)
     {
-        QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
+        QToolBar *toolbar = new QToolBar();
         addToolBar(Qt::LeftToolBarArea, toolbar);
         appToolBar = toolbar;
         toolbar->setObjectName("mainToolbar");
 
         // set toolbar style
-        toolbar->setIconSize(QSize(32, 32));
+        toolbar->setIconSize(QSize(30, 30));
         toolbar->setFixedWidth(70);
-        toolbar->setFixedHeight(height() * 0.7f);
+        toolbar->setFixedHeight(height() * 0.80f);
 
         // configure toolbar
         toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
