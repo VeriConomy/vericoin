@@ -63,6 +63,7 @@
 #include <QDockWidget>
 #include <QTextStream>
 #include <QToolButton>
+#include <QFontDatabase>
 
 const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
 #if defined(Q_OS_MAC)
@@ -92,7 +93,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
         mainWidth = 800;
 
     // For Development, use the smallest size :)
-    //this->setFixedSize(QSize(mainWidth, mainHeight));
+    // this->setFixedSize(QSize(mainWidth, mainHeight));
     this->setFixedSize(QSize(800, 480));
 
     QSettings settings;
@@ -113,6 +114,11 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     // Make it frameless, we will handle minimize and co by ourself
     setWindowFlags(Qt::FramelessWindowHint);
+
+    // Import Font for some view
+    QFontDatabase::addApplicationFont(":/fonts/Lato-Regular");
+    QFontDatabase::addApplicationFont(":/fonts/Lato-Light");
+    QFontDatabase::addApplicationFont(":/fonts/Lato-Bold");
 
     // Create layout for central
     QWidget *centralWidget = new QWidget();
@@ -656,7 +662,7 @@ void BitcoinGUI::createToolBars()
 
         connectionsControl = new GUIUtil::ClickableLabel();
         connectionsControl->setContextMenuPolicy(Qt::PreventContextMenu);
-        connectionsControl->setContentsMargins(18,0,0,10);
+        connectionsControl->setContentsMargins(18,0,0,15);
         connectionsControl->setObjectName("connectionsControl");
         connectionsControl->setFixedWidth(70);
         connectionsControl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

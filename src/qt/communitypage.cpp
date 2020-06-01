@@ -11,12 +11,30 @@
 #include <qt/guiutil.h>
 #include <qt/platformstyle.h>
 
+#include <QGraphicsDropShadowEffect>
+
 CommunityPage::CommunityPage(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CommunityPage),
     clientModel(nullptr)
 {
     ui->setupUi(this);
+    QGraphicsDropShadowEffect* shadow1 = new QGraphicsDropShadowEffect();
+    shadow1->setOffset(QPointF(5, 5));
+    shadow1->setBlurRadius(20.0);
+    QGraphicsDropShadowEffect* shadow2 = new QGraphicsDropShadowEffect();
+    shadow2->setOffset(QPointF(5, 5));
+    shadow2->setBlurRadius(20.0);
+    QGraphicsDropShadowEffect* shadow3 = new QGraphicsDropShadowEffect();
+    shadow3->setOffset(QPointF(5, 5));
+    shadow3->setBlurRadius(20.0);
+    QGraphicsDropShadowEffect* shadow4 = new QGraphicsDropShadowEffect();
+    shadow4->setOffset(QPointF(5, 5));
+    shadow4->setBlurRadius(20.0);
+    ui->twitterWidget->setGraphicsEffect(shadow1);
+    ui->chatPlatformWidget->setGraphicsEffect(shadow2);
+    ui->websiteWidget->setGraphicsEffect(shadow3);
+    ui->blockExplorerWidget->setGraphicsEffect(shadow4);
 }
 
 CommunityPage::~CommunityPage()

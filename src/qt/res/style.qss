@@ -12,6 +12,7 @@ QToolBar { padding: 0; border: none; }
 QToolBar QToolButton { padding: 0; margin: 0; }
 
 QToolBar#tabBar QToolButton {
+    border: no;
     margin: 0;
     width: 65px;
     padding-left: 5px;
@@ -48,4 +49,39 @@ QLabel#progressBarLabel {
 
 /** Wallet Frame **/
 
+/** Community Page **/
+QWidget#CommunityPage QLabel#communityTitle {
+    max-height: 40px;
+    color: white;
+    font: 27pt "Lato Light";
+    margin-top: 4px;
+    margin-bottom: 5px;
+}
 
+QWidget#blockExplorerWidget {
+    background-color: #275d8b;
+    border-radius: 10px;
+    margin: 10px;
+    max-height: 140px;
+    min-height: 140px;
+}
+QWidget#twitterWidget {
+    background-color: #275d8b;
+    border-radius: 10px;
+    margin: 10px;
+    max-height: 140px;
+}
+
+QWidget#websiteWidget {
+    background-color: #275d8b;
+    border-radius: 10px;
+    margin: 10px;
+    max-height: 140px;
+    min-height: 140px;
+}
+QWidget#chatPlatformWidget {
+    background-color: #275d8b;
+    border-radius: 10px;
+    margin: 10px;
+    max-height: 140px;
+}
