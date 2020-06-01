@@ -41,6 +41,10 @@ QWidget#windowActionToolbar QToolButton {
 QWidget#windowActionToolbar QToolButton:hover {
     background-color: #3277b3;
 }
+/** Left Toolbar **/
+QLabel#progressBarLabel {
+    color: white;
+}
 
 /** Wallet Frame **/
 

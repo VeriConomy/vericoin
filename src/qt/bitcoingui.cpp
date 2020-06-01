@@ -199,9 +199,11 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     spacer->setFixedWidth(100);
     progressBarLabel = new QLabel();
     progressBarLabel->setVisible(false);
+    progressBarLabel->setObjectName("progressBarLabel");
     progressBar = new GUIUtil::ProgressBar();
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
+    progressBar->setObjectName("progressBar");
 
     // Calculate size of bar
     // Maybe find a way to center it ?
@@ -976,13 +978,6 @@ void BitcoinGUI::gotoHistoryPage()
     if (walletFrame) walletFrame->gotoHistoryPage();
 }
 
-void BitcoinGUI::gotoCommunityPage()
-{
-    communityAction->setChecked(true);
-    // XXX
-    if (walletFrame) walletFrame->gotoHistoryPage();
-}
-
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
     receiveCoinsAction->setChecked(true);
@@ -1003,6 +998,13 @@ void BitcoinGUI::gotoSignMessageTab(QString addr)
 void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
+}
+
+// XXX: Should also work without enable_wallet ...
+void BitcoinGUI::gotoCommunityPage()
+{
+    communityAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoCommunityPage();
 }
 #endif // ENABLE_WALLET
 

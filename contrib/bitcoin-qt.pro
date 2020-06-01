@@ -11,6 +11,7 @@ FORMS += \
     ../src/qt/forms/overviewpage.ui \
     ../src/qt/forms/receivecoinsdialog.ui \
     ../src/qt/forms/receiverequestdialog.ui \
+    ../src/qt/forms/communitypage.ui \
     ../src/qt/forms/debugwindow.ui \
     ../src/qt/forms/sendcoinsdialog.ui \
     ../src/qt/forms/sendcoinsentry.ui \
