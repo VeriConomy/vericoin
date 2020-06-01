@@ -38,6 +38,9 @@ QMenuBar#mainMenu {
 QWidget#windowActionToolbar QToolButton {
     padding: 5px;
 }
+QWidget#windowActionToolbar QToolButton:hover {
+    background-color: #3277b3;
+}
 
 /** Wallet Frame **/
 

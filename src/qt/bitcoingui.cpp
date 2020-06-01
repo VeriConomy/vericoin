@@ -62,7 +62,7 @@
 #include <QWindow>
 #include <QDockWidget>
 #include <QTextStream>
-
+#include <QToolButton>
 
 const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
 #if defined(Q_OS_MAC)
@@ -202,6 +202,11 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     progressBar = new GUIUtil::ProgressBar();
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
+
+    // Calculate size of bar
+    // Maybe find a way to center it ?
+    progressBar->setFixedWidth(300);
+    spacer->setFixedWidth((width() -480)/2);
 
     // Override style sheet for progress bar for styles that have a segmented progress bar,
     // as they make the text unreadable (workaround for issue #1071)
@@ -583,18 +588,17 @@ void BitcoinGUI::createMenuBar()
     help->addAction(aboutQtAction);
 
     // Declare Windows Action
-    QAction *moveAction = new QAction(QIcon(":/icons/move"), tr("&Move"), this);
-    connect(moveAction, &QAction::triggered, [] {
-        // XXX
-        QApplication::activeWindow()->showMinimized();
-    });
     QAction *minimizeAction = new QAction(QIcon(":/icons/minimize"), tr("&Minimize"), this);
     connect(minimizeAction, &QAction::triggered, [] {
         QApplication::activeWindow()->showMinimized();
     });
 
-    // Set Windows Action (minimize, close ...)
-    windowActionToolbar->addAction(moveAction);
+    // customize button
+    MoveWindowControl *moveWindowBtn = new MoveWindowControl(this);
+    moveWindowBtn->setIcon(QIcon(":/icons/move"));
+
+    // set Windows Action (minimize, close ...)
+    windowActionToolbar->addWidget(moveWindowBtn);
     windowActionToolbar->addAction(minimizeAction);
     windowActionToolbar->addAction(quitAction);
 
@@ -1534,6 +1538,21 @@ void BitcoinGUI::unsubscribeFromCoreSignals()
     // Disconnect signals from client
     m_handler_message_box->disconnect();
     m_handler_question->disconnect();
+}
+
+MoveWindowControl::MoveWindowControl(QWidget *parent) :
+    QToolButton(parent)
+{
+}
+
+void MoveWindowControl::mousePressEvent(QMouseEvent *event)
+{
+    initPosition = event->windowPos();
+}
+
+void MoveWindowControl::mouseMoveEvent(QMouseEvent *event)
+{
+    window()->move(event->globalX() - initPosition.x(), event->globalY() - initPosition.y());
 }
 
 UnitDisplayStatusBarControl::UnitDisplayStatusBarControl(const PlatformStyle *platformStyle) :
