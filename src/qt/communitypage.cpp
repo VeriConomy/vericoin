@@ -31,10 +31,10 @@ CommunityPage::CommunityPage(const PlatformStyle *platformStyle, QWidget *parent
     QGraphicsDropShadowEffect* shadow4 = new QGraphicsDropShadowEffect();
     shadow4->setOffset(QPointF(5, 5));
     shadow4->setBlurRadius(20.0);
-    ui->twitterWidget->setGraphicsEffect(shadow1);
-    ui->chatPlatformWidget->setGraphicsEffect(shadow2);
-    ui->websiteWidget->setGraphicsEffect(shadow3);
-    ui->blockExplorerWidget->setGraphicsEffect(shadow4);
+    ui->explorerBox->setGraphicsEffect(shadow1);
+    ui->twitterBox->setGraphicsEffect(shadow2);
+    ui->chatBox->setGraphicsEffect(shadow3);
+    ui->websiteBox->setGraphicsEffect(shadow4);
 }
 
 CommunityPage::~CommunityPage()
