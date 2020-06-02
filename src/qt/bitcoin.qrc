@@ -52,6 +52,10 @@
         <file alias="close">res/icons/close.png</file>
         <file alias="minimize">res/icons/minimize.png</file>
         <file alias="move">res/icons/move.png</file>
+        <file alias="chat">res/icons/chat.png</file>
+        <file alias="explorer">res/icons/explorer.png</file>
+        <file alias="website">res/icons/website.png</file>
+        <file alias="twitter">res/icons/twitter.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>
