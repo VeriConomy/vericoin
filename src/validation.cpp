@@ -1162,9 +1162,9 @@ bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::P
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
 
-    // Check the header
-    if (!CheckProofOfWork(block.GetWorkHash(), block.nBits, consensusParams))
-        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+    // Check the header || Verium: Assume local work has already been checked to save reindexing time
+    //if (!CheckProofOfWork(block.GetWorkHash(), block.nBits, consensusParams))
+    //    return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
 }
