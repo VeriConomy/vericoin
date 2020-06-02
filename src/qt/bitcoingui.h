@@ -18,6 +18,7 @@
 #include <QMap>
 #include <QPoint>
 #include <QSystemTrayIcon>
+#include <QToolButton>
 
 #ifdef Q_OS_MAC
 #include <qt/macos_appnap.h>
@@ -32,6 +33,7 @@ class OptionsModel;
 class PlatformStyle;
 class RPCConsole;
 class SendCoinsRecipient;
+class MoveWindowControl;
 class UnitDisplayStatusBarControl;
 class WalletController;
 class WalletFrame;
@@ -313,6 +315,23 @@ public Q_SLOTS:
     void setTrayIconVisible(bool);
 
     void showModalOverlay();
+};
+
+class MoveWindowControl : public QToolButton
+{
+    Q_OBJECT
+
+public:
+    explicit MoveWindowControl(QWidget *parent = nullptr);
+
+protected:
+    /** So that it responds to left-button clicks */
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+
+private:
+    QPointF initPosition;
+
 };
 
 class UnitDisplayStatusBarControl : public QLabel

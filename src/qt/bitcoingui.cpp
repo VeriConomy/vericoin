@@ -62,7 +62,8 @@
 #include <QWindow>
 #include <QDockWidget>
 #include <QTextStream>
-
+#include <QToolButton>
+#include <QFontDatabase>
 
 const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
 #if defined(Q_OS_MAC)
@@ -92,7 +93,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
         mainWidth = 800;
 
     // For Development, use the smallest size :)
-    //this->setFixedSize(QSize(mainWidth, mainHeight));
+    // this->setFixedSize(QSize(mainWidth, mainHeight));
     this->setFixedSize(QSize(800, 480));
 
     QSettings settings;
@@ -113,6 +114,11 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     // Make it frameless, we will handle minimize and co by ourself
     setWindowFlags(Qt::FramelessWindowHint);
+
+    // Import Font for some view
+    QFontDatabase::addApplicationFont(":/fonts/Lato-Regular");
+    QFontDatabase::addApplicationFont(":/fonts/Lato-Light");
+    QFontDatabase::addApplicationFont(":/fonts/Lato-Bold");
 
     // Create layout for central
     QWidget *centralWidget = new QWidget();
@@ -199,9 +205,16 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     spacer->setFixedWidth(100);
     progressBarLabel = new QLabel();
     progressBarLabel->setVisible(false);
+    progressBarLabel->setObjectName("progressBarLabel");
     progressBar = new GUIUtil::ProgressBar();
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setVisible(false);
+    progressBar->setObjectName("progressBar");
+
+    // Calculate size of bar
+    // Maybe find a way to center it ?
+    progressBar->setFixedWidth(300);
+    spacer->setFixedWidth((width() -480)/2);
 
     // Override style sheet for progress bar for styles that have a segmented progress bar,
     // as they make the text unreadable (workaround for issue #1071)
@@ -583,18 +596,17 @@ void BitcoinGUI::createMenuBar()
     help->addAction(aboutQtAction);
 
     // Declare Windows Action
-    QAction *moveAction = new QAction(QIcon(":/icons/move"), tr("&Move"), this);
-    connect(moveAction, &QAction::triggered, [] {
-        // XXX
-        QApplication::activeWindow()->showMinimized();
-    });
     QAction *minimizeAction = new QAction(QIcon(":/icons/minimize"), tr("&Minimize"), this);
     connect(minimizeAction, &QAction::triggered, [] {
         QApplication::activeWindow()->showMinimized();
     });
 
-    // Set Windows Action (minimize, close ...)
-    windowActionToolbar->addAction(moveAction);
+    // customize button
+    MoveWindowControl *moveWindowBtn = new MoveWindowControl(this);
+    moveWindowBtn->setIcon(QIcon(":/icons/move"));
+
+    // set Windows Action (minimize, close ...)
+    windowActionToolbar->addWidget(moveWindowBtn);
     windowActionToolbar->addAction(minimizeAction);
     windowActionToolbar->addAction(quitAction);
 
@@ -650,7 +662,7 @@ void BitcoinGUI::createToolBars()
 
         connectionsControl = new GUIUtil::ClickableLabel();
         connectionsControl->setContextMenuPolicy(Qt::PreventContextMenu);
-        connectionsControl->setContentsMargins(18,0,0,10);
+        connectionsControl->setContentsMargins(18,0,0,15);
         connectionsControl->setObjectName("connectionsControl");
         connectionsControl->setFixedWidth(70);
         connectionsControl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -972,13 +984,6 @@ void BitcoinGUI::gotoHistoryPage()
     if (walletFrame) walletFrame->gotoHistoryPage();
 }
 
-void BitcoinGUI::gotoCommunityPage()
-{
-    communityAction->setChecked(true);
-    // XXX
-    if (walletFrame) walletFrame->gotoHistoryPage();
-}
-
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
     receiveCoinsAction->setChecked(true);
@@ -999,6 +1004,13 @@ void BitcoinGUI::gotoSignMessageTab(QString addr)
 void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
+}
+
+// XXX: Should also work without enable_wallet ...
+void BitcoinGUI::gotoCommunityPage()
+{
+    communityAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoCommunityPage();
 }
 #endif // ENABLE_WALLET
 
@@ -1534,6 +1546,21 @@ void BitcoinGUI::unsubscribeFromCoreSignals()
     // Disconnect signals from client
     m_handler_message_box->disconnect();
     m_handler_question->disconnect();
+}
+
+MoveWindowControl::MoveWindowControl(QWidget *parent) :
+    QToolButton(parent)
+{
+}
+
+void MoveWindowControl::mousePressEvent(QMouseEvent *event)
+{
+    initPosition = event->windowPos();
+}
+
+void MoveWindowControl::mouseMoveEvent(QMouseEvent *event)
+{
+    window()->move(event->globalX() - initPosition.x(), event->globalY() - initPosition.y());
 }
 
 UnitDisplayStatusBarControl::UnitDisplayStatusBarControl(const PlatformStyle *platformStyle) :
