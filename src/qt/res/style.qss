@@ -51,37 +51,31 @@ QLabel#progressBarLabel {
 
 /** Community Page **/
 QWidget#CommunityPage QLabel#communityTitle {
-    max-height: 40px;
     color: white;
     font: 27pt "Lato Light";
-    margin-top: 4px;
     margin-bottom: 5px;
 }
 
-QWidget#blockExplorerWidget {
+QWidget#explorerBox, QWidget#twitterBox, QWidget#chatBox, QWidget#websiteBox {
     background-color: #275d8b;
-    border-radius: 10px;
+    border-radius: 5px;
     margin: 10px;
-    max-height: 140px;
-    min-height: 140px;
-}
-QWidget#twitterWidget {
-    background-color: #275d8b;
-    border-radius: 10px;
-    margin: 10px;
-    max-height: 140px;
 }
 
-QWidget#websiteWidget {
-    background-color: #275d8b;
-    border-radius: 10px;
-    margin: 10px;
-    max-height: 140px;
-    min-height: 140px;
+QWidget#explorerBox:hover, QWidget#twitterBox:hover, QWidget#chatBox:hover, QWidget#websiteBox:hover {
+    background-color: #1c4263;
 }
-QWidget#chatPlatformWidget {
-    background-color: #275d8b;
-    border-radius: 10px;
-    margin: 10px;
-    max-height: 140px;
+
+QLabel#explorerTitle, QLabel#twitterTitle, QLabel#chatTitle, QLabel#websiteTitle {
+    margin-left: 5px;
+    color: white;
+    font: 17pt "Lato Bold";
+}
+
+QLabel#explorerDescription, QLabel#twitterDescription, QLabel#chatDescription, QLabel#websiteDescription {
+    margin-left: 3px;
+    margin-right: 45px;
+    margin-top: 15px;
+    color: white;
+    font: 10pt "Lato Bold";
 }
