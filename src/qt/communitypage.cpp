@@ -12,6 +12,8 @@
 #include <qt/platformstyle.h>
 
 #include <QGraphicsDropShadowEffect>
+#include <QDesktopServices>
+#include <QUrl>
 
 CommunityPage::CommunityPage(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
@@ -19,6 +21,8 @@ CommunityPage::CommunityPage(const PlatformStyle *platformStyle, QWidget *parent
     clientModel(nullptr)
 {
     ui->setupUi(this);
+
+    // add shadow
     QGraphicsDropShadowEffect* shadow1 = new QGraphicsDropShadowEffect();
     shadow1->setOffset(QPointF(5, 5));
     shadow1->setBlurRadius(20.0);
@@ -35,6 +39,12 @@ CommunityPage::CommunityPage(const PlatformStyle *platformStyle, QWidget *parent
     ui->twitterBox->setGraphicsEffect(shadow2);
     ui->chatBox->setGraphicsEffect(shadow3);
     ui->websiteBox->setGraphicsEffect(shadow4);
+
+    // manage event
+    ui->explorerBox->installEventFilter(this);
+    ui->twitterBox->installEventFilter(this);
+    ui->chatBox->installEventFilter(this);
+    ui->websiteBox->installEventFilter(this);
 }
 
 CommunityPage::~CommunityPage()
@@ -45,4 +55,25 @@ CommunityPage::~CommunityPage()
 void CommunityPage::setClientModel(ClientModel *model)
 {
     this->clientModel = model;
+}
+
+bool CommunityPage::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        openLink(object);
+    }
+    return QWidget::eventFilter(object, event);
+}
+
+void CommunityPage::openLink(QObject *object)
+{
+    if(object->objectName() == "explorerBox")
+        QDesktopServices::openUrl(QUrl(COMMUNITY_EXPLORER_URL));
+    else if(object->objectName() == "twitterBox")
+        QDesktopServices::openUrl(QUrl(COMMUNITY_TWITTER_URL));
+    else if(object->objectName() == "chatBox")
+        QDesktopServices::openUrl(QUrl(COMMUNITY_CHAT_URL));
+    else if(object->objectName() == "websiteBox")
+        QDesktopServices::openUrl(QUrl(COMMUNITY_WEBSITE_URL));
 }
