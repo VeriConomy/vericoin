@@ -3,7 +3,7 @@
         <file alias="style">res/style.qss</file>
     </qresource>
     <qresource prefix="/icons">
-        <file alias="verium">res/icons/bitcoin.png</file>
+        <file alias="verium">res/icons/verium.png</file>
         <file alias="splashlogo">res/icons/bitcoin-splash.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
         <file alias="send">res/icons/send.png</file>
