@@ -91,7 +91,7 @@ CAmount calculateMinerReward(const CBlockIndex* pindex)
     {
         nReward = 564705 * COIN; // Verium purchased in presale ICO
     }
-    else if ((pindex->nMoneySupply/COIN) > 2899999)
+    else if ((pindex->nMoneySupply/COIN) > 3390679)   //updated to new accurate parity point on protocol 80002 from 2899999 on previous protocols
     {
         double dReward = 0.04*exp(0.0116*nBlockTime); // Reward schedule after 10x VRC supply parity
         nReward = dReward * COIN;
