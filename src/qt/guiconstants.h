@@ -48,6 +48,11 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 #define QAPP_APP_NAME_TESTNET "Verium-Qt-testnet"
 #define QAPP_APP_NAME_REGTEST "Verium-Qt-regtest"
 
+#define COMMUNITY_EXPLORER_URL "https://chainz.cryptoid.info/vrm/"
+#define COMMUNITY_TWITTER_URL "https://twitter.com/vericonomy"
+#define COMMUNITY_CHAT_URL "https://slack.vericoin.info"
+#define COMMUNITY_WEBSITE_URL "https://vericonomy.com/"
+
 /* One gigabyte (GB) in bytes */
 static constexpr uint64_t GB_BYTES{1000000000};
 
