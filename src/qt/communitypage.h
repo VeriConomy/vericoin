@@ -31,6 +31,10 @@ public:
 
     void setClientModel(ClientModel *clientModel);
 
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+    void openLink(QObject *object);
+
 private:
     Ui::CommunityPage *ui;
     ClientModel *clientModel;
