@@ -37,11 +37,16 @@ public:
     void setWalletModel(WalletModel *walletModel);
     void showOutOfSyncWarning(bool fShow);
 
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+
 public Q_SLOTS:
     void setBalance(const interfaces::WalletBalances& balances);
 
 Q_SIGNALS:
     void transactionClicked(const QModelIndex &index);
+    void receiveClicked();
+    void sendClicked();
     void outOfSyncWarningClicked();
 
 private:

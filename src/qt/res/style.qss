@@ -49,6 +49,64 @@ QLabel#progressBarLabel {
 
 /** Wallet Frame **/
 
+/** Overview Page **/
+QWidget#availableBox, QWidget#unconfirmedBox, QWidget#sendBox, QWidget#minerHashBox,
+QWidget#totalBox, QWidget#immatureBox, QWidget#receiveBox, QWidget#minerStateBox,
+QWidget#lastTransactionsBox, QWidget#minerBox {
+    border-radius: 5px;
+    min-height: 70px;
+}
+
+QWidget#lastTransactionsBox, QWidget#minerBox {
+    margin-top: 2px;
+}
+
+QWidget#availableBox, QWidget#unconfirmedBox, QWidget#minerHashBox,
+QWidget#totalBox, QWidget#immatureBox, QWidget#minerStateBox,
+QWidget#lastTransactionsBox, QWidget#minerBox {
+    background-color: white;
+}
+
+QWidget#sendBox { background-color: #359b37; }
+QWidget#receiveBox { background-color: #e93a5d; }
+
+QWidget#sendBox:hover { background-color: #2e852f; }
+QWidget#receiveBox:hover { background-color: #e61942; }
+
+QLabel#availableTitle, QLabel#unconfirmedTitle, QLabel#minerHashTitle,
+QLabel#totalTitle, QLabel#immatureTitle, QLabel#estNextRewardTitle {
+    color: #586A7A;
+    font: 10pt "Lato Bold";
+}
+
+QLabel#labelBalance, QLabel#labelUnconfirmed, QLabel#labelMinerHashrate,
+QLabel#labelTotal, QLabel#labelImmature, QLabel#labelEstNextReward {
+    margin-top: 6px;
+    margin-bottom: 2px;
+    color: #46505A;
+    font: 12pt "Lato Heavy";
+}
+
+QLabel#watchOnlyAvailableText, QLabel#watchOnlyUnconfirmedText,
+QLabel#watchOnlyTotalText, QLabel#watchOnlyImmatureText {
+    color: #586A7A;
+    font: 7pt "Lato";
+}
+
+QLabel#labelWatchAvailable, QLabel#labelWatchUnconfirmed,
+QLabel#labelWatchTotal, QLabel#labelWatchImmature {
+    border-top: 1px solid #d3d9df;
+    padding-top: 5px;
+    color: #46505A;
+    font: 12pt "Lato Heavy";
+}
+
+QLabel#sendTitle,
+QLabel#receiveTitle {
+    color: white;
+    font: 13.5pt "Lato Heavy";
+}
+
 /** Community Page **/
 QWidget#CommunityPage QLabel#communityTitle {
     color: white;
