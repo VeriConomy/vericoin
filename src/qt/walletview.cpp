@@ -95,6 +95,9 @@ void WalletView::setBitcoinGUI(BitcoinGUI *gui)
     {
         // Clicking on a transaction on the overview page simply sends you to transaction history page
         connect(overviewPage, &OverviewPage::transactionClicked, gui, &BitcoinGUI::gotoHistoryPage);
+        connect(overviewPage, &OverviewPage::receiveClicked, gui, &BitcoinGUI::gotoReceiveCoinsPage);
+        connect(overviewPage, &OverviewPage::sendClicked, [this]{ gotoSendCoinsPage(); });
+
 
         // Navigate to transaction history page after send
         connect(sendCoinsPage, &SendCoinsDialog::coinsSent, gui, &BitcoinGUI::gotoHistoryPage);

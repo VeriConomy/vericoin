@@ -301,6 +301,7 @@ RES_IMAGES =
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
 RES_FONTS = \
+  qt/res/fonts/Lato2OFL/Lato-Heavy.ttf \
   qt/res/fonts/Lato2OFL/Lato-Bold.ttf \
   qt/res/fonts/Lato2OFL/Lato-Regular.ttf \
   qt/res/fonts/Lato2OFL/Lato-Light.ttf
