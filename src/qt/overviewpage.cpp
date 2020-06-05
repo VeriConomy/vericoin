@@ -15,6 +15,8 @@
 #include <qt/transactiontablemodel.h>
 #include <qt/walletmodel.h>
 
+#include <thread>
+
 #include <QAbstractItemDelegate>
 #include <QPainter>
 #include <QGraphicsDropShadowEffect>
@@ -130,7 +132,8 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui(new Ui::OverviewPage),
     clientModel(nullptr),
     walletModel(nullptr),
-    txdelegate(new TxViewDelegate(platformStyle, this))
+    txdelegate(new TxViewDelegate(platformStyle, this)),
+    maxThread(std::thread::hardware_concurrency())
 {
     ui->setupUi(this);
 
@@ -146,8 +149,15 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
 
     m_balances.balance = -1;
 
+    // Set mining thread at Max thread - 1
+    ui->minerThreadNumber->setRange(1,maxThread);
+    int procDefault = (maxThread-1);
+    ui->minerThreadNumber->setValue(procDefault);
+
     // Recent transactions
     ui->lastTransactionsContent->setItemDelegate(txdelegate);
+    ui->lastTransactionsContent->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE + (MARGIN_SIZE * 2)));
+    ui->lastTransactionsContent->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + (MARGIN_SIZE * 2)));
     ui->lastTransactionsContent->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui->lastTransactionsContent, &QListView::clicked, this, &OverviewPage::handleTransactionClicked);
