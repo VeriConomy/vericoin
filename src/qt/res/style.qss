@@ -67,24 +67,26 @@ QWidget#lastTransactionsBox, QWidget#minerBox {
     background-color: white;
 }
 
-QWidget#sendBox { background-color: #359b37; }
-QWidget#receiveBox { background-color: #e93a5d; }
 
-QWidget#sendBox:hover { background-color: #2e852f; }
-QWidget#receiveBox:hover { background-color: #e61942; }
+QWidget#sendBox { background-color: #e93a5d; }
+QWidget#receiveBox { background-color: #359b37; }
+
+QWidget#sendBox:hover { background-color: #e61942; }
+QWidget#receiveBox:hover { background-color: #2e852f; }
 
 QLabel#availableTitle, QLabel#unconfirmedTitle, QLabel#minerHashTitle,
-QLabel#totalTitle, QLabel#immatureTitle, QLabel#estNextRewardTitle {
+QLabel#totalTitle, QLabel#immatureTitle, QLabel#estNextRewardTitle,
+QLabel#lastTransactionsTitle, QLabel#minerTitle {
     color: #586A7A;
     font: 10pt "Lato Bold";
 }
 
 QLabel#labelBalance, QLabel#labelUnconfirmed, QLabel#labelMinerHashrate,
 QLabel#labelTotal, QLabel#labelImmature, QLabel#labelEstNextReward {
-    margin-top: 6px;
+    margin-top: 2px;
     margin-bottom: 2px;
     color: #46505A;
-    font: 12pt "Lato Heavy";
+    font: 11pt "Lato Heavy";
 }
 
 QLabel#watchOnlyAvailableText, QLabel#watchOnlyUnconfirmedText,
@@ -107,10 +109,20 @@ QLabel#receiveTitle {
     font: 13.5pt "Lato Heavy";
 }
 
+QLabel#lastTransactionsEmpty {
+    font: 18pt "Lato Heavy";
+    color: #46505A;
+}
+
+QListView {
+    background-color: white;
+}
+
 /** Community Page **/
 QWidget#CommunityPage QLabel#communityTitle {
     color: white;
     font: 27pt "Lato Light";
+    color: #46505A;
     margin-bottom: 5px;
 }
 
