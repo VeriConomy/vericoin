@@ -171,6 +171,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     // Create status bar
     statusBar();
+    statusBar()->setObjectName("statusBar");
 
     // Disable size grip because it looks ugly and nobody needs it
     statusBar()->setSizeGripEnabled(false);
@@ -501,6 +502,7 @@ void BitcoinGUI::createMenuBar()
     appMenuBar = new QMenuBar(this);
     appMenuBar->setContentsMargins(0,0,0,0);
     appMenuBar->setObjectName("mainMenu");
+    appMenuBar->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     topCentralLayout->addWidget(appMenuBar);
 #endif
@@ -514,7 +516,7 @@ void BitcoinGUI::createMenuBar()
     windowActionToolbar->setMovable(false);
     windowActionToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     windowActionToolbar->setOrientation(Qt::Horizontal);
-    windowActionToolbar->setFixedSize(100, 35);
+    windowActionToolbar->setFixedHeight(35);
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
@@ -603,10 +605,27 @@ void BitcoinGUI::createMenuBar()
 
     // customize button
     MoveWindowControl *moveWindowBtn = new MoveWindowControl(this);
-    moveWindowBtn->setIcon(QIcon(":/icons/move"));
+    moveWindowBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    moveWindowBtn->setObjectName("moveWindowButton");
 
     // set Windows Action (minimize, close ...)
     windowActionToolbar->addWidget(moveWindowBtn);
+
+
+
+#ifdef ENABLE_WALLET
+
+
+        m_wallet_selector = new QComboBox();
+        m_wallet_selector->setObjectName("walletSelector");
+        connect(m_wallet_selector, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &BitcoinGUI::setCurrentWalletBySelectorIndex);
+
+        m_wallet_selector_action = windowActionToolbar->addWidget(m_wallet_selector);
+
+        m_wallet_selector->setVisible(false);
+#endif
+
+
     windowActionToolbar->addAction(minimizeAction);
     windowActionToolbar->addAction(quitAction);
 
@@ -662,29 +681,11 @@ void BitcoinGUI::createToolBars()
 
         connectionsControl = new GUIUtil::ClickableLabel();
         connectionsControl->setContextMenuPolicy(Qt::PreventContextMenu);
-        connectionsControl->setContentsMargins(18,0,0,15);
+        connectionsControl->setContentsMargins(18,0,0,35);
         connectionsControl->setObjectName("connectionsControl");
         connectionsControl->setFixedWidth(70);
         connectionsControl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         mainToolBar->addWidget(connectionsControl);
-
-#ifdef ENABLE_WALLET
-
-
-        m_wallet_selector = new QComboBox();
-        m_wallet_selector->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-        connect(m_wallet_selector, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &BitcoinGUI::setCurrentWalletBySelectorIndex);
-
-        m_wallet_selector_label = new QLabel();
-        m_wallet_selector_label->setText(tr("Wallet:") + " ");
-        m_wallet_selector_label->setBuddy(m_wallet_selector);
-
-        m_wallet_selector_label_action = appToolBar->addWidget(m_wallet_selector_label);
-        m_wallet_selector_action = appToolBar->addWidget(m_wallet_selector);
-
-        m_wallet_selector_label_action->setVisible(false);
-        m_wallet_selector_action->setVisible(false);
-#endif
     }
 }
 
@@ -783,7 +784,6 @@ void BitcoinGUI::addWallet(WalletModel* walletModel)
     rpcConsole->addWallet(walletModel);
     m_wallet_selector->addItem(display_name, QVariant::fromValue(walletModel));
     if (m_wallet_selector->count() == 2) {
-        m_wallet_selector_label_action->setVisible(true);
         m_wallet_selector_action->setVisible(true);
     }
 }
@@ -796,7 +796,6 @@ void BitcoinGUI::removeWallet(WalletModel* walletModel)
     if (m_wallet_selector->count() == 0) {
         setWalletActionsEnabled(false);
     } else if (m_wallet_selector->count() == 1) {
-        m_wallet_selector_label_action->setVisible(false);
         m_wallet_selector_action->setVisible(false);
     }
     rpcConsole->removeWallet(walletModel);
