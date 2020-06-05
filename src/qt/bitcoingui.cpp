@@ -18,6 +18,7 @@
 #include <qt/platformstyle.h>
 #include <qt/rpcconsole.h>
 #include <qt/utilitydialog.h>
+#include <qt/bootstrapdialog.h>
 
 #ifdef ENABLE_WALLET
 #include <qt/walletcontroller.h>
@@ -416,6 +417,9 @@ void BitcoinGUI::createActions()
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Verium command-line options").arg(PACKAGE_NAME));
 
+    bootstrapAction = new QAction(tr("&Bootstrap the Chain"));
+
+
     connect(quitAction, &QAction::triggered, qApp, QApplication::quit);
     connect(aboutAction, &QAction::triggered, this, &BitcoinGUI::aboutClicked);
     connect(aboutQtAction, &QAction::triggered, qApp, QApplication::aboutQt);
@@ -423,6 +427,7 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, &QAction::triggered, this, &BitcoinGUI::toggleHidden);
     connect(showHelpMessageAction, &QAction::triggered, this, &BitcoinGUI::showHelpMessageClicked);
     connect(openRPCConsoleAction, &QAction::triggered, this, &BitcoinGUI::showDebugWindow);
+    connect(bootstrapAction, &QAction::triggered, this, &BitcoinGUI::bootstrapClicked);
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, &QAction::triggered, rpcConsole, &QWidget::hide);
 
@@ -540,6 +545,7 @@ void BitcoinGUI::createMenuBar()
         settings->addSeparator();
     }
     settings->addAction(optionsAction);
+    settings->addAction(bootstrapAction);
 
     QMenu* window_menu = appMenuBar->addMenu(tr("&Window"));
     QAction* minimize_action_tray = window_menu->addAction(tr("Minimize"));
@@ -960,6 +966,13 @@ void BitcoinGUI::showDebugWindowActivateConsole()
 void BitcoinGUI::showHelpMessageClicked()
 {
     helpMessageDialog->show();
+}
+
+void BitcoinGUI::bootstrapClicked()
+{
+    auto bootdlg = new BootstrapDialog(this);
+
+    bootdlg->exec();
 }
 
 #ifdef ENABLE_WALLET

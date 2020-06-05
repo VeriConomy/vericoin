@@ -11,8 +11,11 @@ include Makefile.qt_locale.include
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
+  qt/forms/bootstrapdialog.ui \
   qt/forms/coincontroldialog.ui \
+  qt/forms/communitypage.ui \
   qt/forms/createwalletdialog.ui \
+  qt/forms/debugwindow.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
@@ -22,8 +25,6 @@ QT_FORMS_UI = \
   qt/forms/overviewpage.ui \
   qt/forms/receivecoinsdialog.ui \
   qt/forms/receiverequestdialog.ui \
-  qt/forms/communitypage.ui \
-  qt/forms/debugwindow.ui \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
@@ -40,6 +41,7 @@ QT_MOC_CPP = \
   qt/moc_bitcoin.cpp \
   qt/moc_bitcoingui.cpp \
   qt/moc_bitcoinunits.cpp \
+  qt/moc_bootstrapdialog.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
@@ -117,6 +119,7 @@ BITCOIN_QT_H = \
   qt/bitcoin.h \
   qt/bitcoingui.h \
   qt/bitcoinunits.h \
+  qt/bootstrapdialog.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
@@ -231,6 +234,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinamountfield.cpp \
   qt/bitcoingui.cpp \
   qt/bitcoinunits.cpp \
+  qt/bootstrapdialog.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/guiutil.cpp \
