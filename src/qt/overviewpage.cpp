@@ -19,8 +19,10 @@
 #include <QPainter>
 #include <QGraphicsDropShadowEffect>
 
-#define DECORATION_SIZE 24
-#define NUM_ITEMS 5
+#define DECORATION_SIZE 35
+#define ICON_SIZE 16
+#define MARGIN_SIZE 6
+#define NUM_ITEMS 10
 
 Q_DECLARE_METATYPE(interfaces::WalletBalances)
 
@@ -43,66 +45,76 @@ public:
         QIcon icon = qvariant_cast<QIcon>(index.data(TransactionTableModel::RawDecorationRole));
         QRect mainRect = option.rect;
 
-        QRect decorationRect(mainRect.topLeft(), QSize(DECORATION_SIZE, DECORATION_SIZE));
-        int xspace = DECORATION_SIZE + 8;
-        int ypad = 6;
-        int halfheight = (mainRect.height() - 2*ypad)/2;
-        QRect amountRect(mainRect.left() + xspace, mainRect.top()+ypad, mainRect.width() - xspace, halfheight);
-        QRect addressRect(mainRect.left() + xspace, mainRect.top()+ypad+halfheight, mainRect.width() - xspace, halfheight);
-        icon.paint(painter, decorationRect);
+        // Anti aliasing + border
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPen pen(QColor(217, 217, 217), 1);
+        painter->setPen(pen);
 
+        // create rounded rectangle that contain the TX
+        QPainterPath mainPath;
+        QRect txRect(mainRect.left() + MARGIN_SIZE, mainRect.top() + MARGIN_SIZE, mainRect.width() - MARGIN_SIZE*2, DECORATION_SIZE);
+        mainPath.addRoundedRect(txRect, 5, 5);
+        painter->fillPath(mainPath, QColor(230, 230, 230));
+        painter->drawPath(mainPath);
+
+        // Add icon
+        QRect iconRect(txRect.left() + 5, txRect.top() + ((DECORATION_SIZE - ICON_SIZE)/2), ICON_SIZE, ICON_SIZE );
+        icon.paint(painter, iconRect);
+
+        // Create Text Rect
+        QRect textRect(iconRect.right() + 5, txRect.top(), txRect.width() - iconRect.right() - 5, DECORATION_SIZE);
+
+        // Set default font
+        QFont font("Lato", 9);
+        painter->setPen(QColor(102, 102, 102));
+        painter->setFont(font);
+
+        // Write Date & Address
         QDateTime date = index.data(TransactionTableModel::DateRole).toDateTime();
+        painter->drawText(textRect, Qt::AlignLeft|Qt::AlignVCenter, GUIUtil::dateTimeStr(date));
+
         QString address = index.data(Qt::DisplayRole).toString();
+        painter->drawText(textRect, Qt::AlignCenter|Qt::AlignVCenter, address);
+
+        // Write amount
         qint64 amount = index.data(TransactionTableModel::AmountRole).toLongLong();
         bool confirmed = index.data(TransactionTableModel::ConfirmedRole).toBool();
-        QVariant value = index.data(Qt::ForegroundRole);
-        QColor foreground = option.palette.color(QPalette::Text);
-        if(value.canConvert<QBrush>())
-        {
-            QBrush brush = qvariant_cast<QBrush>(value);
-            foreground = brush.color();
-        }
 
-        painter->setPen(foreground);
-        QRect boundingRect;
-        painter->drawText(addressRect, Qt::AlignLeft|Qt::AlignVCenter, address, &boundingRect);
-
-        if (index.data(TransactionTableModel::WatchonlyRole).toBool())
-        {
-            QIcon iconWatchonly = qvariant_cast<QIcon>(index.data(TransactionTableModel::WatchonlyDecorationRole));
-            QRect watchonlyRect(boundingRect.right() + 5, mainRect.top()+ypad+halfheight, 16, halfheight);
-            iconWatchonly.paint(painter, watchonlyRect);
-        }
-
+        QColor foreground(53, 155, 55);
         if(amount < 0)
         {
-            foreground = COLOR_NEGATIVE;
+            foreground = QColor(233, 58, 93);
         }
         else if(!confirmed)
         {
-            foreground = COLOR_UNCONFIRMED;
+            foreground = QColor(81, 177, 242);
         }
-        else
-        {
-            foreground = option.palette.color(QPalette::Text);
-        }
+
         painter->setPen(foreground);
+        QFont fontHeavy("Lato", 9, QFont::ExtraBold);
+        painter->setFont(fontHeavy);
+
         QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true, BitcoinUnits::separatorAlways);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
         }
-        painter->drawText(amountRect, Qt::AlignRight|Qt::AlignVCenter, amountText);
+        painter->drawText(textRect, Qt::AlignRight|Qt::AlignVCenter, amountText);
 
-        painter->setPen(option.palette.color(QPalette::Text));
-        painter->drawText(amountRect, Qt::AlignLeft|Qt::AlignVCenter, GUIUtil::dateTimeStr(date));
+        // if (index.data(TransactionTableModel::WatchonlyRole).toBool())
+        // {
+        //     QIcon iconWatchonly = qvariant_cast<QIcon>(index.data(TransactionTableModel::WatchonlyDecorationRole));
+        //     QRect watchonlyRect(boundingRect.right() + 5, mainRect.top()+ypad+halfheight, 16, halfheight);
+        //     iconWatchonly.paint(painter, watchonlyRect);
+        // }
+
 
         painter->restore();
     }
 
     inline QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        return QSize(DECORATION_SIZE, DECORATION_SIZE+20);
+        return QSize(DECORATION_SIZE, DECORATION_SIZE+MARGIN_SIZE*2);
     }
 
     int unit;
@@ -236,6 +248,14 @@ void OverviewPage::setWalletModel(WalletModel *model)
 
         ui->lastTransactionsContent->setModel(filter.get());
         ui->lastTransactionsContent->setModelColumn(TransactionTableModel::ToAddress);
+
+        if( filter->rowCount() != 0 ) {
+            ui->lastTransactionsContent->setVisible(true);
+            ui->lastTransactionsEmpty->setVisible(false);
+        } else {
+            ui->lastTransactionsContent->setVisible(false);
+            ui->lastTransactionsEmpty->setVisible(true);
+        }
 
         // Keep up to date with wallet
         interfaces::Wallet& wallet = model->wallet();
