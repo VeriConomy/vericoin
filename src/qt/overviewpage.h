@@ -37,6 +37,11 @@ public:
     void setWalletModel(WalletModel *walletModel);
     void showOutOfSyncWarning(bool fShow);
 
+    // Verium Mining
+    bool mining;
+    int maxThread;
+
+
 protected:
     bool eventFilter(QObject *object, QEvent *event);
 

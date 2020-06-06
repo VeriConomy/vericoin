@@ -18,7 +18,6 @@ QToolBar#tabBar QToolButton {
     padding-left: 5px;
     height: 65px;
 }
-
 QToolBar#tabBar QToolButton:checked {
     border: no;
     padding-left: 0px;
@@ -42,7 +41,43 @@ QWidget#windowActionToolbar QToolButton {
 QWidget#windowActionToolbar QToolButton:hover {
     background-color: #3277b3;
 }
-/** Left Toolbar **/
+
+QWidget#windowActionToolbar QToolButton#moveWindowButton:hover {
+    border: no;
+    background: transparent;
+
+}
+QComboBox#walletSelector {
+    color: white;
+    border: no;
+    margin-right: 20px;
+    min-height: 35px;
+    max-height: 35px;
+    background-color: #418bca;
+    font-size: 13px;
+}
+
+QComboBox#walletSelector::drop-down
+{
+    background-image: url(:/icons/arrow);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+QComboBox#walletSelector::item {
+    background-color: #418bca;
+}
+QComboBox#walletSelector::item:selected {
+    background-color: #3277b3;
+}
+
+/** Bottom status bar **/
+QWidget#statusBar {
+    margin-left: 70px;
+    color: white;
+}
+
 QLabel#progressBarLabel {
     color: white;
 }

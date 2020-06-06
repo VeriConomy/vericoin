@@ -668,6 +668,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QSpinBox" name="minerThreadNumber"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="enableMiningButton">
+          <property name="text">
+           <string>Start mining</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_8">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -813,6 +823,9 @@
         </item>
         <item>
          <widget class="QLabel" name="lastTransactionsEmpty">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -829,39 +842,18 @@
         </item>
         <item>
          <widget class="QListView" name="lastTransactionsContent">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="cursor" stdset="0">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="lineWidth">
-           <number>1</number>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="autoScroll">
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::NoSelection</enum>
-          </property>
-          <property name="verticalScrollMode">
-           <enum>QAbstractItemView::ScrollPerItem</enum>
-          </property>
-          <property name="horizontalScrollMode">
-           <enum>QAbstractItemView::ScrollPerItem</enum>
-          </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
+            </property>
          </widget>
         </item>
        </layout>
