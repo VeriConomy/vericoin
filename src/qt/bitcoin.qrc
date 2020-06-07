@@ -30,6 +30,8 @@
         <file alias="lock_closed">res/icons/lock_closed.png</file>
         <file alias="lock_open">res/icons/lock_open.png</file>
         <file alias="minimize">res/icons/minimize.png</file>
+        <file alias="mining_off">res/icons/mining_off.png</file>
+        <file alias="mining_on">res/icons/mining_on.png</file>
         <file alias="move">res/icons/move.png</file>
         <file alias="network_disabled">res/icons/network_disabled.png</file>
         <file alias="overview">res/icons/overview.png</file>

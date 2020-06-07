@@ -153,6 +153,13 @@ QListView {
     background-color: white;
 }
 
+QLabel#labelMinerButton, QLabel#labelThreadNumber {
+    color: #586A7A;
+    font: 10pt "Lato Heavy";
+    margin-left: 3px;
+}
+
+
 /** Community Page **/
 QWidget#CommunityPage QLabel#communityTitle {
     color: white;

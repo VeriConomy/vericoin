@@ -8,6 +8,7 @@
 #include <interfaces/wallet.h>
 
 #include <QWidget>
+#include <QTimer>
 #include <memory>
 
 class ClientModel;
@@ -38,12 +39,14 @@ public:
     void showOutOfSyncWarning(bool fShow);
 
     // Verium Mining
-    bool mining;
+    bool miningState;
     int maxThread;
+    void manageMiningState(bool state, int procs = 1);
 
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
+    void updateMiningStatistics();
 
 public Q_SLOTS:
     void setBalance(const interfaces::WalletBalances& balances);
@@ -62,6 +65,7 @@ private:
 
     TxViewDelegate *txdelegate;
     std::unique_ptr<TransactionFilterProxy> filter;
+    QTimer *updateMiningStatsTimer;
 
 private Q_SLOTS:
     void updateDisplayUnit();
@@ -69,6 +73,8 @@ private Q_SLOTS:
     void updateAlerts(const QString &warnings);
     void updateWatchOnlyLabels(bool showWatchOnly);
     void handleOutOfSyncWarningClicks();
+    void on_minerThreadNumber_valueChanged(int procs);
+    void on_mineButton_clicked();
 };
 
 #endif // BITCOIN_QT_OVERVIEWPAGE_H
