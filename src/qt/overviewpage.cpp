@@ -15,6 +15,13 @@
 #include <qt/transactiontablemodel.h>
 #include <qt/walletmodel.h>
 
+#include <miner.h>
+#include <pow.h>
+#include <rpc/blockchain.h>
+#include <util/system.h>
+#include <validation.h>
+#include <wallet/wallet.h>
+
 #include <thread>
 
 #include <QAbstractItemDelegate>
@@ -24,7 +31,7 @@
 #define DECORATION_SIZE 35
 #define ICON_SIZE 16
 #define MARGIN_SIZE 6
-#define NUM_ITEMS 10
+#define NUM_ITEMS 7
 
 Q_DECLARE_METATYPE(interfaces::WalletBalances)
 
@@ -129,11 +136,12 @@ public:
 
 OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
+    miningState(false),
+    maxThread(std::thread::hardware_concurrency()),
     ui(new Ui::OverviewPage),
     clientModel(nullptr),
     walletModel(nullptr),
-    txdelegate(new TxViewDelegate(platformStyle, this)),
-    maxThread(std::thread::hardware_concurrency())
+    txdelegate(new TxViewDelegate(platformStyle, this))
 {
     ui->setupUi(this);
 
@@ -168,6 +176,10 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     connect(ui->unconfirmedWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
     connect(ui->immatureWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
     connect(ui->totalWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
+
+    // Prepare update miner statistics
+    updateMiningStatsTimer = new QTimer(this);
+    connect(updateMiningStatsTimer, &QTimer::timeout, this, &OverviewPage::updateMiningStatistics);
 
     // manage receive/send button
     ui->receiveBox->installEventFilter(this);
@@ -312,4 +324,97 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->unconfirmedWarn->setVisible(fShow);
     ui->immatureWarn->setVisible(fShow);
     ui->totalWarn->setVisible(fShow);
+}
+
+// Verium Mining
+// manageMiningState will be the entry point for start / stop mining. It will also udpdate the view
+void OverviewPage::manageMiningState(bool state, int procs)
+{
+    // get the current wallet
+    // XXX: What should we do when we change to another wallet ?
+    // Currently, you can mine with multiple wallet in same time
+    if ( ! walletModel )
+      return;
+
+    std::string walletName = walletModel->getWalletName().toStdString();
+    std::shared_ptr<CWallet> const wallet = GetWallet(walletName);
+    CWallet* const pwallet = wallet.get();
+
+    QString qSprocs = QString::number(procs);
+    std::string Sprocs = qSprocs.toStdString();
+    gArgs.SoftSetArg("-genproclimit", Sprocs);
+
+    if( state != miningState )
+    {
+        miningState = state;
+        GenerateVerium(miningState, pwallet, procs);
+    }
+
+    // Verium Mining is OFF, let's update view
+    if ( ! miningState )
+    {
+        updateMiningStatsTimer->stop();
+        ui->labelMinerHashrate->setText("--- H/m");
+        ui->labelEstNextReward->setText("--- Days");
+        ui->labelMinerButton->setText(tr("Click to start:"));
+    }
+    else
+    {
+        // Update stats every 5s
+        updateMiningStatsTimer->start(1000);
+        ui->labelMinerButton->setText(tr("Click to stop:"));
+    }
+}
+
+void OverviewPage::on_mineButton_clicked()
+{
+    // check client is in sync
+    QDateTime lastBlockDate = QDateTime::fromTime_t(clientModel->getHeaderTipTime());
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int count = clientModel->getHeaderTipHeight();
+    int nTotalBlocks = GetNumBlocksOfPeers();
+    int peers = clientModel->getNumConnections();
+
+    if((secs > 90*60 && count < nTotalBlocks && !miningState) || (peers < 1 && !miningState))
+    {
+        QMessageBox::warning(this, tr("Mining"),
+            tr("Please wait until fully in sync with network to mine."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+
+    // check for recommended processor usage and warn
+    if (ui->minerThreadNumber->value() == maxThread && !miningState)
+    {
+        QMessageBox::warning(this, tr("Mining"),
+            tr("For optimal performace and stability, it is recommended to keep one processor free for the operating system. Please reduce processor by one."),
+            QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+    if( ! miningState )
+        OverviewPage::manageMiningState(true, ui->minerThreadNumber->value());
+    else
+        OverviewPage::manageMiningState(false);
+
+}
+
+void OverviewPage::on_minerThreadNumber_valueChanged(int procs)
+{
+    OverviewPage::manageMiningState(false, procs);
+}
+
+void OverviewPage::updateMiningStatistics()
+{
+    // XXX: Refacto to stop calling rpc, the active chain & co ...
+    double totalhashrate = hashrate;
+    double nethashrate = GetPoWKHashPM();
+    double blocktime = (double)calculateBlocktime(::ChainActive().Tip())/60;
+    double minerate;
+    if (totalhashrate == 0.0){minerate = 0.0;}
+    else{
+        minerate = 0.694*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60*24
+    }
+
+    ui->labelMinerHashrate->setText(QString("%1 H/m").arg(QString::number(totalhashrate, 'f', 3)));
+    ui->labelEstNextReward->setText(QString("%1 Days").arg(QString::number(minerate, 'f', 1)));
 }
