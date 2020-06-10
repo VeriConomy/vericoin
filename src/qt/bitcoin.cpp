@@ -358,8 +358,12 @@ void BitcoinApplication::initializeResult(bool success)
         Q_EMIT windowShown(window);
 
 #ifdef ENABLE_WALLET
+        // Require wallet login to access tabs
+        window->walletLogin();
+
         // Now that initialization/startup is done, process any command-line
         // bitcoin: URIs or payment requests:
+
         if (paymentServer) {
             connect(paymentServer, &PaymentServer::receivedPaymentRequest, window, &BitcoinGUI::handlePaymentRequest);
             connect(window, &BitcoinGUI::receivedURI, paymentServer, &PaymentServer::handleURIOrFile);

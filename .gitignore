@@ -66,6 +66,7 @@ src/qt/verium-qt.creator.user
 src/qt/verium-qt.files
 src/qt/verium-qt.includes
 
+.vscode
 .deps
 .dirstamp
 .libs

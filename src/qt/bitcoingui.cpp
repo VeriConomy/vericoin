@@ -9,6 +9,7 @@
 #include <qt/createwalletdialog.h>
 #include <qt/guiconstants.h>
 #include <qt/guiutil.h>
+#include <qt/loginoverlay.h>
 #include <qt/modaloverlay.h>
 #include <qt/networkstyle.h>
 #include <qt/notificator.h>
@@ -115,7 +116,6 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     // Make it frameless, we will handle minimize and co by ourself
     setWindowFlags(Qt::FramelessWindowHint);
-
     // Import Font for some view
     QFontDatabase::addApplicationFont(":/fonts/Lato-Regular");
     QFontDatabase::addApplicationFont(":/fonts/Lato-Light");
@@ -247,13 +247,16 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     connect(labelProxyIcon, &GUIUtil::ClickableLabel::clicked, [this] {
         openOptionsDialogWithTab(OptionsDialog::TAB_NETWORK);
     });
-
     modalOverlay = new ModalOverlay(this->centralWidget()->layout()->itemAt(1)->widget());
+
 #ifdef ENABLE_WALLET
     if(enableWallet) {
         connect(walletFrame, &WalletFrame::requestedSyncWarningInfo, this, &BitcoinGUI::showModalOverlay);
         connect(labelBlocksIcon, &GUIUtil::ClickableLabel::clicked, this, &BitcoinGUI::showModalOverlay);
         connect(progressBar, &GUIUtil::ClickableProgressBar::clicked, this, &BitcoinGUI::showModalOverlay);
+
+        // Add login screen if wallet enabled
+        loginOverlay = new LoginOverlay(this->centralWidget()->layout()->itemAt(1)->widget());
     }
 #endif
 
@@ -987,7 +990,8 @@ void BitcoinGUI::openClicked()
 void BitcoinGUI::gotoOverviewPage()
 {
     overviewAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoOverviewPage();
+    if (walletFrame)
+        walletFrame->gotoOverviewPage();
 }
 
 void BitcoinGUI::gotoHistoryPage()
@@ -1181,7 +1185,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
         if(walletFrame)
         {
             walletFrame->showOutOfSyncWarning(true);
-            modalOverlay->showHide();
+            if (loggedIn){modalOverlay->showHide();}
         }
 #endif // ENABLE_WALLET
 
@@ -1519,6 +1523,17 @@ void BitcoinGUI::setTrayIconVisible(bool fHideTrayIcon)
     if (trayIcon)
     {
         trayIcon->setVisible(!fHideTrayIcon);
+    }
+}
+
+void BitcoinGUI::walletLogin()
+{
+    if (loginOverlay && walletFrame){
+        modalOverlay->showHide(true, true);
+        if(walletFrame->walletLogin()){
+            loginOverlay->toggleVisibility();
+            loggedIn = true;
+        }
     }
 }
 

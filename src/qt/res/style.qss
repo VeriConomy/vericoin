@@ -290,3 +290,41 @@ QLabel#explorerDescription, QLabel#twitterDescription, QLabel#chatDescription, Q
     color: white;
     font: 10pt "Lato Bold";
 }
+
+/** Overlays **/
+QWidget#bgWidget{
+    background: rgba(67,138,201,235);
+}
+
+/** Ask passphrase Dialog **/
+QDialog#AskPassphraseDialog{
+    border-radius: 5px;
+    background-color: white;
+}
+
+QLabel#warningLabel, QLabel#passLabel1, QLabel#passLabel2, QLabel#passLabel3, QLabel#capsLabel, QCheckBox#toggleShowPasswordButton{
+    color: #46505A;
+    font: 11pt "Lato";
+}
+
+QMessageBox{
+    border-radius: 5px;
+    background-color: white;
+}
+
+QMessageBox QLabel{
+    color: #46505A;
+    font: 11pt "Lato";
+}
+
+/** need to figure out how to discriminate buttons in qss here
+/**QDialogButtonBox#buttonBox QPushButton{
+    border: no;
+    border-radius: 3px;
+    height: 25px;
+    padding: 5px 10px;
+    background-color: #418bca;
+    color: white;
+    font: 10pt "Lato";
+    font-weight: bold;
+}**/

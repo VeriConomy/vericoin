@@ -56,6 +56,8 @@ public:
 
     void showOutOfSyncWarning(bool fShow);
 
+    bool loggedIn = false;
+
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
@@ -103,18 +105,16 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
-
+    /** Ask for passphrase to gain wallet access while client is open */
+    bool walletLogin();
     /** Show used sending addresses */
     void usedSendingAddresses();
     /** Show used receiving addresses */
     void usedReceivingAddresses();
-
     /** Re-emit encryption status signal */
     void updateEncryptionStatus();
-
     /** Show progress dialog e.g. for rescan */
     void showProgress(const QString &title, int nProgress);
-
     /** User has requested more information about the out of sync state */
     void requestedSyncWarningInfo();
 

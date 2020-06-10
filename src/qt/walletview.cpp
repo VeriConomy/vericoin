@@ -298,6 +298,28 @@ void WalletView::unlockWallet()
     }
 }
 
+bool WalletView::walletLogin()
+{
+    if(walletModel){
+        if(!loggedIn){
+            if (walletModel->getEncryptionStatus() == WalletModel::Locked){
+                WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+                if(ctx.isValid()){
+                    loggedIn = true;
+                }
+            }
+            if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted){
+                AskPassphraseDialog dlg(true ? AskPassphraseDialog::Encrypt : AskPassphraseDialog::Decrypt, this);
+                dlg.setModel(walletModel);
+                dlg.exec();
+                updateEncryptionStatus();
+                loggedIn = true;
+            }
+        }
+    }
+    return loggedIn;
+}
+
 void WalletView::usedSendingAddresses()
 {
     if(!walletModel)

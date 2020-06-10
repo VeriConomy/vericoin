@@ -88,6 +88,8 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
+    /** Ask for passphrase to access wallet while client is open */
+    bool walletLogin();
 
     /** Show used sending addresses */
     void usedSendingAddresses();

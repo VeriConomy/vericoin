@@ -68,7 +68,6 @@ bool WalletFrame::addWallet(WalletModel *walletModel)
     });
 
     connect(walletView, &WalletView::outOfSyncWarningClicked, this, &WalletFrame::outOfSyncWarningClicked);
-
     return true;
 }
 
@@ -191,6 +190,14 @@ void WalletFrame::unlockWallet()
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->unlockWallet();
+}
+
+bool WalletFrame::walletLogin()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        return walletView->walletLogin();
+    else{return false;}
 }
 
 void WalletFrame::usedSendingAddresses()

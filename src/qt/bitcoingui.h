@@ -39,6 +39,7 @@ class WalletController;
 class WalletFrame;
 class WalletModel;
 class HelpMessageDialog;
+class LoginOverlay;
 class ModalOverlay;
 
 namespace interfaces {
@@ -89,6 +90,8 @@ public:
     void addWallet(WalletModel* walletModel);
     void removeWallet(WalletModel* walletModel);
     void removeAllWallets();
+    bool loggedIn = false;
+
 #endif // ENABLE_WALLET
     bool enableWallet = false;
 
@@ -164,6 +167,7 @@ private:
     Notificator* notificator = nullptr;
     RPCConsole* rpcConsole = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
+    LoginOverlay* loginOverlay = nullptr;
     ModalOverlay* modalOverlay = nullptr;
 
 #ifdef Q_OS_MAC
@@ -274,6 +278,8 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+
+    void walletLogin();
 
     /** Show open dialog */
     void openClicked();

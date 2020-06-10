@@ -1817,7 +1817,7 @@ bool AppInitMain(InitInterfaces& interfaces)
     // ********************************************************* Step 13: finished
 
     SetRPCWarmupFinished();
-    uiInterface.InitMessage(_("Done loading").translated);
+    uiInterface.InitMessage(_("Loading...").translated);
 
     for (const auto& client : interfaces.chain_clients) {
         client->start(scheduler);
