@@ -32,9 +32,9 @@ EXPECTED_CIRCULAR_DEPENDENCIES=(
     "txmempool -> validation -> validationinterface -> txmempool"
     "wallet/ismine -> wallet/wallet -> wallet/ismine"
     # Verium
-    "bootstrap -> init -> bootstrap"
+    "downloader -> init -> downloader"
     "pow -> validation -> pow"
-    "bootstrap -> init -> rpc/blockchain -> bootstrap"
+    "downloader -> init -> rpc/blockchain -> downloader"
     "pow -> validation -> txdb -> pow"
 )
 
