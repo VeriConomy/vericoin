@@ -7,12 +7,12 @@
 
 #include <amount.h>
 #include <blockfilter.h>
-#include <bootstrap.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
 #include <consensus/validation.h>
 #include <core_io.h>
+#include <downloader.h>
 #include <hash.h>
 #include <index/blockfilterindex.h>
 #include <node/coinstats.h>

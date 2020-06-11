@@ -2,7 +2,7 @@
 #include <qt/forms/ui_bootstrapdialog.h>
 #include <qt/guiutil.h>
 #include <qt/guiconstants.h>
-#include <bootstrap.h>
+#include <downloader.h>
 #include <QDesktopServices>
 
 BootstrapDialog::BootstrapDialog(QWidget *parent) :

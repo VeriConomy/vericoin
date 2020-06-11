@@ -1,5 +1,5 @@
-#ifndef BITCOIN_BOOTSTRAP_H
-#define BITCOIN_BOOTSTRAP_H
+#ifndef BITCOIN_DOWNLOADER_H
+#define BITCOIN_DOWNLOADER_H
 
 #include <string>
 
@@ -10,4 +10,4 @@ const std::string BOOTSTRAP_URL("https://cdn.vericonomy.com/016-bootstrap/bootst
 void DownloadBootstrap();
 void ApplyBootstrap();
 
-#endif // BITCOIN_BOOTSTRAP_H
+#endif // BITCOIN_DOWNLOADER_H
