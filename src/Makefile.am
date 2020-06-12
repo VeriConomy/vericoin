@@ -110,7 +110,6 @@ BITCOIN_CORE_H = \
   bloom.h \
   blockencodings.h \
   blockfilter.h \
-  bootstrap.h \
   chain.h \
   chainparams.h \
   chainparamsbase.h \
@@ -130,6 +129,7 @@ BITCOIN_CORE_H = \
   core_io.h \
   core_memusage.h \
   cuckoocache.h \
+  downloader.h \
   flatfile.h \
   fs.h \
   httprpc.h \
@@ -266,9 +266,9 @@ libbitcoin_server_a_SOURCES = \
   banman.cpp \
   blockencodings.cpp \
   blockfilter.cpp \
-  bootstrap.cpp \
   chain.cpp \
   consensus/tx_verify.cpp \
+  downloader.cpp \
   flatfile.cpp \
   httprpc.cpp \
   httpserver.cpp \

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>598</width>
-    <height>0</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,21 +31,21 @@
    </property>
    <item>
     <widget class="QLabel" name="veriumIcon">
-    <property name="minimumSize">
+     <property name="minimumSize">
       <size>
-      <width>550</width>
-      <height>64</height>
+       <width>550</width>
+       <height>100</height>
       </size>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignHCenter</set>
-    </property>
-    <property name="text">
+     </property>
+     <property name="text">
       <string/>
-    </property>
-    <property name="pixmap">
+     </property>
+     <property name="pixmap">
       <pixmap resource="../bitcoin.qrc">:/icons/verium</pixmap>
-    </property>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
     </widget>
    </item>
    <item>
@@ -148,7 +148,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../bitcoin.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
