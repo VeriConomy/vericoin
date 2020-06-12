@@ -34,7 +34,7 @@
     <property name="minimumSize">
       <size>
       <width>550</width>
-      <height>64</height>
+      <height>100</height>
       </size>
     </property>
     <property name="alignment">
