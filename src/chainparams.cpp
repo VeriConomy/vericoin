@@ -99,7 +99,7 @@ public:
         pchMessageStart[3] = 0x05;
         nDefaultPort = 36988;
         nPruneAfterHeight = 100000;
-        m_assumed_blockchain_size = 280;
+        m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 4;
 
         genesis = CreateGenesisBlock(1472669240, 233180, proofOfWorkLimit.GetCompact(), 1, 2500 * COIN);
