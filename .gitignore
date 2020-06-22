@@ -102,9 +102,8 @@ src/qt/verium-qt.includes
 *.qm
 Makefile
 !depends/Makefile
-bitcoin-qt
 verium-qt
-Bitcoin-Qt.app
+Verium-Qt.app
 background.tiff*
 
 # Qt Creator
@@ -112,7 +111,6 @@ Makefile.am.user
 
 # Unit-tests
 Makefile.test
-bitcoin-qt_test
 verium-qt_test
 
 # Resources cpp
