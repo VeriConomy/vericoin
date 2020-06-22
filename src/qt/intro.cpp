@@ -19,6 +19,7 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QMessageBox>
+#include <QTextStream>
 
 #include <cmath>
 
@@ -119,13 +120,14 @@ Intro::Intro(QWidget *parent, uint64_t blockchain_size, uint64_t chain_state_siz
     m_chain_state_size(chain_state_size)
 {
     ui->setupUi(this);
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     ui->welcomeLabel->setText(ui->welcomeLabel->text().arg(PACKAGE_NAME));
     ui->storageLabel->setText(ui->storageLabel->text().arg(PACKAGE_NAME));
 
     ui->lblExplanation1->setText(ui->lblExplanation1->text()
         .arg(PACKAGE_NAME)
         .arg(m_blockchain_size)
-        .arg(2009)
+        .arg(2017)
         .arg(tr("Verium"))
     );
     ui->lblExplanation2->setText(ui->lblExplanation2->text().arg(PACKAGE_NAME));
@@ -154,7 +156,18 @@ Intro::Intro(QWidget *parent, uint64_t blockchain_size, uint64_t chain_state_siz
         storageRequiresMsg.arg(requiredSpace) + " " +
         tr("The wallet will also be stored in this directory.")
     );
-    this->adjustSize();
+
+    // apply style
+    // XXX: Use local path for development
+    // XXX: To remove before for release
+    QString strPath(QCoreApplication::applicationDirPath() + "/res/style.qss");
+    QFile f(strPath);
+    //QFile f(":/style");
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
+    setStyleSheet(ts.readAll());
+    f.close();
+
     startThread();
 }
 
@@ -287,6 +300,8 @@ void Intro::setStatus(int status, const QString &message, quint64 bytesAvailable
     }
     /* Don't allow confirm in ERROR state */
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(status != FreespaceChecker::ST_ERROR);
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setStyleSheet(QString("QPushButton { background-color: #e93a5d; } QPushButton:hover { background-color: #e61942; }"));
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setStyleSheet(QString("QPushButton { background-color: #359b37; margin-right: 15px; } QPushButton:hover { background-color: #2e852f; }"));
 }
 
 void Intro::on_dataDirectory_textChanged(const QString &dataDirStr)

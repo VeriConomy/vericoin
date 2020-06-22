@@ -76,9 +76,8 @@ AskPassphraseDialog::AskPassphraseDialog(Mode _mode, QWidget *parent, SecureStri
     connect(ui->passEdit2, &QLineEdit::textChanged, this, &AskPassphraseDialog::textChanged);
     connect(ui->passEdit3, &QLineEdit::textChanged, this, &AskPassphraseDialog::textChanged);
 
-    // haven't figured out how to discriminate buttons in QDialogButtonBox in style.qss yet
-     ui->buttonBox->button(QDialogButtonBox::Ok)->setStyleSheet(QString("border: no; border-radius: 3px; height: 25px; width: 75px; padding: 5px 10px; background-color: #418bca; color: white; font: 10pt Lato;font-weight: bold;"));
-     ui->buttonBox->button(QDialogButtonBox::Cancel)->setStyleSheet(QString("border: no; border-radius: 3px; height: 25px; width: 75px; padding: 5px 10px; background-color: #e93a5d; color: white; font: 10pt Lato;font-weight: bold;"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setStyleSheet(QString("QPushButton { background-color: #e93a5d; } QPushButton:hover { background-color: #e61942; }"));
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setStyleSheet(QString("QPushButton { background-color: #359b37; margin-right: 15px; } QPushButton:hover { background-color: #2e852f; }"));
 }
 
 AskPassphraseDialog::~AskPassphraseDialog()

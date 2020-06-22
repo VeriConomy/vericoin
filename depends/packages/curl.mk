@@ -7,8 +7,10 @@ $(package)_dependencies=openssl
 
 define $(package)_set_vars
 $(package)_config_opts=--disable-shared
+$(package)_config_opts_mingw32=--enable-sspi --without-ssl --with-winssl --with-schannel
+$(package)_config_opts_darwin=--enable-sspi --without-ssl --with-darwinssl --with-secure-transport
+$(package)_cflags=-DCURL_STATICLIB
 $(package)_cxxflags=-std=c++11
-
 endef
 
 define $(package)_config_cmds
