@@ -26,6 +26,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
+#include <QPainterPath>
 #include <QGraphicsDropShadowEffect>
 
 #define DECORATION_SIZE 35
