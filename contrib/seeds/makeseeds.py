@@ -30,14 +30,10 @@ SUSPICIOUS_HOSTS = {
 PATTERN_IPV4 = re.compile(r"^((\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})):(\d+)$")
 PATTERN_IPV6 = re.compile(r"^\[([0-9a-z:]+)\]:(\d+)$")
 PATTERN_ONION = re.compile(r"^([abcdefghijklmnopqrstuvwxyz234567]{16}\.onion):(\d+)$")
+# We will need to add future version here
 PATTERN_AGENT = re.compile(
-    r"^/Satoshi:("
-    r"0.14.(0|1|2|3|99)|"
-    r"0.15.(0|1|2|99)|"
-    r"0.16.(0|1|2|3|99)|"
-    r"0.17.(0|0.1|1|2|99)|"
-    r"0.18.(0|1|99)|"
-    r"0.19.99"
+    r"^/Verium:("
+    r"1.3.(0)"
     r")")
 
 def parseline(line):
@@ -212,9 +208,9 @@ def main():
     print('%s Require a known and recent user agent' % (ip_stats(ips)), file=sys.stderr)
     # Sort by availability (and use last success as tie breaker)
     ips.sort(key=lambda x: (x['uptime'], x['lastsuccess'], x['ip']), reverse=True)
-    # Filter out hosts with multiple bitcoin ports, these are likely abusive
+    # Filter out hosts with multiple verium ports, these are likely abusive
     ips = filtermultiport(ips)
-    print('%s Filter out hosts with multiple bitcoin ports' % (ip_stats(ips)), file=sys.stderr)
+    print('%s Filter out hosts with multiple verium ports' % (ip_stats(ips)), file=sys.stderr)
     # Look up ASNs and limit results, both per ASN and globally.
     ips = filterbyasn(ips, MAX_SEEDS_PER_ASN, NSEEDS)
     print('%s Look up ASNs and limit results per ASN and per net' % (ip_stats(ips)), file=sys.stderr)
