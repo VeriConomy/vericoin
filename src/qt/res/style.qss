@@ -112,6 +112,7 @@ QComboBox#walletSelector QAbstractItemView {
 /** Bottom status bar **/
 QWidget#statusBar {
     margin-left: 70px;
+    background-color: #586A7A;
     color: white;
 }
 
