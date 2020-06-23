@@ -279,14 +279,6 @@ void OverviewPage::setWalletModel(WalletModel *model)
         ui->lastTransactionsContent->setModel(filter.get());
         ui->lastTransactionsContent->setModelColumn(TransactionTableModel::ToAddress);
 
-        if( filter->rowCount() != 0 ) {
-            ui->lastTransactionsContent->setVisible(true);
-            ui->lastTransactionsEmpty->setVisible(false);
-        } else {
-            ui->lastTransactionsContent->setVisible(false);
-            ui->lastTransactionsEmpty->setVisible(true);
-        }
-
         // Keep up to date with wallet
         interfaces::Wallet& wallet = model->wallet();
         interfaces::WalletBalances balances = wallet.getBalances();

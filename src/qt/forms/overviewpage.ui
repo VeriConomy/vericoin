@@ -938,25 +938,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="lastTransactionsEmpty">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>No transaction history</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QListView" name="lastTransactionsContent">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
