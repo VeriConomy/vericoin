@@ -422,9 +422,9 @@ void BitcoinGUI::createActions()
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Verium command-line options").arg(PACKAGE_NAME));
 
-    bootstrapAction = new QAction(tr("&Bootstrap the Chain"));
+    bootstrapAction = new QAction(tr("&Bootstrap the Chain"), this);
 
-    updateAction = new QAction(tr("Check for &Update"));
+    updateAction = new QAction(tr("Check for &Update"), this);
 
     connect(quitAction, &QAction::triggered, qApp, QApplication::quit);
     connect(aboutAction, &QAction::triggered, this, &BitcoinGUI::aboutClicked);
@@ -948,14 +948,16 @@ void BitcoinGUI::aboutClicked()
 }
 
 // XXX: FOR DEVELOPMENT
-// void BitcoinGUI::refreshStyle() {
-//     QString strPath(QCoreApplication::applicationDirPath() + "/res/style.qss");
-//     QFile f(strPath);
-//     f.open(QFile::ReadOnly | QFile::Text);
-//     QTextStream ts(&f);
-//     setStyleSheet(ts.readAll());
-//     f.close();
-// }
+/**
+void BitcoinGUI::refreshStyle() {
+    QString strPath(QCoreApplication::applicationDirPath() + "/res/style.qss");
+    QFile f(strPath);
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
+    setStyleSheet(ts.readAll());
+    f.close();
+}
+**/
 
 void BitcoinGUI::showDebugWindow()
 {
