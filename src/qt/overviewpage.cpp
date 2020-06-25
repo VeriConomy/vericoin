@@ -180,15 +180,6 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     updateMiningStatsTimer = new QTimer(this);
     connect(updateMiningStatsTimer, &QTimer::timeout, this, &OverviewPage::updateMiningStatistics);
 
-    // Prepare mining animation
-    miningOnMovie = new QMovie(":/movies/mining_on", "gif", this);
-    connect(miningOnMovie, &QMovie::frameChanged, [this](int frame) {
-      if(miningState)
-        ui->mineButton->setIcon(QIcon(miningOnMovie->currentPixmap()));
-    });
-    if (miningOnMovie->loopCount() != -1)
-        connect(miningOnMovie, &QMovie::finished, miningOnMovie, &QMovie::start);
-
     // manage receive/send button
     ui->receiveBox->installEventFilter(this);
     ui->sendBox->installEventFilter(this);
@@ -353,9 +344,8 @@ void OverviewPage::manageMiningState(bool state, int procs)
     // Verium Mining is OFF, let's update view
     if ( ! miningState )
     {
+        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
         updateMiningStatsTimer->stop();
-        ui->mineButton->setIcon(QIcon(":/icons/verium"));
-        miningOnMovie->stop();
         ui->labelMinerHashrate->setText("--- H/m");
         ui->labelEstNextReward->setText("--- Day(s)");
         ui->labelMinerButton->setText(tr("Click to start:"));
@@ -363,7 +353,7 @@ void OverviewPage::manageMiningState(bool state, int procs)
     else
     {
         // Update stats every 1s
-        miningOnMovie->start();
+        ui->mineButton->setIcon(QIcon(":/icons/miningon"));
         updateMiningStatsTimer->start(1000);
         ui->labelMinerButton->setText(tr("Click to stop:"));
     }
