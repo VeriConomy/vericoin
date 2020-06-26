@@ -667,7 +667,7 @@ QWidget#filterBox #dateTo::drop-down {
     background-position: center;
 }
 
-QPushButton#exportButton {
+QPushButton#exportButtonTxView {
     border: no;
     border-radius: 3px;
     height: 25px;

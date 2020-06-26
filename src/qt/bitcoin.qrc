@@ -31,6 +31,8 @@
         <file alias="lock_closed">res/icons/lock_closed.png</file>
         <file alias="lock_open">res/icons/lock_open.png</file>
         <file alias="minimize">res/icons/minimize.png</file>
+        <file alias="miningon">res/icons/miningon.png</file>
+        <file alias="miningoff">res/icons/miningoff.png</file>
         <file alias="move">res/icons/move.png</file>
         <file alias="network_disabled">res/icons/network_disabled.png</file>
         <file alias="overview">res/icons/overview.png</file>
@@ -60,7 +62,7 @@
         <file alias="website">res/icons/website.png</file>
     </qresource>
     <qresource prefix="/movies">
-        <file alias="mining_on">res/movies/mining_on.gif</file>
+        <file alias="miningonMovie">res/movies/miningon.gif</file>
         <file alias="spinner-000">res/movies/spinner-000.png</file>
         <file alias="spinner-001">res/movies/spinner-001.png</file>
         <file alias="spinner-002">res/movies/spinner-002.png</file>

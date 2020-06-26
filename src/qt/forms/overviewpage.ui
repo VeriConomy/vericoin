@@ -711,21 +711,19 @@
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <widget class="QPushButton" name="mineButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to start/stop mining&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
-            <property name="focusPolicy">
-             <enum>Qt::WheelFocus</enum>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background: white;}</string>
             </property>
             <property name="text">
              <string/>
             </property>
             <property name="icon">
              <iconset resource="../bitcoin.qrc">
-              <normaloff>:/icons/verium</normaloff>:/icons/verium</iconset>
+              <normaloff>:/icons/miningoff</normaloff>
+              <normalon>:/icons/miningon</normalon>:/icons/miningoff</iconset>
             </property>
             <property name="iconSize">
              <size>

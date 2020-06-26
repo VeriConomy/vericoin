@@ -188,7 +188,7 @@ Bash script to quickly download and build verium with GUI
 Bash script to quickly download and build verium with GUI
 
 ```sh
-sudo dnf install git gcc-c++ libtool make autoconf automake openssl-devel libevent-devel boost-devel libdb4-devel libdb4-cxx-devel python3 libcurl-devel minizip-devel qt5-qttools-devel qt5-qtbase-devel protobuf-devel qrencode-devel
+sudo dnf install git gcc-c++ libtool make autoconf automake patch openssl-devel libevent-devel boost-devel libdb4-devel libdb4-cxx-devel python3 libcurl-devel minizip-devel qt5-qttools-devel qt5-qtbase-devel protobuf-devel qrencode-devel
 git clone https://github.com/VeriumReserve/verium.git ~/verium
 cd ~/verium
 ./contrib/install_db4.sh ~/verium
