@@ -1226,72 +1226,6 @@ static UniValue verifychain(const JSONRPCRequest& request)
         Params(), &::ChainstateActive().CoinsTip(), nCheckLevel, nCheckDepth);
 }
 
-static void BuriedForkDescPushBack(UniValue& softforks, const std::string &name, int height) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
-{
-    // For buried deployments.
-    // A buried deployment is one where the height of the activation has been hardcoded into
-    // the client implementation long after the consensus change has activated. See BIP 90.
-    // Buried deployments with activation height value of
-    // std::numeric_limits<int>::max() are disabled and thus hidden.
-    if (height == std::numeric_limits<int>::max()) return;
-
-    UniValue rv(UniValue::VOBJ);
-    rv.pushKV("type", "buried");
-    // getblockchaininfo reports the softfork as active from when the chain height is
-    // one below the activation height
-    rv.pushKV("active", ::ChainActive().Tip()->nHeight + 1 >= height);
-    rv.pushKV("height", height);
-    softforks.pushKV(name, rv);
-}
-
-static void BIP9SoftForkDescPushBack(UniValue& softforks, const std::string &name, const Consensus::Params& consensusParams, Consensus::DeploymentPos id) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
-{
-    // For BIP9 deployments.
-    // Deployments (e.g. testdummy) with timeout value before Jan 1, 2009 are hidden.
-    // A timeout value of 0 guarantees a softfork will never be activated.
-    // This is used when merging logic to implement a proposed softfork without a specified deployment schedule.
-    if (consensusParams.vDeployments[id].nTimeout <= 1230768000) return;
-
-    UniValue bip9(UniValue::VOBJ);
-    const ThresholdState thresholdState = VersionBitsTipState(consensusParams, id);
-    switch (thresholdState) {
-    case ThresholdState::DEFINED: bip9.pushKV("status", "defined"); break;
-    case ThresholdState::STARTED: bip9.pushKV("status", "started"); break;
-    case ThresholdState::LOCKED_IN: bip9.pushKV("status", "locked_in"); break;
-    case ThresholdState::ACTIVE: bip9.pushKV("status", "active"); break;
-    case ThresholdState::FAILED: bip9.pushKV("status", "failed"); break;
-    }
-    if (ThresholdState::STARTED == thresholdState)
-    {
-        bip9.pushKV("bit", consensusParams.vDeployments[id].bit);
-    }
-    bip9.pushKV("start_time", consensusParams.vDeployments[id].nStartTime);
-    bip9.pushKV("timeout", consensusParams.vDeployments[id].nTimeout);
-    int64_t since_height = VersionBitsTipStateSinceHeight(consensusParams, id);
-    bip9.pushKV("since", since_height);
-    if (ThresholdState::STARTED == thresholdState)
-    {
-        UniValue statsUV(UniValue::VOBJ);
-        BIP9Stats statsStruct = VersionBitsTipStatistics(consensusParams, id);
-        statsUV.pushKV("period", statsStruct.period);
-        statsUV.pushKV("threshold", statsStruct.threshold);
-        statsUV.pushKV("elapsed", statsStruct.elapsed);
-        statsUV.pushKV("count", statsStruct.count);
-        statsUV.pushKV("possible", statsStruct.possible);
-        bip9.pushKV("statistics", statsUV);
-    }
-
-    UniValue rv(UniValue::VOBJ);
-    rv.pushKV("type", "bip9");
-    rv.pushKV("bip9", bip9);
-    if (ThresholdState::ACTIVE == thresholdState) {
-        rv.pushKV("height", since_height);
-    }
-    rv.pushKV("active", ThresholdState::ACTIVE == thresholdState);
-
-    softforks.pushKV(name, rv);
-}
-
 UniValue getblockchaininfo(const JSONRPCRequest& request)
 {
             RPCHelpMan{"getblockchaininfo",
@@ -1350,7 +1284,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("chain",                 Params().NetworkIDString());
     obj.pushKV("blocks",                (int)::ChainActive().Height());
-    obj.pushKV("totalsupply",           (double)::ChainActive().Tip()->nMoneySupply/COIN);
+    obj.pushKV("totalsupply",           (double)tip->nMoneySupply/COIN);
     obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
     obj.pushKV("bestblockhash",         tip->GetBlockHash().GetHex());
     obj.pushKV("difficulty",            (double)GetDifficulty(tip));
@@ -1376,16 +1310,6 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             obj.pushKV("prune_target_size",  nPruneTarget);
         }
     }
-
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-    UniValue softforks(UniValue::VOBJ);
-    BuriedForkDescPushBack(softforks, "bip34", consensusParams.BIP34Height);
-    BuriedForkDescPushBack(softforks, "bip66", consensusParams.BIP66Height);
-    BuriedForkDescPushBack(softforks, "bip65", consensusParams.BIP65Height);
-    BuriedForkDescPushBack(softforks, "csv", consensusParams.CSVHeight);
-    BuriedForkDescPushBack(softforks, "segwit", consensusParams.SegwitHeight);
-    BIP9SoftForkDescPushBack(softforks, "testdummy", consensusParams, Consensus::DEPLOYMENT_TESTDUMMY);
-    obj.pushKV("softforks",             softforks);
 
     obj.pushKV("warnings", GetWarnings("statusbar"));
     return obj;
