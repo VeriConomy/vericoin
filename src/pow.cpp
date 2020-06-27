@@ -20,7 +20,6 @@
 /////////////////
 extern arith_uint256 proofOfWorkLimit;
 extern arith_uint256 proofOfWorkLimitTestNet;
-static const int64_t nTargetTimespan = 2 * 60 * 60;  // 2 hours
 double GetDifficulty(const CBlockIndex* blockindex = nullptr);
 
 unsigned int calculateBlocktime(const CBlockIndex* pindex)
@@ -48,12 +47,13 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
     int64_t targetTimespan;
-    if (pindexLast->nHeight+1 > 2394){
-        targetTimespan = nTargetTimespan * 24;
-    }
-    else{targetTimespan = nTargetTimespan;}
-    // ppcoin: target change every block
-    // ppcoin: retarget with exponential moving toward target spacing
+
+    // Two hour target timespan on launch needed to prevent accelerated blocktime while difficulty first equilibrates
+    if (pindexLast->nHeight+1 <= 2394){targetTimespan = 2 * 60 * 60;}
+    // 48 hour normal target timespan with more stable difficulty equilibrium
+    else{targetTimespan = Params().GetConsensus().nPowTargetTimespan;}
+
+    // ppcoin: retarget with exponential moving toward target spacing (variable in Verium)
     CBigNum bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
     int64_t nInterval = targetTimespan / nTargetSpacing;

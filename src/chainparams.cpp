@@ -62,10 +62,11 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.SegwitHeight = 9999999; // 0000000000000000001c8018d9cb3b742ef25114f27563e3fc4a1902167f9893
-        consensus.nPowTargetSpacing = 10 * 60;
+        consensus.nPowTargetSpacing = 5 * 60;  // not used for consensus in Verium as it's variable, but used to indicate age of data
+        consensus.nPowTargetTimespan = 2 * 24 * 60 * 60; // two days
         consensus.fPowNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 547; // 95% of nMinerConfirmationWindow
+        consensus.nMinerConfirmationWindow = 576; // nPowTargetTimespan / nPowTargetSpacing
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
