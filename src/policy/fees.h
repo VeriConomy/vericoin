@@ -27,7 +27,6 @@ enum class FeeReason {
     NONE,
     MEMPOOL_MIN,
     PAYTXFEE,
-    FALLBACK,
     REQUIRED,
 };
 
