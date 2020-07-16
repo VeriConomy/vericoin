@@ -452,7 +452,6 @@ class WalletTest(BitcoinTestFramework):
         extra_txid = self.nodes[0].sendtoaddress(sending_addr, Decimal('0.0001'))
         assert extra_txid not in self.nodes[0].getrawmempool()
         assert extra_txid in [tx["txid"] for tx in self.nodes[0].listtransactions()]
-        self.nodes[0].abandontransaction(extra_txid)
         total_txs = len(self.nodes[0].listtransactions("*", 99999))
 
         # Try with walletrejectlongchains

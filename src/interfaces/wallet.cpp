@@ -17,7 +17,6 @@
 #include <ui_interface.h>
 #include <uint256.h>
 #include <util/system.h>
-#include <wallet/feebumper.h>
 #include <wallet/fees.h>
 #include <wallet/ismine.h>
 #include <wallet/rpcwallet.h>
@@ -231,42 +230,6 @@ public:
             return false;
         }
         return true;
-    }
-    bool transactionCanBeAbandoned(const uint256& txid) override { return m_wallet->TransactionCanBeAbandoned(txid); }
-    bool abandonTransaction(const uint256& txid) override
-    {
-        auto locked_chain = m_wallet->chain().lock();
-        LOCK(m_wallet->cs_wallet);
-        return m_wallet->AbandonTransaction(*locked_chain, txid);
-    }
-    bool transactionCanBeBumped(const uint256& txid) override
-    {
-        return feebumper::TransactionCanBeBumped(m_wallet.get(), txid);
-    }
-    bool createBumpTransaction(const uint256& txid,
-        const CCoinControl& coin_control,
-        CAmount total_fee,
-        std::vector<std::string>& errors,
-        CAmount& old_fee,
-        CAmount& new_fee,
-        CMutableTransaction& mtx) override
-    {
-        if (total_fee > 0) {
-            return feebumper::CreateTotalBumpTransaction(m_wallet.get(), txid, coin_control, total_fee, errors, old_fee, new_fee, mtx) ==
-                feebumper::Result::OK;
-        } else {
-            return feebumper::CreateRateBumpTransaction(m_wallet.get(), txid, coin_control, errors, old_fee, new_fee, mtx) ==
-                feebumper::Result::OK;
-        }
-    }
-    bool signBumpTransaction(CMutableTransaction& mtx) override { return feebumper::SignTransaction(m_wallet.get(), mtx); }
-    bool commitBumpTransaction(const uint256& txid,
-        CMutableTransaction&& mtx,
-        std::vector<std::string>& errors,
-        uint256& bumped_txid) override
-    {
-        return feebumper::CommitTransaction(m_wallet.get(), txid, std::move(mtx), errors, bumped_txid) ==
-               feebumper::Result::OK;
     }
     CTransactionRef getTx(const uint256& txid) override
     {
