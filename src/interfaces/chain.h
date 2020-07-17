@@ -166,12 +166,6 @@ public:
     //! Check if transaction will pass the mempool's chain limits.
     virtual bool checkChainLimits(const CTransactionRef& tx) = 0;
 
-    //! Estimate smart fee.
-    virtual CFeeRate estimateSmartFee(int num_blocks, bool conservative, FeeCalculation* calc = nullptr) = 0;
-
-    //! Fee estimator max target.
-    virtual unsigned int estimateMaxBlocks() = 0;
-
     //! Mempool minimum fee.
     virtual CFeeRate mempoolMinFee() = 0;
 

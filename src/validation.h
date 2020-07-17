@@ -41,7 +41,6 @@ class CChainParams;
 class CInv;
 class CConnman;
 class CScriptCheck;
-class CBlockPolicyEstimator;
 class CTxMemPool;
 class CValidationState;
 struct ChainTxData;
@@ -141,7 +140,6 @@ struct BlockHasher
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
-extern CBlockPolicyEstimator feeEstimator;
 extern CTxMemPool mempool;
 typedef std::unordered_map<uint256, CBlockIndex*, BlockHasher> BlockMap;
 extern Mutex g_best_block_mutex;

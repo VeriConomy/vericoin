@@ -98,7 +98,6 @@ class COutput;
 class CScript;
 class CWalletTx;
 struct FeeCalculation;
-enum class FeeEstimateMode;
 class ReserveDestination;
 
 /** (client) version numbers for particular wallet features */

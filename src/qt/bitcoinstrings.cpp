@@ -67,8 +67,6 @@ QT_TRANSLATE_NOOP("verium-core", ""
 "This is the transaction fee you may discard if change is smaller than dust "
 "at this level"),
 QT_TRANSLATE_NOOP("verium-core", ""
-"This is the transaction fee you may pay when fee estimates are not available."),
-QT_TRANSLATE_NOOP("verium-core", ""
 "This product includes software developed by the OpenSSL Project for use in "
 "the OpenSSL Toolkit %s and cryptographic software written by Eric Young and "
 "UPnP software written by Thomas Bernard."),

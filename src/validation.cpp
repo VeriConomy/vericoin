@@ -127,9 +127,7 @@ arith_uint256 nMinimumChainWork;
 
 CFeeRate minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
 
-CBlockPolicyEstimator feeEstimator;
-CTxMemPool mempool(&feeEstimator);
-
+CTxMemPool mempool;
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
@@ -326,18 +324,6 @@ static void LimitMempoolSize(CTxMemPool& pool, size_t limit, unsigned long age)
     pool.TrimToSize(limit, &vNoSpendsRemaining);
     for (const COutPoint& removed : vNoSpendsRemaining)
         ::ChainstateActive().CoinsTip().Uncache(removed);
-}
-
-static bool IsCurrentForFeeEstimation() EXCLUSIVE_LOCKS_REQUIRED(cs_main)
-{
-    AssertLockHeld(cs_main);
-    if (::ChainstateActive().IsInitialBlockDownload())
-        return false;
-    if (::ChainActive().Tip()->GetBlockTime() < (GetTime() - MAX_FEE_ESTIMATION_TIP_AGE))
-        return false;
-    if (::ChainActive().Height() < pindexBestHeader->nHeight - 1)
-        return false;
-    return true;
 }
 
 /* Make mempool consistent after a reorg, by re-adding or recursively erasing
@@ -961,7 +947,6 @@ bool MemPoolAccept::ConsensusScriptChecks(ATMPArgs& args, Workspace& ws, Precomp
 
 bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
 {
-    const CTransaction& tx = *ws.m_ptx;
     const uint256& hash = ws.m_hash;
     CValidationState &state = args.m_state;
     const bool bypass_limits = args.m_bypass_limits;
@@ -971,7 +956,6 @@ bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
     const CAmount& nModifiedFees = ws.m_modified_fees;
     const CAmount& nConflictingFees = ws.m_conflicting_fees;
     const size_t& nConflictingSize = ws.m_conflicting_size;
-    const bool fReplacementTransaction = ws.m_replacement_transaction;
     std::unique_ptr<CTxMemPoolEntry>& entry = ws.m_entry;
 
     // Remove conflicting transactions from the mempool
@@ -987,15 +971,8 @@ bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
     }
     m_pool.RemoveStaged(allConflicting, false, MemPoolRemovalReason::REPLACED);
 
-    // This transaction should only count for fee estimation if:
-    // - it isn't a BIP 125 replacement transaction (may not be widely supported)
-    // - it's not being re-added during a reorg which bypasses typical mempool fee limits
-    // - the node is not behind
-    // - the transaction is not dependent on any other transactions in the mempool
-    bool validForFeeEstimation = !fReplacementTransaction && !bypass_limits && IsCurrentForFeeEstimation() && m_pool.HasNoInputsOf(tx);
-
     // Store transaction in memory
-    m_pool.addUnchecked(*entry, setAncestors, validForFeeEstimation);
+    m_pool.addUnchecked(*entry, setAncestors);
 
     // trim mempool and check if tx was trimmed
     if (!bypass_limits) {
