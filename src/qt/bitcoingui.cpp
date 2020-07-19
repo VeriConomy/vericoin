@@ -363,9 +363,12 @@ void BitcoinGUI::createActions()
 
     quitAction = new QAction(platformStyle->SingleColorIcon(":/icons/close"), tr("E&xit"), this);
     quitAction->setStatusTip(tr("Quit application"));
-    quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     quitAction->setIconVisibleInMenu(false);
+    closeAppAction = new QAction(platformStyle->SingleColorIcon(":/icons/close"), tr("E&xit"), this);
+    closeAppAction->setStatusTip(tr("Quit application"));
+    closeAppAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    closeAppAction->setIconVisibleInMenu(false);
     aboutAction = new QAction(tr("&About %1").arg(PACKAGE_NAME), this);
     aboutAction->setStatusTip(tr("Show information about %1").arg(PACKAGE_NAME));
     aboutAction->setMenuRole(QAction::AboutRole);
@@ -427,6 +430,7 @@ void BitcoinGUI::createActions()
     updateAction = new QAction(tr("Check for &Update"), this);
 
     connect(quitAction, &QAction::triggered, qApp, QApplication::quit);
+    connect(closeAppAction, &QAction::triggered, this, &BitcoinGUI::closeOrMinimizeEvent);
     connect(aboutAction, &QAction::triggered, this, &BitcoinGUI::aboutClicked);
     connect(aboutQtAction, &QAction::triggered, qApp, QApplication::aboutQt);
     connect(optionsAction, &QAction::triggered, this, &BitcoinGUI::optionsClicked);
@@ -437,6 +441,8 @@ void BitcoinGUI::createActions()
     connect(updateAction, &QAction::triggered, this, &BitcoinGUI::updateClicked);
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, &QAction::triggered, rpcConsole, &QWidget::hide);
+    connect(closeAppAction, &QAction::triggered, rpcConsole, &QWidget::hide);
+
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -641,7 +647,7 @@ void BitcoinGUI::createMenuBar()
 
 
     windowActionToolbar->addAction(minimizeAction);
-    windowActionToolbar->addAction(quitAction);
+    windowActionToolbar->addAction(closeAppAction);
 
     // and add
     topCentralLayout->addWidget(windowActionToolbar);
@@ -936,6 +942,29 @@ void BitcoinGUI::macosDockIconActivated()
 void BitcoinGUI::optionsClicked()
 {
     openOptionsDialogWithTab(OptionsDialog::TAB_MAIN);
+}
+
+
+void BitcoinGUI::closeOrMinimizeEvent()
+{
+#ifndef Q_OS_MAC // Ignored on Mac
+    if(clientModel && clientModel->getOptionsModel())
+    {
+        if(!clientModel->getOptionsModel()->getMinimizeOnClose())
+        {
+            // close rpcConsole in case it was open to make some space for the shutdown window
+            rpcConsole->close();
+
+            QApplication::quit();
+        }
+        else
+        {
+            toggleHidden();
+        }
+    }
+#else
+    QApplication::quit;
+#endif
 }
 
 void BitcoinGUI::aboutClicked()
@@ -1299,29 +1328,6 @@ void BitcoinGUI::changeEvent(QEvent *e)
             }
         }
     }
-#endif
-}
-
-void BitcoinGUI::closeEvent(QCloseEvent *event)
-{
-#ifndef Q_OS_MAC // Ignored on Mac
-    if(clientModel && clientModel->getOptionsModel())
-    {
-        if(!clientModel->getOptionsModel()->getMinimizeOnClose())
-        {
-            // close rpcConsole in case it was open to make some space for the shutdown window
-            rpcConsole->close();
-
-            QApplication::quit();
-        }
-        else
-        {
-            QMainWindow::showMinimized();
-            event->ignore();
-        }
-    }
-#else
-    QMainWindow::closeEvent(event);
 #endif
 }
 
