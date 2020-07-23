@@ -979,8 +979,10 @@ const CTxMemPool::setEntries & CTxMemPool::GetMemPoolChildren(txiter entry) cons
 }
 
 CFeeRate CTxMemPool::GetMinFee(size_t sizelimit) const {
-    return CFeeRate();
+    // XXX: TO VALIDATE
+    return CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
 }
+
 void CTxMemPool::trackPackageRemoved(const CFeeRate& rate) {
     AssertLockHeld(cs);
     if (rate.GetFeePerK() > rollingMinimumFeeRate) {
