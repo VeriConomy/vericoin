@@ -105,7 +105,6 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-    void closeEvent(QCloseEvent *event);
     void showEvent(QShowEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
@@ -135,6 +134,7 @@ private:
     QAction* historyAction = nullptr;
     QAction* communityAction = nullptr;
     QAction* quitAction = nullptr;
+    QAction* closeAppAction = nullptr;
     QAction* sendCoinsAction = nullptr;
     QAction* sendCoinsMenuAction = nullptr;
     QAction* usedSendingAddressesAction = nullptr;
@@ -287,6 +287,8 @@ public Q_SLOTS:
 #endif // ENABLE_WALLET
     /** Show configuration dialog */
     void optionsClicked();
+    /** Quit or minimize app */
+    void closeOrMinimizeEvent();
     /** Show about dialog */
     void aboutClicked();
     /** XXX: FOR DEVELOPMENT
