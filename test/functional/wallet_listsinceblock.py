@@ -311,8 +311,6 @@ class ListSinceBlockTest(BitcoinTestFramework):
         orig_tx_id = spending_node.sendrawtransaction(signedtx["hex"])
         original_tx = spending_node.gettransaction(orig_tx_id)
 
-        double_tx = spending_node.bumpfee(orig_tx_id)
-
         # check that both transactions exist
         block_hash = spending_node.listsinceblock(
             spending_node.getblockhash(spending_node.getblockcount()))
@@ -321,8 +319,6 @@ class ListSinceBlockTest(BitcoinTestFramework):
         for tx in block_hash['transactions']:
             if tx['txid'] == original_tx['txid']:
                 original_found = True
-            if tx['txid'] == double_tx['txid']:
-                double_found = True
         assert_equal(original_found, True)
         assert_equal(double_found, True)
 
@@ -335,8 +331,6 @@ class ListSinceBlockTest(BitcoinTestFramework):
         for tx in block_hash['transactions']:
             if tx['txid'] == original_tx['txid']:
                 original_found = True
-            if tx['txid'] == double_tx['txid']:
-                double_found = True
         assert_equal(original_found, False)
         assert_equal(double_found, False)
 

@@ -979,27 +979,8 @@ const CTxMemPool::setEntries & CTxMemPool::GetMemPoolChildren(txiter entry) cons
 }
 
 CFeeRate CTxMemPool::GetMinFee(size_t sizelimit) const {
-    LOCK(cs);
-    if (!blockSinceLastRollingFeeBump || rollingMinimumFeeRate == 0)
-        return CFeeRate(llround(rollingMinimumFeeRate));
-
-    int64_t time = GetTime();
-    if (time > lastRollingFeeUpdate + 10) {
-        double halflife = ROLLING_FEE_HALFLIFE;
-        if (DynamicMemoryUsage() < sizelimit / 4)
-            halflife /= 4;
-        else if (DynamicMemoryUsage() < sizelimit / 2)
-            halflife /= 2;
-
-        rollingMinimumFeeRate = rollingMinimumFeeRate / pow(2.0, (time - lastRollingFeeUpdate) / halflife);
-        lastRollingFeeUpdate = time;
-
-        if (rollingMinimumFeeRate < (double)incrementalRelayFee.GetFeePerK() / 2) {
-            rollingMinimumFeeRate = 0;
-            return CFeeRate(0);
-        }
-    }
-    return std::max(CFeeRate(llround(rollingMinimumFeeRate)), incrementalRelayFee);
+    // XXX: TO VALIDATE
+    return CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
 }
 
 void CTxMemPool::trackPackageRemoved(const CFeeRate& rate) {
@@ -1023,7 +1004,6 @@ void CTxMemPool::TrimToSize(size_t sizelimit, std::vector<COutPoint>* pvNoSpends
         // to have 0 fee). This way, we don't allow txn to enter mempool with feerate
         // equal to txn which were removed with no block in between.
         CFeeRate removed(it->GetModFeesWithDescendants(), it->GetSizeWithDescendants());
-        removed += incrementalRelayFee;
         trackPackageRemoved(removed);
         maxFeeRateRemoved = std::max(maxFeeRateRemoved, removed);
 

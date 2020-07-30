@@ -895,18 +895,6 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
                     strprintf("rejecting replacement %s, less fees than conflicting txs; %s < %s",
                         hash.ToString(), FormatMoney(nModifiedFees), FormatMoney(nConflictingFees)));
         }
-
-        // Finally in addition to paying more fees than the conflicts the
-        // new transaction must pay for its own bandwidth.
-        CAmount nDeltaFees = nModifiedFees - nConflictingFees;
-        if (nDeltaFees < ::incrementalRelayFee.GetFee(nSize))
-        {
-            return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "insufficient fee",
-                    strprintf("rejecting replacement %s, not enough additional fees to relay; %s < %s",
-                        hash.ToString(),
-                        FormatMoney(nDeltaFees),
-                        FormatMoney(::incrementalRelayFee.GetFee(nSize))));
-        }
     }
     return true;
 }

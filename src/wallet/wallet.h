@@ -71,8 +71,6 @@ static const CAmount DEFAULT_FALLBACK_FEE = 20000;
 static const CAmount DEFAULT_DISCARD_FEE = 10000;
 //! -mintxfee default
 static const CAmount DEFAULT_TRANSACTION_MINFEE = 20000000;
-//! minimum recommended increment for BIP 125 replacement txs
-static const CAmount WALLET_INCREMENTAL_RELAY_FEE = 20000000;
 //! Default for -spendzeroconfchange
 static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
 //! Default for -walletrejectlongchains
@@ -413,10 +411,7 @@ public:
      *
      *     "comment", "to"   - comment strings provided to sendtoaddress,
      *                         and sendmany wallet RPCs
-     *     "replaces_txid"   - txid (as HexStr) of transaction replaced by
-     *                         bumpfee on transaction created by bumpfee
-     *     "replaced_by_txid" - txid (as HexStr) of transaction created by
-     *                         bumpfee on transaction replaced by bumpfee
+     *
      *     "from", "message" - obsolete fields that could be set in UI prior to
      *                         2011 (removed in commit 4d9b223)
      *
@@ -1318,12 +1313,6 @@ public:
     bool GetBroadcastTransactions() const { return fBroadcastTransactions; }
     /** Set whether this wallet broadcasts transactions. */
     void SetBroadcastTransactions(bool broadcast) { fBroadcastTransactions = broadcast; }
-
-    /** Return whether transaction can be abandoned */
-    bool TransactionCanBeAbandoned(const uint256& hashTx) const;
-
-    /* Mark a transaction (and it in-wallet descendants) as abandoned so its inputs may be respent. */
-    bool AbandonTransaction(interfaces::Chain::Lock& locked_chain, const uint256& hashTx);
 
     /** Mark a transaction as replaced by another transaction (e.g., BIP 125). */
     bool MarkReplaced(const uint256& originalHash, const uint256& newHash);
