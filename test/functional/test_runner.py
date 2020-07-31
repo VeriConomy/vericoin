@@ -83,7 +83,6 @@ BASE_SCRIPTS = [
     'feature_maxuploadtarget.py',
     'feature_block.py',
     'rpc_fundrawtransaction.py',
-    'p2p_compactblocks.py',
     # vv Tests less than 2m vv
     'wallet_basic.py',
     'wallet_labels.py',

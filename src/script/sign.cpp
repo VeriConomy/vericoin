@@ -444,19 +444,3 @@ bool IsSolvable(const SigningProvider& provider, const CScript& script)
     }
     return false;
 }
-
-bool IsSegWitOutput(const SigningProvider& provider, const CScript& script)
-{
-    std::vector<valtype> solutions;
-    auto whichtype = Solver(script, solutions);
-    if (whichtype == TX_WITNESS_V0_SCRIPTHASH || whichtype == TX_WITNESS_V0_KEYHASH || whichtype == TX_WITNESS_UNKNOWN) return true;
-    if (whichtype == TX_SCRIPTHASH) {
-        auto h160 = uint160(solutions[0]);
-        CScript subscript;
-        if (provider.GetCScript(h160, subscript)) {
-            whichtype = Solver(subscript, solutions);
-            if (whichtype == TX_WITNESS_V0_SCRIPTHASH || whichtype == TX_WITNESS_V0_KEYHASH || whichtype == TX_WITNESS_UNKNOWN) return true;
-        }
-    }
-    return false;
-}
