@@ -35,7 +35,7 @@ CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_contr
 {
     /* User control of how to calculate fee uses the following parameter precedence:
        1. coin_control.m_feerate
-       3. m_pay_tx_fee (user-set member variable of wallet)
+       2. m_pay_tx_fee (user-set member variable of wallet)
        The first parameter that is set is used.
     */
     CFeeRate feerate_needed;

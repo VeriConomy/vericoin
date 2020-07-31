@@ -39,8 +39,6 @@ public:
     bool m_avoid_partial_spends;
     //! Forbids inclusion of dirty (previously used) addresses
     bool m_avoid_address_reuse;
-    //! Fee estimation mode to control arguments to estimateSmartFee
-    FeeEstimateMode m_fee_mode;
     //! Minimum chain depth value for coin availability
     int m_min_depth = DEFAULT_MIN_DEPTH;
     //! Maximum chain depth value for coin availability
