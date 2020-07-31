@@ -127,9 +127,7 @@ arith_uint256 nMinimumChainWork;
 
 CFeeRate minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
 
-CBlockPolicyEstimator feeEstimator;
-CTxMemPool mempool(&feeEstimator);
-
+CTxMemPool mempool;
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
@@ -326,18 +324,6 @@ static void LimitMempoolSize(CTxMemPool& pool, size_t limit, unsigned long age)
     pool.TrimToSize(limit, &vNoSpendsRemaining);
     for (const COutPoint& removed : vNoSpendsRemaining)
         ::ChainstateActive().CoinsTip().Uncache(removed);
-}
-
-static bool IsCurrentForFeeEstimation() EXCLUSIVE_LOCKS_REQUIRED(cs_main)
-{
-    AssertLockHeld(cs_main);
-    if (::ChainstateActive().IsInitialBlockDownload())
-        return false;
-    if (::ChainActive().Tip()->GetBlockTime() < (GetTime() - MAX_FEE_ESTIMATION_TIP_AGE))
-        return false;
-    if (::ChainActive().Height() < pindexBestHeader->nHeight - 1)
-        return false;
-    return true;
 }
 
 /* Make mempool consistent after a reorg, by re-adding or recursively erasing
@@ -961,7 +947,6 @@ bool MemPoolAccept::ConsensusScriptChecks(ATMPArgs& args, Workspace& ws, Precomp
 
 bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
 {
-    const CTransaction& tx = *ws.m_ptx;
     const uint256& hash = ws.m_hash;
     CValidationState &state = args.m_state;
     const bool bypass_limits = args.m_bypass_limits;
@@ -971,7 +956,6 @@ bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
     const CAmount& nModifiedFees = ws.m_modified_fees;
     const CAmount& nConflictingFees = ws.m_conflicting_fees;
     const size_t& nConflictingSize = ws.m_conflicting_size;
-    const bool fReplacementTransaction = ws.m_replacement_transaction;
     std::unique_ptr<CTxMemPoolEntry>& entry = ws.m_entry;
 
     // Remove conflicting transactions from the mempool
@@ -987,15 +971,8 @@ bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
     }
     m_pool.RemoveStaged(allConflicting, false, MemPoolRemovalReason::REPLACED);
 
-    // This transaction should only count for fee estimation if:
-    // - it isn't a BIP 125 replacement transaction (may not be widely supported)
-    // - it's not being re-added during a reorg which bypasses typical mempool fee limits
-    // - the node is not behind
-    // - the transaction is not dependent on any other transactions in the mempool
-    bool validForFeeEstimation = !fReplacementTransaction && !bypass_limits && IsCurrentForFeeEstimation() && m_pool.HasNoInputsOf(tx);
-
     // Store transaction in memory
-    m_pool.addUnchecked(*entry, setAncestors, validForFeeEstimation);
+    m_pool.addUnchecked(*entry, setAncestors);
 
     // trim mempool and check if tx was trimmed
     if (!bypass_limits) {
@@ -1766,47 +1743,10 @@ void ThreadScriptCheck(int worker_num) {
     scriptcheckqueue.Thread();
 }
 
-VersionBitsCache versionbitscache GUARDED_BY(cs_main);
-
 int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
-    LOCK(cs_main);
-    int32_t nVersion = VERSIONBITS_TOP_BITS;
-
-    for (int i = 0; i < (int)Consensus::MAX_VERSION_BITS_DEPLOYMENTS; i++) {
-        ThresholdState state = VersionBitsState(pindexPrev, params, static_cast<Consensus::DeploymentPos>(i), versionbitscache);
-        if (state == ThresholdState::LOCKED_IN || state == ThresholdState::STARTED) {
-            nVersion |= VersionBitsMask(params, static_cast<Consensus::DeploymentPos>(i));
-        }
-    }
-
-    return nVersion;
+    return CBlock::CURRENT_VERSION;
 }
-
-/**
- * Threshold condition checker that triggers when unknown versionbits are seen on the network.
- */
-class WarningBitsConditionChecker : public AbstractThresholdConditionChecker
-{
-private:
-    int bit;
-
-public:
-    explicit WarningBitsConditionChecker(int bitIn) : bit(bitIn) {}
-
-    int64_t BeginTime(const Consensus::Params& params) const override { return 0; }
-    int64_t EndTime(const Consensus::Params& params) const override { return std::numeric_limits<int64_t>::max(); }
-    int Period(const Consensus::Params& params) const override { return params.nMinerConfirmationWindow; }
-    int Threshold(const Consensus::Params& params) const override { return params.nRuleChangeActivationThreshold; }
-
-    bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
-    {
-        return false;
-    }
-};
-
-static ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS] GUARDED_BY(cs_main);
-
 
 static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consensus::Params& consensusparams) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
     return SCRIPT_VERIFY_NONE;
@@ -2229,16 +2169,6 @@ void CChainState::PruneAndFlush() {
     }
 }
 
-static void DoWarning(const std::string& strWarning)
-{
-    static bool fWarned = false;
-    SetMiscWarning(strWarning);
-    if (!fWarned) {
-        AlertNotify(strWarning);
-        fWarned = true;
-    }
-}
-
 /** Private helper function that concatenates warning messages. */
 static void AppendWarning(std::string& res, const std::string& warn)
 {
@@ -2264,28 +2194,15 @@ void static UpdateTip(const CBlockIndex* pindexNew, const CChainParams& chainPar
     {
         int nUpgraded = 0;
         const CBlockIndex* pindex = pindexNew;
-        for (int bit = 0; bit < VERSIONBITS_NUM_BITS; bit++) {
-            WarningBitsConditionChecker checker(bit);
-            ThresholdState state = checker.GetStateFor(pindex, chainParams.GetConsensus(), warningcache[bit]);
-            if (state == ThresholdState::ACTIVE || state == ThresholdState::LOCKED_IN) {
-                const std::string strWarning = strprintf(_("Warning: unknown new rules activated (versionbit %i)").translated, bit);
-                if (state == ThresholdState::ACTIVE) {
-                    DoWarning(strWarning);
-                } else {
-                    AppendWarning(warningMessages, strWarning);
-                }
-            }
-        }
         // Check the version of the last 100 blocks to see if we need to upgrade:
         for (int i = 0; i < 100 && pindex != nullptr; i++)
         {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
+            if (pindex->nVersion > CBlock::CURRENT_VERSION)
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
         if (nUpgraded > 0)
-            AppendWarning(warningMessages, strprintf(_("%d of last 100 blocks have unexpected version").translated, nUpgraded));
+            AppendWarning(warningMessages, strprintf(_("%d of last 100 blocks above version %d").translated, nUpgraded, (int)CBlock::CURRENT_VERSION));
     }
     LogPrintf("%s: height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)%s\n", __func__,
       pindexNew->nHeight, pindexNew->nVersion,
@@ -3275,7 +3192,6 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Check proof of work
     // XXX - TODO: maybe create a custom ValidationInvalidReason
-    const Consensus::Params& consensusParams = params.GetConsensus();
     if (block.nBits != GetNextTargetRequired(pindexPrev))
         return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "bad-diffbits", strprintf("incorrect proof of work %lu - %lu", block.nBits, GetNextTargetRequired(pindexPrev)));
 
@@ -4331,10 +4247,6 @@ void UnloadBlockIndex()
     nLastBlockFile = 0;
     setDirtyBlockIndex.clear();
     setDirtyFileInfo.clear();
-    versionbitscache.Clear();
-    for (int b = 0; b < VERSIONBITS_NUM_BITS; b++) {
-        warningcache[b].clear();
-    }
     fHavePruned = false;
 
     ::ChainstateActive().UnloadBlockIndex();
@@ -4708,24 +4620,6 @@ CBlockFileInfo* GetBlockFileInfo(size_t n)
     LOCK(cs_LastBlockFile);
 
     return &vinfoBlockFile.at(n);
-}
-
-ThresholdState VersionBitsTipState(const Consensus::Params& params, Consensus::DeploymentPos pos)
-{
-    LOCK(cs_main);
-    return VersionBitsState(::ChainActive().Tip(), params, pos, versionbitscache);
-}
-
-BIP9Stats VersionBitsTipStatistics(const Consensus::Params& params, Consensus::DeploymentPos pos)
-{
-    LOCK(cs_main);
-    return VersionBitsStatistics(::ChainActive().Tip(), params, pos);
-}
-
-int VersionBitsTipStateSinceHeight(const Consensus::Params& params, Consensus::DeploymentPos pos)
-{
-    LOCK(cs_main);
-    return VersionBitsStateSinceHeight(::ChainActive().Tip(), params, pos, versionbitscache);
 }
 
 static const uint64_t MEMPOOL_DUMP_VERSION = 1;

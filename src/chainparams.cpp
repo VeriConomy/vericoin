@@ -11,7 +11,6 @@
 #include <tinyformat.h>
 #include <util/system.h>
 #include <util/strencodings.h>
-#include <versionbitsinfo.h>
 #include <assert.h>
 
 #include <boost/algorithm/string/classification.hpp>
@@ -66,9 +65,6 @@ public:
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 547; // 95% of nMinerConfirmationWindow
         consensus.nMinerConfirmationWindow = 576; // nPowTargetTimespan / nPowTargetSpacing
-        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
-        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
-        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");

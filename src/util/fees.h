@@ -7,10 +7,8 @@
 
 #include <string>
 
-enum class FeeEstimateMode;
 enum class FeeReason;
 
-bool FeeModeFromString(const std::string& mode_string, FeeEstimateMode& fee_estimate_mode);
 std::string StringForFeeReason(FeeReason reason);
 
 #endif // BITCOIN_UTIL_FEES_H

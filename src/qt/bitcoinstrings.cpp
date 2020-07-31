@@ -34,9 +34,6 @@ QT_TRANSLATE_NOOP("verium-core", ""
 QT_TRANSLATE_NOOP("verium-core", ""
 "Error: Listening for incoming connections failed (listen returned error %s)"),
 QT_TRANSLATE_NOOP("verium-core", ""
-"Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -"
-"fallbackfee."),
-QT_TRANSLATE_NOOP("verium-core", ""
 "Invalid amount for -maxtxfee=<amount>: '%s' (must be at least the minrelay "
 "fee of %s to prevent stuck transactions)"),
 QT_TRANSLATE_NOOP("verium-core", ""
@@ -66,8 +63,6 @@ QT_TRANSLATE_NOOP("verium-core", ""
 QT_TRANSLATE_NOOP("verium-core", ""
 "This is the transaction fee you may discard if change is smaller than dust "
 "at this level"),
-QT_TRANSLATE_NOOP("verium-core", ""
-"This is the transaction fee you may pay when fee estimates are not available."),
 QT_TRANSLATE_NOOP("verium-core", ""
 "This product includes software developed by the OpenSSL Project for use in "
 "the OpenSSL Toolkit %s and cryptographic software written by Eric Young and "
@@ -133,7 +128,6 @@ QT_TRANSLATE_NOOP("verium-core", "Invalid -proxy address or hostname: '%s'"),
 QT_TRANSLATE_NOOP("verium-core", "Invalid P2P permission: '%s'"),
 QT_TRANSLATE_NOOP("verium-core", "Invalid amount for -%s=<amount>: '%s'"),
 QT_TRANSLATE_NOOP("verium-core", "Invalid amount for -discardfee=<amount>: '%s'"),
-QT_TRANSLATE_NOOP("verium-core", "Invalid amount for -fallbackfee=<amount>: '%s'"),
 QT_TRANSLATE_NOOP("verium-core", "Invalid amount for -paytxfee=<amount>: '%s' (must be at least %s)"),
 QT_TRANSLATE_NOOP("verium-core", "Invalid netmask specified in -whitelist: '%s'"),
 QT_TRANSLATE_NOOP("verium-core", "Loading P2P addresses..."),

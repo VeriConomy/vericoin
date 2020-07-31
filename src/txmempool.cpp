@@ -322,8 +322,8 @@ void CTxMemPoolEntry::UpdateAncestorState(int64_t modifySize, CAmount modifyFee,
     assert(int(nSigOpCostWithAncestors) >= 0);
 }
 
-CTxMemPool::CTxMemPool(CBlockPolicyEstimator* estimator)
-    : nTransactionsUpdated(0), minerPolicyEstimator(estimator)
+CTxMemPool::CTxMemPool()
+    : nTransactionsUpdated(0)
 {
     _clear(); //lock free clear
 
@@ -349,7 +349,7 @@ void CTxMemPool::AddTransactionsUpdated(unsigned int n)
     nTransactionsUpdated += n;
 }
 
-void CTxMemPool::addUnchecked(const CTxMemPoolEntry &entry, setEntries &setAncestors, bool validFeeEstimate)
+void CTxMemPool::addUnchecked(const CTxMemPoolEntry &entry, setEntries &setAncestors)
 {
     NotifyEntryAdded(entry.GetSharedTx());
     // Add to memory pool without checking anything.
@@ -394,7 +394,6 @@ void CTxMemPool::addUnchecked(const CTxMemPoolEntry &entry, setEntries &setAnces
 
     nTransactionsUpdated++;
     totalTxSize += entry.GetTxSize();
-    if (minerPolicyEstimator) {minerPolicyEstimator->processTransaction(entry, validFeeEstimate);}
 
     vTxHashes.emplace_back(tx.GetWitnessHash(), newit);
     newit->vTxHashesIdx = vTxHashes.size() - 1;
@@ -403,7 +402,6 @@ void CTxMemPool::addUnchecked(const CTxMemPoolEntry &entry, setEntries &setAnces
 void CTxMemPool::removeUnchecked(txiter it, MemPoolRemovalReason reason)
 {
     NotifyEntryRemoved(it->GetSharedTx(), reason);
-    const uint256 hash = it->GetTx().GetHash();
     for (const CTxIn& txin : it->GetTx().vin)
         mapNextTx.erase(txin.prevout);
 
@@ -422,7 +420,6 @@ void CTxMemPool::removeUnchecked(txiter it, MemPoolRemovalReason reason)
     mapLinks.erase(it);
     mapTx.erase(it);
     nTransactionsUpdated++;
-    if (minerPolicyEstimator) {minerPolicyEstimator->removeTx(hash, false);}
 }
 
 // Calculates descendants of entry that are not already in setDescendants, and adds to
@@ -553,8 +550,7 @@ void CTxMemPool::removeForBlock(const std::vector<CTransactionRef>& vtx, unsigne
         if (i != mapTx.end())
             entries.push_back(&*i);
     }
-    // Before the txs in the new block have been removed from the mempool, update policy estimates
-    if (minerPolicyEstimator) {minerPolicyEstimator->processBlock(nBlockHeight, entries);}
+
     for (const auto& tx : vtx)
     {
         txiter it = mapTx.find(tx->GetHash());
@@ -933,13 +929,13 @@ int CTxMemPool::Expire(int64_t time) {
     return stage.size();
 }
 
-void CTxMemPool::addUnchecked(const CTxMemPoolEntry &entry, bool validFeeEstimate)
+void CTxMemPool::addUnchecked(const CTxMemPoolEntry &entry)
 {
     setEntries setAncestors;
     uint64_t nNoLimit = std::numeric_limits<uint64_t>::max();
     std::string dummy;
     CalculateMemPoolAncestors(entry, setAncestors, nNoLimit, nNoLimit, nNoLimit, nNoLimit, dummy);
-    return addUnchecked(entry, setAncestors, validFeeEstimate);
+    return addUnchecked(entry, setAncestors);
 }
 
 void CTxMemPool::UpdateChild(txiter entry, txiter child, bool add)
