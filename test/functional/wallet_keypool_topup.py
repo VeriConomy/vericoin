@@ -42,7 +42,7 @@ class KeypoolRestoreTest(BitcoinTestFramework):
         connect_nodes(self.nodes[0], 2)
         connect_nodes(self.nodes[0], 3)
 
-        for i, output_type in enumerate(["legacy", "p2sh-segwit", "bech32"]):
+        for i, output_type in enumerate(["legacy"]):
 
             self.log.info("Generate keys for wallet with address type: {}".format(output_type))
             idx = i+1

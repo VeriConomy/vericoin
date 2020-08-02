@@ -25,15 +25,12 @@ class ScantxoutsetTest(BitcoinTestFramework):
         self.log.info("Mining blocks...")
         self.nodes[0].generate(110)
 
-        addr_P2SH_SEGWIT = self.nodes[0].getnewaddress("", "p2sh-segwit")
-        pubk1 = self.nodes[0].getaddressinfo(addr_P2SH_SEGWIT)['pubkey']
         addr_LEGACY = self.nodes[0].getnewaddress("", "legacy")
-        pubk2 = self.nodes[0].getaddressinfo(addr_LEGACY)['pubkey']
-        addr_BECH32 = self.nodes[0].getnewaddress("", "bech32")
-        pubk3 = self.nodes[0].getaddressinfo(addr_BECH32)['pubkey']
-        self.nodes[0].sendtoaddress(addr_P2SH_SEGWIT, 0.001)
+        pubk1 = self.nodes[0].getaddressinfo(addr_LEGACY)['pubkey']
+        addr_LEGACY2 = self.nodes[0].getnewaddress("", "legacy")
+        pubk2 = self.nodes[0].getaddressinfo(addr_LEGACY2)['pubkey']
         self.nodes[0].sendtoaddress(addr_LEGACY, 0.002)
-        self.nodes[0].sendtoaddress(addr_BECH32, 0.004)
+        self.nodes[0].sendtoaddress(addr_LEGACY2, 0.003)
 
         #send to child keys of tprv8ZgxMBicQKsPd7Uf69XL1XwhmjHopUGep8GuEiJDZmbQz6o58LninorQAfcKZWARbtRtfnLcJ5MQ2AtHcQJCCRUcMRvmDUjyEmNUWwx8UbK
         self.nodes[0].sendtoaddress("mkHV1C6JLheLoUSSZYk7x3FH5tnx9bu7yc", 0.008) # (m/0'/0'/0')
@@ -67,12 +64,8 @@ class ScantxoutsetTest(BitcoinTestFramework):
 
         self.restart_node(0, ['-nowallet'])
         self.log.info("Test if we have found the non HD unspent outputs.")
-        assert_equal(self.nodes[0].scantxoutset("start", [ "pkh(" + pubk1 + ")", "pkh(" + pubk2 + ")", "pkh(" + pubk3 + ")"])['total_amount'], Decimal("0.002"))
-        assert_equal(self.nodes[0].scantxoutset("start", [ "wpkh(" + pubk1 + ")", "wpkh(" + pubk2 + ")", "wpkh(" + pubk3 + ")"])['total_amount'], Decimal("0.004"))
-        assert_equal(self.nodes[0].scantxoutset("start", [ "sh(wpkh(" + pubk1 + "))", "sh(wpkh(" + pubk2 + "))", "sh(wpkh(" + pubk3 + "))"])['total_amount'], Decimal("0.001"))
-        assert_equal(self.nodes[0].scantxoutset("start", [ "combo(" + pubk1 + ")", "combo(" + pubk2 + ")", "combo(" + pubk3 + ")"])['total_amount'], Decimal("0.007"))
-        assert_equal(self.nodes[0].scantxoutset("start", [ "addr(" + addr_P2SH_SEGWIT + ")", "addr(" + addr_LEGACY + ")", "addr(" + addr_BECH32 + ")"])['total_amount'], Decimal("0.007"))
-        assert_equal(self.nodes[0].scantxoutset("start", [ "addr(" + addr_P2SH_SEGWIT + ")", "addr(" + addr_LEGACY + ")", "combo(" + pubk3 + ")"])['total_amount'], Decimal("0.007"))
+        assert_equal(self.nodes[0].scantxoutset("start", [ "pkh(" + pubk1 + ")"])['total_amount'], Decimal("0.002"))
+        assert_equal(self.nodes[0].scantxoutset("start", [ "combo(" + pubk1 + ")", "combo(" + pubk2 + ")"])['total_amount'], Decimal("0.005"))
 
         self.log.info("Test range validation.")
         assert_raises_rpc_error(-8, "End of range is too high", self.nodes[0].scantxoutset, "start", [ {"desc": "desc", "range": -1}])

@@ -147,7 +147,7 @@ class RawTransactionsTest(BitcoinTestFramework):
             self.nodes[2].createrawtransaction(inputs=[{'txid': txid, 'vout': 9}], outputs=[{address: 99}, {address2: 99}, {'data': '99'}]),
         )
 
-        for type in ["bech32", "p2sh-segwit", "legacy"]:
+        for type in ["legacy"]:
             addr = self.nodes[0].getnewaddress("", type)
             addrinfo = self.nodes[0].getaddressinfo(addr)
             pubkey = addrinfo["scriptPubKey"]
@@ -359,14 +359,8 @@ class RawTransactionsTest(BitcoinTestFramework):
         assert_equal(self.nodes[0].getbalance(), bal+Decimal('50.00000000')+Decimal('2.19000000')) #block reward + tx
 
         # decoderawtransaction tests
-        # witness transaction
-        encrawtx = "010000000001010000000000000072c1a6a246ae63f74f931e8365e15a089c68d61900000000000000000000ffffffff0100e1f50500000000000102616100000000"
-        decrawtx = self.nodes[0].decoderawtransaction(encrawtx, True) # decode as witness transaction
-        assert_equal(decrawtx['vout'][0]['value'], Decimal('1.00000000'))
-        assert_raises_rpc_error(-22, 'TX decode failed', self.nodes[0].decoderawtransaction, encrawtx, False) # force decode as non-witness transaction
-        # non-witness transaction
         encrawtx = "01000000010000000000000072c1a6a246ae63f74f931e8365e15a089c68d61900000000000000000000ffffffff0100e1f505000000000000000000"
-        decrawtx = self.nodes[0].decoderawtransaction(encrawtx, False) # decode as non-witness transaction
+        decrawtx = self.nodes[0].decoderawtransaction(encrawtx, False)
         assert_equal(decrawtx['vout'][0]['value'], Decimal('1.00000000'))
 
         # getrawtransaction tests
