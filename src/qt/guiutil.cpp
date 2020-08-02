@@ -176,9 +176,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    bool bech_32 = info.address.startsWith(QString::fromStdString(Params().Bech32HRP() + "1"));
-
-    QString ret = QString("verium:%1").arg(bech_32 ? info.address.toUpper() : info.address);
+    QString ret = QString("verium:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
