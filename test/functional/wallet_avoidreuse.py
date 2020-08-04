@@ -85,10 +85,6 @@ class AvoidReuseTest(BitcoinTestFramework):
         reset_balance(self.nodes[1], self.nodes[0].getnewaddress())
         self.test_fund_send_fund_send("legacy")
         reset_balance(self.nodes[1], self.nodes[0].getnewaddress())
-        self.test_fund_send_fund_send("p2sh-segwit")
-        reset_balance(self.nodes[1], self.nodes[0].getnewaddress())
-        self.test_fund_send_fund_send("bech32")
-        reset_balance(self.nodes[1], self.nodes[0].getnewaddress())
         self.test_getbalances_used()
 
     def test_persistence(self):
@@ -213,15 +209,8 @@ class AvoidReuseTest(BitcoinTestFramework):
 
         # For the second send, we transmute it to a related single-key address
         # to make sure it's also detected as re-use
-        fund_spk = self.nodes[0].getaddressinfo(fundaddr)["scriptPubKey"]
-        fund_decoded = self.nodes[0].decodescript(fund_spk)
-        if second_addr_type == "p2sh-segwit":
-            new_fundaddr = fund_decoded["segwit"]["p2sh-segwit"]
-        elif second_addr_type == "bech32":
-            new_fundaddr = fund_decoded["segwit"]["addresses"][0]
-        else:
-            new_fundaddr = fundaddr
-            assert_equal(second_addr_type, "legacy")
+        new_fundaddr = fundaddr
+        assert_equal(second_addr_type, "legacy")
 
         self.nodes[0].sendtoaddress(new_fundaddr, 10)
         self.nodes[0].generate(1)

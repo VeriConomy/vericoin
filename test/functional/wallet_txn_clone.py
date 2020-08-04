@@ -23,8 +23,6 @@ class TxnMallTest(BitcoinTestFramework):
     def add_options(self, parser):
         parser.add_argument("--mineblock", dest="mine_block", default=False, action="store_true",
                             help="Test double-spend of 1-confirmed transaction")
-        parser.add_argument("--segwit", dest="segwit", default=False, action="store_true",
-                            help="Test behaviour with SegWit txn (which should fail")
 
     def setup_network(self):
         # Start with split network:
@@ -33,10 +31,7 @@ class TxnMallTest(BitcoinTestFramework):
         disconnect_nodes(self.nodes[2], 1)
 
     def run_test(self):
-        if self.options.segwit:
-            output_type = "p2sh-segwit"
-        else:
-            output_type = "legacy"
+        output_type = "legacy"
 
         # All nodes should start with 1,250 BTC:
         starting_balance = 1250
@@ -110,9 +105,6 @@ class TxnMallTest(BitcoinTestFramework):
         # Send clone and its parent to miner
         self.nodes[2].sendrawtransaction(node0_tx1["hex"])
         txid1_clone = self.nodes[2].sendrawtransaction(tx1_clone["hex"])
-        if self.options.segwit:
-            assert_equal(txid1, txid1_clone)
-            return
 
         # ... mine a block...
         self.nodes[2].generate(1)

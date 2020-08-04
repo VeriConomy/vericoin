@@ -96,7 +96,7 @@ the Bitcoin Core node application logic. For custom behaviour, subclass the
 P2PInterface object and override the callback methods.
 
 - Can be used to write tests where specific P2P protocol behavior is tested.
-Examples tests are `p2p_unrequested_blocks.py`, `p2p_compactblocks.py`.
+Examples tests are `p2p_unrequested_blocks.py`.
 
 ### test-framework modules
 

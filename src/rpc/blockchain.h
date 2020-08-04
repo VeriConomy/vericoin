@@ -18,7 +18,6 @@ class CBlockIndex;
 class CTxMemPool;
 class UniValue;
 
-static constexpr int NUM_GETBLOCKSTATS_PERCENTILES = 5;
 static constexpr double dminDifficulty = 0.00000048; //standard scrypt^2 difficulty minimum
 
 /**
@@ -44,8 +43,5 @@ UniValue MempoolToJSON(const CTxMemPool& pool, bool verbose = false);
 
 /** Block header to JSON */
 UniValue blockheaderToJSON(const CBlockIndex* tip, const CBlockIndex* blockindex) LOCKS_EXCLUDED(cs_main);
-
-/** Used by getblockstats to get feerates at different percentiles by weight  */
-void CalculatePercentilesByWeight(CAmount result[NUM_GETBLOCKSTATS_PERCENTILES], std::vector<std::pair<CAmount, int64_t>>& scores, int64_t total_weight);
 
 #endif

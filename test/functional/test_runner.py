@@ -83,7 +83,6 @@ BASE_SCRIPTS = [
     'feature_maxuploadtarget.py',
     'feature_block.py',
     'rpc_fundrawtransaction.py',
-    'p2p_compactblocks.py',
     # vv Tests less than 2m vv
     'wallet_basic.py',
     'wallet_labels.py',
@@ -100,7 +99,6 @@ BASE_SCRIPTS = [
     'wallet_listreceivedby.py',
     'feature_csv_activation.py',
     'rpc_rawtransaction.py',
-    'wallet_address_types.py',
     'feature_bip68_sequence.py',
     'p2p_feefilter.py',
     'feature_reindex.py',
@@ -130,7 +128,6 @@ BASE_SCRIPTS = [
     'wallet_reorgsrestore.py',
     'interface_http.py',
     'interface_rpc.py',
-    'rpc_psbt.py',
     'rpc_users.py',
     'feature_proxy.py',
     'rpc_signrawtransaction.py',

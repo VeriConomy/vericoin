@@ -46,11 +46,8 @@ class Variant(collections.namedtuple("Variant", "call data address_type rescan p
         rescan = self.rescan == Rescan.yes
 
         assert_equal(self.address["solvable"], True)
-        assert_equal(self.address["isscript"], self.address_type == AddressType.p2sh_segwit)
-        assert_equal(self.address["iswitness"], self.address_type == AddressType.bech32)
         if self.address["isscript"]:
             assert_equal(self.address["embedded"]["isscript"], False)
-            assert_equal(self.address["embedded"]["iswitness"], True)
 
         if self.call == Call.single:
             if self.data == Data.address:
@@ -62,23 +59,6 @@ class Variant(collections.namedtuple("Variant", "call data address_type rescan p
             assert_equal(response, None)
 
         elif self.call in (Call.multiaddress, Call.multiscript):
-            request = {
-                "scriptPubKey": {
-                    "address": self.address["address"]
-                } if self.call == Call.multiaddress else self.address["scriptPubKey"],
-                "timestamp": timestamp + TIMESTAMP_WINDOW + (1 if self.rescan == Rescan.late_timestamp else 0),
-                "pubkeys": [self.address["pubkey"]] if self.data == Data.pub else [],
-                "keys": [self.key] if self.data == Data.priv else [],
-                "label": self.label,
-                "watchonly": self.data != Data.priv
-            }
-            if self.address_type == AddressType.p2sh_segwit and self.data != Data.address:
-                # We need solving data when providing a pubkey or privkey as data
-                request.update({"redeemscript": self.address['embedded']['scriptPubKey']})
-            response = self.node.importmulti(
-                requests=[request],
-                options={"rescan": self.rescan in (Rescan.yes, Rescan.late_timestamp)},
-            )
             assert_equal(response, [{"success": True}])
 
     def check(self, txid=None, amount=None, confirmation_height=None):

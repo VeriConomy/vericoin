@@ -7,15 +7,10 @@ from collections import namedtuple
 
 from test_framework.address import (
     key_to_p2pkh,
-    key_to_p2sh_p2wpkh,
-    key_to_p2wpkh,
     script_to_p2sh,
-    script_to_p2sh_p2wsh,
-    script_to_p2wsh,
 )
 from test_framework.script import (
     CScript,
-    OP_0,
     OP_2,
     OP_3,
     OP_CHECKMULTISIG,
@@ -25,7 +20,6 @@ from test_framework.script import (
     OP_EQUALVERIFY,
     OP_HASH160,
     hash160,
-    sha256,
 )
 from test_framework.util import hex_str_to_bytes
 
@@ -33,21 +27,13 @@ Key = namedtuple('Key', ['privkey',
                          'pubkey',
                          'p2pkh_script',
                          'p2pkh_addr',
-                         'p2wpkh_script',
-                         'p2wpkh_addr',
-                         'p2sh_p2wpkh_script',
-                         'p2sh_p2wpkh_redeem_script',
-                         'p2sh_p2wpkh_addr'])
+                         'p2wpkh_script'])
 
 Multisig = namedtuple('Multisig', ['privkeys',
                                    'pubkeys',
                                    'p2sh_script',
                                    'p2sh_addr',
-                                   'redeem_script',
-                                   'p2wsh_script',
-                                   'p2wsh_addr',
-                                   'p2sh_p2wsh_script',
-                                   'p2sh_p2wsh_addr'])
+                                   'redeem_script',])
 
 def get_key(node):
     """Generate a fresh key on node
@@ -59,12 +45,7 @@ def get_key(node):
     return Key(privkey=node.dumpprivkey(addr),
                pubkey=pubkey,
                p2pkh_script=CScript([OP_DUP, OP_HASH160, pkh, OP_EQUALVERIFY, OP_CHECKSIG]).hex(),
-               p2pkh_addr=key_to_p2pkh(pubkey),
-               p2wpkh_script=CScript([OP_0, pkh]).hex(),
-               p2wpkh_addr=key_to_p2wpkh(pubkey),
-               p2sh_p2wpkh_script=CScript([OP_HASH160, hash160(CScript([OP_0, pkh])), OP_EQUAL]).hex(),
-               p2sh_p2wpkh_redeem_script=CScript([OP_0, pkh]).hex(),
-               p2sh_p2wpkh_addr=key_to_p2sh_p2wpkh(pubkey))
+               p2pkh_addr=key_to_p2pkh(pubkey))
 
 def get_multisig(node):
     """Generate a fresh 2-of-3 multisig on node
@@ -77,16 +58,11 @@ def get_multisig(node):
         addrs.append(addr['address'])
         pubkeys.append(addr['pubkey'])
     script_code = CScript([OP_2] + [hex_str_to_bytes(pubkey) for pubkey in pubkeys] + [OP_3, OP_CHECKMULTISIG])
-    witness_script = CScript([OP_0, sha256(script_code)])
     return Multisig(privkeys=[node.dumpprivkey(addr) for addr in addrs],
                     pubkeys=pubkeys,
                     p2sh_script=CScript([OP_HASH160, hash160(script_code), OP_EQUAL]).hex(),
                     p2sh_addr=script_to_p2sh(script_code),
-                    redeem_script=script_code.hex(),
-                    p2wsh_script=witness_script.hex(),
-                    p2wsh_addr=script_to_p2wsh(script_code),
-                    p2sh_p2wsh_script=CScript([OP_HASH160, witness_script, OP_EQUAL]).hex(),
-                    p2sh_p2wsh_addr=script_to_p2sh_p2wsh(script_code))
+                    redeem_script=script_code.hex())
 
 def test_address(node, address, **kwargs):
     """Get address info for `address` and test whether the returned values are as expected."""

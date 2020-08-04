@@ -4,12 +4,6 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Utilities for manipulating blocks and transactions."""
 
-from .address import (
-    key_to_p2sh_p2wpkh,
-    key_to_p2wpkh,
-    script_to_p2sh_p2wsh,
-    script_to_p2wsh,
-)
 from .messages import (
     CBlock,
     COIN,
@@ -18,8 +12,6 @@ from .messages import (
     CTxIn,
     CTxInWitness,
     CTxOut,
-    FromHex,
-    ToHex,
     hash256,
     hex_str_to_bytes,
     ser_uint256,
@@ -184,36 +176,3 @@ def witness_script(use_p2wsh, pubkey):
         scripthash = sha256(witness_program)
         pkscript = CScript([OP_0, scripthash])
     return pkscript.hex()
-
-def create_witness_tx(node, use_p2wsh, utxo, pubkey, encode_p2sh, amount):
-    """Return a transaction (in hex) that spends the given utxo to a segwit output.
-
-    Optionally wrap the segwit output using P2SH."""
-    if use_p2wsh:
-        program = CScript([OP_1, hex_str_to_bytes(pubkey), OP_1, OP_CHECKMULTISIG])
-        addr = script_to_p2sh_p2wsh(program) if encode_p2sh else script_to_p2wsh(program)
-    else:
-        addr = key_to_p2sh_p2wpkh(pubkey) if encode_p2sh else key_to_p2wpkh(pubkey)
-    if not encode_p2sh:
-        assert_equal(node.getaddressinfo(addr)['scriptPubKey'], witness_script(use_p2wsh, pubkey))
-    return node.createrawtransaction([utxo], {addr: amount})
-
-def send_to_witness(use_p2wsh, node, utxo, pubkey, encode_p2sh, amount, sign=True, insert_redeem_script=""):
-    """Create a transaction spending a given utxo to a segwit output.
-
-    The output corresponds to the given pubkey: use_p2wsh determines whether to
-    use P2WPKH or P2WSH; encode_p2sh determines whether to wrap in P2SH.
-    sign=True will have the given node sign the transaction.
-    insert_redeem_script will be added to the scriptSig, if given."""
-    tx_to_witness = create_witness_tx(node, use_p2wsh, utxo, pubkey, encode_p2sh, amount)
-    if (sign):
-        signed = node.signrawtransactionwithwallet(tx_to_witness)
-        assert "errors" not in signed or len(["errors"]) == 0
-        return node.sendrawtransaction(signed["hex"])
-    else:
-        if (insert_redeem_script):
-            tx = FromHex(CTransaction(), tx_to_witness)
-            tx.vin[0].scriptSig += CScript([hex_str_to_bytes(insert_redeem_script)])
-            tx_to_witness = ToHex(tx)
-
-    return node.sendrawtransaction(tx_to_witness)
