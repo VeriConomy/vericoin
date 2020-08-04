@@ -5,7 +5,6 @@
 #include <key_io.h>
 
 #include <base58.h>
-#include <bech32.h>
 #include <script/script.h>
 #include <util/strencodings.h>
 
@@ -42,31 +41,22 @@ public:
 
     std::string operator()(const WitnessV0KeyHash& id) const
     {
-        std::vector<unsigned char> data = {0};
-        data.reserve(33);
-        ConvertBits<8, 5, true>([&](unsigned char c) { data.push_back(c); }, id.begin(), id.end());
-        return bech32::Encode(m_params.Bech32HRP(), data);
+        // XXX: Need to remove witness code
+        return "";
     }
 
     std::string operator()(const WitnessV0ScriptHash& id) const
     {
-        std::vector<unsigned char> data = {0};
-        data.reserve(53);
-        ConvertBits<8, 5, true>([&](unsigned char c) { data.push_back(c); }, id.begin(), id.end());
-        return bech32::Encode(m_params.Bech32HRP(), data);
+        // XXX: Need to remove witness code
+        return "";
     }
 
     std::string operator()(const WitnessUnknown& id) const
     {
-        if (id.version < 1 || id.version > 16 || id.length < 2 || id.length > 40) {
-            return {};
-        }
-        std::vector<unsigned char> data = {(unsigned char)id.version};
-        data.reserve(1 + (id.length * 8 + 4) / 5);
-        ConvertBits<8, 5, true>([&](unsigned char c) { data.push_back(c); }, id.program, id.program + id.length);
-        return bech32::Encode(m_params.Bech32HRP(), data);
-    }
+        // XXX: Need to remove witness code
+        return "";
 
+    }
     std::string operator()(const CNoDestination& no) const { return {}; }
 };
 
@@ -89,41 +79,6 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
         if (data.size() == hash.size() + script_prefix.size() && std::equal(script_prefix.begin(), script_prefix.end(), data.begin())) {
             std::copy(data.begin() + script_prefix.size(), data.end(), hash.begin());
             return ScriptHash(hash);
-        }
-    }
-    data.clear();
-    auto bech = bech32::Decode(str);
-    if (bech.second.size() > 0 && bech.first == params.Bech32HRP()) {
-        // Bech32 decoding
-        int version = bech.second[0]; // The first 5 bit symbol is the witness version (0-16)
-        // The rest of the symbols are converted witness program bytes.
-        data.reserve(((bech.second.size() - 1) * 5) / 8);
-        if (ConvertBits<5, 8, false>([&](unsigned char c) { data.push_back(c); }, bech.second.begin() + 1, bech.second.end())) {
-            if (version == 0) {
-                {
-                    WitnessV0KeyHash keyid;
-                    if (data.size() == keyid.size()) {
-                        std::copy(data.begin(), data.end(), keyid.begin());
-                        return keyid;
-                    }
-                }
-                {
-                    WitnessV0ScriptHash scriptid;
-                    if (data.size() == scriptid.size()) {
-                        std::copy(data.begin(), data.end(), scriptid.begin());
-                        return scriptid;
-                    }
-                }
-                return CNoDestination();
-            }
-            if (version > 16 || data.size() < 2 || data.size() > 40) {
-                return CNoDestination();
-            }
-            WitnessUnknown unk;
-            unk.version = version;
-            std::copy(data.begin(), data.end(), unk.program);
-            unk.length = data.size();
-            return unk;
         }
     }
     return CNoDestination();

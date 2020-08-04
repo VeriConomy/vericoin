@@ -105,7 +105,6 @@ BITCOIN_CORE_H = \
   attributes.h \
   banman.h \
   base58.h \
-  bech32.h \
   bignum.h \
   bloom.h \
   blockencodings.h \
@@ -459,7 +458,6 @@ libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
   base58.cpp \
-  bech32.cpp \
   bloom.cpp \
   chainparams.cpp \
   coins.cpp \
