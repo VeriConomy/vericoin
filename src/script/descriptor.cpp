@@ -110,7 +110,7 @@ std::string DescriptorChecksum(const Span<const char>& span)
         "IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~"
         "ijklmnopqrstuvwxyzABCDEFGH`#\"\\ ";
 
-    /** The character set for the checksum itself. */
+    /** The character set for the checksum itself (same as bech32). */
     static std::string CHECKSUM_CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
     uint64_t c = 1;

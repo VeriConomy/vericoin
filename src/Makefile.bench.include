@@ -35,6 +35,7 @@ bench_bench_verium_SOURCES = \
   bench/util_time.cpp \
   bench/verify_script.cpp \
   bench/base58.cpp \
+  bench/bech32.cpp \
   bench/lockedpool.cpp \
   bench/poly1305.cpp \
   bench/prevector.cpp \
