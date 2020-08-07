@@ -357,6 +357,7 @@ public:
     {
         RPCRunLater(name, std::move(fn), seconds);
     }
+    int rpcSerializationFlags() override { return RPCSerializationFlags(); }
     void requestMempoolTransactions(Notifications& notifications) override
     {
         LOCK2(::cs_main, ::mempool.cs);
