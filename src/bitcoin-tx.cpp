@@ -308,12 +308,22 @@ static void MutateTxAddOutPubKey(CMutableTransaction& tx, const std::string& str
     CScript scriptPubKey = GetScriptForRawPubKey(pubkey);
 
     // Extract and validate FLAGS
+    // bool bSegWit = false;
     bool bScriptHash = false;
     if (vStrInputParts.size() == 3) {
         std::string flags = vStrInputParts[2];
+        // bSegWit = (flags.find('W') != std::string::npos);
         bScriptHash = (flags.find('S') != std::string::npos);
     }
-
+#if 0
+    if (bSegWit) {
+        if (!pubkey.IsCompressed()) {
+            throw std::runtime_error("Uncompressed pubkeys are not useable for SegWit outputs");
+        }
+        // Call GetScriptForWitness() to build a P2WSH scriptPubKey
+        scriptPubKey = GetScriptForWitness(scriptPubKey);
+    }
+#endif
     if (bScriptHash) {
         // Get the ID for the script, and then construct a P2SH destination for it.
         scriptPubKey = GetScriptForDestination(ScriptHash(scriptPubKey));
@@ -361,9 +371,11 @@ static void MutateTxAddOutMultiSig(CMutableTransaction& tx, const std::string& s
     }
 
     // Extract FLAGS
+    // bool bSegWit = false;
     bool bScriptHash = false;
     if (vStrInputParts.size() == numkeys + 4) {
         std::string flags = vStrInputParts.back();
+        // bSegWit = (flags.find('W') != std::string::npos);
         bScriptHash = (flags.find('S') != std::string::npos);
     }
     else if (vStrInputParts.size() > numkeys + 4) {
@@ -372,7 +384,17 @@ static void MutateTxAddOutMultiSig(CMutableTransaction& tx, const std::string& s
     }
 
     CScript scriptPubKey = GetScriptForMultisig(required, pubkeys);
-
+#if 0
+    if (bSegWit) {
+        for (const CPubKey& pubkey : pubkeys) {
+            if (!pubkey.IsCompressed()) {
+                throw std::runtime_error("Uncompressed pubkeys are not useable for SegWit outputs");
+            }
+        }
+        // Call GetScriptForWitness() to build a P2WSH scriptPubKey
+        scriptPubKey = GetScriptForWitness(scriptPubKey);
+    }
+#endif
     if (bScriptHash) {
         if (scriptPubKey.size() > MAX_SCRIPT_ELEMENT_SIZE) {
             throw std::runtime_error(strprintf(
@@ -430,9 +452,11 @@ static void MutateTxAddOutScript(CMutableTransaction& tx, const std::string& str
     CScript scriptPubKey = ParseScript(strScript);
 
     // Extract FLAGS
+    // bool bSegWit = false;
     bool bScriptHash = false;
     if (vStrInputParts.size() == 3) {
         std::string flags = vStrInputParts.back();
+        // bSegWit = (flags.find('W') != std::string::npos);
         bScriptHash = (flags.find('S') != std::string::npos);
     }
 
@@ -440,6 +464,11 @@ static void MutateTxAddOutScript(CMutableTransaction& tx, const std::string& str
         throw std::runtime_error(strprintf(
                     "script exceeds size limit: %d > %d", scriptPubKey.size(), MAX_SCRIPT_SIZE));
     }
+#if 0
+    if (bSegWit) {
+        scriptPubKey = GetScriptForWitness(scriptPubKey);
+    }
+#endif
     if (bScriptHash) {
         if (scriptPubKey.size() > MAX_SCRIPT_ELEMENT_SIZE) {
             throw std::runtime_error(strprintf(
