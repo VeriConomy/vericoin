@@ -48,8 +48,15 @@ struct DisconnectedBlockTransactions;
 struct PrecomputedTransactionData;
 struct LockPoints;
 
-/** Default for -minrelaytxfee, minimum relay fee for transactions */
-static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = 20000000;
+
+/** Fee Settings */
+/** Original Min fee to authorize a TX */
+static const unsigned int MIN_TX_FEE = 20000000
+static const unsigned int MIN_INCREMENTAL_TX_FEE = 10000000
+/** VIP1 Min fee */
+static const unsigned int VIP1_MIN_TX_FEE = 100000
+static const unsigned int VIP1_MIN_INCREMENTAL_TX_FEE = 100000
+
 /** Default for -limitancestorcount, max number of in-mempool ancestors */
 static const unsigned int DEFAULT_ANCESTOR_LIMIT = 25;
 /** Default for -limitancestorsize, maximum kilobytes of tx + all in-mempool ancestors */
@@ -189,6 +196,18 @@ static const unsigned int DEFAULT_CHECKLEVEL = 3;
 // one 128MB block file + added 15% undo data = 147MB greater for a total of 545MB
 // Setting the target to >= 550 MiB will make it likely we can respect the target.
 static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
+
+/**
+ * Compute minimum starting transaction fee base on the current block height
+ * Implement VIP1
+ */
+unsigned int GetTxFee();
+/**
+ * Compute minimum incremental transaction fee by KB base on the current block height
+ * Implement VIP1
+ */
+unsigned int GetMinIncrementalTxFee();
+CFeeRate GetMinTxFeeRate();
 
 /**
  * Process an incoming block. This only returns after the best known valid

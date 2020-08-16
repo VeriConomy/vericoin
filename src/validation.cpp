@@ -60,6 +60,35 @@
 #define MICRO 0.000001
 #define MILLI 0.001
 
+
+/**
+ * Min Fees
+ */
+unsigned int GetMinTxFee() {
+    int nBlockHeight = ::ChainActive().Height() + 1;
+    if( nBlockHeight < Params().GetConsensus().VIP1Height)
+        return MIN_TX_FEE
+    else
+        return VIP1_MIN_TX_FEE;
+}
+unsigned int GetMinIncrementalTxFee() {
+    int nBlockHeight = ::ChainActive().Height() + 1;
+    if( nBlockHeight < Params().GetConsensus().VIP1Height)
+        return MIN_INCREMENTAL_TX_FEE
+    else
+        return VIP1_MIN_INCREMENTAL_TX_FEE;
+}
+
+CFeeRate GetMinTxFeeRate() {
+    return CFeeRate(GetMinTxFee(), GetMinIncrementalTxFee())
+    int nBlockHeight = ::ChainActive().Height() + 1;
+    if( nBlockHeight < Params().GetConsensus().VIP1Height)
+        return MIN_INCREMENTAL_TX_FEE
+    else
+        return VIP1_MIN_INCREMENTAL_TX_FEE;
+}
+
+
 bool CBlockIndexWorkComparator::operator()(const CBlockIndex *pa, const CBlockIndex *pb) const {
     // First sort by most total work, ...
     if (pa->nChainWork > pb->nChainWork) return false;
