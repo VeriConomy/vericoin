@@ -63,14 +63,16 @@ public:
         consensus.nPowTargetSpacing = 5 * 60;  // not used for consensus in Verium as it's variable, but used to indicate age of data
         consensus.nPowTargetTimespan = 2 * 24 * 60 * 60; // two days
         consensus.fPowNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 547; // 95% of nMinerConfirmationWindow
-        consensus.nMinerConfirmationWindow = 576; // nPowTargetTimespan / nPowTargetSpacing
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
+
+        // Let's start with VIP (Verium Improvement Protocol)
+        // XXX: Use it and set a correct value
+        consensus.VIP1Height = 500000; // Change Min Fee
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.

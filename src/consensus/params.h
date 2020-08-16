@@ -18,16 +18,15 @@ namespace Consensus {
  */
 struct Params {
     uint256 hashGenesisBlock;
-    /** Don't warn about unknown BIP 9 activations below this height.
-     * This prevents us from warning about the CSV and segwit activations. */
-    uint32_t nRuleChangeActivationThreshold;
-    uint32_t nMinerConfirmationWindow;
     /** Proof of work parameters */
     bool fPowNoRetargeting;
     int64_t nPowTargetTimespan;
     int64_t nPowTargetSpacing;
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
+
+    /** VIP */
+    int VIP1Height;
 };
 } // namespace Consensus
 
