@@ -149,6 +149,7 @@ NODISCARD static bool CreatePidFile()
 //
 
 bool fBootstrap = false;
+bool fEnforceMinRelayTxFee = false;
 static std::unique_ptr<ECCVerifyHandle> globalVerifyHandle;
 
 static boost::thread_group threadGroup;
@@ -1089,9 +1090,16 @@ bool AppInitParameterInteraction()
         if (!ParseMoney(gArgs.GetArg("-minrelaytxfee", ""), n)) {
             return InitError(AmountErrMsg("minrelaytxfee", gArgs.GetArg("-minrelaytxfee", "")).translated);
         }
+
+        if (CFeeRate(n) < GetMinTxFeeRate()) {
+            return InitError(strprintf("minrelaytxfee cannot be lower than min incremental fee %s", GetMinTxFeeRate().ToString());
+        }
+
         // High fee check is done afterward in CWallet::CreateWalletFromFile()
+        fEnforceMinRelayTxFee = true;
         ::minRelayTxFee = CFeeRate(n);
     }
+
 
     // Feerate used to define dust.  Shouldn't be changed lightly as old
     // implementations may inadvertently create non-standard transactions

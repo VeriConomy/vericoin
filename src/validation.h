@@ -52,7 +52,7 @@ struct LockPoints;
 /** Fee Settings */
 /** Original Min fee to authorize a TX */
 static const unsigned int MIN_TX_FEE = 20000000
-static const unsigned int MIN_INCREMENTAL_TX_FEE = 10000000
+static const unsigned int MIN_INCREMENTAL_TX_FEE = 20000000
 /** VIP1 Min fee */
 static const unsigned int VIP1_MIN_TX_FEE = 100000
 static const unsigned int VIP1_MIN_INCREMENTAL_TX_FEE = 100000

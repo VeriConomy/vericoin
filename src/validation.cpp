@@ -80,12 +80,7 @@ unsigned int GetMinIncrementalTxFee() {
 }
 
 CFeeRate GetMinTxFeeRate() {
-    return CFeeRate(GetMinTxFee(), GetMinIncrementalTxFee())
-    int nBlockHeight = ::ChainActive().Height() + 1;
-    if( nBlockHeight < Params().GetConsensus().VIP1Height)
-        return MIN_INCREMENTAL_TX_FEE
-    else
-        return VIP1_MIN_INCREMENTAL_TX_FEE;
+    return CFeeRate(GetMinIncrementalTxFee())
 }
 
 
