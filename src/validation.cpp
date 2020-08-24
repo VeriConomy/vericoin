@@ -67,22 +67,28 @@
 unsigned int GetMinTxFee() {
     int nBlockHeight = ::ChainActive().Height() + 1;
     if( nBlockHeight < Params().GetConsensus().VIP1Height)
-        return MIN_TX_FEE
+        return MIN_TX_FEE;
     else
         return VIP1_MIN_TX_FEE;
 }
 unsigned int GetMinIncrementalTxFee() {
     int nBlockHeight = ::ChainActive().Height() + 1;
     if( nBlockHeight < Params().GetConsensus().VIP1Height)
-        return MIN_INCREMENTAL_TX_FEE
+        return MIN_INCREMENTAL_TX_FEE;
     else
         return VIP1_MIN_INCREMENTAL_TX_FEE;
 }
 
 CFeeRate GetMinTxFeeRate() {
-    return CFeeRate(GetMinIncrementalTxFee())
+    return CFeeRate(GetMinIncrementalTxFee());
 }
 
+CFeeRate GetMinRelayTxFeeRate() {
+    if( fEnforceMinRelayTxFee ) 
+        return minRelayTxFee;
+    else
+        return GetMinTxFeeRate();
+}
 
 bool CBlockIndexWorkComparator::operator()(const CBlockIndex *pa, const CBlockIndex *pb) const {
     // First sort by most total work, ...
@@ -148,8 +154,7 @@ int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 
 uint256 hashAssumeValid;
 arith_uint256 nMinimumChainWork;
-
-CFeeRate minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
+CFeeRate minRelayTxFee;
 
 CTxMemPool mempool;
 /** Constant stuff for coinbase transactions we create: */
@@ -720,6 +725,7 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
         return state.Invalid(ValidationInvalidReason::TX_NOT_STANDARD, false, REJECT_NONSTANDARD, "bad-txns-too-many-sigops",
                 strprintf("%d", nSigOpsCost));
 
+    // XXX: FeeCheck
     // No transactions are allowed below minRelayTxFee except from disconnected
     // blocks
     if (!bypass_limits && !CheckFeeRate(nSize, nModifiedFees, state)) return false;
@@ -2025,6 +2031,9 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         }
         UpdateCoins(tx, view, i == 0 ? undoDummy : blockundo.vtxundo.back(), pindex->nHeight);
     }
+
+    // XXX: FeeCheck
+
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint(BCLog::BENCH, "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs (%.2fms/blk)]\n", (unsigned)block.vtx.size(), MILLI * (nTime3 - nTime2), MILLI * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : MILLI * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * MICRO, nTimeConnect * MILLI / nBlocksTotal);
 
