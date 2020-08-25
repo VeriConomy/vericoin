@@ -270,8 +270,8 @@ void Shutdown(InitInterfaces& interfaces)
         try {
             applyBootstrap();
         } catch(std::exception &e) {
-			LogPrintf("%s: Unable to change databse: %s\n",__func__,e.what());
-		}
+            LogPrintf("%s: Unable to change databse: %s\n",__func__,e.what());
+        }
     }
 
     try {

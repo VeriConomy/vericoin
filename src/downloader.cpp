@@ -137,7 +137,7 @@ void applyBootstrap() {
     }
     if (boost::filesystem::exists(pathBootstrap)){
         boost::filesystem::remove(pathBootstrap);
-	}
+    }
 }
 
 void downloadBootstrap() {

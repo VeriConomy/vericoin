@@ -513,9 +513,9 @@ bool CheckWork(CBlock* pblock)
     if (hashBlock > hashTarget){
         return error("CheckWork() : proof-of-work not meeting target");
     } else {
-	    if (pblock->hashPrevBlock != pindexPrev->GetBlockHash()){
-			return error("CheckWork() : generated block is stale");
-		}
+        if (pblock->hashPrevBlock != pindexPrev->GetBlockHash()){
+            return error("CheckWork() : generated block is stale");
+        }
 
         pblock->print();
         LogPrintf("New proof-of-work block found with: %s coins generated.\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
@@ -586,10 +586,10 @@ void Miner(CWallet *pwallet)
     {
         while (fGenerateVerium && memory)
         {
-			while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
+            while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
                 LogPrintf("Mining inactive while chain is syncing...\n");
-				MilliSleep(5000);
-			}
+                MilliSleep(5000);
+            }
 
             // Create new block
             unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
