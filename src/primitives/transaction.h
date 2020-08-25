@@ -357,7 +357,7 @@ struct CMutableTransaction
     {
         return false;
     }
-    
+
     void print() const
     {
         LogPrintf("%s", ToString().c_str());

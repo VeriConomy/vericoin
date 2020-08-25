@@ -84,7 +84,7 @@ CFeeRate GetMinTxFeeRate() {
 }
 
 CFeeRate GetMinRelayTxFeeRate() {
-    if( fEnforceMinRelayTxFee ) 
+    if( fEnforceMinRelayTxFee )
         return minRelayTxFee;
     else
         return GetMinTxFeeRate();

@@ -209,22 +209,22 @@ void scrypt_core(uint32_t *X, uint32_t *V, int N)
 
 static inline void scrypt_shuffle(uint32_t B[16])
 {
-	uint32_t x0 = 	B[0]; 
-	uint32_t x1 = 	B[1]; 
+	uint32_t x0 = 	B[0];
+	uint32_t x1 = 	B[1];
 	uint32_t x2 = 	B[2];
-	uint32_t x3 = 	B[3]; 
+	uint32_t x3 = 	B[3];
 	uint32_t x4 = 	B[4];
-	uint32_t x5 = 	B[5]; 
-	uint32_t x6 = 	B[6]; 
-	uint32_t x7 = 	B[7]; 
-	uint32_t x8 = 	B[8]; 
-	uint32_t x9 = 	B[9]; 
-	uint32_t x10 = B[10]; 
-	uint32_t x11 = B[11]; 
+	uint32_t x5 = 	B[5];
+	uint32_t x6 = 	B[6];
+	uint32_t x7 = 	B[7];
+	uint32_t x8 = 	B[8];
+	uint32_t x9 = 	B[9];
+	uint32_t x10 = B[10];
+	uint32_t x11 = B[11];
 	uint32_t x12 = B[12];
-	uint32_t x13 = B[13]; 
-	uint32_t x14 = B[14]; 
-	uint32_t x15 = B[15]; 
+	uint32_t x13 = B[13];
+	uint32_t x14 = B[14];
+	uint32_t x15 = B[15];
 
 	B[0] = x0;  B[1] = x5;  B[2] = x10;  B[3] = x15;
 	B[4] = x12; B[5] = x1;  B[6] = x6;   B[7] = x11;
@@ -334,7 +334,7 @@ void scrypt_core_3way(uint32_t B[32 * 3], uint32_t *V, uint32_t N)
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[0], 25);
 			q_a.val[3] = veorq_u32(q_tmp.val[1], q_a.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[2], 7);
-			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]); 
+			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]);
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[2], 25);
 			q_b.val[3] = veorq_u32(q_tmp.val[1], q_b.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[3], 7); 				
@@ -509,7 +509,7 @@ void scrypt_core_3way(uint32_t B[32 * 3], uint32_t *V, uint32_t N)
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[0], 25);
 			q_a.val[3] = veorq_u32(q_tmp.val[1], q_a.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[2], 7);
-			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]); 
+			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]);
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[2], 25);
 			q_b.val[3] = veorq_u32(q_tmp.val[1], q_b.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[3], 7); 				
@@ -738,7 +738,7 @@ void scrypt_core_3way(uint32_t B[32 * 3], uint32_t *V, uint32_t N)
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[0], 25);
 			q_a.val[3] = veorq_u32(q_tmp.val[1], q_a.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[2], 7);
-			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]); 
+			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]);
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[2], 25);
 			q_b.val[3] = veorq_u32(q_tmp.val[1], q_b.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[3], 7); 				
@@ -904,7 +904,7 @@ void scrypt_core_3way(uint32_t B[32 * 3], uint32_t *V, uint32_t N)
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[0], 25);
 			q_a.val[3] = veorq_u32(q_tmp.val[1], q_a.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[2], 7);
-			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]); 
+			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]);
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[2], 25);
 			q_b.val[3] = veorq_u32(q_tmp.val[1], q_b.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[3], 7); 				
@@ -1030,7 +1030,7 @@ void scrypt_core_3way(uint32_t B[32 * 3], uint32_t *V, uint32_t N)
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[0], 25);
 			q_a.val[3] = veorq_u32(q_tmp.val[1], q_a.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[2], 7);
-			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]); 
+			q_tmp.val[3] = vaddq_u32(q_c.val[0], q_c.val[1]);
 			q_tmp.val[1] = vsriq_n_u32(q_tmp.val[1], q_tmp.val[2], 25);
 			q_b.val[3] = veorq_u32(q_tmp.val[1], q_b.val[3]);
 			q_tmp.val[1] = vshlq_n_u32(q_tmp.val[3], 7); 				
