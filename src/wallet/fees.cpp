@@ -28,7 +28,7 @@ CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinC
 
 CFeeRate GetRequiredFeeRate(const CWallet& wallet)
 {
-    return std::max(wallet.m_min_fee, wallet.chain().relayMinFee());
+    return wallet.chain().relayMinFee();
 }
 
 CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_control, FeeCalculation* feeCalc)

@@ -316,7 +316,7 @@ public:
     {
         return ::mempool.GetMinFee(gArgs.GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000);
     }
-    CFeeRate relayMinFee() override { return ::minRelayTxFee; }
+    CFeeRate relayMinFee() override { return GetMinRelayTxFeeRate(); }
     CFeeRate relayDustFee() override { return ::dustRelayFee; }
     bool havePruned() override
     {
