@@ -71,16 +71,9 @@ unsigned int GetMinTxFee() {
     else
         return VIP1_MIN_TX_FEE;
 }
-unsigned int GetMinIncrementalTxFee() {
-    int nBlockHeight = ::ChainActive().Height() + 1;
-    if( nBlockHeight < Params().GetConsensus().VIP1Height)
-        return MIN_INCREMENTAL_TX_FEE;
-    else
-        return VIP1_MIN_INCREMENTAL_TX_FEE;
-}
 
 CFeeRate GetMinTxFeeRate() {
-    return CFeeRate(GetMinIncrementalTxFee());
+    return CFeeRate(GetMinTxFee());
 }
 
 CFeeRate GetMinRelayTxFeeRate() {
@@ -521,7 +514,7 @@ private:
     // Compare a package's feerate against minimum allowed.
     bool CheckFeeRate(size_t package_size, CAmount package_fee, CValidationState& state)
     {
-        CAmount mempoolRejectFee = m_pool.GetMinFee(gArgs.GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000).GetFee(package_size);
+        CAmount mempoolRejectFee = m_pool.GetMinFee().GetFee(package_size);
         if (mempoolRejectFee > 0 && package_fee < mempoolRejectFee) {
             return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "mempool min fee not met", strprintf("%d < %d", package_fee, mempoolRejectFee));
         }

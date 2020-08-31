@@ -446,12 +446,6 @@ private:
     uint64_t totalTxSize;      //!< sum of all mempool tx's virtual sizes. Differs from serialized tx size since witness data is discounted. Defined in BIP 141.
     uint64_t cachedInnerUsage; //!< sum of dynamic memory usage of all the map elements (NOT the maps themselves)
 
-    mutable int64_t lastRollingFeeUpdate;
-    mutable bool blockSinceLastRollingFeeBump;
-    mutable double rollingMinimumFeeRate; //!< minimum fee to get into the pool, decreases exponentially
-
-    void trackPackageRemoved(const CFeeRate& rate) EXCLUSIVE_LOCKS_REQUIRED(cs);
-
     bool m_is_loaded GUARDED_BY(cs){false};
 
 public:
@@ -642,7 +636,7 @@ public:
     /** The minimum fee to get into the mempool, which may itself not be enough
       *  for larger-sized transactions.
       */
-    CFeeRate GetMinFee(size_t sizelimit) const;
+    CFeeRate GetMinFee() const;
 
     /** Remove transactions from the mempool until its dynamic size is <= sizelimit.
       *  pvNoSpendsRemaining, if set, will be populated with the list of outpoints

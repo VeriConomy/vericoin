@@ -51,10 +51,8 @@ struct LockPoints;
 /** Fee Settings */
 /** Original Min fee to authorize a TX */
 static const unsigned int MIN_TX_FEE = 20000000;
-static const unsigned int MIN_INCREMENTAL_TX_FEE = 20000000;
 /** VIP1 Min fee */
 static const unsigned int VIP1_MIN_TX_FEE = 100000;
-static const unsigned int VIP1_MIN_INCREMENTAL_TX_FEE = 100000;
 
 /** Default for -limitancestorcount, max number of in-mempool ancestors */
 static const unsigned int DEFAULT_ANCESTOR_LIMIT = 25;
@@ -199,15 +197,10 @@ static const unsigned int DEFAULT_CHECKLEVEL = 3;
 static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
 
 /**
- * Compute minimum starting transaction fee base on the current block height
- * Implement VIP1
- */
-unsigned int GetTxFee();
-/**
  * Compute minimum incremental transaction fee by KB base on the current block height
  * Implement VIP1
  */
-unsigned int GetMinIncrementalTxFee();
+unsigned int GetMinTxFee();
 CFeeRate GetMinTxFeeRate();
 CFeeRate GetMinRelayTxFeeRate();
 
