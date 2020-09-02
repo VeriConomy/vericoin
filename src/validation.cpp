@@ -514,13 +514,13 @@ private:
     // Compare a package's feerate against minimum allowed.
     bool CheckFeeRate(size_t package_size, CAmount package_fee, CValidationState& state)
     {
-        CAmount mempoolRejectFee = m_pool.GetMinFee().GetFee(package_size);
+        CAmount mempoolRejectFee = m_pool.GetMinFee().GetFee(package_size, true);
         if (mempoolRejectFee > 0 && package_fee < mempoolRejectFee) {
             return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "mempool min fee not met", strprintf("%d < %d", package_fee, mempoolRejectFee));
         }
 
-        if (package_fee < GetMinRelayTxFeeRate().GetFee(package_size)) {
-            return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "min relay fee not met", strprintf("%d < %d", package_fee, GetMinRelayTxFeeRate().GetFee(package_size)));
+        if (package_fee < GetMinRelayTxFeeRate().GetFee(package_size, true)) {
+            return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "min relay fee not met", strprintf("%d < %d", package_fee, GetMinRelayTxFeeRate().GetFee(package_size, true)));
         }
         return true;
     }
@@ -833,7 +833,7 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
             // mean high feerate children are ignored when deciding whether
             // or not to replace, we do require the replacement to pay more
             // overall fees too, mitigating most cases.
-            CFeeRate oldFeeRate(mi->GetModifiedFee(), mi->GetTxSize());
+            CFeeRate oldFeeRate(mi->GetModifiedFee(), mi->GetTxSize(), true);
             if (newFeeRate <= oldFeeRate)
             {
                 return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "insufficient fee",

@@ -790,7 +790,7 @@ static UniValue sendrawtransaction(const JSONRPCRequest& request)
     }
 
     int64_t virtual_size = GetVirtualTransactionSize(*tx);
-    CAmount max_raw_tx_fee = max_raw_tx_fee_rate.GetFee(virtual_size);
+    CAmount max_raw_tx_fee = max_raw_tx_fee_rate.GetFee(virtual_size, true);
 
     std::string err_string;
     AssertLockNotHeld(cs_main);
@@ -864,7 +864,7 @@ static UniValue testmempoolaccept(const JSONRPCRequest& request)
     }
 
     int64_t virtual_size = GetVirtualTransactionSize(*tx);
-    CAmount max_raw_tx_fee = max_raw_tx_fee_rate.GetFee(virtual_size);
+    CAmount max_raw_tx_fee = max_raw_tx_fee_rate.GetFee(virtual_size, true);
 
     UniValue result(UniValue::VARR);
     UniValue result_0(UniValue::VOBJ);
