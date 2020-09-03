@@ -6,6 +6,8 @@
 #include <policy/feerate.h>
 
 #include <tinyformat.h>
+#include <cmath>
+
 
 const std::string CURRENCY_UNIT = "VRM";
 
@@ -36,7 +38,7 @@ CAmount CFeeRate::GetFee(size_t nBytes_, bool addStartFee) const
     assert(nBytes_ <= uint64_t(std::numeric_limits<int64_t>::max()));
     int64_t nSize = int64_t(nBytes_);
 
-    CAmount nFee = nSatoshisPerK * nSize / 1000;
+    CAmount nFee = nSatoshisPerK * floor(nSize / 1000);
 
     // Let's add startFee that are equal to nSatoshisPerK
     if (addStartFee)
