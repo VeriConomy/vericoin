@@ -317,6 +317,7 @@ public:
         return ::mempool.GetMinFee();
     }
     CFeeRate relayMinFee() override { return GetMinRelayTxFeeRate(); }
+    CFeeRate getMinTxFeeRate() override { return GetMinTxFeeRate(); }
     CFeeRate relayDustFee() override { return ::dustRelayFee; }
     bool havePruned() override
     {

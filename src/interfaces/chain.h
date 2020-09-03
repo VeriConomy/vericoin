@@ -172,6 +172,9 @@ public:
     //! Relay current minimum fee (from -minrelaytxfee).
     virtual CFeeRate relayMinFee() = 0;
 
+    //! current minimum transaction fee .
+    virtual CFeeRate getMinTxFeeRate() = 0;
+
     //! Relay dust fee setting (-dustrelayfee), reflecting lowest rate it's economical to spend.
     virtual CFeeRate relayDustFee() = 0;
 
