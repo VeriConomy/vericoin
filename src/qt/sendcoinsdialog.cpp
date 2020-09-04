@@ -115,13 +115,15 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
         settings.setValue("nFeeRadio", 1); // custom
     if (!settings.contains("nFeeRadio"))
         settings.setValue("nFeeRadio", 0); // recommended
-    if (!settings.contains("nTransactionFee"))
-        settings.setValue("nTransactionFee", (qint64)DEFAULT_PAY_TX_FEE);
+
     ui->groupFee->setId(ui->radioMinimumFee, 0);
     ui->groupFee->setId(ui->radioCustomFee, 1);
     ui->groupFee->button((int)std::max(0, std::min(1, settings.value("nFeeRadio").toInt())))->setChecked(true);
     ui->customFee->SetAllowEmpty(false);
-    ui->customFee->setValue(settings.value("nTransactionFee").toLongLong());
+
+    if (settings.contains("nTransactionFee"))
+        ui->customFee->setValue(settings.value("nTransactionFee").toLongLong());
+
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 }
 

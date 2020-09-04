@@ -26,6 +26,11 @@ CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes);
 CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinControl& coin_control, FeeCalculation* feeCalc);
 
 /**
+ * Return the default PayTxFee
+ */
+CFeeRate GetPayTxFee(const CWallet& wallet);
+
+/**
  * Return the minimum required feerate taking into account the
  * minimum relay feerate and user set minimum transaction feerate
  */

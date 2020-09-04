@@ -4307,6 +4307,8 @@ std::shared_ptr<CWallet> CWallet::CreateWalletFromFile(interfaces::Chain& chain,
             chain.initWarning(AmountHighWarn("-paytxfee").translated + " " +
                               _("This is the transaction fee you will pay if you send a transaction.").translated);
         }
+
+        walletInstance->fEnforcePayTxFee = true;
         walletInstance->m_pay_tx_fee = CFeeRate(nFeePerK, 1000);
         if (walletInstance->m_pay_tx_fee < chain.relayMinFee()) {
             chain.initError(strprintf(_("Invalid amount for -paytxfee=<amount>: '%s' (must be at least %s)").translated,
