@@ -200,8 +200,8 @@ static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
  * Compute minimum incremental transaction fee by KB base on the current block height
  * Implement VIP1
  */
-unsigned int GetMinTxFee();
-CFeeRate GetMinTxFeeRate();
+unsigned int GetMinTxFee(int nBlockHeight = 0);
+CFeeRate GetMinTxFeeRate(int nBlockHeight = 0);
 CFeeRate GetMinRelayTxFeeRate();
 
 /**

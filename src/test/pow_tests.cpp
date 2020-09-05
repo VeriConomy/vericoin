@@ -12,7 +12,6 @@
 
 BOOST_FIXTURE_TEST_SUITE(pow_tests, BasicTestingSetup)
 
-// XXX - TODO: Implement test for GetNextTargetRequired
 BOOST_AUTO_TEST_CASE(CheckProofOfWork_test_overflow_target)
 {
     const auto consensus = CreateChainParams(CBaseChainParams::MAIN)->GetConsensus();
