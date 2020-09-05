@@ -1345,10 +1345,10 @@ sha256_sse4:
 
     sub    rsp,STACK_SIZE
 %ifndef LINUX
-    movdqa    [rsp + _XMM_SAVE + 0*16],xmm6    
+    movdqa    [rsp + _XMM_SAVE + 0*16],xmm6
     movdqa    [rsp + _XMM_SAVE + 1*16],xmm7
-    movdqa    [rsp + _XMM_SAVE + 2*16],xmm8    
-    movdqa    [rsp + _XMM_SAVE + 3*16],xmm9    
+    movdqa    [rsp + _XMM_SAVE + 2*16],xmm8
+    movdqa    [rsp + _XMM_SAVE + 3*16],xmm9
     movdqa    [rsp + _XMM_SAVE + 4*16],xmm10
     movdqa    [rsp + _XMM_SAVE + 5*16],xmm11
     movdqa    [rsp + _XMM_SAVE + 6*16],xmm12
@@ -1471,7 +1471,7 @@ done_hash:
 %endif
     pop    rbx
 
-    ret    
+    ret
 
 
 section .data
