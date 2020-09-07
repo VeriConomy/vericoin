@@ -446,7 +446,7 @@ public:
         CBigNum ret;
         if (!BN_mod_mul(ret.get(), self, b.cget(), m.cget(), pctx))
             throw bignum_error("CBigNum::mul_mod : BN_mod_mul failed");
-        
+
         return ret;
     }
 

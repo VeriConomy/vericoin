@@ -12,7 +12,7 @@
 
 CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes)
 {
-    CAmount nBaseFee = MIN_TX_FEE;
+    CAmount nBaseFee = WALLET_MIN_TX_FEE;
     CAmount nMinFee = (1 + nTxBytes / 1000) * nBaseFee;
 
     if (!MoneyRange(nMinFee))
@@ -28,7 +28,7 @@ CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinC
 
 CFeeRate GetRequiredFeeRate(const CWallet& wallet)
 {
-    return std::max(wallet.m_min_fee, wallet.chain().relayMinFee());
+    return wallet.chain().relayMinFee();
 }
 
 CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_control, FeeCalculation* feeCalc)

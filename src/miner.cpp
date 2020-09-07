@@ -50,13 +50,11 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
 }
 
 BlockAssembler::Options::Options() {
-    blockMinFeeRate = CFeeRate(DEFAULT_BLOCK_MIN_TX_FEE);
     nBlockMaxWeight = DEFAULT_BLOCK_MAX_WEIGHT;
 }
 
 BlockAssembler::BlockAssembler(const CChainParams& params, const Options& options) : chainparams(params)
 {
-    blockMinFeeRate = options.blockMinFeeRate;
     // Limit weight to between 4K and MAX_BLOCK_WEIGHT-4K for sanity:
     nBlockMaxWeight = std::max<size_t>(4000, std::min<size_t>(MAX_BLOCK_WEIGHT - 4000, options.nBlockMaxWeight));
 }
@@ -67,12 +65,6 @@ static BlockAssembler::Options DefaultOptions()
     // If -blockmaxweight is not given, limit to DEFAULT_BLOCK_MAX_WEIGHT
     BlockAssembler::Options options;
     options.nBlockMaxWeight = gArgs.GetArg("-blockmaxweight", DEFAULT_BLOCK_MAX_WEIGHT);
-    CAmount n = 0;
-    if (gArgs.IsArgSet("-blockmintxfee") && ParseMoney(gArgs.GetArg("-blockmintxfee", ""), n)) {
-        options.blockMinFeeRate = CFeeRate(n);
-    } else {
-        options.blockMinFeeRate = CFeeRate(DEFAULT_BLOCK_MIN_TX_FEE);
-    }
     return options;
 }
 
@@ -229,7 +221,7 @@ void BlockAssembler::AddToBlock(CTxMemPool::txiter iter)
     bool fPrintPriority = gArgs.GetBoolArg("-printpriority", DEFAULT_PRINTPRIORITY);
     if (fPrintPriority) {
         LogPrintf("fee %s txid %s\n",
-                  CFeeRate(iter->GetModifiedFee(), iter->GetTxSize()).ToString(),
+                  CFeeRate(iter->GetModifiedFee(), iter->GetTxSize(), true).ToString(),
                   iter->GetTx().GetHash().ToString());
     }
 }
@@ -358,18 +350,12 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
         assert(!inBlock.count(iter));
 
         uint64_t packageSize = iter->GetSizeWithAncestors();
-        CAmount packageFees = iter->GetModFeesWithAncestors();
         int64_t packageSigOpsCost = iter->GetSigOpCostWithAncestors();
         if (fUsingModified) {
             packageSize = modit->nSizeWithAncestors;
-            packageFees = modit->nModFeesWithAncestors;
             packageSigOpsCost = modit->nSigOpCostWithAncestors;
         }
 
-        if (packageFees < blockMinFeeRate.GetFee(packageSize)) {
-            // Everything else we might consider has a lower fee rate
-            return;
-        }
 
         if (!TestPackage(packageSize, packageSigOpsCost)) {
             if (fUsingModified) {
@@ -527,9 +513,9 @@ bool CheckWork(CBlock* pblock)
     if (hashBlock > hashTarget){
         return error("CheckWork() : proof-of-work not meeting target");
     } else {
-	    if (pblock->hashPrevBlock != pindexPrev->GetBlockHash()){
-			return error("CheckWork() : generated block is stale");
-		}
+        if (pblock->hashPrevBlock != pindexPrev->GetBlockHash()){
+            return error("CheckWork() : generated block is stale");
+        }
 
         pblock->print();
         LogPrintf("New proof-of-work block found with: %s coins generated.\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
@@ -600,10 +586,10 @@ void Miner(CWallet *pwallet)
     {
         while (fGenerateVerium && memory)
         {
-			while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
+            while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
                 LogPrintf("Mining inactive while chain is syncing...\n");
-				MilliSleep(5000);
-			}
+                MilliSleep(5000);
+            }
 
             // Create new block
             unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();

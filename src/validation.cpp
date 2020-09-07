@@ -60,6 +60,29 @@
 #define MICRO 0.000001
 #define MILLI 0.001
 
+
+/**
+ * Min Fees
+ */
+unsigned int GetMinTxFee() {
+    int nBlockHeight = ::ChainActive().Height() + 1;
+    if( nBlockHeight < Params().GetConsensus().VIP1Height)
+        return MIN_TX_FEE;
+    else
+        return VIP1_MIN_TX_FEE;
+}
+
+CFeeRate GetMinTxFeeRate() {
+    return CFeeRate(GetMinTxFee());
+}
+
+CFeeRate GetMinRelayTxFeeRate() {
+    if( fEnforceMinRelayTxFee )
+        return minRelayTxFee;
+    else
+        return GetMinTxFeeRate();
+}
+
 bool CBlockIndexWorkComparator::operator()(const CBlockIndex *pa, const CBlockIndex *pb) const {
     // First sort by most total work, ...
     if (pa->nChainWork > pb->nChainWork) return false;
@@ -124,8 +147,7 @@ int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 
 uint256 hashAssumeValid;
 arith_uint256 nMinimumChainWork;
-
-CFeeRate minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
+CFeeRate minRelayTxFee;
 
 CTxMemPool mempool;
 /** Constant stuff for coinbase transactions we create: */
@@ -492,13 +514,13 @@ private:
     // Compare a package's feerate against minimum allowed.
     bool CheckFeeRate(size_t package_size, CAmount package_fee, CValidationState& state)
     {
-        CAmount mempoolRejectFee = m_pool.GetMinFee(gArgs.GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000).GetFee(package_size);
+        CAmount mempoolRejectFee = m_pool.GetMinFee().GetFee(package_size, true);
         if (mempoolRejectFee > 0 && package_fee < mempoolRejectFee) {
             return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "mempool min fee not met", strprintf("%d < %d", package_fee, mempoolRejectFee));
         }
 
-        if (package_fee < ::minRelayTxFee.GetFee(package_size)) {
-            return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "min relay fee not met", strprintf("%d < %d", package_fee, ::minRelayTxFee.GetFee(package_size)));
+        if (package_fee < GetMinRelayTxFeeRate().GetFee(package_size, true)) {
+            return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "min relay fee not met", strprintf("%d < %d", package_fee, GetMinRelayTxFeeRate().GetFee(package_size, true)));
         }
         return true;
     }
@@ -696,6 +718,7 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
         return state.Invalid(ValidationInvalidReason::TX_NOT_STANDARD, false, REJECT_NONSTANDARD, "bad-txns-too-many-sigops",
                 strprintf("%d", nSigOpsCost));
 
+    // XXX: FeeCheck
     // No transactions are allowed below minRelayTxFee except from disconnected
     // blocks
     if (!bypass_limits && !CheckFeeRate(nSize, nModifiedFees, state)) return false;
@@ -810,7 +833,7 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
             // mean high feerate children are ignored when deciding whether
             // or not to replace, we do require the replacement to pay more
             // overall fees too, mitigating most cases.
-            CFeeRate oldFeeRate(mi->GetModifiedFee(), mi->GetTxSize());
+            CFeeRate oldFeeRate(mi->GetModifiedFee(), mi->GetTxSize(), true);
             if (newFeeRate <= oldFeeRate)
             {
                 return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_INSUFFICIENTFEE, "insufficient fee",
@@ -2001,6 +2024,9 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         }
         UpdateCoins(tx, view, i == 0 ? undoDummy : blockundo.vtxundo.back(), pindex->nHeight);
     }
+
+    // XXX: FeeCheck
+
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint(BCLog::BENCH, "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs (%.2fms/blk)]\n", (unsigned)block.vtx.size(), MILLI * (nTime3 - nTime2), MILLI * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : MILLI * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * MICRO, nTimeConnect * MILLI / nBlocksTotal);
 

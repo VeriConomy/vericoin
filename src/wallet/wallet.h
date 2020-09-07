@@ -67,8 +67,6 @@ static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 constexpr CAmount DEFAULT_PAY_TX_FEE = 20000000;
 //! -discardfee default
 static const CAmount DEFAULT_DISCARD_FEE = 10000;
-//! -mintxfee default
-static const CAmount DEFAULT_TRANSACTION_MINFEE = 20000000;
 //! Default for -spendzeroconfchange
 static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
 //! Default for -walletrejectlongchains
@@ -1161,7 +1159,6 @@ public:
     unsigned int m_confirm_target{DEFAULT_TX_CONFIRM_TARGET};
     bool m_spend_zero_conf_change{DEFAULT_SPEND_ZEROCONF_CHANGE};
     bool m_signal_rbf{DEFAULT_WALLET_RBF};
-    CFeeRate m_min_fee{DEFAULT_TRANSACTION_MINFEE}; //!< Override with -mintxfee
 
     CFeeRate m_discard_rate{DEFAULT_DISCARD_FEE};
     OutputType m_default_address_type{DEFAULT_ADDRESS_TYPE};
