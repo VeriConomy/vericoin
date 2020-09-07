@@ -64,16 +64,18 @@
 /**
  * Min Fees
  */
-unsigned int GetMinTxFee() {
-    int nBlockHeight = ::ChainActive().Height() + 1;
+unsigned int GetMinTxFee(int nBlockHeight) {
+    if( nBlockHeight == 0)
+        nBlockHeight = ::ChainActive().Height() + 1;
+
     if( nBlockHeight < Params().GetConsensus().VIP1Height)
         return MIN_TX_FEE;
     else
         return VIP1_MIN_TX_FEE;
 }
 
-CFeeRate GetMinTxFeeRate() {
-    return CFeeRate(GetMinTxFee());
+CFeeRate GetMinTxFeeRate(int nBlockHeight) {
+    return CFeeRate(GetMinTxFee(nBlockHeight));
 }
 
 CFeeRate GetMinRelayTxFeeRate() {
@@ -718,10 +720,14 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
         return state.Invalid(ValidationInvalidReason::TX_NOT_STANDARD, false, REJECT_NONSTANDARD, "bad-txns-too-many-sigops",
                 strprintf("%d", nSigOpsCost));
 
-    // XXX: FeeCheck
     // No transactions are allowed below minRelayTxFee except from disconnected
     // blocks
     if (!bypass_limits && !CheckFeeRate(nSize, nModifiedFees, state)) return false;
+
+    CAmount requiredFee = GetMinTxFeeRate().GetFee(nSize, true);
+    if( nFees < requiredFee)
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, error("PreChecks(): %s not paying required fee=%s, paid=%s", tx.GetHash().ToString(), requiredFee, nFees),
+                    REJECT_INVALID, "bad-fee-amount");
 
     if (nAbsurdFee && nFees > nAbsurdFee)
         return state.Invalid(ValidationInvalidReason::TX_NOT_STANDARD, false,
@@ -2016,6 +2022,16 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 return error("ConnectBlock(): CheckInputs on %s failed with %s",
                     tx.GetHash().ToString(), FormatStateMessage(state));
             }
+            // Check TX Fee
+            if(fScriptChecks) {
+                int64_t nTxValueIn = view.GetValueIn(tx);
+                int64_t nTxValueOut = tx.GetValueOut();
+
+                CAmount requiredFee = GetMinTxFeeRate(pindex->nHeight).GetFee(tx.GetTotalSize(), true);
+                if( (nTxValueIn - nTxValueOut) < requiredFee)
+                    return state.Invalid(ValidationInvalidReason::CONSENSUS, error("ConnectBlock(): %s not paying required fee=%s, paid=%s", tx.GetHash().ToString(), requiredFee, nTxValueIn - nTxValueOut),
+                        REJECT_INVALID, "bad-fee-amount");
+            }
         }
 
         CTxUndo undoDummy;
@@ -2024,8 +2040,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         }
         UpdateCoins(tx, view, i == 0 ? undoDummy : blockundo.vtxundo.back(), pindex->nHeight);
     }
-
-    // XXX: FeeCheck
 
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint(BCLog::BENCH, "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs (%.2fms/blk)]\n", (unsigned)block.vtx.size(), MILLI * (nTime3 - nTime2), MILLI * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : MILLI * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * MICRO, nTimeConnect * MILLI / nBlocksTotal);
@@ -3115,7 +3129,6 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
         return false;
 
     // Check proof of work matches claimed amount
-    // XXX - TODO: maybe create a custom ValidationInvalidReason
     if (fCheckPOW && !CheckProofOfWork(block.GetWorkHash(), block.nBits, consensusParams))
         return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "high-hash", "proof of work failed");
 
@@ -3217,7 +3230,6 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     const int nHeight = pindexPrev->nHeight + 1;
 
     // Check proof of work
-    // XXX - TODO: maybe create a custom ValidationInvalidReason
     if (block.nBits != GetNextTargetRequired(pindexPrev))
         return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "bad-diffbits", strprintf("incorrect proof of work %lu - %lu", block.nBits, GetNextTargetRequired(pindexPrev)));
 

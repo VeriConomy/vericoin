@@ -572,7 +572,6 @@ void Miner(CWallet *pwallet)
     // Each thread has it's own nonce
     ReserveDestination reservedest(pwallet);
 
-    // XXX - TODO: Validate that it work ...
     CTxDestination dest;
     bool ret = reservedest.GetReservedDestination(DEFAULT_ADDRESS_TYPE, dest, true);
     if (!ret)

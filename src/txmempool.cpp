@@ -970,7 +970,6 @@ const CTxMemPool::setEntries & CTxMemPool::GetMemPoolChildren(txiter entry) cons
 }
 
 CFeeRate CTxMemPool::GetMinFee() const {
-    // XXX: TO VALIDATE
     return GetMinRelayTxFeeRate();
 }
 
