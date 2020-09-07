@@ -72,7 +72,7 @@ public:
 
         // Let's start with VIP (Verium Improvement Protocol)
         // XXX: Use it and set a correct value
-        consensus.VIP1Height = 500000; // Change Min Fee
+        consensus.VIP1Height = 502740; // Change Min Fee
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.

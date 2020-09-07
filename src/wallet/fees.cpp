@@ -12,8 +12,7 @@
 
 CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes)
 {
-    CAmount nBaseFee = WALLET_MIN_TX_FEE;
-    CAmount nMinFee = (1 + nTxBytes / 1000) * nBaseFee;
+    CAmount nMinFee = wallet.chain().getMinTxFeeRate().GetFee(nTxBytes, true);
 
     if (!MoneyRange(nMinFee))
         nMinFee = MAX_MONEY;
@@ -22,7 +21,6 @@ CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes)
 
 CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinControl& coin_control, FeeCalculation* feeCalc)
 {
-    //TODO implement
     return GetRequiredFee(wallet, nTxBytes);
 }
 
@@ -31,11 +29,18 @@ CFeeRate GetRequiredFeeRate(const CWallet& wallet)
     return wallet.chain().relayMinFee();
 }
 
+CFeeRate GetPayTxFee(const CWallet& wallet) {
+    if(wallet.fEnforcePayTxFee)
+        return wallet.m_pay_tx_fee;
+    else
+        return wallet.chain().getMinTxFeeRate();
+}
+
 CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_control, FeeCalculation* feeCalc)
 {
     /* User control of how to calculate fee uses the following parameter precedence:
        1. coin_control.m_feerate
-       2. m_pay_tx_fee (user-set member variable of wallet)
+       2. GetPayTxFee
        The first parameter that is set is used.
     */
     CFeeRate feerate_needed;
@@ -45,7 +50,7 @@ CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_contr
         // Allow to override automatic min/max check over coin control instance
         if (coin_control.fOverrideFeeRate) return feerate_needed;
     } else {
-        feerate_needed = wallet.m_pay_tx_fee;
+        feerate_needed = GetPayTxFee(wallet);
         if (feeCalc) feeCalc->reason = FeeReason::PAYTXFEE;
     }
 

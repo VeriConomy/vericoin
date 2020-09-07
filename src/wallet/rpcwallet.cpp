@@ -26,6 +26,7 @@
 #include <util/url.h>
 #include <util/validation.h>
 #include <wallet/coincontrol.h>
+#include <wallet/fees.h>
 #include <wallet/psbtwallet.h>
 #include <wallet/rpcwallet.h>
 #include <wallet/wallet.h>
@@ -2255,6 +2256,7 @@ static UniValue settxfee(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("txfee cannot be less than min relay tx fee (%s)", pwallet->chain().relayMinFee().ToString()));
     }
 
+    pwallet->fEnforcePayTxFee = true;
     pwallet->m_pay_tx_fee = tx_fee_rate;
     return true;
 }
@@ -2391,7 +2393,7 @@ static UniValue getwalletinfo(const JSONRPCRequest& request)
     if (pwallet->IsCrypted()) {
         obj.pushKV("unlocked_until", pwallet->nRelockTime);
     }
-    obj.pushKV("paytxfee", ValueFromAmount(pwallet->m_pay_tx_fee.GetFeePerK()));
+    obj.pushKV("paytxfee", ValueFromAmount(GetPayTxFee(*pwallet).GetFeePerK()));
     if (!seed_id.IsNull()) {
         obj.pushKV("hdseedid", seed_id.GetHex());
     }

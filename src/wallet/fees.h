@@ -8,8 +8,6 @@
 
 #include <amount.h>
 
-static const int64_t WALLET_MIN_TX_FEE = 20000000;
-
 class CCoinControl;
 class CFeeRate;
 class CWallet;
@@ -26,6 +24,11 @@ CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes);
  * and the required fee
  */
 CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinControl& coin_control, FeeCalculation* feeCalc);
+
+/**
+ * Return the default PayTxFee
+ */
+CFeeRate GetPayTxFee(const CWallet& wallet);
 
 /**
  * Return the minimum required feerate taking into account the
