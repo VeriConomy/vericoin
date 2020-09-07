@@ -3578,7 +3578,6 @@ bool CWallet::GetNewDestination(const OutputType type, const std::string label, 
         error = "Error: Keypool ran out, please call keypoolrefill first";
         return false;
     }
-    LearnRelatedScripts(new_key, type);
     dest = GetDestinationForKey(new_key, type);
 
     SetAddressBook(dest, label, "receive");
@@ -3811,7 +3810,6 @@ bool ReserveDestination::GetReservedDestination(const OutputType type, CTxDestin
         fInternal = keypool.fInternal;
     }
     assert(vchPubKey.IsValid());
-    pwallet->LearnRelatedScripts(vchPubKey, type);
     address = GetDestinationForKey(vchPubKey, type);
     dest = address;
     return true;
@@ -3853,7 +3851,6 @@ void CWallet::MarkReserveKeysAsUsed(int64_t keypool_id)
         if (batch.ReadPool(index, keypool)) { //TODO: This should be unnecessary
             m_pool_key_to_index.erase(keypool.vchPubKey.GetID());
         }
-        LearnAllRelatedScripts(keypool.vchPubKey);
         batch.ErasePool(index);
         WalletLogPrintf("keypool index %d removed\n", index);
         it = setKeyPool->erase(it);
@@ -4528,16 +4525,6 @@ bool CWalletTx::IsImmatureCoinBase(interfaces::Chain::Lock& locked_chain) const
 {
     // note GetBlocksToMaturity is 0 for non-coinbase tx
     return GetBlocksToMaturity(locked_chain) > 0;
-}
-
-void CWallet::LearnRelatedScripts(const CPubKey& key, OutputType type)
-{
-    // XXX - TODO: Remove Call to that
-}
-
-void CWallet::LearnAllRelatedScripts(const CPubKey& key)
-{
-    // XXX - TODO: Remove call to that
 }
 
 std::vector<OutputGroup> CWallet::GroupOutputs(const std::vector<COutput>& outputs, bool single_coin) const {
