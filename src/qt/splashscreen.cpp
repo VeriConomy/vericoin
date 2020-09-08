@@ -35,7 +35,7 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
 
     // define text to place
     QString titleText       = PACKAGE_NAME;
-    QString versionText     = QString("%1.%2").arg(QString::number(CLIENT_VERSION_MAJOR)).arg(QString::number(CLIENT_VERSION_MINOR));
+    QString versionText     = QString("%1.%2.%3").arg(QString::number(CLIENT_VERSION_MAJOR)).arg(QString::number(CLIENT_VERSION_MINOR)).arg(QString::number(CLIENT_VERSION_REVISION));
     QString titleAddText    = networkStyle->getTitleAddText();
     QString font            = QApplication::font().toString();
 
