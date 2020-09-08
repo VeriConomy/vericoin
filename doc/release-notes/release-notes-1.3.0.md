@@ -1043,6 +1043,7 @@ Protocol and network:
 - Scale up addrman (countermeasure 6 against eclipse attacks)
 - Make addrman's bucket placement deterministic
 - Don't trickle for whitelisted nodes
+- Implement VIP1 that will reduce verium fee to 0.001 at block 520000
 - ...
 
 Wallet:
@@ -1073,6 +1074,7 @@ Validation:
 - Make STRICTENC invalid pubkeys fail the script rather than the opcode
 - Report script evaluation failures in log and reject messages
 - Improve robustness of DER recoding code
+- Reject transaction with a lower fee than min
 - ...
 
 Build system:
