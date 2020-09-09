@@ -1,7 +1,7 @@
 Verium integration/staging tree
 =====================================
 
-[![Build Status](https://travis-ci.org/VeriumReserve/verium.svg?branch=1.3.0)](https://travis-ci.org/VeriumReserve/verium)
+[![Build Status](https://travis-ci.org/VeriumReserve/verium.svg?branch=master)](https://travis-ci.org/VeriumReserve/verium)
 
 https://www.vericonomy.com
 
@@ -46,7 +46,7 @@ The `master` branch is regularly built and tested, but is not guaranteed to be
 completely stable. [Tags](https://github.com/veriumreserve/verium/tags) are created
 regularly to indicate new official, stable release versions of Verium.
 
-Current official Verium release is on branch 1.3.0.
+Current official Verium release is on branch 1.3.1.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
