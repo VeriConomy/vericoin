@@ -3900,6 +3900,7 @@ bool PeerLogicValidation::SendMessages(CNode* pto)
                             continue;
                         }
                         if (filterrate && txinfo.feeRate.GetFeePerK() < filterrate) {
+                                LogPrintf("Peer=%d. Refusing tx due to fee lower than request feerate=%d requested=%d \n", pto->GetId(), txinfo.feeRate.GetFeePerK(), filterrate);
                             continue;
                         }
                         if (pto->m_tx_relay->pfilter && !pto->m_tx_relay->pfilter->IsRelevantAndUpdate(*txinfo.tx)) continue;

@@ -991,6 +991,15 @@ Wallet:
 - Improve wallet load time
 - Don't create empty transactions when reading a corrupted wallet
 - Fix rescan to start from beginning after importprivkey
+- Make GetAvailableCredit run GetHash() only once per transaction (performance improvement)
+- Fix importwallet nTimeFirstKey (trigger necessary rescans)
+- Log BerkeleyDB version at startup
+- Sanity checks for estimates
+- Add support for watch-only addresses
+- Use script matching rather than destination matching for watch-only
+- Dont run full check every time we decrypt wallet
+- fix a possible memory leak in CWalletDB::Recover
+- fix possible memory leaks in CWallet::EncryptWallet
 - ...
 
 Mining:
@@ -1043,20 +1052,6 @@ Protocol and network:
 - Scale up addrman (countermeasure 6 against eclipse attacks)
 - Make addrman's bucket placement deterministic
 - Don't trickle for whitelisted nodes
-- Implement VIP1 that will reduce verium fee to 0.001 at block 520000
-- ...
-
-Wallet:
-
-- Make GetAvailableCredit run GetHash() only once per transaction (performance improvement)
-- Fix importwallet nTimeFirstKey (trigger necessary rescans)
-- Log BerkeleyDB version at startup
-- Sanity checks for estimates
-- Add support for watch-only addresses
-- Use script matching rather than destination matching for watch-only
-- Dont run full check every time we decrypt wallet
-- fix a possible memory leak in CWalletDB::Recover
-- fix possible memory leaks in CWallet::EncryptWallet
 - ...
 
 Validation:
