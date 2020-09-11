@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2013 First Lastname <your@email.com> -->
 <component type="desktop-application">
-  <id>org.verium.verium-qt</id>
+  <id>verium-qt</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>MIT</project_license>
   <name>Verium Vault</name>
@@ -19,7 +19,7 @@
     </p>
   </description>
 
-  <launchable type="desktop-id">org.verium.verium-qt.desktop</launchable>
+  <launchable type="desktop-id">verium-qt.desktop</launchable>
 
   <url type="homepage">https://www.vericoin.info</url>
   <developer_name>Verium Team</developer_name>
