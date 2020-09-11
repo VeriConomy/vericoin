@@ -22,7 +22,7 @@ earlier versions of Verium, then run the installer.
 We recommand before any upgrade that you backup your wallet.
 
 If you are upgrading from version 1.2 or earlier, the first time you run
-1.3.0 your blockchain files will be re-indexed, which will take anywhere from
+1.3.1 your blockchain files will be re-indexed, which will take anywhere from
 5 minutes to several hours, depending on the speed of your machine.
 
 Downgrading warnings
