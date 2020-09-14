@@ -121,7 +121,7 @@ double GetPoWKHashPM()
 UniValue bootstrap(const JSONRPCRequest& request)
 {
     RPCHelpMan{"bootstrap",
-        "\nDownload blockchain from www.vericoin.info to speed up synchronization\n"
+        "\nDownload blockchain from www.vericonomy.com to speed up synchronization\n"
         "\nDaemon will exit after bootstraping is done",
         {},
         RPCResult{

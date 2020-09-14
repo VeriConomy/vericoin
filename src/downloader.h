@@ -3,9 +3,9 @@
 
 #include <string>
 
-const std::string BOOTSTRAP_URL("https://cdn.vericonomy.com/016-bootstrap/bootstrap_VRM.zip");
-const std::string VERSIONFILE_URL("https://cdn.vericonomy.com/updates/VERSION_VRM.json");
-const std::string CLIENT_URL("https://cdn.vericonomy.com/verium/");
+const std::string BOOTSTRAP_URL("https://files.vericonomy.com/vrm/bootstrap/bootstrap.zip");
+const std::string VERSIONFILE_URL("https://files.vericonomy.com/vrm/VERSION_VRM.json");
+const std::string CLIENT_URL("https://files.vericonomy.com/vrm/");
 
 void downloadBootstrap();
 void applyBootstrap();
