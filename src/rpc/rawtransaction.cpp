@@ -422,7 +422,7 @@ static UniValue decoderawtransaction(const JSONRPCRequest& request)
     RPCHelpMan{"decoderawtransaction",
                 "\nReturn a JSON object representing the serialized, hex-encoded transaction.\n",
                 {
-                    // {"hexstring", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction hex string"},
+                    {"hexstring", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction hex string"},
                     // {"iswitness", RPCArg::Type::BOOL, /* default */ "depends on heuristic tests", "Whether the transaction hex is a serialized witness transaction.\n"
                     //     "If iswitness is not present, heuristic tests will be used in decoding.\n"
                     //     "If true, only witness deserialization will be tried.\n"
@@ -486,7 +486,7 @@ static UniValue decoderawtransaction(const JSONRPCRequest& request)
     // bool try_witness = request.params[1].isNull() ? true : request.params[1].get_bool();
     // bool try_no_witness = request.params[1].isNull() ? true : !request.params[1].get_bool();
     bool try_witness = false;
-    bool try_no_witness = false;
+    bool try_no_witness = true;
 
     if (!DecodeHexTx(mtx, request.params[0].get_str(), try_no_witness, try_witness)) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
