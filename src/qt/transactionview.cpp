@@ -157,6 +157,7 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
 
 
     // Actions
+    abandonAction = new QAction(tr("Abandon transaction"), this);
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);
     QAction *copyLabelAction = new QAction(tr("Copy label"), this);
     QAction *copyAmountAction = new QAction(tr("Copy amount"), this);
@@ -176,6 +177,7 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     contextMenu->addAction(copyTxPlainText);
     contextMenu->addAction(showDetailsAction);
     contextMenu->addSeparator();
+    contextMenu->addAction(abandonAction);
     contextMenu->addAction(editLabelAction);
 
     connect(dateWidget, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), this, &TransactionView::chooseDate);
@@ -188,6 +190,7 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     connect(view, &QTableView::doubleClicked, this, &TransactionView::doubleClicked);
     connect(view, &QTableView::customContextMenuRequested, this, &TransactionView::contextualMenu);
 
+    connect(abandonAction, &QAction::triggered, this, &TransactionView::abandonTx);
     connect(copyAddressAction, &QAction::triggered, this, &TransactionView::copyAddress);
     connect(copyLabelAction, &QAction::triggered, this, &TransactionView::copyLabel);
     connect(copyAmountAction, &QAction::triggered, this, &TransactionView::copyAmount);
@@ -381,12 +384,31 @@ void TransactionView::contextualMenu(const QPoint &point)
     // check if transaction can be abandoned, disable context menu action in case it doesn't
     uint256 hash;
     hash.SetHex(selection.at(0).data(TransactionTableModel::TxHashRole).toString().toStdString());
+    abandonAction->setEnabled(model->wallet().transactionCanBeAbandoned(hash));
+
     if(index.isValid())
     {
         contextMenu->popup(transactionView->viewport()->mapToGlobal(point));
     }
 }
 
+void TransactionView::abandonTx()
+{
+    if(!transactionView || !transactionView->selectionModel())
+        return;
+    QModelIndexList selection = transactionView->selectionModel()->selectedRows(0);
+
+    // get the hash from the TxHashRole (QVariant / QString)
+    uint256 hash;
+    QString hashQStr = selection.at(0).data(TransactionTableModel::TxHashRole).toString();
+    hash.SetHex(hashQStr.toStdString());
+
+    // Abandon the wallet transaction over the walletModel
+    model->wallet().abandonTransaction(hash);
+
+    // Update the table
+    model->getTransactionTableModel()->updateTransaction(hashQStr, CT_UPDATED, false);
+}
 
 void TransactionView::copyAddress()
 {

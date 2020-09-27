@@ -1281,6 +1281,14 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransactionRef& ptx, CWalletTx::St
     return false;
 }
 
+bool CWallet::TransactionCanBeAbandoned(const uint256& hashTx) const
+{
+    auto locked_chain = chain().lock();
+    LOCK(cs_wallet);
+    const CWalletTx* wtx = GetWalletTx(hashTx);
+    return wtx && !wtx->isAbandoned() && wtx->GetDepthInMainChain(*locked_chain) == 0 && !wtx->InMempool();
+}
+
 void CWallet::MarkInputsDirty(const CTransactionRef& tx)
 {
     for (const CTxIn& txin : tx->vin) {
@@ -1289,6 +1297,63 @@ void CWallet::MarkInputsDirty(const CTransactionRef& tx)
             it->second.MarkDirty();
         }
     }
+}
+
+
+bool CWallet::AbandonTransaction(interfaces::Chain::Lock& locked_chain, const uint256& hashTx)
+{
+    auto locked_chain_recursive = chain().lock();  // Temporary. Removed in upcoming lock cleanup
+    LOCK(cs_wallet);
+
+    WalletBatch batch(*database, "r+");
+
+    std::set<uint256> todo;
+    std::set<uint256> done;
+
+    // Can't mark abandoned if confirmed or in mempool
+    auto it = mapWallet.find(hashTx);
+    assert(it != mapWallet.end());
+    CWalletTx& origtx = it->second;
+    if (origtx.GetDepthInMainChain(locked_chain) != 0 || origtx.InMempool()) {
+        return false;
+    }
+
+    todo.insert(hashTx);
+
+    while (!todo.empty()) {
+        uint256 now = *todo.begin();
+        todo.erase(now);
+        done.insert(now);
+        auto it = mapWallet.find(now);
+        assert(it != mapWallet.end());
+        CWalletTx& wtx = it->second;
+        int currentconfirm = wtx.GetDepthInMainChain(locked_chain);
+        // If the orig tx was not in block, none of its spends can be
+        assert(currentconfirm <= 0);
+        // if (currentconfirm < 0) {Tx and spends are already conflicted, no need to abandon}
+        if (currentconfirm == 0 && !wtx.isAbandoned()) {
+            // If the orig tx was not in block/mempool, none of its spends can be in mempool
+            assert(!wtx.InMempool());
+            wtx.m_confirm.nIndex = 0;
+            wtx.setAbandoned();
+            wtx.MarkDirty();
+            batch.WriteTx(wtx);
+            NotifyTransactionChanged(this, wtx.GetHash(), CT_UPDATED);
+            // Iterate over all its outputs, and mark transactions in the wallet that spend them abandoned too
+            TxSpends::const_iterator iter = mapTxSpends.lower_bound(COutPoint(now, 0));
+            while (iter != mapTxSpends.end() && iter->first.hash == now) {
+                if (!done.count(iter->second)) {
+                    todo.insert(iter->second);
+                }
+                iter++;
+            }
+            // If a transaction changes 'conflicted' state, that changes the balance
+            // available of the outputs it spends. So force those to be recomputed
+            MarkInputsDirty(wtx.tx);
+        }
+    }
+
+    return true;
 }
 
 void CWallet::MarkConflicted(const uint256& hashBlock, const uint256& hashTx)

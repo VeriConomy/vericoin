@@ -1720,6 +1720,50 @@ static UniValue gettransaction(const JSONRPCRequest& request)
     return entry;
 }
 
+static UniValue abandontransaction(const JSONRPCRequest& request)
+{
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = wallet.get();
+
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return NullUniValue;
+    }
+
+            RPCHelpMan{"abandontransaction",
+                "\nMark in-wallet transaction <txid> as abandoned\n"
+                "This will mark this transaction and all its in-wallet descendants as abandoned which will allow\n"
+                "for their inputs to be respent.  It can be used to replace \"stuck\" or evicted transactions.\n"
+                "It only works on transactions which are not included in a block and are not currently in the mempool.\n"
+                "It has no effect on transactions which are already abandoned.\n",
+                {
+                    {"txid", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction id"},
+                },
+                RPCResults{},
+                RPCExamples{
+                    HelpExampleCli("abandontransaction", "\"1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d\"")
+            + HelpExampleRpc("abandontransaction", "\"1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d\"")
+                },
+            }.Check(request);
+
+    // Make sure the results are valid at least up to the most recent block
+    // the user could have gotten from another RPC command prior to now
+    pwallet->BlockUntilSyncedToCurrentChain();
+
+    auto locked_chain = pwallet->chain().lock();
+    LOCK(pwallet->cs_wallet);
+
+    uint256 hash(ParseHashV(request.params[0], "txid"));
+
+    if (!pwallet->mapWallet.count(hash)) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid or non-wallet transaction id");
+    }
+    if (!pwallet->AbandonTransaction(*locked_chain, hash)) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Transaction not eligible for abandonment");
+    }
+
+    return NullUniValue;
+}
+
 static UniValue backupwallet(const JSONRPCRequest& request)
 {
     std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
@@ -3914,6 +3958,7 @@ static const CRPCCommand commands[] =
 { //  category              name                                actor (function)                argNames
     //  --------------------- ------------------------          -----------------------         ----------
     { "rawtransactions",    "fundrawtransaction",               &fundrawtransaction,            {"hexstring","options"} },
+    { "wallet",             "abandontransaction",               &abandontransaction,            {"txid"} },
     { "wallet",             "abortrescan",                      &abortrescan,                   {} },
     { "wallet",             "addmultisigaddress",               &addmultisigaddress,            {"nrequired","keys","label","address_type"} },
     { "wallet",             "backupwallet",                     &backupwallet,                  {"destination"} },
