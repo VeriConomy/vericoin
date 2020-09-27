@@ -142,6 +142,11 @@ public:
         WalletOrderForm order_form,
         std::string& reject_reason) = 0;
 
+    //! Return whether transaction can be abandoned.
+    virtual bool transactionCanBeAbandoned(const uint256& txid) = 0;
+
+    //! Abandon transaction.
+    virtual bool abandonTransaction(const uint256& txid) = 0;
 
     //! Get a transaction.
     virtual CTransactionRef getTx(const uint256& txid) = 0;

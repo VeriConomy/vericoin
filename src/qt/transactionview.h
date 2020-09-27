@@ -74,6 +74,7 @@ private:
     QWidget *dateRangeWidget;
     QDateTimeEdit *dateFrom;
     QDateTimeEdit *dateTo;
+    QAction *abandonAction;
 
     QWidget *createDateRangeWidget();
 
@@ -96,6 +97,7 @@ private Q_SLOTS:
     void copyTxPlainText();
     void openThirdPartyTxUrl(QString url);
     void updateWatchOnlyColumn(bool fHaveWatchOnly);
+    void abandonTx();
 
 Q_SIGNALS:
     void doubleClicked(const QModelIndex&);
