@@ -276,6 +276,12 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     QTextStream ts(&f);
     setStyleSheet(ts.readAll());
     f.close();
+
+    // Force Check for update
+    if(needClientUpdate()) {
+        auto updatedialog = new UpdateDialog(this);
+        updatedialog->exec();
+    }
 }
 
 BitcoinGUI::~BitcoinGUI()

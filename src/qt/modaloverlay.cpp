@@ -5,6 +5,7 @@
 #include <qt/modaloverlay.h>
 #include <qt/forms/ui_modaloverlay.h>
 
+#include <qt/bootstrapdialog.h>
 #include <qt/guiutil.h>
 
 #include <chainparams.h>
@@ -21,7 +22,11 @@ layerIsVisible(false),
 userClosed(false)
 {
     ui->setupUi(this);
+    ui->bootstrapModal->hide();
+
     connect(ui->closeButton, &QPushButton::clicked, this, &ModalOverlay::closeClicked);
+    connect(ui->bootstrapButton, &QPushButton::clicked, this, &ModalOverlay::openBootstrapClicked);
+
     if (parent) {
         parent->installEventFilter(this);
         raise();
@@ -133,6 +138,13 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     int estimateNumHeadersLeft = bestHeaderDate.secsTo(currentDate) / Params().GetConsensus().nPowTargetSpacing;
     bool hasBestHeader = bestHeaderHeight >= count;
 
+    // show bootstrap if older than a week
+    if( bestHeaderDate.secsTo(currentDate) > 60 * 60 * 24 * 7 )
+        ui->bootstrapModal->show();
+    else
+        ui->bootstrapModal->hide();
+
+
     // show remaining number of blocks
     if (estimateNumHeadersLeft < HEADER_HEIGHT_DELTA_SYNC && hasBestHeader) {
         ui->numberOfBlocksLeft->setText(QString::number(bestHeaderHeight - count));
@@ -177,4 +189,11 @@ void ModalOverlay::closeClicked()
 {
     showHide(true);
     userClosed = true;
+}
+
+void ModalOverlay::openBootstrapClicked()
+{
+    auto bootstrapdialog = new BootstrapDialog(this);
+
+    bootstrapdialog->exec();
 }

@@ -31,4 +31,7 @@ private Q_SLOTS:
     void on_closeButton_clicked();
 
 };
+
+bool needClientUpdate();
+
 #endif // BITCOIN_QT_UPDATEDIALOG_H

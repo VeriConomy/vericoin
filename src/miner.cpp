@@ -6,6 +6,7 @@
 #include <miner.h>
 
 #include <amount.h>
+#include <bignum.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
@@ -150,12 +151,14 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
     coinbaseTx.vout[0].nValue = GetProofOfWorkReward(nFees, pindexPrev);
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
+
+    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
+    coinbaseTx.nTime = pblock->nTime;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vTxFees[0] = -nFees;
 
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
-    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
     pblock->nBits          = GetNextTargetRequired(pindexPrev);
     pblock->nNonce         = 0;
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
@@ -507,7 +510,7 @@ void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash
 bool CheckWork(CBlock* pblock)
 {
     arith_uint256 hashBlock = UintToArith256(pblock->GetWorkHash());
-    arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+    arith_uint256 hashTarget = UintToArith256( CBigNum().SetCompact(pblock->nBits).getuint256() );
     CBlockIndex* pindexPrev = ::ChainActive().Tip();
 
     if (hashBlock > hashTarget){
@@ -611,7 +614,7 @@ void Miner(CWallet *pwallet)
 
             // Search
             int64_t nStart = GetTime();
-            uint256 hashTarget = ArithToUint256(arith_uint256().SetCompact(pblock->nBits));
+            uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
             while (fGenerateVerium)
             {
                 unsigned int nHashesDone = 0;
@@ -622,7 +625,6 @@ void Miner(CWallet *pwallet)
                     if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes, scratchbuf))
                     {
                         // Found a solution
-                        LogPrintf("Miner found a solution\n");
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
                         CheckWork(pblock);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -681,7 +683,6 @@ void Miner(CWallet *pwallet)
     {
         free(scratchbuf);
         hashrate = 0;
-        nExtraNonce = 0;
         LogPrintf("Miner terminated\n");
         throw;
     }
