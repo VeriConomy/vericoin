@@ -30,7 +30,7 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
         ui->progressBar->setVisible(true);
         ui->label->setText(qstr);
     }
-    else{
+    else {
         ui->label->setText(tr("Vault is the newest version.  No update at this time."));
     }
 }
@@ -78,6 +78,12 @@ void UpdateDialog::setProgress(curl_off_t total, curl_off_t now)
     ui->progressBar->setValue(now);
 }
 
+bool needClientUpdate()
+{
+    downloadVersionFile();
+    std::string clientName = getUpdatedClient();
+    return clientName.compare(" ") != 0;
+}
 // Reads the version file and maps it to the current configuration.
 std::string getUpdatedClient()
 {
