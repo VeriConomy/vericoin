@@ -3159,16 +3159,29 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // First transaction must be coinbase, the rest must not be
     if (block.vtx.empty() || !block.vtx[0]->IsCoinBase())
         return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-cb-missing", "first tx is not coinbase");
+
+    // Check coinbase time drift
+    // Required for POS
+    // XXX: To remove for future version
+    if (block.GetBlockTime() > block.vtx[0]->nTime + MAX_FUTURE_BLOCK_TIME)
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-cb-timestamp", "coinbase timestamp is too early");
+
     for (unsigned int i = 1; i < block.vtx.size(); i++)
-        if (block.vtx[i]->IsCoinBase())
+        if ( block.vtx[i]->IsCoinBase() )
             return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-cb-multiple", "more than one coinbase");
 
     // Check transactions
     // Must check for duplicate inputs (see CVE-2018-17144)
-    for (const auto& tx : block.vtx)
+    for (const auto& tx : block.vtx) {
+        // Required for POS
+        // XXX: To remove for future version
+        if( block.GetBlockTime() < tx->nTime )
+            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-tx-timestamp", "block timestamp earlier than transaction timestamp");
+
         if (!CheckTransaction(*tx, state, true))
             return state.Invalid(state.GetReason(), false, state.GetRejectCode(), state.GetRejectReason(),
                                  strprintf("Transaction check failed (tx hash %s) %s", tx->GetHash().ToString(), state.GetDebugMessage()));
+    }
 
     unsigned int nSigOps = 0;
     for (const auto& tx : block.vtx)
