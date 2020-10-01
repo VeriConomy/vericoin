@@ -46,7 +46,7 @@ The `master` branch is regularly built and tested, but is not guaranteed to be
 completely stable. [Tags](https://github.com/veriumreserve/verium/tags) are created
 regularly to indicate new official, stable release versions of Verium.
 
-Current official Verium release is on branch 1.3.1.
+Current official Verium release is on branch 1.3.2.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
