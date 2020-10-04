@@ -1,37 +1,48 @@
-#include "overviewpage.h"
-#include "ui_overviewpage.h"
+// Copyright (c) 2011-2018 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "util.h"
-#include "init.h"
-#include "walletmodel.h"
-#include "clientmodel.h"
-#include "bitcoinunits.h"
-#include "optionsmodel.h"
-#include "transactiontablemodel.h"
-#include "transactionfilterproxy.h"
-#include "guiutil.h"
-#include "guiconstants.h"
-#include "bitcoingui.h"
-#include "bitcoinrpc.h"
+#include <qt/overviewpage.h>
+#include <qt/forms/ui_overviewpage.h>
+
+#include <qt/bitcoinunits.h>
+#include <qt/clientmodel.h>
+#include <qt/guiconstants.h>
+#include <qt/guiutil.h>
+#include <qt/optionsmodel.h>
+#include <qt/platformstyle.h>
+#include <qt/transactionfilterproxy.h>
+#include <qt/transactiontablemodel.h>
+#include <qt/walletmodel.h>
+
+#include <miner.h>
+#include <pow.h>
+#include <rpc/blockchain.h>
+#include <util/system.h>
+#include <validation.h>
+#include <wallet/wallet.h>
+
+#include <thread>
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QMovie>
-#include <QGraphicsView>
-#include <QIcon>
+#include <QPainterPath>
+#include <QGraphicsDropShadowEffect>
 
-using namespace GUIUtil;
+#define DECORATION_SIZE 35
+#define ICON_SIZE 16
+#define MARGIN_SIZE 6
+#define NUM_ITEMS 7
 
-#define DECORATION_SIZE 46
-#define NUM_ITEMS 3
+Q_DECLARE_METATYPE(interfaces::WalletBalances)
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 public:
-    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::VRC)
+    explicit TxViewDelegate(const PlatformStyle *_platformStyle, QObject *parent=nullptr):
+        QAbstractItemDelegate(parent), unit(BitcoinUnits::BTC),
+        platformStyle(_platformStyle)
     {
 
     }
@@ -41,168 +52,160 @@ public:
     {
         painter->save();
 
-        QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+        QIcon icon = qvariant_cast<QIcon>(index.data(TransactionTableModel::RawDecorationRole));
         QRect mainRect = option.rect;
-        QRect decorationRect(mainRect.topLeft(), QSize(DECORATION_SIZE, DECORATION_SIZE));
-        int xspace = DECORATION_SIZE + 8;
-        int ypad = 6;
-        int halfheight = (mainRect.height() - 2*ypad)/2;
-        QRect amountRect(mainRect.left() + xspace, mainRect.top()+ypad, mainRect.width() - xspace, halfheight);
-        QRect addressRect(mainRect.left() + xspace, mainRect.top()+ypad+halfheight, mainRect.width() - xspace, halfheight);
-        icon.paint(painter, decorationRect);
 
+        // Anti aliasing + border
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPen pen(QColor(217, 217, 217), 1);
+        painter->setPen(pen);
+
+        // create rounded rectangle that contain the TX
+        QPainterPath mainPath;
+        QRect txRect(mainRect.left() + MARGIN_SIZE, mainRect.top() + MARGIN_SIZE, mainRect.width() - MARGIN_SIZE*2, DECORATION_SIZE);
+        mainPath.addRoundedRect(txRect, 5, 5);
+        painter->fillPath(mainPath, QColor(230, 230, 230));
+        painter->drawPath(mainPath);
+
+        // Add icon
+        QRect iconRect(txRect.left() + 5, txRect.top() + ((DECORATION_SIZE - ICON_SIZE)/2), ICON_SIZE, ICON_SIZE );
+        icon.paint(painter, iconRect);
+
+        // Create Text Rect
+        QRect textRect(iconRect.right() + 5, txRect.top(), txRect.width() - iconRect.right() - 5, DECORATION_SIZE);
+
+        // Set default font
+        QFont font("Lato", 9);
+        painter->setPen(QColor(102, 102, 102));
+        painter->setFont(font);
+
+        // Write Date & Address
         QDateTime date = index.data(TransactionTableModel::DateRole).toDateTime();
         QString address = index.data(Qt::DisplayRole).toString();
+        painter->drawText(textRect, Qt::AlignLeft|Qt::AlignVCenter, QString("%1  -  %2").arg(GUIUtil::dateTimeStr(date)).arg(address));
+
+        // Write amount
         qint64 amount = index.data(TransactionTableModel::AmountRole).toLongLong();
         bool confirmed = index.data(TransactionTableModel::ConfirmedRole).toBool();
-        QVariant value = index.data(Qt::ForegroundRole);
-        QColor foreground = option.palette.color(QPalette::Text);
-        if(qVariantCanConvert<QColor>(value))
-        {
-            foreground = COLOR_BAREADDRESS;
-        }
 
-        painter->setPen(foreground);
-        painter->drawText(addressRect, Qt::AlignLeft|Qt::AlignVCenter, address);
-
+        QColor foreground = COLOR_POSITIVE;
         if(amount < 0)
         {
             foreground = COLOR_NEGATIVE;
         }
-        else if (amount > 0)
+        else if(!confirmed)
         {
-            foreground = COLOR_POSITIVE;
+            foreground = COLOR_UNCONFIRMED;
         }
-        else
-        {
-            foreground = COLOR_BAREADDRESS;
-        }
+
         painter->setPen(foreground);
-        QString amountText =  BitcoinUnits::formatMaxDecimals(unit, amount, decimals, true, hideAmounts);
+        QFont fontHeavy("Lato", 9, QFont::ExtraBold);
+        painter->setFont(fontHeavy);
+
+        QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true, BitcoinUnits::separatorAlways);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
         }
-        painter->drawText(amountRect, Qt::AlignRight|Qt::AlignVCenter, amountText);
+        painter->drawText(textRect, Qt::AlignRight|Qt::AlignVCenter, amountText);
 
-        painter->setPen(option.palette.color(QPalette::Text));
-        painter->drawText(amountRect, Qt::AlignLeft|Qt::AlignVCenter, GUIUtil::dateTimeStr(date));
+        // if (index.data(TransactionTableModel::WatchonlyRole).toBool())
+        // {
+        //     QIcon iconWatchonly = qvariant_cast<QIcon>(index.data(TransactionTableModel::WatchonlyDecorationRole));
+        //     QRect watchonlyRect(boundingRect.right() + 5, mainRect.top()+ypad+halfheight, 16, halfheight);
+        //     iconWatchonly.paint(painter, watchonlyRect);
+        // }
+
 
         painter->restore();
     }
 
     inline QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        return QSize(DECORATION_SIZE, DECORATION_SIZE);
+        return QSize(DECORATION_SIZE, DECORATION_SIZE+MARGIN_SIZE*2);
     }
 
     int unit;
-    int decimals;
-    bool hideAmounts;
+    const PlatformStyle *platformStyle;
 
 };
-#include "overviewpage.moc"
 
-OverviewPage::OverviewPage(QWidget *parent) :
+
+#include <qt/overviewpage.moc>
+
+OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
+    miningState(false),
+    maxThread(std::thread::hardware_concurrency()),
     ui(new Ui::OverviewPage),
-    currentBalance(-1),
-    currentUnconfirmedBalance(-1),
-    currentStakeBalance(-1),
-    txdelegate(new TxViewDelegate()),
-    filter(0),
-    Staking(GetBoolArg("-staking",true))
+    clientModel(nullptr),
+    walletModel(nullptr),
+    txdelegate(new TxViewDelegate(platformStyle, this))
 {
-    // Setup header and styles
-    if (fNoHeaders)
-        GUIUtil::header(this, QString(""));
-    else
-        GUIUtil::header(this, QString(":images/headerOverview"));
-
     ui->setupUi(this);
-    this->layout()->setContentsMargins(0, 0 + HEADER_HEIGHT, 0, 0);
 
-    // try to make more room for small screens
-    if (fNoHeaders) {
-        ui->formLayout_4->layout()->setContentsMargins(10, 10, 0, 0);
-        ui->gridLayout_3->layout()->setContentsMargins(0, 10, 10, 0);
-        ui->gridLayout_4->layout()->setContentsMargins(0, 0, 10, 0);
-        ui->formLayout_6->layout()->setContentsMargins(10, 0, 0, 0);
+    for (int i = 0; i < ui->topBoxes->count(); ++i)
+    {
+        QWidget *box = ui->topBoxes->itemAt(i)->widget();
+        QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
+        shadow->setOffset(QPointF(5, 5));
+        shadow->setBlurRadius(20.0);
+        box->setGraphicsEffect(shadow);
     }
 
-    ui->labelBalance->setFont(qFontLargerBold);
-    ui->labelTransactions->setFont(qFontLargerBold);
-    ui->labelNetwork->setFont(qFontLargerBold);
-    ui->labelValue->setFont(qFontLargerBold);
 
-    ui->labelSpendableText->setFont(qFont);
-    ui->labelSpendable->setFont(qFont);
-    ui->labelStakeText->setFont(qFont);
-    ui->labelStake->setFont(qFont);
-    ui->labelUnconfirmedText->setFont(qFont);
-    ui->labelUnconfirmed->setFont(qFont);
-    ui->labelTotalText->setFont(qFont);
-    ui->labelTotal->setFont(qFont);
+    m_balances.balance = -1;
 
-    // staker section
-    ui->stakingLabel->setFont(qFont);
-    stakingIconMovie = new QMovie(":/movies/stakingMovie", "gif", this);
-    stakeButtonLabel = new QLabel(ui->stakeButton);
+    // Set mining thread at Max thread - 1
+    ui->minerThreadNumber->setRange(1,maxThread);
+    int procDefault = (maxThread-1);
+    ui->minerThreadNumber->setValue(procDefault);
 
-    //statistics section
-    ui->interestRateText->setFont(qFont);
-    ui->interestRate->setFont(qFont);
-    ui->inflationRateText->setFont(qFont);
-    ui->inflationRate->setFont(qFont);
-    ui->netstakeweightText->setFont(qFont);
-    ui->netstakeweight->setFont(qFont);
-    ui->stakeRateText->setFont(qFont);
-    ui->stakeRate->setFont(qFont);
-    ui->blocknumberText->setFont(qFont);
-    ui->blocknumber->setFont(qFont);
+    // Recent transactions
+    ui->lastTransactionsContent->setItemDelegate(txdelegate);
+    ui->lastTransactionsContent->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE + (MARGIN_SIZE * 2)));
+    ui->lastTransactionsContent->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + (MARGIN_SIZE * 2)));
+    ui->lastTransactionsContent->setAttribute(Qt::WA_MacShowFocusRect, false);
 
-    // Add icons to the Balance section
-    ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
-    ui->labelStakeText->setText("<html><img src=':icons/stakingoff' width=16 height=16 border=0 align='bottom'> Staking Coins:</html>");
-    ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
-    ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
-
-    // Recent transactionsBalances
-    ui->listTransactions->setItemDelegate(txdelegate);
-    ui->listTransactions->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE));
-    ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 1));
-    ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->listTransactions->setMouseTracking(true);
-    ui->listTransactions->viewport()->setAttribute(Qt::WA_Hover, true);
-    ui->listTransactions->setStyleSheet("QListView { background: white; color: " + STR_FONT_COLOR + "; border-radius: 10px; border: 0; padding-right: 10px; padding-bottom: 5px; } \
-                                         QListView::hover { background: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 #fafbfe, stop: 1 #ECF3FA); }");
-    ui->listTransactions->setFont(qFont);
-
-    connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
-
-    // init "out of sync" warning labels
-    ui->labelWalletStatus->setText("(" + tr("out of date") + ")");
-    ui->labelTransactionsStatus->setText("(" + tr("out of date") + ")");
+    connect(ui->lastTransactionsContent, &QListView::clicked, this, &OverviewPage::handleTransactionClicked);
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
+    connect(ui->availableWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
+    connect(ui->unconfirmedWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
+    connect(ui->immatureWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
+    connect(ui->totalWarn, &QPushButton::clicked, this, &OverviewPage::handleOutOfSyncWarningClicks);
 
-    // set initial state of mining button
-    if (Staking)
+    // Prepare update miner statistics
+    updateMiningStatsTimer = new QTimer(this);
+    connect(updateMiningStatsTimer, &QTimer::timeout, this, &OverviewPage::updateMiningStatistics);
+
+    // manage receive/send button
+    ui->receiveBox->installEventFilter(this);
+    ui->sendBox->installEventFilter(this);
+}
+
+bool OverviewPage::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress)
     {
-        stakeButtonLabel->setPixmap(QPixmap(":/icons/stakingon"));
-        ui->stakingLabel->setText("Click to stop:");
+        if(object->objectName() == ui->receiveBox->objectName())
+            Q_EMIT receiveClicked();
+        else if(object->objectName() == ui->sendBox->objectName())
+            Q_EMIT sendClicked();
     }
-    else{
-        stakeButtonLabel->setPixmap(QPixmap(":/icons/stakeoff"));
-        ui->stakingLabel->setText("Click to start:");
-    }
+    return QWidget::eventFilter(object, event);
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
 {
     if(filter)
-        emit transactionClicked(filter->mapToSource(index));
+        Q_EMIT transactionClicked(filter->mapToSource(index));
+}
+
+void OverviewPage::handleOutOfSyncWarningClicks()
+{
+    Q_EMIT outOfSyncWarningClicked();
 }
 
 OverviewPage::~OverviewPage()
@@ -210,70 +213,53 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance)
+void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
 {
-    QString maxDecimalsTooltipText("\nUse Settings/Options/Display to hide decimals.");
-    qint64 total = balance + stake + unconfirmedBalance;
-
-    BitcoinUnits *bcu = new BitcoinUnits(this, this->model);
-    int unit = model->getOptionsModel()->getDisplayUnit();
-    bool hideAmounts = model->getOptionsModel()->getHideAmounts();
-    if (model->getOptionsModel()->getDecimalPoints() < bcu->maxdecimals(unit))
-    {
-        maxDecimalsTooltipText = QString(""); // The user already knows about the option to set decimals
+    int unit = walletModel->getOptionsModel()->getDisplayUnit();
+    m_balances = balances;
+    if (walletModel->privateKeysDisabled()) {
+        ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balances.watch_only_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, balances.unconfirmed_watch_only_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, balances.immature_watch_only_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balances.watch_only_balance + balances.unconfirmed_watch_only_balance + balances.immature_watch_only_balance, false, BitcoinUnits::separatorAlways));
+    } else {
+        ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balances.balance, false, BitcoinUnits::separatorAlways));
+        ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, balances.unconfirmed_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, balances.immature_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balances.balance + balances.unconfirmed_balance + balances.immature_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelWatchAvailable->setText(BitcoinUnits::formatWithUnit(unit, balances.watch_only_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelWatchUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, balances.unconfirmed_watch_only_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelWatchImmature->setText(BitcoinUnits::formatWithUnit(unit, balances.immature_watch_only_balance, false, BitcoinUnits::separatorAlways));
+        ui->labelWatchTotal->setText(BitcoinUnits::formatWithUnit(unit, balances.watch_only_balance + balances.unconfirmed_watch_only_balance + balances.immature_watch_only_balance, false, BitcoinUnits::separatorAlways));
     }
-
-    currentBalance = balance;
-    currentUnconfirmedBalance = unconfirmedBalance;
-    currentStakeBalance = stake;
-
-    ui->labelSpendable->setText(bcu->formatWithUnit(unit, balance, false, hideAmounts));
-    ui->labelSpendable->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance, false, hideAmounts));
-    ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    ui->labelStake->setText(bcu->formatWithUnit(unit, stake, false, hideAmounts));
-    ui->labelStake->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, stake, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    ui->labelTotal->setText(bcu->formatWithUnit(unit, total, false, hideAmounts));
-    ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-
-    delete bcu;
 }
 
-void OverviewPage::setStatistics()
+// show/hide watch-only labels
+void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
 {
-    double nNetworkWeight = GetPoSKernelPS().convert_to<double>();
-    int stakerate = 0;
-    if (Staking){
-        uint64_t timetillstake = GetTimeToStake();
-        if (timetillstake > 0){
-            stakeButtonLabel->setMovie(stakingIconMovie);
-            stakingIconMovie->start();
-            stakerate = 1;
-            if (timetillstake > 3600){
-                stakerate = timetillstake/(60*60);
-            }
-        }
-        else{
-            stakingIconMovie->stop();
-            stakeButtonLabel->setPixmap(QPixmap(":/icons/stakingon"));
-            stakerate = 0;
-        }
-    }
-    // display stats
-    ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->netstakeweight->setText(QString::number((double)((nNetworkWeight/2)/30000000)*100,'f',2));
-    ui->stakeRate->setText(QString::number(((int)stakerate)));
-    ui->inflationRate->setText(QString::number(GetCurrentInflationRate(nNetworkWeight).convert_to<double>(),'f',2));
-    ui->interestRate->setText(QString::number(GetCurrentInterestRate(pindexBest).convert_to<double>(),'f',2));
+    ui->watchAvailableBox->setVisible(showWatchOnly);
+    ui->watchUnconfirmedBox->setVisible(showWatchOnly);
+    ui->watchImmatureBox->setVisible(showWatchOnly);
+    ui->watchTotalBox->setVisible(showWatchOnly);
 }
 
-void OverviewPage::setModel(WalletModel *model)
+void OverviewPage::setClientModel(ClientModel *model)
 {
-    this->model = model;
+    this->clientModel = model;
+    if (model) {
+        // Show warning, for example if this is a prerelease version
+        connect(model, &ClientModel::alertsChanged, this, &OverviewPage::updateAlerts);
+        updateAlerts(model->getStatusBarWarnings());
+    }
+}
+
+void OverviewPage::setWalletModel(WalletModel *model)
+{
+    this->walletModel = model;
     if(model && model->getOptionsModel())
     {
         // Set up transaction list
-        filter = new TransactionFilterProxy();
+        filter.reset(new TransactionFilterProxy());
         filter->setSourceModel(model->getTransactionTableModel());
         filter->setLimit(NUM_ITEMS);
         filter->setDynamicSortFilter(true);
@@ -281,102 +267,147 @@ void OverviewPage::setModel(WalletModel *model)
         filter->setShowInactive(false);
         filter->sort(TransactionTableModel::Date, Qt::DescendingOrder);
 
-        ui->listTransactions->setModel(filter);
-        ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
+        ui->lastTransactionsContent->setModel(filter.get());
+        ui->lastTransactionsContent->setModelColumn(TransactionTableModel::ToAddress);
 
         // Keep up to date with wallet
-        setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance());
-        connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64)));
-        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
-        connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
-        connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
+        interfaces::Wallet& wallet = model->wallet();
+        interfaces::WalletBalances balances = wallet.getBalances();
+        setBalance(balances);
+        connect(model, &WalletModel::balanceChanged, this, &OverviewPage::setBalance);
+
+        connect(model->getOptionsModel(), &OptionsModel::displayUnitChanged, this, &OverviewPage::updateDisplayUnit);
+
+        updateWatchOnlyLabels(wallet.haveWatchOnly() && !model->privateKeysDisabled());
+        connect(model, &WalletModel::notifyWatchonlyChanged, [this](bool showWatchOnly) {
+            updateWatchOnlyLabels(showWatchOnly && !walletModel->privateKeysDisabled());
+        });
     }
 
-    // update the display unit, to not use the default ("VRC")
+    // update the display unit, to not use the default ("VRM")
     updateDisplayUnit();
 }
 
 void OverviewPage::updateDisplayUnit()
 {
-    if(model && model->getOptionsModel())
+    if(walletModel && walletModel->getOptionsModel())
     {
-        if(currentBalance != -1)
-            setBalance(currentBalance, currentStakeBalance, currentUnconfirmedBalance);
+        if (m_balances.balance != -1) {
+            setBalance(m_balances);
+        }
 
         // Update txdelegate->unit with the current unit
-        txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
-        txdelegate->decimals = model->getOptionsModel()->getDecimalPoints();
-        txdelegate->hideAmounts = model->getOptionsModel()->getHideAmounts();
+        txdelegate->unit = walletModel->getOptionsModel()->getDisplayUnit();
 
-        ui->listTransactions->update();
+        ui->lastTransactionsContent->update();
     }
 }
 
-void OverviewPage::updateDecimalPoints()
+void OverviewPage::updateAlerts(const QString &warnings)
 {
-    updateDisplayUnit();
-}
-
-void OverviewPage::updateHideAmounts()
-{
-    updateDisplayUnit();
+    this->ui->labelAlerts->setVisible(!warnings.isEmpty());
+    this->ui->labelAlerts->setText(warnings);
 }
 
 void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
-    ui->labelWalletStatus->setVisible(fShow);
-    ui->labelTransactionsStatus->setVisible(fShow);
+    ui->availableWarn->setVisible(fShow);
+    ui->unconfirmedWarn->setVisible(fShow);
+    ui->immatureWarn->setVisible(fShow);
+    ui->totalWarn->setVisible(fShow);
 }
 
-void OverviewPage::myOpenUrl(QUrl url)
+// Verium Mining
+// manageMiningState will be the entry point for start / stop mining. It will also udpdate the view
+void OverviewPage::manageMiningState(bool state, int procs)
 {
-    QDesktopServices::openUrl(url);
-}
+    // get the current wallet
+    // XXX: What should we do when we change to another wallet ?
+    // Currently, you can mine with multiple wallet in same time
+    if ( ! walletModel )
+      return;
 
-void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
-{
-    qnr->ignoreSslErrors();
-}
+    std::string walletName = walletModel->getWalletName().toStdString();
+    std::shared_ptr<CWallet> const wallet = GetWallet(walletName);
+    CWallet* const pwallet = wallet.get();
 
-void OverviewPage::on_stakeButton_clicked()
-{
-    ui->stakeButton->clearFocus();
-    if (!Staking)
+    QString qSprocs = QString::number(procs);
+    std::string Sprocs = qSprocs.toStdString();
+    gArgs.SoftSetArg("-genproclimit", Sprocs);
+
+    if( state != miningState )
     {
-        model->requestUnlock();
-        if (model->getEncryptionStatus() == WalletModel::Unlocked)
-        {
-            startStaking();
-        }
+        miningState = state;
+        GenerateVerium(miningState, pwallet, procs);
+    }
+
+    // Verium Mining is OFF, let's update view
+    if ( ! miningState )
+    {
+        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
+        updateMiningStatsTimer->stop();
+        ui->labelMinerHashrate->setText("--- H/m");
+        ui->labelEstNextReward->setText("--- Day(s)");
+        ui->labelMinerButton->setText(tr("Click to start:"));
     }
     else
     {
-        model->requestLock();
-        if (model->getEncryptionStatus() == WalletModel::Locked)
-        {
-            stopStaking();
-        }
+        // Update stats every 1s
+        ui->mineButton->setIcon(QIcon(":/icons/miningon"));
+        updateMiningStatsTimer->start(1000);
+        ui->labelMinerButton->setText(tr("Click to stop:"));
     }
 }
 
-void OverviewPage::startStaking()
+void OverviewPage::on_mineButton_clicked()
 {
-        Staking = true;
-        if (GetTimeToStake() > 0){stakeButtonLabel->setMovie(stakingIconMovie);
-            stakingIconMovie->start();}
-        else{stakeButtonLabel->setPixmap(QPixmap(":/icons/stakingon"));
-        }
-        ui->stakingLabel->setText("Click to stop:");
-        MilliSleep(100);
-        setStatistics();
+    // check client is in sync
+    QDateTime lastBlockDate = QDateTime::fromTime_t(clientModel->getHeaderTipTime());
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int count = clientModel->getHeaderTipHeight();
+    int nTotalBlocks = GetNumBlocksOfPeers();
+    int peers = clientModel->getNumConnections();
+
+    if((secs > 90*60 && count < nTotalBlocks && !miningState) || (peers < 1 && !miningState))
+    {
+        QMessageBox::warning(this, tr("Mining"),
+            tr("Please wait until fully in sync with network to mine."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
+
+    // check for recommended processor usage and warn
+    if (ui->minerThreadNumber->value() == maxThread && !miningState)
+    {
+        QMessageBox::warning(this, tr("Mining"),
+            tr("For optimal performace and stability, it is recommended to keep one processor free for the operating system. Please reduce processor by one."),
+            QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+    if( ! miningState )
+        OverviewPage::manageMiningState(true, ui->minerThreadNumber->value());
+    else
+        OverviewPage::manageMiningState(false);
+
 }
 
-void OverviewPage::stopStaking()
+void OverviewPage::on_minerThreadNumber_valueChanged(int procs)
 {
-        Staking = false;
-        stakingIconMovie->stop();
-        ui->stakingLabel->setText("Click to start:");
-        stakeButtonLabel->setPixmap(QPixmap(":/icons/stakeoff"));
-        MilliSleep(100);
-        setStatistics();
+    OverviewPage::manageMiningState(false, procs);
+}
+
+void OverviewPage::updateMiningStatistics()
+{
+    // XXX: Refacto to stop calling rpc, the active chain & co ...
+    double totalhashrate = hashrate;
+    double nethashrate = GetPoWKHashPM();
+    double blocktime = (double)calculateBlocktime(::ChainActive().Tip())/60;
+    double minerate;
+    if (totalhashrate == 0.0){minerate = 0.0;}
+    else{
+        minerate = 0.694*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60*24
+    }
+
+    ui->labelMinerHashrate->setText(QString("%1 H/m").arg(QString::number(totalhashrate, 'f', 3)));
+    ui->labelEstNextReward->setText(QString("%1 Day(s)").arg(QString::number(minerate, 'f', 1)));
 }

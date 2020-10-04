@@ -1,21 +1,30 @@
-#ifndef OVERVIEWPAGE_H
-#define OVERVIEWPAGE_H
+// Copyright (c) 2011-2018 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef BITCOIN_QT_OVERVIEWPAGE_H
+#define BITCOIN_QT_OVERVIEWPAGE_H
+
+#include <interfaces/wallet.h>
 
 #include <QWidget>
-#include <QNetworkReply>
-#include <QLabel>
+#include <QTimer>
+#include <QMovie>
+#include <memory>
 
-QT_BEGIN_NAMESPACE
-class QModelIndex;
-QT_END_NAMESPACE
+class ClientModel;
+class TransactionFilterProxy;
+class TxViewDelegate;
+class PlatformStyle;
+class WalletModel;
 
 namespace Ui {
     class OverviewPage;
 }
-class WalletModel;
-class ClientModel;
-class TxViewDelegate;
-class TransactionFilterProxy;
+
+QT_BEGIN_NAMESPACE
+class QModelIndex;
+QT_END_NAMESPACE
 
 /** Overview ("home") page widget */
 class OverviewPage : public QWidget
@@ -23,48 +32,50 @@ class OverviewPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit OverviewPage(QWidget *parent = 0);
+    explicit OverviewPage(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
     ~OverviewPage();
 
-    void setModel(WalletModel *model);
+    void setClientModel(ClientModel *clientModel);
+    void setWalletModel(WalletModel *walletModel);
     void showOutOfSyncWarning(bool fShow);
-    bool Staking;
-    QMovie *stakingIconMovie;
-    QString stakingColor;
-    QString notstakingColor;
-    QLabel *stakeButtonLabel;
 
-public slots:
-    void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance);
-    void setStatistics();
-    void startStaking();
-    void stopStaking();
+    // Verium Mining
+    bool miningState;
+    int maxThread;
+    void manageMiningState(bool state, int procs = 1);
 
-signals:
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+    void updateMiningStatistics();
+
+public Q_SLOTS:
+    void setBalance(const interfaces::WalletBalances& balances);
+
+Q_SIGNALS:
     void transactionClicked(const QModelIndex &index);
-    void displayUnitChanged(int unit);
-    void decimalPointsChanged(int decimals);
-    void hideAmountsChanged(bool hideamounts);
+    void receiveClicked();
+    void sendClicked();
+    void outOfSyncWarningClicked();
 
 private:
     Ui::OverviewPage *ui;
-    WalletModel *model;
-    ClientModel *clientmodel;
-    qint64 currentBalance;
-    qint64 currentUnconfirmedBalance;
-    qint64 currentStakeBalance;
+    ClientModel *clientModel;
+    WalletModel *walletModel;
+    interfaces::WalletBalances m_balances;
 
     TxViewDelegate *txdelegate;
-    TransactionFilterProxy *filter;
+    std::unique_ptr<TransactionFilterProxy> filter;
+    QTimer *updateMiningStatsTimer;
 
-private slots:
+private Q_SLOTS:
     void updateDisplayUnit();
-    void updateDecimalPoints();
-    void updateHideAmounts();
     void handleTransactionClicked(const QModelIndex &index);
-    void myOpenUrl(QUrl url);
-    void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
-    void on_stakeButton_clicked();
+    void updateAlerts(const QString &warnings);
+    void updateWatchOnlyLabels(bool showWatchOnly);
+    void handleOutOfSyncWarningClicks();
+    void on_minerThreadNumber_valueChanged(int procs);
+    void on_mineButton_clicked();
 };
 
-#endif // OVERVIEWPAGE_H
+#endif // BITCOIN_QT_OVERVIEWPAGE_H

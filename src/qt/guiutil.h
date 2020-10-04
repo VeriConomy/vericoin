@@ -1,66 +1,62 @@
-#ifndef GUIUTIL_H
-#define GUIUTIL_H
+// Copyright (c) 2011-2018 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <QString>
-#include <QObject>
+#ifndef BITCOIN_QT_GUIUTIL_H
+#define BITCOIN_QT_GUIUTIL_H
+
+#include <amount.h>
+#include <fs.h>
+
+#include <QEvent>
+#include <QHeaderView>
+#include <QItemDelegate>
 #include <QMessageBox>
-#include <QGraphicsView>
-#include <boost/filesystem.hpp>
+#include <QObject>
+#include <QProgressBar>
+#include <QString>
+#include <QTableView>
+#include <QLabel>
+
+class QValidatedLineEdit;
+class SendCoinsRecipient;
+
+namespace interfaces
+{
+    class Node;
+}
 
 QT_BEGIN_NAMESPACE
+class QAbstractItemView;
+class QDateTime;
 class QFont;
 class QLineEdit;
-class QWidget;
-class QDateTime;
+class QProgressDialog;
 class QUrl;
-class QAbstractItemView;
+class QWidget;
 QT_END_NAMESPACE
-class SendCoinsRecipient;
 
 /** Utility functions used by the Bitcoin Qt UI.
  */
 namespace GUIUtil
 {
-    extern bool fNoHeaders;
-    extern int TOOLBAR_WIDTH;
-    extern int TOOLBAR_ICON_WIDTH;
-    extern int TOOLBAR_ICON_HEIGHT;
-    extern int HEADER_WIDTH;
-    extern int HEADER_HEIGHT;
-    extern int BUTTON_WIDTH;
-    extern int BUTTON_HEIGHT;
-    extern int FRAMEBLOCKS_LABEL_WIDTH;
-    extern int WINDOW_MIN_WIDTH;
-    extern int WINDOW_MIN_HEIGHT;
-    extern int STATUSBAR_ICONSIZE;
-    extern int STATUSBAR_MARGIN;
-    extern int STATUSBAR_HEIGHT;
-
-    void refactorGUI(QRect screenSize);
-    int pointsToPixels(int points);
-    void setFontPixelSize(QFont *font);
-    void setFontPixelSizes();
-
-    // Common stylesheets
-    extern QString veriStyleSheet;
-    extern QString veriAskPassphrasePageStyleSheet;
-    extern QGraphicsView *header(QWidget *parent, QString backgroundImage);
-
     // Create human-readable string from date
     QString dateTimeStr(const QDateTime &datetime);
     QString dateTimeStr(qint64 nTime);
 
-    // Render Bitcoin addresses in monospace font
-    QFont bitcoinAddressFont();
+    // Return a monospace font
+    QFont fixedPitchFont();
 
-    // Set up widgets for address and amounts
-    void setupAddressWidget(QLineEdit *widget, QWidget *parent);
-    void setupAmountWidget(QLineEdit *widget, QWidget *parent);
+    // Set up widget for address
+    void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
 
-    // Parse "vericoin:" URI into recipient object, return true on successful parsing
-    // See Bitcoin URI definition discussion here: https://bitcointalk.org/index.php?topic=33490.0
+    // Parse "verium:" URI into recipient object, return true on successful parsing
     bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
     bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);
+    QString formatBitcoinURI(const SendCoinsRecipient &info);
+
+    // Returns true if given address+amount meets "dust" definition
+    bool isDust(interfaces::Node& node, const QString& address, const CAmount& amount);
 
     // HTML escaping for rich text controls
     QString HtmlEscape(const QString& str, bool fMultiLine=false);
@@ -74,6 +70,20 @@ namespace GUIUtil
      */
     void copyEntryData(QAbstractItemView *view, int column, int role=Qt::EditRole);
 
+    /** Return a field of the currently selected entry as a QString. Does nothing if nothing
+        is selected.
+       @param[in] column  Data column to extract from the model
+       @see  TransactionView::copyLabel, TransactionView::copyAmount, TransactionView::copyAddress
+     */
+    QList<QModelIndex> getEntryData(QAbstractItemView *view, int column);
+
+    void setClipboard(const QString& str);
+
+    /**
+     * Determine default data directory for operating system.
+     */
+    QString getDefaultDataDirectory();
+
     /** Get save filename, mimics QFileDialog::getSaveFileName, except that it appends a default suffix
         when no suffix is provided by the user.
 
@@ -84,9 +94,22 @@ namespace GUIUtil
       @param[out] selectedSuffixOut  Pointer to return the suffix (file type) that was selected (or 0).
                   Can be useful when choosing the save file format based on suffix.
      */
-    QString getSaveFileName(QWidget *parent=0, const QString &caption=QString(),
-                                   const QString &dir=QString(), const QString &filter=QString(),
-                                   QString *selectedSuffixOut=0);
+    QString getSaveFileName(QWidget *parent, const QString &caption, const QString &dir,
+        const QString &filter,
+        QString *selectedSuffixOut);
+
+    /** Get open filename, convenience wrapper for QFileDialog::getOpenFileName.
+
+      @param[in] parent  Parent window (or 0)
+      @param[in] caption Window caption (or empty, for default)
+      @param[in] dir     Starting directory (or empty, to default to documents directory)
+      @param[in] filter  Filter specification such as "Comma Separated Files (*.csv)"
+      @param[out] selectedSuffixOut  Pointer to return the suffix (file type) that was selected (or 0).
+                  Can be useful when choosing the save file format based on suffix.
+     */
+    QString getOpenFileName(QWidget *parent, const QString &caption, const QString &dir,
+        const QString &filter,
+        QString *selectedSuffixOut);
 
     /** Get connection type to call object slot in GUI thread with invokeMethod. The call will be blocking.
 
@@ -98,8 +121,14 @@ namespace GUIUtil
     // Determine whether a widget is hidden behind other windows
     bool isObscured(QWidget *w);
 
+    // Activate, show and raise the widget
+    void bringToFront(QWidget* w);
+
     // Open debug.log
     void openDebugLogfile();
+
+    // Open the config file
+    bool openBitcoinConf();
 
     /** Qt event filter that intercepts ToolTipChange events, and replaces the tooltip with a rich text
       representation if needed. This assures that Qt can word-wrap long tooltip messages.
@@ -110,7 +139,7 @@ namespace GUIUtil
         Q_OBJECT
 
     public:
-        explicit ToolTipToRichTextFilter(int size_threshold, QObject *parent = 0);
+        explicit ToolTipToRichTextFilter(int size_threshold, QObject *parent = nullptr);
 
     protected:
         bool eventFilter(QObject *obj, QEvent *evt);
@@ -119,38 +148,123 @@ namespace GUIUtil
         int size_threshold;
     };
 
-    bool GetStartOnSystemStartup();
-    bool SetStartOnSystemStartup(bool fAutoStart);
-
-    /** Help message for Bitcoin-Qt, shown with --help. */
-    class HelpMessageBox : public QMessageBox
+    /**
+     * Makes a QTableView last column feel as if it was being resized from its left border.
+     * Also makes sure the column widths are never larger than the table's viewport.
+     * In Qt, all columns are resizable from the right, but it's not intuitive resizing the last column from the right.
+     * Usually our second to last columns behave as if stretched, and when on stretch mode, columns aren't resizable
+     * interactively or programmatically.
+     *
+     * This helper object takes care of this issue.
+     *
+     */
+    class TableViewLastColumnResizingFixer: public QObject
     {
         Q_OBJECT
 
-    public:
-        HelpMessageBox(QWidget *parent = 0);
+        public:
+            TableViewLastColumnResizingFixer(QTableView* table, int lastColMinimumWidth, int allColsMinimumWidth, QObject *parent);
+            void stretchColumnWidth(int column);
 
-        /** Show message box or print help message to standard output, based on operating system. */
-        void showOrPrint();
+        private:
+            QTableView* tableView;
+            int lastColumnMinimumWidth;
+            int allColumnsMinimumWidth;
+            int lastColumnIndex;
+            int columnCount;
+            int secondToLastColumnIndex;
 
-        /** Print help message to console */
-        void printToConsole();
+            void adjustTableColumnsWidth();
+            int getAvailableWidthForColumn(int column);
+            int getColumnsWidth();
+            void connectViewHeadersSignals();
+            void disconnectViewHeadersSignals();
+            void setViewHeaderResizeMode(int logicalIndex, QHeaderView::ResizeMode resizeMode);
+            void resizeColumn(int nColumnIndex, int width);
 
-    private:
-        QString header;
-        QString coreOptions;
-        QString uiOptions;
+        private Q_SLOTS:
+            void on_sectionResized(int logicalIndex, int oldSize, int newSize);
+            void on_geometriesChanged();
     };
 
-    #if BOOST_FILESYSTEM_VERSION >= 3
-    boost::filesystem::path qstringToBoostPath(const QString &path);
-    QString boostPathToQString(const boost::filesystem::path &path);
-    #else
-    #warning Conversion between boost path and QString can use invalid character encoding with boost_filesystem v2 and older
-    boost::filesystem::path qstringToBoostPath(const QString &path);
-    QString boostPathToQString(const boost::filesystem::path &path);
-    #endif
+    bool GetStartOnSystemStartup();
+    bool SetStartOnSystemStartup(bool fAutoStart);
 
+    /* Convert QString to OS specific boost path through UTF-8 */
+    fs::path qstringToBoostPath(const QString &path);
+
+    /* Convert OS specific boost path to QString through UTF-8 */
+    QString boostPathToQString(const fs::path &path);
+
+    /* Convert seconds into a QString with days, hours, mins, secs */
+    QString formatDurationStr(int secs);
+
+    /* Format CNodeStats.nServices bitmask into a user-readable string */
+    QString formatServicesStr(quint64 mask);
+
+    /* Format a CNodeCombinedStats.dPingTime into a user-readable string or display N/A, if 0*/
+    QString formatPingTime(double dPingTime);
+
+    /* Format a CNodeCombinedStats.nTimeOffset into a user-readable string. */
+    QString formatTimeOffset(int64_t nTimeOffset);
+
+    QString formatNiceTimeOffset(qint64 secs);
+
+    QString formatBytes(uint64_t bytes);
+
+    qreal calculateIdealFontSize(int width, const QString& text, QFont font, qreal minPointSize = 4, qreal startPointSize = 14);
+
+    class ClickableLabel : public QLabel
+    {
+        Q_OBJECT
+
+    Q_SIGNALS:
+        /** Emitted when the label is clicked. The relative mouse coordinates of the click are
+         * passed to the signal.
+         */
+        void clicked(const QPoint& point);
+    protected:
+        void mouseReleaseEvent(QMouseEvent *event);
+    };
+
+    class ClickableProgressBar : public QProgressBar
+    {
+        Q_OBJECT
+
+    Q_SIGNALS:
+        /** Emitted when the progressbar is clicked. The relative mouse coordinates of the click are
+         * passed to the signal.
+         */
+        void clicked(const QPoint& point);
+    protected:
+        void mouseReleaseEvent(QMouseEvent *event);
+    };
+
+    typedef ClickableProgressBar ProgressBar;
+
+    class ItemDelegate : public QItemDelegate
+    {
+        Q_OBJECT
+    public:
+        ItemDelegate(QObject* parent) : QItemDelegate(parent) {}
+
+    Q_SIGNALS:
+        void keyEscapePressed();
+
+    private:
+        bool eventFilter(QObject *object, QEvent *event);
+    };
+
+    // Fix known bugs in QProgressDialog class.
+    void PolishProgressDialog(QProgressDialog* dialog);
+
+    /**
+     * Returns the distance in pixels appropriate for drawing a subsequent character after text.
+     *
+     * In Qt 5.12 and before the QFontMetrics::width() is used and it is deprecated since Qt 13.0.
+     * In Qt 5.11 the QFontMetrics::horizontalAdvance() was introduced.
+     */
+    int TextWidth(const QFontMetrics& fm, const QString& text);
 } // namespace GUIUtil
 
-#endif // GUIUTIL_H
+#endif // BITCOIN_QT_GUIUTIL_H

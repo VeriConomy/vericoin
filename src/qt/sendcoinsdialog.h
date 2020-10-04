@@ -1,17 +1,25 @@
-#ifndef SENDCOINSDIALOG_H
-#define SENDCOINSDIALOG_H
+// Copyright (c) 2011-2018 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef BITCOIN_QT_SENDCOINSDIALOG_H
+#define BITCOIN_QT_SENDCOINSDIALOG_H
+
+#include <qt/walletmodel.h>
 
 #include <QDialog>
+#include <QMessageBox>
 #include <QString>
-#include <QtNetwork/QtNetwork>
+#include <QTimer>
+
+class ClientModel;
+class PlatformStyle;
+class SendCoinsEntry;
+class SendCoinsRecipient;
 
 namespace Ui {
     class SendCoinsDialog;
 }
-class WalletModel;
-class SendCoinsEntry;
-class SendCoinsRecipient;
-class ClientModel;
 
 QT_BEGIN_NAMESPACE
 class QUrl;
@@ -23,40 +31,55 @@ class SendCoinsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SendCoinsDialog(QWidget *parent = 0);
+    explicit SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
     ~SendCoinsDialog();
 
+    void setClientModel(ClientModel *clientModel);
     void setModel(WalletModel *model);
 
     /** Set up the tab chain manually, as Qt messes up the tab chain by default in some cases (issue https://bugreports.qt-project.org/browse/QTBUG-10907).
      */
     QWidget *setupTabChain(QWidget *prev);
 
+    void setAddress(const QString &address);
     void pasteEntry(const SendCoinsRecipient &rv);
-    bool handleURI(const QString &uri);
+    bool handlePaymentRequest(const SendCoinsRecipient &recipient);
 
-public slots:
+public Q_SLOTS:
     void clear();
     void reject();
     void accept();
     SendCoinsEntry *addEntry();
-    void updateRemoveEnabled();
-    void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance);
+    void updateTabsAndLabels();
+    void setBalance(const interfaces::WalletBalances& balances);
 
-signals:
-    void dataready( QByteArray &dataR );
+Q_SIGNALS:
+    void coinsSent(const uint256& txid);
 
 private:
     Ui::SendCoinsDialog *ui;
+    ClientModel *clientModel;
     WalletModel *model;
-    ClientModel *currentModel;
     bool fNewRecipientAllowed;
+    bool fFeeMinimized;
+    const PlatformStyle *platformStyle;
 
-private slots:
+    // Process WalletModel::SendCoinsReturn and generate a pair consisting
+    // of a message and message flags for use in Q_EMIT message().
+    // Additional parameter msgArg can be used via .arg(msgArg).
+    void processSendCoinsReturn(const WalletModel::SendCoinsReturn &sendCoinsReturn, const QString &msgArg = QString());
+    void minimizeFeeSection(bool fMinimize);
+    void updateFeeMinimizedLabel();
+    // Update the passed in CCoinControl with state from the GUI
+    void updateCoinControlState(CCoinControl& ctrl);
+
+private Q_SLOTS:
     void on_sendButton_clicked();
+    void on_buttonChooseFee_clicked();
+    void on_buttonMinimizeFee_clicked();
     void removeEntry(SendCoinsEntry* entry);
+    void useAvailableBalance(SendCoinsEntry* entry);
     void updateDisplayUnit();
-    void updateHideAmounts();
     void coinControlFeatureChanged(bool);
     void coinControlButtonClicked();
     void coinControlChangeChecked(int);
@@ -67,9 +90,35 @@ private slots:
     void coinControlClipboardFee();
     void coinControlClipboardAfterFee();
     void coinControlClipboardBytes();
-    void coinControlClipboardPriority();
     void coinControlClipboardLowOutput();
     void coinControlClipboardChange();
+    void updateFeeSectionControls();
+    void updateMinimumFeeLabel();
+
+Q_SIGNALS:
+    // Fired when a message should be reported to the user
+    void message(const QString &title, const QString &message, unsigned int style);
 };
 
-#endif // SENDCOINSDIALOG_H
+
+#define SEND_CONFIRM_DELAY   3
+
+class SendConfirmationDialog : public QMessageBox
+{
+    Q_OBJECT
+
+public:
+    SendConfirmationDialog(const QString& title, const QString& text, const QString& informative_text = "", const QString& detailed_text = "", int secDelay = SEND_CONFIRM_DELAY, QWidget* parent = nullptr);
+    int exec();
+
+private Q_SLOTS:
+    void countDown();
+    void updateYesButton();
+
+private:
+    QAbstractButton *yesButton;
+    QTimer countDownTimer;
+    int secDelay;
+};
+
+#endif // BITCOIN_QT_SENDCOINSDIALOG_H

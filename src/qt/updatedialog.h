@@ -1,30 +1,37 @@
-#ifndef UPDATEDIALOG_H
-#define UPDATEDIALOG_H
+#ifndef BITCOIN_QT_UPDATEDIALOG_H
+#define BITCOIN_QT_UPDATEDIALOG_H
 
+#include <curl/curl.h>
+#include <QObject>
+#include <QWidget>
 #include <QDialog>
+#include <QTimer>
+
+std::string getUpdatedClient();
+void processUpdate(QString qClientName);
 
 namespace Ui {
     class UpdateDialog;
 }
-class ClientModel;
-
-/** "Update" dialog box */
 class UpdateDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    bool updateAccepted;
     explicit UpdateDialog(QWidget *parent = 0);
     ~UpdateDialog();
+    void setProgress(curl_off_t, curl_off_t);
 
-    void setModel(ClientModel *model);
-private:
     Ui::UpdateDialog *ui;
+    std::string clientName;
 
-private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+private Q_SLOTS:
+
+    void on_updateButton_clicked();
+    void on_closeButton_clicked();
+
 };
 
-#endif // UPDATEDIALOG_H
+bool needClientUpdate();
+
+#endif // BITCOIN_QT_UPDATEDIALOG_H
