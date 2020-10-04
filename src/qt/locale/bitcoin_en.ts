@@ -4263,7 +4263,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
     <message>
         <location line="+13"/>
-        <source>Vault is the newest version.  No update at this time.</source>
+        <source>Wallet is the newest version.  No update at this time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

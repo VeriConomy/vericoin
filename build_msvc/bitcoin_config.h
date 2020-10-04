@@ -14,10 +14,10 @@
 #define CLIENT_VERSION_MAJOR 1
 
 /* Minor version */
-#define CLIENT_VERSION_MINOR 3
+#define CLIENT_VERSION_MINOR 8
 
 /* Build revision */
-#define CLIENT_VERSION_REVISION 2
+#define CLIENT_VERSION_REVISION 0
 
 /* Copyright holder(s) before %s replacement */
 #define COPYRIGHT_HOLDERS "The %s developers"
@@ -340,7 +340,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "https://github.com/VericoinReserve/vericoin/issues"
+#define PACKAGE_BUGREPORT "https://github.com/VeriConomy/vericoin/issues"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "Vericoin"

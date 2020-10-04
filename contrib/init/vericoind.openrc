@@ -18,7 +18,7 @@ VERICOIND_BIN=${VERICOIND_BIN:-/usr/bin/vericoind}
 VERICOIND_NICE=${VERICOIND_NICE:-${NICELEVEL:-0}}
 VERICOIND_OPTS="${VERICOIND_OPTS:-${VERICOIN_OPTS}}"
 
-name="Vericoin Vault Daemon"
+name="Vericoin Wallet Daemon"
 description="Vericoin cryptocurrency P2P network daemon"
 
 command="/usr/bin/vericoind"

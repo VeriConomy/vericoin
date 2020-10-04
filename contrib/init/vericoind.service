@@ -10,7 +10,7 @@
 # config file.
 
 [Unit]
-Description=Vericoin Vault daemon
+Description=Vericoin Wallet daemon
 After=network.target
 
 [Service]

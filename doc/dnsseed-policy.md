@@ -50,4 +50,4 @@ situations but should be discussed in public in advance.
 
 See also
 ----------
-- [vericoin-seeder](https://github.com/VericoinReserve/vericoin-seeder) is a reference implementation of a DNS seed.
+- [vericoin-seeder](https://github.com/VeriConomy/vericoin-seeder) is a reference implementation of a DNS seed.

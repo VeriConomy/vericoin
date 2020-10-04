@@ -546,7 +546,7 @@ void SetupServerArgs()
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/VericoinReserve/vericoin>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/VeriConomy/vericoin>";
     const std::string URL_WEBSITE = "<https://vericonomy.com>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i-%i").translated, 2016, COPYRIGHT_YEAR) + " ") + "\n" +
