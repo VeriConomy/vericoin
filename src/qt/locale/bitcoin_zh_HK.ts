@@ -62,8 +62,8 @@
         <translation>收款地址</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>這些是你要付款過去的 Verium 位址。在付款之前，務必要檢查金額和收款位址是否正確。</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>這些是你要付款過去的 Vericoin 位址。在付款之前，務必要檢查金額和收款位址是否正確。</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -156,8 +156,8 @@
         <translation>確認錢包加密</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
-        <translation>警告: 如果你將錢包加密後又忘記密碼，你就會&lt;b&gt;失去所有 Verium 了&lt;/b&gt;！</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
+        <translation>警告: 如果你將錢包加密後又忘記密碼，你就會&lt;b&gt;失去所有 Vericoin 了&lt;/b&gt;！</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -216,7 +216,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>簽署訊息... &amp;m</translation>
@@ -294,8 +294,8 @@
         <translation>正在為磁碟區塊重建索引...</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>付款至一個 Verium 位址</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>付款至一個 Vericoin 位址</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -346,8 +346,8 @@
         <translation>說明 &amp;H</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>要求付款 (產生QR碼 verium: URIs)</translation>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>要求付款 (產生QR碼 vericoin: URIs)</translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -397,8 +397,8 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>Error</source>
@@ -441,8 +441,8 @@
 <context>
     <name>QObject</name>
     <message>
-        <source>Enter a Verium address (e.g. %1)</source>
-        <translation>輸入一個 Verium 位址 (例如 %1)</translation>
+        <source>Enter a Vericoin address (e.g. %1)</source>
+        <translation>輸入一個 Vericoin 位址 (例如 %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -662,6 +662,6 @@
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     </context>
 </TS>

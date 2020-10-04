@@ -66,8 +66,8 @@
         <translation>Direcciones de recibo</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son tus direcciones de Verium para enviar pagos. Siempre revisa el monto y la dirección de envío antes de enviar monedas.</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son tus direcciones de Vericoin para enviar pagos. Siempre revisa el monto y la dirección de envío antes de enviar monedas.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -160,8 +160,8 @@
         <translation>Confirmar la encriptación de cartera</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
-        <translation>Advertencia: Si encripta su cartera y pierde su contraseña, &lt;b&gt;PERDERÁ TODOS SUS VRMS&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
+        <translation>Advertencia: Si encripta su cartera y pierde su contraseña, &lt;b&gt;PERDERÁ TODOS SUS VRCS&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -220,7 +220,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Firmar &amp;mensaje</translation>
@@ -323,8 +323,8 @@ Haga clic para habilitar la actividad de red nuevamente.</translation>
         <translation>El proxy está &lt;b&gt;habilitado&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Enviar monedas a una dirección Verium</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Enviar monedas a una dirección Vericoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -367,12 +367,12 @@ Haga clic para habilitar la actividad de red nuevamente.</translation>
         <translation>Cifre las claves privadas que pertenecen a su billetera</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation>Firme mensajes con sus direcciones de Verium para demostrar que los posee</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation>Firme mensajes con sus direcciones de Vericoin para demostrar que los posee</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Verifique los mensajes para asegurarse de que se firmaron con direcciones de Verium especificadas.</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Verifique los mensajes para asegurarse de que se firmaron con direcciones de Vericoin especificadas.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -391,9 +391,9 @@ Haga clic para habilitar la actividad de red nuevamente.</translation>
         <translation>Pestañas</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
         <translation> 
-Solicitar pagos (genera códigos QR y verium: URI)
+Solicitar pagos (genera códigos QR y vericoin: URI)
  </translation>
     </message>
     <message>
@@ -526,8 +526,8 @@ Solicitar pagos (genera códigos QR y verium: URI)
 <context>
     <name>Intro</name>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>Error</source>
@@ -615,8 +615,8 @@ Solicitar pagos (genera códigos QR y verium: URI)
         <translation>Mensaje:</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Verium network.</source>
-        <translation>Mensaje opcional para agregar a la solicitud de pago, el cual será mostrado cuando la solicitud este abierta. Nota: El mensaje no se manda con el pago a travéz de la red de Verium.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Vericoin network.</source>
+        <translation>Mensaje opcional para agregar a la solicitud de pago, el cual será mostrado cuando la solicitud este abierta. Nota: El mensaje no se manda con el pago a travéz de la red de Vericoin.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -879,7 +879,7 @@ Solicitar pagos (genera códigos QR y verium: URI)
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Verifying blocks...</source>
         <translation>Verificando bloques...</translation>

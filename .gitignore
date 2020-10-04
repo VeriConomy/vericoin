@@ -10,14 +10,14 @@ src/bitcoin-wallet
 src/test/test_bitcoin
 src/test/test_bitcoin_fuzzy
 src/qt/test/test_bitcoin-qt
-src/verium
-src/veriumd
-src/verium-cli
-src/verium-tx
-src/verium-wallet
-src/test/test_verium
-src/test/test_verium_fuzzy
-src/qt/test/test_verium-qt
+src/vericoin
+src/vericoind
+src/vericoin-cli
+src/vericoin-tx
+src/vericoin-wallet
+src/test/test_vericoin
+src/test/test_vericoin_fuzzy
+src/qt/test/test_vericoin-qt
 
 # autoreconf
 Makefile.in
@@ -60,11 +60,11 @@ src/qt/bitcoin-qt.creator
 src/qt/bitcoin-qt.creator.user
 src/qt/bitcoin-qt.files
 src/qt/bitcoin-qt.includes
-src/qt/verium-qt.config
-src/qt/verium-qt.creator
-src/qt/verium-qt.creator.user
-src/qt/verium-qt.files
-src/qt/verium-qt.includes
+src/qt/vericoin-qt.config
+src/qt/vericoin-qt.creator
+src/qt/vericoin-qt.creator.user
+src/qt/vericoin-qt.files
+src/qt/vericoin-qt.includes
 
 .vscode
 .deps
@@ -102,8 +102,8 @@ src/qt/verium-qt.includes
 *.qm
 Makefile
 !depends/Makefile
-verium-qt
-Verium-Qt.app
+vericoin-qt
+Vericoin-Qt.app
 background.tiff*
 
 # Qt Creator
@@ -111,7 +111,7 @@ Makefile.am.user
 
 # Unit-tests
 Makefile.test
-verium-qt_test
+vericoin-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -125,7 +125,7 @@ build
 *.gcda
 /*.info
 test_bitcoin.coverage/
-test_verium.coverage/
+test_vericoin.coverage/
 total.coverage/
 coverage_percent.txt
 

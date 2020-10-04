@@ -44,7 +44,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Warning</source>
         <translation>අවවාදය</translation>
@@ -308,6 +308,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     </context>
 </TS>

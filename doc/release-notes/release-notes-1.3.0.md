@@ -1,4 +1,4 @@
-Verium Vault version 1.3.0 is now available from:
+Vericoin Vault version 1.3.0 is now available from:
 
   https://vericoin.info
 
@@ -7,7 +7,7 @@ bug fixes.
 
 Please report bugs using the issue tracker at github:
 
-  https://github.com/VeriumReserve/Verium
+  https://github.com/VericoinReserve/Vericoin
 
 Upgrading and downgrading
 =========================
@@ -17,7 +17,7 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), uninstall all
-earlier versions of Verium, then run the installer.
+earlier versions of Vericoin, then run the installer.
 
 We recommand before any upgrade that you backup your wallet.
 
@@ -59,19 +59,19 @@ Autotools build system
 For 1.3.0 we switched to an autotools-based build system instead of individual
 (q)makefiles.
 
-Using the standard "./autogen.sh; ./configure; make" to build Verium-Qt and
-veriumd makes it easier for experienced open source developers to contribute
+Using the standard "./autogen.sh; ./configure; make" to build Vericoin-Qt and
+vericoind makes it easier for experienced open source developers to contribute
 to the project.
 
 Be sure to check doc/build-*.md for your platform before building from source.
 
-Verium-cli
+Vericoin-cli
 -------------
 
-Another change in the 1.3.0 release is moving away from the veriumd executable
+Another change in the 1.3.0 release is moving away from the vericoind executable
 functioning both as a server and as a RPC client. The RPC client functionality
-("tell the running verium daemon to do THIS") was split into a separate
-executable, 'verium-cli'.
+("tell the running vericoin daemon to do THIS") was split into a separate
+executable, 'vericoin-cli'.
 
 `walletpassphrase` RPC
 -----------------------
@@ -97,7 +97,7 @@ the old one:
 Faster synchronization
 ----------------------
 
-Verium now uses 'headers-first synchronization'. This means that we first
+Vericoin now uses 'headers-first synchronization'. This means that we first
 ask peers for block headers and validate those.
 In a second stage, when the headers have been discovered, we
 download the blocks. However, as we already know about the whole chain in
@@ -234,13 +234,13 @@ addresses need to added to the wallet before the payment, though.
 Consensus library
 -----------------
 
-Starting from 1.3.0, the Verium distribution includes a consensus library.
+Starting from 1.3.0, the Vericoin distribution includes a consensus library.
 
 The purpose of this library is to make the verification functionality that is
-critical to Verium's consensus available to other applications.
+critical to Vericoin's consensus available to other applications.
 
 This library is called `libbitcoinconsensus.so` (or, `.dll` for Windows).
-Its interface is defined in the C header [bitcoinconsensus.h](https://github.com/VeriumReserve/verium/blob/1.3.0/src/script/bitcoinconsensus.h).
+Its interface is defined in the C header [bitcoinconsensus.h](https://github.com/VericoinReserve/vericoin/blob/1.3.0/src/script/bitcoinconsensus.h).
 
 In its initial version the API includes two functions:
 
@@ -251,20 +251,20 @@ correctly spends the passed scriptPubKey under additional constraints indicated 
 The functionality is planned to be extended to e.g. UTXO management in upcoming releases, but the interface
 for existing methods should remain stable.
 
-verium-tx
+vericoin-tx
 ----------
 
-It has been observed that many of the RPC functions offered by veriumd are
-"pure functions", and operate independently of the veriumd wallet. This
+It has been observed that many of the RPC functions offered by vericoind are
+"pure functions", and operate independently of the vericoind wallet. This
 included many of the RPC "raw transaction" API functions, such as
 createrawtransaction.
 
-verium-tx is a newly introduced command line utility designed to enable easy
-manipulation of verium transactions. A summary of its operation may be
-obtained via "verium-tx --help" Transactions may be created or signed in a
+vericoin-tx is a newly introduced command line utility designed to enable easy
+manipulation of vericoin transactions. A summary of its operation may be
+obtained via "vericoin-tx --help" Transactions may be created or signed in a
 manner similar to the RPC raw tx API. Transactions may be updated, deleting
 inputs or outputs, or appending new inputs and outputs. Custom scripts may be
-easily composed using a simple text notation, borrowed from the verium test
+easily composed using a simple text notation, borrowed from the vericoin test
 suite.
 
 This tool may be used for experimenting with new transaction types, signing
@@ -292,11 +292,11 @@ Block file pruning
 
 This release supports running a fully validating node without maintaining a copy
 of the raw block and undo data on disk. To recap, there are four types of data
-related to the blockchain in the verium system: the raw blocks as received over
+related to the blockchain in the vericoin system: the raw blocks as received over
 the network (blk???.dat), the undo data (rev???.dat), the block index and the
 UTXO set (both LevelDB databases). The databases are built from the raw data.
 
-Block pruning allows Verium to delete the raw block and undo data once
+Block pruning allows Vericoin to delete the raw block and undo data once
 it's been validated and used to build the databases. At that point, the raw data
 is used only to relay blocks to other nodes, to handle reorganizations, to look
 up old transactions (if -txindex is enabled or via the RPC/REST interfaces), or
@@ -305,7 +305,7 @@ all blocks in the blockchain.
 
 The user specifies how much space to allot for block & undo files. The minimum
 allowed is 550MB. Note that this is in addition to whatever is required for the
-block index and UTXO databases. The minimum was chosen so that Verium will
+block index and UTXO databases. The minimum was chosen so that Vericoin will
 be able to maintain at least 288 blocks on disk (two days worth of blocks at 10
 minutes per block). In rare instances it is possible that the amount of space
 used will exceed the pruning target in order to keep the required last 288
@@ -394,7 +394,7 @@ Other P2P Changes
 -----------------
 
 The list of banned peers is now stored on disk rather than in memory.
-Restarting veriumd will no longer clear out the list of banned peers; instead
+Restarting vericoind will no longer clear out the list of banned peers; instead
 a new RPC call (`clearbanned`) can be used to manually clear the list.  The new
 `setban` RPC call can also be used to manually ban or unban a peer.
 
@@ -418,7 +418,7 @@ other software, the last specified value for an option will hold.
 Signature validation using libsecp256k1
 ---------------------------------------
 
-ECDSA signatures inside Verium transactions now use validation using
+ECDSA signatures inside Vericoin transactions now use validation using
 [libsecp256k1](https://github.com/bitcoin-core/secp256k1) instead of OpenSSL.
 
 Depending on the platform, this means a significant speedup for raw signature
@@ -465,7 +465,7 @@ overridden with the option `-rpccookiefile`.
 This is similar to Tor's CookieAuthentication: see
 https://www.torproject.org/docs/tor-manual.html.en
 
-This allows running veriumd without having to do any manual configuration.
+This allows running vericoind without having to do any manual configuration.
 
 Relay: Any sequence of pushdatas in OP_RETURN outputs now allowed
 -----------------------------------------------------------------
@@ -490,15 +490,15 @@ Automatically use Tor hidden services
 
 Starting with Tor version 0.2.7.1 it is possible, through Tor's control socket
 API, to create and destroy 'ephemeral' hidden services programmatically.
-Verium has been updated to make use of this.
+Vericoin has been updated to make use of this.
 
 This means that if Tor is running (and proper authorization is available),
-Verium automatically creates a hidden service to listen on, without
-manual configuration. Verium will also use Tor automatically to connect
+Vericoin automatically creates a hidden service to listen on, without
+manual configuration. Vericoin will also use Tor automatically to connect
 to other .onion nodes if the control socket can be successfully opened. This
 will positively affect the number of available .onion nodes and their usage.
 
-This new feature is enabled by default if Verium is listening, and
+This new feature is enabled by default if Vericoin is listening, and
 a connection to Tor can be made. It can be configured with the `-listenonion`,
 `-torcontrol` and `-torpassword` settings. To show verbose debugging
 information, pass `-debug=tor`.
@@ -506,7 +506,7 @@ information, pass `-debug=tor`.
 Notifications through ZMQ
 -------------------------
 
-Veriumd can now (optionally) asynchronously notify clients through a
+Vericoind can now (optionally) asynchronously notify clients through a
 ZMQ-based PUB socket of the arrival of new transactions and blocks.
 This feature requires installation of the ZMQ C API library 4.x and
 configuring its use through the command line or configuration file.
@@ -522,20 +522,20 @@ For this reason the default was changed to 300 MiB in this release.
 For nodes on low-memory systems, the database cache can be changed back to
 100 MiB (or to another value) by either:
 
-- Adding `dbcache=100` in verium.conf
+- Adding `dbcache=100` in vericoin.conf
 - Changing it in the GUI under `Options → Size of database cache`
 
 Note that the database cache setting has the most performance impact
 during initial sync of a node, and when catching up after downtime.
 
-verium-cli: arguments privacy
+vericoin-cli: arguments privacy
 ------------------------------
 
 The RPC command line client gained a new argument, `-stdin`
 to read extra arguments from standard input, one per line until EOF/Ctrl-D.
 For example:
 
-    $ src/verium-cli -stdin walletpassphrase
+    $ src/vericoin-cli -stdin walletpassphrase
     mysecretcode
     120
     ..... press Ctrl-D here to end input
@@ -549,7 +549,7 @@ table by any user on the system.
 C++11 and Python 3
 ------------------
 
-Various code modernizations have been done. The Verium code base has
+Various code modernizations have been done. The Vericoin code base has
 started using C++11. This means that a C++11-capable compiler is now needed for
 building. Effectively this means GCC 4.7 or higher, or Clang 3.3 or higher.
 
@@ -568,9 +568,9 @@ executables.
 
 The following extra files can be found in the download directory or torrent:
 
-- `verium-${VERSION}-arm-linux-gnueabihf.tar.gz`: Linux binaries targeting
+- `vericoin-${VERSION}-arm-linux-gnueabihf.tar.gz`: Linux binaries targeting
   the 32-bit ARMv7-A architecture.
-- `verium-${VERSION}-aarch64-linux-gnu.tar.gz`: Linux binaries targeting
+- `vericoin-${VERSION}-aarch64-linux-gnu.tar.gz`: Linux binaries targeting
   the 64-bit ARMv8-A architecture.
 
 ARM builds are still experimental. If you have problems on a certain device or
@@ -593,7 +593,7 @@ files on disk. These two have now been split up, so that all blocks are known
 before validation starts. This was necessary to make certain optimizations that
 are available during normal synchronizations also available during reindexing.
 
-The two phases are distinct in the Verium-Qt GUI. During the first one,
+The two phases are distinct in the Vericoin-Qt GUI. During the first one,
 "Reindexing blocks on disk" is shown. During the second (slower) one,
 "Processing blocks on disk" is shown.
 
@@ -606,7 +606,7 @@ useful for benchmarks.
 Manual Pruning
 --------------
 
-Verium Vault has supported automatically pruning the blockchain since 1.3.0 Pruning
+Vericoin Vault has supported automatically pruning the blockchain since 1.3.0 Pruning
 the blockchain allows for significant storage space savings as the vast majority of
 the downloaded data can be discarded after processing so very little of it remains
 on the disk.
@@ -647,7 +647,7 @@ ZMQ On Windows
 
 Previously the ZeroMQ notification system was unavailable on Windows
 due to various issues with ZMQ. These have been fixed upstream and
-now ZMQ can be used on Windows. Please see [this document](https://github.com/VeriumReserve/verium/blob/master/doc/zmq.md) for
+now ZMQ can be used on Windows. Please see [this document](https://github.com/VericoinReserve/vericoin/blob/master/doc/zmq.md) for
 help with using ZMQ in general.
 
 Nested RPC Commands in Debug Console
@@ -680,7 +680,7 @@ the same thing as the GUI icon. The command takes one boolean parameter,
 Out-of-sync Modal Info Layer
 ----------------------------
 
-When Verium is out-of-sync on startup, a semi-transparent information
+When Vericoin is out-of-sync on startup, a semi-transparent information
 layer will be shown over top of the normal display. This layer contains
 details about the current sync progress and estimates the amount of time
 remaining to finish syncing. This layer can also be hidden and subsequently
@@ -700,19 +700,19 @@ P2P connection management
 Support for JSON-RPC Named Arguments
 ------------------------------------
 
-Commands sent over the JSON-RPC interface and through the `verium-cli` binary
+Commands sent over the JSON-RPC interface and through the `vericoin-cli` binary
 can now use named arguments. This follows the [JSON-RPC specification](http://www.jsonrpc.org/specification)
 for passing parameters by-name with an object.
 
-`verium-cli` has been updated to support this by parsing `name=value` arguments
+`vericoin-cli` has been updated to support this by parsing `name=value` arguments
 when the `-named` option is given.
 
 Some examples:
 
-    src/verium-cli -named help command="help"
-    src/verium-cli -named getblockhash height=0
-    src/verium-cli -named getblock blockhash=000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
-    src/verium-cli -named sendtoaddress address="(snip)" amount="1.0" subtractfeefromamount=true
+    src/vericoin-cli -named help command="help"
+    src/vericoin-cli -named getblockhash height=0
+    src/vericoin-cli -named getblock blockhash=000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+    src/vericoin-cli -named sendtoaddress address="(snip)" amount="1.0" subtractfeefromamount=true
 
 The order of arguments doesn't matter in this case. Named arguments are also
 useful to leave out arguments that should stay at their default value. The
@@ -735,7 +735,7 @@ Changed configuration options
 -----------------------------
 
 - `-includeconf=<file>` can be used to include additional configuration files.
-  Only works inside the `verium.conf` file, not inside included files or from
+  Only works inside the `vericoin.conf` file, not inside included files or from
   command-line. Multiple files may be included. Can be disabled from command-
   line via `-noincludeconf`. Note that multi-argument commands like
   `-includeconf` will override preceding `-noincludeconf`, i.e.
@@ -744,7 +744,7 @@ Changed configuration options
   includeconf=relative.conf
   ```
 
-  as verium.conf will still include `relative.conf`.
+  as vericoin.conf will still include `relative.conf`.
 
 
 External wallet files
@@ -771,7 +771,7 @@ same as before.
 Dynamic loading and creation of wallets
 ---------------------------------------
 
-Previously, wallets could only be loaded or created at startup, by specifying `-wallet` parameters on the command line or in the verium.conf file. It is now possible to load, create and unload wallets dynamically at runtime:
+Previously, wallets could only be loaded or created at startup, by specifying `-wallet` parameters on the command line or in the vericoin.conf file. It is now possible to load, create and unload wallets dynamically at runtime:
 
 - Existing wallets can be loaded by calling the `loadwallet` RPC. The wallet can be specified as file/directory basename (which must be located in the `walletdir` directory), or as an absolute path to a file/directory.
 - New wallets can be created (and loaded) by calling the `createwallet` RPC. The provided name must not match a wallet file in the `walletdir` directory or the name of a wallet that is currently loaded.
@@ -782,27 +782,27 @@ This feature is currently only available through the RPC interface.
 Documentation
 -------------
 
-- A new short [document](https://github.com/VeriumReserve/verium/blob/master/doc/JSON-RPC-interface.md)
+- A new short [document](https://github.com/VericoinReserve/vericoin/blob/master/doc/JSON-RPC-interface.md)
   about the JSON-RPC interface describes cases where the results of an
   RPC might contain inconsistencies between data sourced from different
   subsystems, such as wallet state and mempool state.  A note is added
-  to the [REST interface documentation](https://github.com/VeriumReserve/verium/blob/master/doc/REST-interface.md)
+  to the [REST interface documentation](https://github.com/VericoinReserve/vericoin/blob/master/doc/REST-interface.md)
   indicating that the same rules apply.
 
 - Further information is added to the [JSON-RPC
-  documentation](https://github.com/VeriumReserve/verium/blob/master/doc/JSON-RPC-interface.md)
+  documentation](https://github.com/VericoinReserve/vericoin/blob/master/doc/JSON-RPC-interface.md)
   about how to secure this interface.
 
-- A new [document](https://github.com/VeriumReserve/verium/blob/master/doc/verium-conf.md)
-  about the `verium.conf` file describes how to use it to configure
-  Verium.
+- A new [document](https://github.com/VericoinReserve/vericoin/blob/master/doc/vericoin-conf.md)
+  about the `vericoin.conf` file describes how to use it to configure
+  Vericoin.
 
 systemd init file
 -----------------
 
-The systemd init file (`contrib/init/veriumd.service`) has been changed
-to use `/var/lib/veriumd` as the data directory instead of
-`~verium/.verium`. This change makes Verium more consistent with
+The systemd init file (`contrib/init/vericoind.service`) has been changed
+to use `/var/lib/vericoind` as the data directory instead of
+`~vericoin/.vericoin`. This change makes Vericoin more consistent with
 other services, and makes the systemd init config more consistent with
 existing Upstart and OpenRC configs.
 
@@ -812,25 +812,25 @@ See [`systemd.exec(5)`](https://www.freedesktop.org/software/systemd/man/systemd
 for more details.
 
 When using the provided init files under `contrib/init`, overriding the
-`datadir` option in `/etc/verium/verium.conf` will have no effect.
+`datadir` option in `/etc/vericoin/vericoin.conf` will have no effect.
 This is because the command line arguments specified in the init files
 take precedence over the options specified in
-`/etc/verium/verium.conf`.
+`/etc/vericoin/vericoin.conf`.
 
 New GUI
 -------------
 
-The Verium Vault User interface have been totally rewrote. The main goal
+The Vericoin Vault User interface have been totally rewrote. The main goal
 is to improve the user experience and to make it compatible with more
 screen resolution.
 
-Verium Core
+Vericoin Core
 -------------
 
-Verium 1.2 was based on Bitcoin Core 0.8. The Verium Vault 1.3 is based on
+Vericoin 1.2 was based on Bitcoin Core 0.8. The Vericoin Vault 1.3 is based on
 Bitcoin Core 0.19. A big part of the previous listed change are part of it.
 In the future we will try to stick more to the Bitcoin Core Version in
-order to make most verium apps compatible with Verium Vault. Due to that
+order to make most vericoin apps compatible with Vericoin Vault. Due to that
 huge version bump it was impossible to list all the change in that Changelog
 
 1.3.0 Change log
@@ -874,7 +874,7 @@ RPC:
 - Add paranoid return value checks in base58
 - Disable SSL for the RPC client and server. (use a proxypass if needed)
 - Sanitize command strings before logging them.
-- Support IPv6 lookup in verium-cli even when IPv6 only bound on localhost
+- Support IPv6 lookup in vericoin-cli even when IPv6 only bound on localhost
 - Fix addnode "onetry": Connect with OpenNetworkConnection
 - Add "chain" to getmininginfo, improve help in getblockchaininfo
 - Add nLocalServices info to RPC getinfo
@@ -911,7 +911,7 @@ Command-line options:
 
 - New option: -zapwallettxes to rebuild the wallet's transaction information
 - Rename option '-tor' to '-onion' to better reflect what it does
-- Add '-disablewallet' mode to let veriumd run entirely without wallet (when
+- Add '-disablewallet' mode to let vericoind run entirely without wallet (when
   built with wallet)
 - Update default '-rpcsslciphers' to include TLSv1.2 & TLSv1.3
 - make '-logtimestamps' default on and rework help-message
@@ -926,7 +926,7 @@ Command-line options:
 - Clarify error message when invalid -rpcallowip
 - "-datadir" is now allowed in config files
 - Add option -sysperms to disable 077 umask (create new files with system default umask)
-- Add "verium-tx" command line utility and supporting modules
+- Add "vericoin-tx" command line utility and supporting modules
 - Make -reindex cope with out-of-order blocks
 - Skip reindexed blocks individually
 - Change -genproclimit default to 1
@@ -1090,7 +1090,7 @@ Miscellaneous:
 
 - Add Linux script (contrib/qos/tc.sh) to limit outgoing bandwidth
   generation with 'setgenerate' RPC.
-- Add separate verium-cli client
+- Add separate vericoin-cli client
 - Replace non-threadsafe C functions
 - Add missing cs_main and wallet locks
 - Avoid exception at startup when system locale not recognized
@@ -1100,7 +1100,7 @@ Miscellaneous:
 - libsecp256k1 integration
 - Show nodeid instead of addresses in log (for anonymity) unless otherwise requested
 - Enable paranoid corruption checks in LevelDB >= 1.16
-- contrib: Added systemd .service file in order to help distributions integrate veriumd
+- contrib: Added systemd .service file in order to help distributions integrate vericoind
 - Update coding style and add .clang-format
 - Changed LevelDB cursors to use scoped pointers to ensure destruction when going out of scope
 - Use explicit fflush() instead of setvbuf()

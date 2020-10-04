@@ -120,7 +120,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Error</source>
         <translation>نقص</translation>
@@ -344,7 +344,7 @@
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>ناکافی فنڈز</translation>

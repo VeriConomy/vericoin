@@ -32,7 +32,7 @@ PATTERN_IPV6 = re.compile(r"^\[([0-9a-z:]+)\]:(\d+)$")
 PATTERN_ONION = re.compile(r"^([abcdefghijklmnopqrstuvwxyz234567]{16}\.onion):(\d+)$")
 # We will need to add future version here
 PATTERN_AGENT = re.compile(
-    r"^/Verium:("
+    r"^/Vericoin:("
     r"1.3.(0)"
     r")")
 
@@ -208,9 +208,9 @@ def main():
     print('%s Require a known and recent user agent' % (ip_stats(ips)), file=sys.stderr)
     # Sort by availability (and use last success as tie breaker)
     ips.sort(key=lambda x: (x['uptime'], x['lastsuccess'], x['ip']), reverse=True)
-    # Filter out hosts with multiple verium ports, these are likely abusive
+    # Filter out hosts with multiple vericoin ports, these are likely abusive
     ips = filtermultiport(ips)
-    print('%s Filter out hosts with multiple verium ports' % (ip_stats(ips)), file=sys.stderr)
+    print('%s Filter out hosts with multiple vericoin ports' % (ip_stats(ips)), file=sys.stderr)
     # Look up ASNs and limit results, both per ASN and globally.
     ips = filterbyasn(ips, MAX_SEEDS_PER_ASN, NSEEDS)
     print('%s Look up ASNs and limit results per ASN and per net' % (ip_stats(ips)), file=sys.stderr)

@@ -1,4 +1,4 @@
-Verium Vault version 1.3.2 is now available from:
+Vericoin Vault version 1.3.2 is now available from:
 
   https://vericoin.info
 
@@ -7,7 +7,7 @@ bug fixes.
 
 Please report bugs using the issue tracker at github:
 
-  https://github.com/VeriumReserve/Verium
+  https://github.com/VericoinReserve/Vericoin
 
 Upgrading and downgrading
 =========================
@@ -17,7 +17,7 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), uninstall all
-earlier versions of Verium, then run the installer.
+earlier versions of Vericoin, then run the installer.
 
 We recommand before any upgrade that you backup your wallet.
 
@@ -47,7 +47,7 @@ Notable changes
 Updater: Check new version
 -----------------------
 
-From this version, the GUI will automatically check for a new Verium Vault version at the launch of the application.
+From this version, the GUI will automatically check for a new Vericoin Vault version at the launch of the application.
 This feature will make easier the deployment of new vault version on the network.
 
 Bootstrap

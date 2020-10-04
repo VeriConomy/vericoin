@@ -40,17 +40,17 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see the section *Disable-Wallet mode* below).
 
-Build Verium
+Build Vericoin
 ------------------------
 
-1. Clone the verium source code and cd into `verium`
+1. Clone the vericoin source code and cd into `vericoin`
 
-        git clone https://github.com/VeriumReserve/verium.git
-        cd verium
+        git clone https://github.com/VericoinReserve/vericoin.git
+        cd vericoin
 
-2.  Build verium-core:
+2.  Build vericoin-core:
 
-    Configure and build the headless verium binaries as well as the GUI (if Qt is found).
+    Configure and build the headless vericoin binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -69,37 +69,37 @@ Build Verium
 Running
 -------
 
-Verium is now available at `./src/veriumd`
+Vericoin is now available at `./src/vericoind`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=veriumrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Verium/verium.conf"
+    echo -e "rpcuser=vericoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Vericoin/vericoin.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/Verium/verium.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Vericoin/vericoin.conf"
 
-The first time you run veriumd, it will start downloading the blockchain. This process could take several hours.
+The first time you run vericoind, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/Verium/debug.log
+    tail -f $HOME/Library/Application\ Support/Vericoin/debug.log
 
 Other commands:
 -------
 
-    ./src/veriumd -daemon # Starts the verium daemon.
-    ./src/verium-cli --help # Outputs a list of command-line options.
-    ./src/verium-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/vericoind -daemon # Starts the vericoin daemon.
+    ./src/vericoin-cli --help # Outputs a list of command-line options.
+    ./src/vericoin-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for verium development.
+You can use Qt Creator as an IDE, for vericoin development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
 1. Make sure you installed everything through Homebrew mentioned above
 2. Do a proper ./configure --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "verium-qt" as project name, enter src/qt as location
+4. Enter "vericoin-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."

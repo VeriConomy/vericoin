@@ -48,7 +48,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>&amp;Transactions</source>
         <translation>&amp;Транзакциялар</translation>
@@ -167,7 +167,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Verium</source>
+        <source>Vericoin</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -340,7 +340,7 @@
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Transaction amount too small</source>
         <translation>Транзакция өте кішкентай</translation>

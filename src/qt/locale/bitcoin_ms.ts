@@ -68,8 +68,8 @@ Alihkan fail data ke dalam tab semasa</translation>
         <translation>alamat-alamat penerimaan</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Ini adalah alamat Verium anda untuk pembayaran. Periksa jumlah dan alamat penerima sebelum membuat penghantaran koin sentiasa.</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Ini adalah alamat Vericoin anda untuk pembayaran. Periksa jumlah dan alamat penerima sebelum membuat penghantaran koin sentiasa.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -162,8 +162,8 @@ Alihkan fail data ke dalam tab semasa</translation>
         <translation>Mengesahkan enkripsi dompet</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
-        <translation>Amaran: Jika anda enkripkan dompet anda dan hilangkan frasa laluan, anda akan &lt;b&gt;ANDA AKAN HILANGKAN SEMUA VRM ANDA&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
+        <translation>Amaran: Jika anda enkripkan dompet anda dan hilangkan frasa laluan, anda akan &lt;b&gt;ANDA AKAN HILANGKAN SEMUA VRC ANDA&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -222,7 +222,7 @@ Alihkan fail data ke dalam tab semasa</translation>
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Tandatangan &amp; mesej...</translation>
@@ -320,8 +320,8 @@ Alihkan fail data ke dalam tab semasa</translation>
         <translation>Reindexi blok pada cakera...</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Menghantar koin kepada alamat Verium</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Menghantar koin kepada alamat Vericoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -364,12 +364,12 @@ Alihkan fail data ke dalam tab semasa</translation>
         <translation>sulitkan kata laluan milik peribadi anda</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation>sahkan mesej bersama alamat verium anda untuk menunjukkan alamat ini anda punya</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation>sahkan mesej bersama alamat vericoin anda untuk menunjukkan alamat ini anda punya</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Sahkan mesej untuk memastikan mereka telah ditandatangani dengan alamat Verium yang ditentukan</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Sahkan mesej untuk memastikan mereka telah ditandatangani dengan alamat Vericoin yang ditentukan</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -389,8 +389,8 @@ Alihkan fail data ke dalam tab semasa</translation>
 </translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>Request payments (generates QR codes and verium: URIs)
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>Request payments (generates QR codes and vericoin: URIs)
 </translation>
     </message>
     <message>
@@ -465,8 +465,8 @@ Alihkan fail data ke dalam tab semasa</translation>
 <context>
     <name>Intro</name>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>Error</source>
@@ -645,7 +645,7 @@ Alihkan fail data ke dalam tab semasa</translation>
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Loading wallet...</source>
         <translation>Sedang baca wallet...</translation>

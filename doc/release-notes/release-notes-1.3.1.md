@@ -1,4 +1,4 @@
-Verium Vault version 1.3.1 is now available from:
+Vericoin Vault version 1.3.1 is now available from:
 
   https://vericoin.info
 
@@ -7,7 +7,7 @@ bug fixes.
 
 Please report bugs using the issue tracker at github:
 
-  https://github.com/VeriumReserve/Verium
+  https://github.com/VericoinReserve/Vericoin
 
 Upgrading and downgrading
 =========================
@@ -17,7 +17,7 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), uninstall all
-earlier versions of Verium, then run the installer.
+earlier versions of Vericoin, then run the installer.
 
 We recommand before any upgrade that you backup your wallet.
 
@@ -47,7 +47,7 @@ Notable changes
 VIP: Fee change
 -----------------------
 
-Fees will change from a min of 0.2 VRM/kb to 0.001 VRM/kb at block 520000
+Fees will change from a min of 0.2 VRC/kb to 0.001 VRC/kb at block 520000
 
 1.3.1 Change log
 =======================
@@ -55,7 +55,7 @@ Fees will change from a min of 0.2 VRM/kb to 0.001 VRM/kb at block 520000
 RPC:
 
 - Fix testmempoolaccept with absurd fee
-- Increase absurd fee to 10 VRM
+- Increase absurd fee to 10 VRC
 
 Block and transaction handling:
 

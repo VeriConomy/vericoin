@@ -116,7 +116,7 @@ public:
 };
 
 /**
- * Verium RPC command dispatcher.
+ * Vericoin RPC command dispatcher.
  */
 class CRPCTable
 {

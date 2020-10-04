@@ -284,7 +284,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
         });
     }
 
-    // update the display unit, to not use the default ("VRM")
+    // update the display unit, to not use the default ("VRC")
     updateDisplayUnit();
 }
 
@@ -317,7 +317,7 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->totalWarn->setVisible(fShow);
 }
 
-// Verium Mining
+// Vericoin Mining
 // manageMiningState will be the entry point for start / stop mining. It will also udpdate the view
 void OverviewPage::manageMiningState(bool state, int procs)
 {
@@ -338,10 +338,10 @@ void OverviewPage::manageMiningState(bool state, int procs)
     if( state != miningState )
     {
         miningState = state;
-        GenerateVerium(miningState, pwallet, procs);
+        GenerateVericoin(miningState, pwallet, procs);
     }
 
-    // Verium Mining is OFF, let's update view
+    // Vericoin Mining is OFF, let's update view
     if ( ! miningState )
     {
         ui->mineButton->setIcon(QIcon(":/icons/miningoff"));

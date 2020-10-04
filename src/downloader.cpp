@@ -130,7 +130,7 @@ void applyBootstrap() {
     boost::filesystem::rename(GetDataDir() / "bootstrap" / "blocks", GetDataDir() / "blocks");
     boost::filesystem::rename(GetDataDir() / "bootstrap" / "chainstate", GetDataDir() / "chainstate");
     boost::filesystem::remove_all(GetDataDir() / "bootstrap");
-    boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap_VRM.zip");
+    boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap_VRC.zip");
     boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.dat");
     if (boost::filesystem::exists(pathBootstrapTurbo)){
         boost::filesystem::remove(pathBootstrapTurbo);
@@ -143,7 +143,7 @@ void applyBootstrap() {
 void downloadBootstrap() {
     LogPrintf("bootstrap: Starting bootstrap process.\n");
 
-    boost::filesystem::path pathBootstrapZip = GetDataDir() / "bootstrap_VRM.zip";
+    boost::filesystem::path pathBootstrapZip = GetDataDir() / "bootstrap_VRC.zip";
 
     downloadFile(BOOTSTRAP_URL, pathBootstrapZip);
     extractBootstrap(pathBootstrapZip);
@@ -160,7 +160,7 @@ void downloadBootstrap() {
 void downloadVersionFile() {
     LogPrintf("Check for update: Getting version file.\n");
 
-    boost::filesystem::path pathVersionFile = GetDataDir() / "VERSION_VRM.json";
+    boost::filesystem::path pathVersionFile = GetDataDir() / "VERSION_VRC.json";
 
     downloadFile(VERSIONFILE_URL, pathVersionFile);
 

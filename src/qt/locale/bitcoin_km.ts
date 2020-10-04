@@ -145,10 +145,10 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>ផ្ញើកាក់ទៅកាន់ អាសយដ្ឋាន Verium មួយ</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>ផ្ញើកាក់ទៅកាន់ អាសយដ្ឋាន Vericoin មួយ</translation>
     </message>
     </context>
 <context>
@@ -313,6 +313,6 @@
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     </context>
 </TS>

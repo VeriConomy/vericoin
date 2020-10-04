@@ -1,6 +1,6 @@
-# `verium.conf` Configuration File
+# `vericoin.conf` Configuration File
 
-The configuration file is used by `veriumd`, `verium-qt` and `verium-cli`.
+The configuration file is used by `vericoind`, `vericoin-qt` and `vericoin-cli`.
 
 All command-line options (except for `-?`, `-help`, `-version` and `-conf`) may be specified in a configuration file, and all configuration file options (except for `includeconf`) may also be specified on the command line. Command-line options override values set in the configuration file and configuration file options override values set in the GUI.
 
@@ -47,16 +47,16 @@ rpcport=4000
 
 ## Configuration File Path
 
-The configuration file is not automatically created; you can create it using your favorite text editor. By default, the configuration file name is `verium.conf` and it is located in the Verium data directory, but both the Verium data directory and the configuration file path may be changed using the `-datadir` and `-conf` command-line options.
+The configuration file is not automatically created; you can create it using your favorite text editor. By default, the configuration file name is `vericoin.conf` and it is located in the Vericoin data directory, but both the Vericoin data directory and the configuration file path may be changed using the `-datadir` and `-conf` command-line options.
 
-The `includeconf=<file>` option in the `verium.conf` file can be used to include additional configuration files.
+The `includeconf=<file>` option in the `vericoin.conf` file can be used to include additional configuration files.
 
 ### Default configuration file locations
 
 Operating System | Data Directory | Example Path
 -- | -- | --
-Windows | `%APPDATA%\Verium\` | `C:\Users\username\AppData\Roaming\Verium\verium.conf`
-Linux | `$HOME/.verium/` | `/home/username/.verium/verium.conf`
-macOS | `$HOME/Library/Application Support/Verium/` | `/Users/username/Library/Application Support/Verium/verium.conf`
+Windows | `%APPDATA%\Vericoin\` | `C:\Users\username\AppData\Roaming\Vericoin\vericoin.conf`
+Linux | `$HOME/.vericoin/` | `/home/username/.vericoin/vericoin.conf`
+macOS | `$HOME/Library/Application Support/Vericoin/` | `/Users/username/Library/Application Support/Vericoin/vericoin.conf`
 
-You can find an example verium.conf file in [share/examples/verium.conf](../share/examples/verium.conf).
+You can find an example vericoin.conf file in [share/examples/vericoin.conf](../share/examples/vericoin.conf).

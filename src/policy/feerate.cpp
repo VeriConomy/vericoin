@@ -9,7 +9,7 @@
 #include <cmath>
 
 
-const std::string CURRENCY_UNIT = "VRM";
+const std::string CURRENCY_UNIT = "VRC";
 
 CFeeRate::CFeeRate(const CAmount& nFeePaid, size_t nBytes_, bool _withStartFee)
 {

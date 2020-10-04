@@ -82,18 +82,18 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += veriumd
+  bin_PROGRAMS += vericoind
 endif
 
 if BUILD_BITCOIN_CLI
-  bin_PROGRAMS += verium-cli
+  bin_PROGRAMS += vericoin-cli
 endif
 if BUILD_BITCOIN_TX
-  bin_PROGRAMS += verium-tx
+  bin_PROGRAMS += vericoin-tx
 endif
 if ENABLE_WALLET
 if BUILD_BITCOIN_WALLET
-  bin_PROGRAMS += verium-wallet
+  bin_PROGRAMS += vericoin-wallet
 endif
 endif
 
@@ -251,7 +251,7 @@ obj/build.h: FORCE
 	  "$(abs_top_srcdir)"
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between veriumd and verium-qt
+# server: shared between vericoind and vericoin-qt
 # Contains code accessing mempool and chain state that is meant to be separated
 # from wallet and gui code (see node/README.md). Shared code should go in
 # libbitcoin_common or libbitcoin_util libraries, instead.
@@ -325,7 +325,7 @@ libbitcoin_zmq_a_SOURCES = \
 endif
 
 
-# wallet: shared between veriumd and verium-qt, but only linked
+# wallet: shared between vericoind and vericoin-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -451,7 +451,7 @@ libbitcoin_consensus_a_SOURCES = \
   util/strencodings.h \
   version.h
 
-# common: shared between veriumd, and verium-qt and non-server tools
+# common: shared between vericoind, and vericoin-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -525,7 +525,7 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
-# cli: shared between verium-cli and verium-qt
+# cli: shared between vericoin-cli and vericoin-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -535,19 +535,19 @@ libbitcoin_cli_a_SOURCES = \
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# veriumd binary #
-veriumd_SOURCES = bitcoind.cpp
-veriumd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-veriumd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-veriumd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# vericoind binary #
+vericoind_SOURCES = bitcoind.cpp
+vericoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+vericoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+vericoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-veriumd_SOURCES += bitcoind-res.rc
+vericoind_SOURCES += bitcoind-res.rc
 endif
 
 # Libraries below may be listed more than once to resolve circular dependencies (see
 # https://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking#circular-dependency)
-veriumd_LDADD = \
+vericoind_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_SERVER) \
@@ -562,38 +562,38 @@ veriumd_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-veriumd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
+vericoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 
-# verium-cli binary #
-verium_cli_SOURCES = bitcoin-cli.cpp
-verium_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-verium_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-verium_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# vericoin-cli binary #
+vericoin_cli_SOURCES = bitcoin-cli.cpp
+vericoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+vericoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+vericoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-verium_cli_SOURCES += bitcoin-cli-res.rc
+vericoin_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-verium_cli_LDADD = \
+vericoin_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-verium_cli_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
+vericoin_cli_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 #
 
-# verium-tx binary #
-verium_tx_SOURCES = bitcoin-tx.cpp
-verium_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-verium_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-verium_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# vericoin-tx binary #
+vericoin_tx_SOURCES = bitcoin-tx.cpp
+vericoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+vericoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+vericoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-verium_tx_SOURCES += bitcoin-tx-res.rc
+vericoin_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
-verium_tx_LDADD = \
+vericoin_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -601,20 +601,20 @@ verium_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-verium_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
+vericoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(MINIZIP_LIBS) $(CURL_LIBS)
 #
 
-# verium-wallet binary #
-verium_wallet_SOURCES = bitcoin-wallet.cpp
-verium_wallet_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-verium_wallet_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-verium_wallet_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# vericoin-wallet binary #
+vericoin_wallet_SOURCES = bitcoin-wallet.cpp
+vericoin_wallet_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+vericoin_wallet_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+vericoin_wallet_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-verium_wallet_SOURCES += bitcoin-wallet-res.rc
+vericoin_wallet_SOURCES += bitcoin-wallet-res.rc
 endif
 
-verium_wallet_LDADD = \
+vericoin_wallet_LDADD = \
   $(LIBBITCOIN_WALLET_TOOL) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_COMMON) \
@@ -628,7 +628,7 @@ verium_wallet_LDADD = \
   $(LIBSECP256K1) \
   $(LIBUNIVALUE)
 
-verium_wallet_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(MINIUPNPC_LIBS) $(ZMQ_LIBS)  $(MINIZIP_LIBS) $(CURL_LIBS)
+vericoin_wallet_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(MINIUPNPC_LIBS) $(ZMQ_LIBS)  $(MINIZIP_LIBS) $(CURL_LIBS)
 #
 
 # bitcoinconsensus library #

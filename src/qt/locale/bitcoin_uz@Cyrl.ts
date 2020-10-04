@@ -72,7 +72,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>&amp;Хабар ёзиш...</translation>
@@ -138,8 +138,8 @@
         <translation>Дискдаги блоклар қайта индексланмоқда...</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Тангаларни Verium манзилига жўнатиш</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Тангаларни Vericoin манзилига жўнатиш</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -182,12 +182,12 @@
         <translation>Ҳамёнингизга тегишли махфий калитларни кодлаш</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation>Verium манзилидан унинг эгаси эканлигингизни исботлаш учун хабарлар ёзинг</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation>Vericoin манзилидан унинг эгаси эканлигингизни исботлаш учун хабарлар ёзинг</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Хабарларни махсус Verium манзилларингиз билан ёзилганлигига ишонч ҳосил қилиш учун уларни тасдиқланг</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Хабарларни махсус Vericoin манзилларингиз билан ёзилганлигига ишонч ҳосил қилиш учун уларни тасдиқланг</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -206,8 +206,8 @@
         <translation>Ички ойналар асбоблар панели</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>Тўловлар (QR кодлари ва verium ёрдамида яратишлар: URI’лар) сўраш</translation>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>Тўловлар (QR кодлари ва vericoin ёрдамида яратишлар: URI’лар) сўраш</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -218,16 +218,16 @@
         <translation>Фойдаланилган қабул қилинган манзиллар ва ёрлиқлар рўйхатини кўрсатиш</translation>
     </message>
     <message>
-        <source>Open a verium: URI or payment request</source>
-        <translation>Verium’ни очиш: URI ёки тўлов сўрови</translation>
+        <source>Open a vericoin: URI or payment request</source>
+        <translation>Vericoin’ни очиш: URI ёки тўлов сўрови</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Буйруқлар сатри мосламалари</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Verium network</source>
-        <translation><numerusform>%n та Verium тармоғига фаол уланиш мавжуд</numerusform></translation>
+        <source>%n active connection(s) to Vericoin network</source>
+        <translation><numerusform>%n та Vericoin тармоғига фаол уланиш мавжуд</numerusform></translation>
     </message>
     <message>
         <source>%1 behind</source>
@@ -427,8 +427,8 @@
         <translation>Бошқа маълумотлар директориясида фойдаланинг:</translation>
     </message>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -586,8 +586,8 @@
         <translation>Шакл</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Verium network after a connection is established, but this process has not completed yet.</source>
-        <translation>Кўрсатилган маълумот эскирган бўлиши мумкин. Ҳамёнингиз алоқа ўрнатилгандан сўнг Verium тармоқ билан автоматик тарзда синхронланади, аммо жараён ҳалигача тугалланмади.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Vericoin network after a connection is established, but this process has not completed yet.</source>
+        <translation>Кўрсатилган маълумот эскирган бўлиши мумкин. Ҳамёнингиз алоқа ўрнатилгандан сўнг Vericoin тармоқ билан автоматик тарзда синхронланади, аммо жараён ҳалигача тугалланмади.</translation>
     </message>
     <message>
         <source>(Watch-only)</source>
@@ -667,8 +667,8 @@
         <translation>Миқдори</translation>
     </message>
     <message>
-        <source>Enter a Verium address (e.g. %1)</source>
-        <translation>Verium манзилини киритинг (масалан.  %1)</translation>
+        <source>Enter a Vericoin address (e.g. %1)</source>
+        <translation>Vericoin манзилини киритинг (масалан.  %1)</translation>
     </message>
     <message>
         <source>%1 m</source>
@@ -1208,7 +1208,7 @@
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>Кам миқдор</translation>
