@@ -704,8 +704,8 @@
         <translation>Eğer herhangi bir alıcı mevcut toz eşiğinden daha düşük bir tutar alırsa bu etiket kırmızıya dönüşür.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
-        <translation>Girdi başına +/- %1 satoshi değişebilir.</translation>
+        <source>Can vary +/- %1 VRMtoshi per input.</source>
+        <translation>Girdi başına +/- %1 VRMtoshi değişebilir.</translation>
     </message>
     <message>
         <source>(no label)</source>
