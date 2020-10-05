@@ -25,7 +25,7 @@ python27
 
 Download the source code:
 ```
-git clone https://github.com/VericoinReserve/vericoin.git
+git clone https://github.com/VeriConomy/vericoin.git
 ```
 
 See [dependencies.md](dependencies.md) for a complete overview.

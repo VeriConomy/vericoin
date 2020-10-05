@@ -1,7 +1,7 @@
 Vericoin integration/staging tree
 =====================================
 
-[![Build Status](https://travis-ci.org/VericoinReserve/vericoin.svg?branch=master)](https://travis-ci.org/VericoinReserve/vericoin)
+[![Build Status](https://travis-ci.com/VeriConomy/vericoin.svg?branch=master)](https://travis-ci.com/VeriConomy/vericoin)
 
 https://www.vericonomy.com
 
@@ -28,7 +28,7 @@ Documentation
 
 All the documentation can be found in the [Doc Directory](doc). \
 You will find information such as:
- - How to build Vericoin Vault
+ - How to build Vericoin Wallet
  - Release Notes
  - Development Process
  - ...
@@ -43,18 +43,12 @@ Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/vericoinreserve/vericoin/tags) are created
+completely stable. [Tags](https://github.com/VeriConomy/vericoin/tags) are created
 regularly to indicate new official, stable release versions of Vericoin.
 
-Current official Vericoin release is on branch 1.3.2.
+Current official Vericoin release is on branch 1.7.1.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-The developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/bitcoin-dev)
-should be used to discuss complicated or controversial changes before working
-on a patch set.
-
-Developer IRC can be found on Freenode at #vericoin-core-dev.
 
 Testing
 -------

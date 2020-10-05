@@ -46,7 +46,7 @@ parts:
       install -m 0755 -D -t $SNAPCRAFT_PART_INSTALL/bin vericoin-${SNAPCRAFT_PROJECT_VERSION}/bin/vericoind
       install -m 0755 -D -t $SNAPCRAFT_PART_INSTALL/bin vericoin-${SNAPCRAFT_PROJECT_VERSION}/bin/vericoin-qt
       install -m 0755 -D -t $SNAPCRAFT_PART_INSTALL/bin vericoin-${SNAPCRAFT_PROJECT_VERSION}/bin/vericoin-cli
-      wget https://raw.githubusercontent.com/VericoinReserve/vericoin/v${SNAPCRAFT_PROJECT_VERSION}/share/pixmaps/vericoin128.png
+      wget https://raw.githubusercontent.com/VeriConomy/vericoin/v${SNAPCRAFT_PROJECT_VERSION}/share/pixmaps/vericoin128.png
       install -m 0644 -D -t $SNAPCRAFT_PART_INSTALL/share/pixmaps vericoin128.png
     build-packages:
       - wget

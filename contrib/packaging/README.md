@@ -1,7 +1,7 @@
-Vericoin Vault packaging
+Vericoin Wallet packaging
 =======
 
-Vericoin Vault is packaged and distributed through different channels.
+Vericoin Wallet is packaged and distributed through different channels.
 
 Advanced users can compile Vericoin from source. Static binaries for Linux, as well as installers for Windows and macOS are
 provided on the [website](https://vericoin.info/vericoin-digital-reserve/).

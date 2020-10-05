@@ -152,7 +152,7 @@ Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo apt-get install -y git build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils python3 libcurl4-openssl-dev libboost-system-dev libboost-filesystem-dev libboost-chrono-dev libboost-program-options-dev libboost-test-dev libboost-thread-dev libminizip-dev zlib1g-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev
-git clone https://github.com/VericoinReserve/vericoin.git ~/vericoin
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
 cd ~/vericoin
 ./contrib/install_db4.sh ~/vericoin
 export BDB_PREFIX="${HOME}/vericoin/db4"
@@ -189,7 +189,7 @@ Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo dnf install git gcc-c++ libtool make autoconf automake patch openssl-devel libevent-devel boost-devel libdb4-devel libdb4-cxx-devel python3 libcurl-devel minizip-devel qt5-qttools-devel qt5-qtbase-devel protobuf-devel qrencode-devel
-git clone https://github.com/VericoinReserve/vericoin.git ~/vericoin
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
 cd ~/vericoin
 ./contrib/install_db4.sh ~/vericoin
 export BDB_PREFIX="${HOME}/vericoin/db4"
@@ -223,7 +223,7 @@ Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo pacman -S git base-devel boost libevent python minizip qt5-qttools qt5-qtbase protobuf qrencode
-git clone https://github.com/VericoinReserve/vericoin.git ~/vericoin
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
 cd ~/vericoin
 ./contrib/install_db4.sh ~/vericoin
 export BDB_PREFIX="${HOME}/vericoin/db4"
@@ -262,7 +262,7 @@ Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo pkg install git autoconf automake libtool pkgconf boost-libs openssl libevent gmake curl minizip
-git clone https://github.com/VericoinReserve/vericoin.git ~/vericoin
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
 cd ~/vericoin
 ./contrib/install_db4.sh ~/vericoin
 export BDB_PREFIX="${HOME}/vericoin/db4"

@@ -5,7 +5,7 @@ Release Process
 
 ### Before every release candidate
 
-* Update manpages, see [gen-manpages.sh](https://github.com/vericoinReserve/vericoin/blob/master/contrib/devtools/README.md#gen-manpagessh).
+* Update manpages, see [gen-manpages.sh](https://github.com/VeriConomy/vericoin/blob/master/contrib/devtools/README.md#gen-manpagessh).
 * Update release candidate version in `configure.ac` (`CLIENT_VERSION_RC`).
 
 ### Before every major and minor release
