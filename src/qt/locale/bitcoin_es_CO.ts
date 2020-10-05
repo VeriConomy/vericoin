@@ -690,8 +690,8 @@
         <translation>Está etiqueta se vuelve roja si algún receptor recibe una cantidad inferior al límite actual establecido para el polvo.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
-        <translation>Puede variar +/- %1 satoshi(s) por entrada.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Puede variar +/- %1 VRCtoshi por entrada.</translation>
     </message>
     <message>
         <source>(no label)</source>
