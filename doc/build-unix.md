@@ -1,6 +1,6 @@
 # UNIX BUILD NOTES
 
-Some notes on how to build Verium in Unix.
+Some notes on how to build Vericoin in Unix.
 
 (for OpenBSD specific instructions, see [build-openbsd.md](build-openbsd.md))
 
@@ -28,7 +28,7 @@ Some notes on how to build Verium in Unix.
 ## Note
 ----------------------------------------------
 
-Always use absolute paths to configure and compile verium and the dependencies,
+Always use absolute paths to configure and compile vericoin and the dependencies,
 for example, when specifying the path of the dependency:
 
 	../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
@@ -46,7 +46,7 @@ make
 make install # optional
 ```
 
-This will build verium-qt as well if the dependencies are met.
+This will build vericoin-qt as well if the dependencies are met.
 
 ## Dependencies
 ----------------------------------------------
@@ -80,7 +80,7 @@ For the versions used, see [dependencies.md](dependencies.md)
 ----------------------------------------------
 
 C++ compilers are memory-hungry. It is recommended to have at least 1.5 GB of
-memory available when compiling Verium. On systems with less, gcc can be
+memory available when compiling Vericoin. On systems with less, gcc can be
 tuned to conserve memory with additional CXXFLAGS:
 
 
@@ -115,7 +115,7 @@ pass `--with-incompatible-bdb` to configure.
 
 To build and use BerkeleyDB 4.8 please referer to the [Berkeley DB](#berkeley-db)
 
-See the section "Disable-wallet mode" to build Verium without wallet.
+See the section "Disable-wallet mode" to build Vericoin without wallet.
 
 Optional (see --with-miniupnpc and --enable-upnp-default):
 
@@ -127,7 +127,7 @@ ZMQ dependencies (provides ZMQ API 4.x):
 
 
 #### GUI
-If you want to build Verium-Qt, make sure that the required packages for Qt development
+If you want to build Vericoin-Qt, make sure that the required packages for Qt development
 are installed. Either Qt 5 or Qt 4 are necessary to build the GUI.
 If both Qt 4 and Qt 5 are installed, Qt 5 will be used. Pass `--with-gui=qt4` to configure to choose Qt4.
 To build without GUI pass `--without-gui`.
@@ -144,18 +144,18 @@ libqrencode (optional) can be installed with:
 
     sudo apt-get install libqrencode-dev
 
-Once these are installed, they will be found by configure and a verium-qt executable will be
+Once these are installed, they will be found by configure and a vericoin-qt executable will be
 built by default.
 
 #### Quick Build
-Bash script to quickly download and build verium with GUI
+Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo apt-get install -y git build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils python3 libcurl4-openssl-dev libboost-system-dev libboost-filesystem-dev libboost-chrono-dev libboost-program-options-dev libboost-test-dev libboost-thread-dev libminizip-dev zlib1g-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev
-git clone https://github.com/VeriumReserve/verium.git ~/verium
-cd ~/verium
-./contrib/install_db4.sh ~/verium
-export BDB_PREFIX="${HOME}/verium/db4"
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
+cd ~/vericoin
+./contrib/install_db4.sh ~/vericoin
+export BDB_PREFIX="${HOME}/vericoin/db4"
 ./autogen.sh
 ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
 make
@@ -182,17 +182,17 @@ libqrencode (optional) can be installed with:
 To build and use BerkeleyDB 4.8 please referer to the [Berkeley DB](#berkeley-db)
 
 
-Bash script to quickly download and build verium with GUI
+Bash script to quickly download and build vericoin with GUI
 
 #### Quick Build
-Bash script to quickly download and build verium with GUI
+Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo dnf install git gcc-c++ libtool make autoconf automake patch openssl-devel libevent-devel boost-devel libdb4-devel libdb4-cxx-devel python3 libcurl-devel minizip-devel qt5-qttools-devel qt5-qtbase-devel protobuf-devel qrencode-devel
-git clone https://github.com/VeriumReserve/verium.git ~/verium
-cd ~/verium
-./contrib/install_db4.sh ~/verium
-export BDB_PREFIX="${HOME}/verium/db4"
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
+cd ~/vericoin
+./contrib/install_db4.sh ~/vericoin
+export BDB_PREFIX="${HOME}/vericoin/db4"
 ./autogen.sh
 ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
 make
@@ -219,14 +219,14 @@ libqrencode (optional) can be installed with:
 To build and use BerkeleyDB 4.8 please referer to the [Berkeley DB](#berkeley-db)
 
 #### Quick Build
-Bash script to quickly download and build verium with GUI
+Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo pacman -S git base-devel boost libevent python minizip qt5-qttools qt5-qtbase protobuf qrencode
-git clone https://github.com/VeriumReserve/verium.git ~/verium
-cd ~/verium
-./contrib/install_db4.sh ~/verium
-export BDB_PREFIX="${HOME}/verium/db4"
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
+cd ~/vericoin
+./contrib/install_db4.sh ~/vericoin
+export BDB_PREFIX="${HOME}/vericoin/db4"
 ./autogen.sh
 ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
 make
@@ -258,14 +258,14 @@ It is not suitable for debugging a multi-threaded C++ program, not even for gett
 use the versioned gdb command e.g. `gdb7111`.
 
 #### Quick Build
-Bash script to quickly download and build verium with GUI
+Bash script to quickly download and build vericoin with GUI
 
 ```sh
 sudo pkg install git autoconf automake libtool pkgconf boost-libs openssl libevent gmake curl minizip
-git clone https://github.com/VeriumReserve/verium.git ~/verium
-cd ~/verium
-./contrib/install_db4.sh ~/verium
-export BDB_PREFIX="${HOME}/verium/db4"
+git clone https://github.com/VeriConomy/vericoin.git ~/vericoin
+cd ~/vericoin
+./contrib/install_db4.sh ~/vericoin
+export BDB_PREFIX="${HOME}/vericoin/db4"
 ./autogen.sh
 ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" LDFLAGS="-L/usr/local/lib/" CPPFLAGS="-I/usr/local/include/" MAKE="gmake"
 gmake
@@ -274,7 +274,7 @@ gmake
 
 ## Build Notes
 ----------------------------------------------
-The release is built with GCC and then "strip veriumd" to strip the debug
+The release is built with GCC and then "strip vericoind" to strip the debug
 symbols, which reduces the executable size by about 90%.
 
 
@@ -315,7 +315,7 @@ If you need to build Boost yourself:
 
 ## Security
 --------
-To help make your verium installation more secure by making certain attacks impossible to
+To help make your vericoin installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 
@@ -339,7 +339,7 @@ Hardening enables the following features:
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
-    	scanelf -e ./verium
+    	scanelf -e ./vericoin
 
     The output should contain:
 
@@ -348,13 +348,13 @@ Hardening enables the following features:
 
 * Non-executable Stack
     If the stack is executable then trivial stack based buffer overflow exploits are possible if
-    vulnerable buffers are found. By default, verium should be built with a non-executable stack
+    vulnerable buffers are found. By default, vericoin should be built with a non-executable stack
     but if one of the libraries it uses asks for an executable stack or someone makes a mistake
     and uses a compiler extension which requires an executable stack, it will silently build an
     executable without the non-executable stack protection.
 
     To verify that the stack is non-executable after compiling use:
-    `scanelf -e ./verium`
+    `scanelf -e ./vericoin`
 
     the output should contain:
 	STK/REL/PTL
@@ -364,7 +364,7 @@ Hardening enables the following features:
 
 ## Disable-wallet mode
 --------------------
-When the intention is to run only a P2P node without a wallet, verium may be compiled in
+When the intention is to run only a P2P node without a wallet, vericoin may be compiled in
 disable-wallet mode with:
 
     ./configure --disable-wallet

@@ -14,19 +14,19 @@
 #define CLIENT_VERSION_MAJOR 1
 
 /* Minor version */
-#define CLIENT_VERSION_MINOR 3
+#define CLIENT_VERSION_MINOR 8
 
 /* Build revision */
-#define CLIENT_VERSION_REVISION 2
+#define CLIENT_VERSION_REVISION 0
 
 /* Copyright holder(s) before %s replacement */
 #define COPYRIGHT_HOLDERS "The %s developers"
 
 /* Copyright holder(s) */
-#define COPYRIGHT_HOLDERS_FINAL "The Verium developers"
+#define COPYRIGHT_HOLDERS_FINAL "The Vericoin developers"
 
 /* Replacement for %s in copyright holders string */
-#define COPYRIGHT_HOLDERS_SUBSTITUTION "Verium"
+#define COPYRIGHT_HOLDERS_SUBSTITUTION "Vericoin"
 
 /* Copyright year */
 #define COPYRIGHT_YEAR 2020
@@ -340,16 +340,16 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "https://github.com/VeriumReserve/verium/issues"
+#define PACKAGE_BUGREPORT "https://github.com/VeriConomy/vericoin/issues"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "Verium"
+#define PACKAGE_NAME "Vericoin"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Verium 1.3"
+#define PACKAGE_STRING "Vericoin 1.3"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "verium"
+#define PACKAGE_TARNAME "vericoin"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL "https://vericoin.info/"

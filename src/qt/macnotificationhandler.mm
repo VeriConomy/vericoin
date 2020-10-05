@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.vericonomy.Verium-Qt";
+        return @"org.vericonomy.Vericoin-Qt";
     } else {
         return [self __bundleIdentifier];
     }

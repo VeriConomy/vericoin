@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>verium.icns</string>
+  <string>vericoin.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Verium-Qt</string>
+  <string>Vericoin-Qt</string>
 
   <key>CFBundleName</key>
-  <string>Verium-Qt</string>
+  <string>Vericoin-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.vericonomy.Verium-Qt</string>
+  <string>org.vericonomy.Vericoin-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.verium.VeriumPayment</string>
+      <string>org.vericoin.VericoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>verium</string>
+        <string>vericoin</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.verium.paymentrequest</string>
+      <string>org.vericoin.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>Verium payment request</string>
+      <string>Vericoin payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-verium-payment-request</string>
+        <string>application/x-vericoin-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>veriumpaymentrequest</string>
+          <string>vericoinpaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.verium.paymentrequest</string>
+        <string>org.vericoin.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

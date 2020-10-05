@@ -101,7 +101,7 @@ std::unique_ptr<BanMan> g_banman;
 /**
  * The PID file facilities.
  */
-static const char* BITCOIN_PID_FILENAME = "veriumd.pid";
+static const char* BITCOIN_PID_FILENAME = "vericoind.pid";
 
 static fs::path GetPidFile()
 {
@@ -546,7 +546,7 @@ void SetupServerArgs()
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/VeriumReserve/verium>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/VeriConomy/vericoin>";
     const std::string URL_WEBSITE = "<https://vericonomy.com>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i-%i").translated, 2016, COPYRIGHT_YEAR) + " ") + "\n" +
@@ -1223,9 +1223,9 @@ bool AppInitMain(InitInterfaces& interfaces)
     // Warn about relative -datadir path.
     if (gArgs.IsArgSet("-datadir") && !fs::path(gArgs.GetArg("-datadir", "")).is_absolute()) {
         LogPrintf("Warning: relative datadir option '%s' specified, which will be interpreted relative to the " /* Continued */
-                  "current working directory '%s'. This is fragile, because if verium is started in the future "
+                  "current working directory '%s'. This is fragile, because if vericoin is started in the future "
                   "from a different location, it will be unable to locate the current data files. There could "
-                  "also be data loss if verium is started while in a temporary directory.\n",
+                  "also be data loss if vericoin is started while in a temporary directory.\n",
             gArgs.GetArg("-datadir", ""), fs::current_path().string());
     }
 

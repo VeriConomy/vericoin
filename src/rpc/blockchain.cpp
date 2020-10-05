@@ -147,7 +147,7 @@ UniValue bootstrap(const JSONRPCRequest& request)
     }
 
     ret.pushKV("success", true);
-    ret.pushKV("message", "Bootstrap successful; veriumd has been stopped, please restart.");
+    ret.pushKV("message", "Bootstrap successful; vericoind has been stopped, please restart.");
 
     StartShutdown();
 
@@ -477,7 +477,7 @@ static UniValue getdifficulty(const JSONRPCRequest& request)
 static std::string EntryDescriptionString()
 {
     return "    \"vsize\" : n,            (numeric) virtual transaction size as defined in BIP 141. This is different from actual serialized size for witness transactions as witness data is discounted.\n"
-           "    \"size\" : n,             (numeric) (DEPRECATED) same as vsize. Only returned if veriumd is started with -deprecatedrpc=size\n"
+           "    \"size\" : n,             (numeric) (DEPRECATED) same as vsize. Only returned if vericoind is started with -deprecatedrpc=size\n"
            "                              size will be completely removed in v0.20.\n"
            "    \"weight\" : n,           (numeric) transaction weight as defined in BIP 141.\n"
            "    \"fee\" : n,              (numeric) transaction fee in " + CURRENCY_UNIT + " (DEPRECATED)\n"
@@ -1135,8 +1135,8 @@ UniValue gettxout(const JSONRPCRequest& request)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of verium addresses\n"
-            "        \"address\"     (string) verium address\n"
+            "     \"addresses\" : [          (array of string) array of vericoin addresses\n"
+            "        \"address\"     (string) vericoin address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"

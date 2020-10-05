@@ -214,7 +214,7 @@ bool CScript::IsPayToWitnessScriptHash() const
 // followed by a data push between 2 and 40 bytes.
 bool CScript::IsWitnessProgram(int& version, std::vector<unsigned char>& program) const
 {
-    // Disable Segwit for Verium
+    // Disable Segwit for Vericoin
     return false;
 
 #if 0

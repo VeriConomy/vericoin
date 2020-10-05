@@ -1,8 +1,8 @@
-# RapidCheck property-based testing for Verium
+# RapidCheck property-based testing for Vericoin
 
 ## Concept
 
-Property-based testing is experimentally being added to Verium with
+Property-based testing is experimentally being added to Vericoin with
 [RapidCheck](https://github.com/emil-e/rapidcheck), a C++ framework for
 property-based testing inspired by the Haskell library
 [QuickCheck](https://hackage.haskell.org/package/QuickCheck).
@@ -19,7 +19,7 @@ find the smallest integer for which the property is false.
 
 ## Running
 
-If RapidCheck is installed, Verium will automatically run the
+If RapidCheck is installed, Vericoin will automatically run the
 property-based tests with the unit tests during `make check`, unless the
 `--without-rapidcheck` flag is passed when configuring.
 
@@ -44,9 +44,9 @@ The following instructions have been tested with Linux Debian and macOS.
     make && make install
     ```
 
-3. Configure Verium with RapidCheck.
+3. Configure Vericoin with RapidCheck.
 
-    `cd` to the directory of your local verium repository and run
+    `cd` to the directory of your local vericoin repository and run
     `./configure`. In the output you should see:
 
     ```shell
@@ -60,7 +60,7 @@ The following instructions have been tested with Linux Debian and macOS.
         with prop   = yes
     ```
 
-4. Build Verium with RapidCheck.
+4. Build Vericoin with RapidCheck.
 
     Now you can run `make` and should see the property-based tests compiled with
     the unit tests:
@@ -68,8 +68,8 @@ The following instructions have been tested with Linux Debian and macOS.
     ```shell
     Making all in src
     [...]
-    CXX      test/gen/test_verium-crypto_gen.o
-    CXX      test/test_verium-key_properties.o
+    CXX      test/gen/test_vericoin-crypto_gen.o
+    CXX      test/test_vericoin-key_properties.o
     ```
 
 5. Run the unit tests with `make check`. The property-based tests will be run
@@ -81,4 +81,4 @@ The following instructions have been tested with Linux Debian and macOS.
     Running tests: key_properties from test/key_properties.cpp
     ```
 
-That's it! You are now running property-based tests in Verium.
+That's it! You are now running property-based tests in Vericoin.

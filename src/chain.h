@@ -383,7 +383,7 @@ public:
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
 
-        // Verium: properties.
+        // Vericoin: properties.
         READWRITE(nMint);
         READWRITE(nMoneySupply);
 

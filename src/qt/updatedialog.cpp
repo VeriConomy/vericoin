@@ -31,7 +31,7 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
         ui->label->setText(qstr);
     }
     else {
-        ui->label->setText(tr("Vault is the newest version.  No update at this time."));
+        ui->label->setText(tr("Wallet is the newest version.  No update at this time."));
     }
 }
 
@@ -53,7 +53,7 @@ void UpdateDialog::on_updateButton_clicked()
     update_callback_instance = this;
     set_xferinfo_data((void*)xfer_callback);
 
-    QMessageBox::information(this, "Update", "The Verium Vault will now be updated. \n\nVerium will exit after update starts and will need to be restarted.", QMessageBox::Ok, QMessageBox::Ok);
+    QMessageBox::information(this, "Update", "The Vericoin Wallet will now be updated. \n\nVericoin will exit after update starts and will need to be restarted.", QMessageBox::Ok, QMessageBox::Ok);
     try {
         downloadClient(clientName);
     } catch (const std::runtime_error& e) {
@@ -91,7 +91,7 @@ std::string getUpdatedClient()
     QString versionData;
     std::string line;
     std::string version;
-    boost::filesystem::path pathVersionFile = GetDataDir() / "VERSION_VRM.json";
+    boost::filesystem::path pathVersionFile = GetDataDir() / "VERSION_VRC.json";
     boost::filesystem::ifstream streamVersion(pathVersionFile);
 
     // Read version file to get update status
@@ -182,7 +182,7 @@ void processUpdate(QString qClientName)
     command = QString("/usr/bin/open");
     newArgv.append(QString(GetDataDir().c_str()) + QString("/") + qClientName);
 #else
-    // If Linux, just restart (already extracted verium-qt from the zip in downloader.cpp).
+    // If Linux, just restart (already extracted vericoin-qt from the zip in downloader.cpp).
     newArgv.clear();
     // Installer created by makeself.sh
     command = QString(GetDataDir().c_str()) + QString("/") + qClientName;

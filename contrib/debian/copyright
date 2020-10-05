@@ -1,12 +1,12 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Verium
+Upstream-Name: Vericoin
 Upstream-Contact: Vericonomy Developers <dev@vericoin.info>
-Source: https://github.com/VeriumReserve/verium
+Source: https://github.com/VeriConomy/vericoin
 
 Files: *
-Copyright: 2009-2020, Verium Developers
+Copyright: 2009-2020, Vericoin Developers
 License: Expat
-Comment: The Verium Developers encompasses the current developers listed on vericoin.info,
+Comment: The Vericoin Developers encompasses the current developers listed on vericoin.info,
          as well as the numerous contributors to the project.
 
 Files: debian/*

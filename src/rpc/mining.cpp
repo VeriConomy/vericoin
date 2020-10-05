@@ -81,7 +81,7 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
                 "\nMine blocks immediately to a specified address (before the RPC call returns)\n",
                 {
                     {"nblocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "How many blocks are generated immediately."},
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated verium to."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated vericoin to."},
                     {"maxtries", RPCArg::Type::NUM, /* default */ "1000000", "How many iterations to try."},
                 },
                 RPCResult{
@@ -90,7 +90,7 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
                 RPCExamples{
             "\nGenerate 11 blocks to myaddress\n"
             + HelpExampleCli("generatetoaddress", "11 \"myaddress\"")
-            + "If you are running the verium wallet, you can get a new address to send the newly generated verium to with:\n"
+            + "If you are running the vericoin wallet, you can get a new address to send the newly generated vericoin to with:\n"
             + HelpExampleCli("getnewaddress", "")
                 },
             }.Check(request);
@@ -118,7 +118,7 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
         {},
         RPCResult{
             "{\n"
-            "  \"blockreward (VRM)\": x.xxxx,          (numeric) DEPREACED, use 'blockreward'. Current block reward \n"
+            "  \"blockreward (VRC)\": x.xxxx,          (numeric) DEPREACED, use 'blockreward'. Current block reward \n"
             "  \"blockreward\": x.xxxx,                (numeric) Current block reward \n"
             "  \"blocks\": nnn,                        (numeric) The current block\n"
             "  \"blocksperhour\": nnn                  (numeric) Number of blocks per hour\n"
@@ -157,7 +157,7 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
 
     UniValue obj(UniValue::VOBJ);
 
-    obj.pushKV("blockreward (VRM)",           blockreward);
+    obj.pushKV("blockreward (VRC)",           blockreward);
     obj.pushKV("blockreward",           blockreward);
     obj.pushKV("blocks",           (int)::ChainActive().Height());
     obj.pushKV("blocksperhour",           GetBlockRatePerHour());
@@ -187,7 +187,7 @@ UniValue minerstart(const JSONRPCRequest& request)
     }
 
     RPCHelpMan{"minerstart",
-        "\nStart mining Verium.",
+        "\nStart mining Vericoin.",
         {
             {"nthreads", RPCArg::Type::NUM, RPCArg::Optional::NO, "Number of thread to allocate to mining."},
         },
@@ -208,7 +208,7 @@ UniValue minerstart(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
-    GenerateVerium(true, pwallet, nThreads);
+    GenerateVericoin(true, pwallet, nThreads);
 
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("status",   "active");
@@ -226,7 +226,7 @@ UniValue minerstop(const JSONRPCRequest& request)
     }
 
     RPCHelpMan{"minerstop",
-        "\nStop mining Verium.",
+        "\nStop mining Vericoin.",
         {},
         RPCResult{
     "{                           (json object)\n"
@@ -243,7 +243,7 @@ UniValue minerstop(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
-    GenerateVerium(false, pwallet, 0);
+    GenerateVericoin(false, pwallet, 0);
 
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("status",   "stopped");
@@ -252,7 +252,7 @@ UniValue minerstop(const JSONRPCRequest& request)
 }
 
 
-// NOTE: Unlike wallet RPC (which use VRM values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
+// NOTE: Unlike wallet RPC (which use VRC values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
 static UniValue prioritisetransaction(const JSONRPCRequest& request)
 {
             RPCHelpMan{"prioritisetransaction",
