@@ -45,7 +45,7 @@ Build Vericoin
 
 1. Clone the vericoin source code and cd into `vericoin`
 
-        git clone https://github.com/VericoinReserve/vericoin.git
+        git clone https://github.com/VeriConomy/vericoin.git
         cd vericoin
 
 2.  Build vericoin-core:

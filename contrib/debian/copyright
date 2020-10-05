@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Vericoin
 Upstream-Contact: Vericonomy Developers <dev@vericoin.info>
-Source: https://github.com/VericoinReserve/vericoin
+Source: https://github.com/VeriConomy/vericoin
 
 Files: *
 Copyright: 2009-2020, Vericoin Developers

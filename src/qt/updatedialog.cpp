@@ -31,7 +31,7 @@ UpdateDialog::UpdateDialog(QWidget *parent) :
         ui->label->setText(qstr);
     }
     else {
-        ui->label->setText(tr("Vault is the newest version.  No update at this time."));
+        ui->label->setText(tr("Wallet is the newest version.  No update at this time."));
     }
 }
 
@@ -53,7 +53,7 @@ void UpdateDialog::on_updateButton_clicked()
     update_callback_instance = this;
     set_xferinfo_data((void*)xfer_callback);
 
-    QMessageBox::information(this, "Update", "The Vericoin Vault will now be updated. \n\nVericoin will exit after update starts and will need to be restarted.", QMessageBox::Ok, QMessageBox::Ok);
+    QMessageBox::information(this, "Update", "The Vericoin Wallet will now be updated. \n\nVericoin will exit after update starts and will need to be restarted.", QMessageBox::Ok, QMessageBox::Ok);
     try {
         downloadClient(clientName);
     } catch (const std::runtime_error& e) {
