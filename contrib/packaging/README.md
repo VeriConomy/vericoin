@@ -1,10 +1,10 @@
-Verium Vault packaging
+Vericoin Vault packaging
 =======
 
-Verium Vault is packaged and distributed through different channels.
+Vericoin Vault is packaged and distributed through different channels.
 
-Advanced users can compile Verium from source. Static binaries for Linux, as well as installers for Windows and macOS are
-provided on the [website](https://vericoin.info/verium-digital-reserve/).
+Advanced users can compile Vericoin from source. Static binaries for Linux, as well as installers for Windows and macOS are
+provided on the [website](https://vericoin.info/vericoin-digital-reserve/).
 
 In addition, this repository contains packaging metadata for package managers running on Linux. Currently
 

@@ -81,7 +81,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>install new configuration file verium.conf</string>
+    <string>install new configuration file vericoin.conf</string>
    </property>
   </widget>
  </widget>

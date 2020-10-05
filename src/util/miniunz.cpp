@@ -1,7 +1,7 @@
 /*
    Modified from sample part of the MiniZip project
-   Copyright (C) 2017 The Verium developers
-     Modifications for Verium
+   Copyright (C) 2017 The Vericoin developers
+     Modifications for Vericoin
    Copyright (C) 2012-2017 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
    Copyright (C) 2009-2010 Mathias Svensson

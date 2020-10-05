@@ -40,10 +40,10 @@ QString BitcoinUnits::longName(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("VRM");
-    case mBTC: return QString("mVRM");
-    case uBTC: return QString::fromUtf8("µVRM (bits)");
-    case SAT: return QString("VRMtoshi (VRMi)");
+    case BTC: return QString("VRC");
+    case mBTC: return QString("mVRC");
+    case uBTC: return QString::fromUtf8("µVRC (bits)");
+    case SAT: return QString("VRCtoshi (VRCi)");
     default: return QString("???");
     }
 }
@@ -52,8 +52,8 @@ QString BitcoinUnits::shortName(int unit)
 {
     switch(unit)
     {
-    case uBTC: return QString::fromUtf8("µVRM");
-    case SAT: return QString("VRMi");
+    case uBTC: return QString::fromUtf8("µVRC");
+    case SAT: return QString("VRCi");
     default: return longName(unit);
     }
 }
@@ -62,10 +62,10 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("Veriums");
-    case mBTC: return QString("Milli-Veriums (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTC: return QString("Micro-Veriums (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-    case SAT: return QString("VRMtoshi (VRMi) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case BTC: return QString("Vericoins");
+    case mBTC: return QString("Milli-Vericoins (1 / 1" THIN_SP_UTF8 "000)");
+    case uBTC: return QString("Micro-Vericoins (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case SAT: return QString("VRCtoshi (VRCi) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }
 }

@@ -1,5 +1,5 @@
-Building Verium
+Building Vericoin
 ================
 
 See doc/build-*.md for instructions on building the various
-elements of the Verium reference implementation of Verium.
+elements of the Vericoin reference implementation of Vericoin.

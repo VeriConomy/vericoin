@@ -68,7 +68,7 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
     pixPaint.fillPath(mainPath, gradient);
     pixPaint.drawPath(mainPath);
 
-    // draw the vrm logo
+    // draw the vrc logo
     QRect rLogo(
         QPoint((splashSize.width()-(320*devicePixelRatio))/2,15),
         QSize(320*devicePixelRatio,102*devicePixelRatio)

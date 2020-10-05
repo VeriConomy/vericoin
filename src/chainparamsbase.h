@@ -9,7 +9,7 @@
 #include <string>
 
 /**
- * CBaseChainParams defines the base parameters (shared between verium-cli and veriumd)
+ * CBaseChainParams defines the base parameters (shared between vericoin-cli and vericoind)
  * of a given instance of the Bitcoin system.
  */
 class CBaseChainParams

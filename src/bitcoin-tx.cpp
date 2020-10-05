@@ -100,9 +100,9 @@ static int AppInitRawTx(int argc, char* argv[])
 
     if (argc < 2 || HelpRequested(gArgs)) {
         // First part of help message is specific to this utility
-        std::string strUsage = PACKAGE_NAME " verium-tx utility version " + FormatFullVersion() + "\n\n" +
-            "Usage:  verium-tx [options] <hex-tx> [commands]  Update hex-encoded verium transaction\n" +
-            "or:     verium-tx [options] -create [commands]   Create hex-encoded verium transaction\n" +
+        std::string strUsage = PACKAGE_NAME " vericoin-tx utility version " + FormatFullVersion() + "\n\n" +
+            "Usage:  vericoin-tx [options] <hex-tx> [commands]  Update hex-encoded vericoin transaction\n" +
+            "or:     vericoin-tx [options] -create [commands]   Create hex-encoded vericoin transaction\n" +
             "\n";
         strUsage += gArgs.GetHelpMessage();
 

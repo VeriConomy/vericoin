@@ -276,7 +276,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nMoneySupply   = diskindex.nMoneySupply;
                 pindexNew->nMint          = diskindex.nMint;
 
-                /* Verium:
+                /* Vericoin:
                  *   We're not going to run the check here, as it takes a very long time at client startup.
                  * Instead, we will assume that the local client data is valid.
                  */

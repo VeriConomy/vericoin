@@ -23,7 +23,7 @@ arith_uint256 proofOfWorkLimitTestNet(~arith_uint256(0) >> 11);
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     CMutableTransaction txNew;
-    txNew.nTime = 1472669240; /// Verium magic constant.
+    txNew.nTime = 1472669240; /// Vericoin magic constant.
     txNew.nVersion = 1;
     txNew.vin.resize(1);
     txNew.vout.resize(1);
@@ -60,7 +60,7 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nPowTargetSpacing = 5 * 60;  // not used for consensus in Verium as it's variable, but used to indicate age of data
+        consensus.nPowTargetSpacing = 5 * 60;  // not used for consensus in Vericoin as it's variable, but used to indicate age of data
         consensus.nPowTargetTimespan = 2 * 24 * 60 * 60; // two days
         consensus.fPowNoRetargeting = false;
 
@@ -70,7 +70,7 @@ public:
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
 
-        // Let's start with VIP (Verium Improvement Protocol)
+        // Let's start with VIP (Vericoin Improvement Protocol)
         // XXX: Use it and set a correct value
         consensus.VIP1Height = 520000; // Change Min Fee
 
@@ -98,7 +98,7 @@ public:
         // This is fine at runtime as we'll fall back to using them as a oneshot if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        vSeeds.emplace_back("seed.vrm.vericonomy.com");
+        vSeeds.emplace_back("seed.vrc.vericonomy.com");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,132);
@@ -106,7 +106,7 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0xE3, 0xCC, 0xBB, 0x92};
         base58Prefixes[EXT_SECRET_KEY] = {0xE3, 0xCC, 0xAE, 0x01};
 
-        bech32_hrp = "vrm";
+        bech32_hrp = "vrc";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 

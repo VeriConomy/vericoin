@@ -170,7 +170,7 @@ void BitcoinCore::shutdown()
 }
 
 static int qt_argc = 1;
-static const char* qt_argv = "verium-qt";
+static const char* qt_argv = "vericoin-qt";
 
 BitcoinApplication::BitcoinApplication(interfaces::Node& node):
     QApplication(qt_argc, const_cast<char **>(&qt_argv)),
@@ -387,7 +387,7 @@ void BitcoinApplication::shutdownResult()
 
 void BitcoinApplication::handleRunawayException(const QString &message)
 {
-    QMessageBox::critical(nullptr, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. Verium can no longer continue safely and will quit.") + QString("\n\n") + message);
+    QMessageBox::critical(nullptr, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. Vericoin can no longer continue safely and will quit.") + QString("\n\n") + message);
     ::exit(EXIT_FAILURE);
 }
 
@@ -432,7 +432,7 @@ int GuiMain(int argc, char* argv[])
     // Do not refer to data directory yet, this can be overridden by Intro::pickDataDirectory
 
     /// 1. Basic Qt initialization (not dependent on parameters or configuration)
-    Q_INIT_RESOURCE(verium);
+    Q_INIT_RESOURCE(vericoin);
     Q_INIT_RESOURCE(bitcoin_locale);
 
     // Generate high-dpi pixmaps
@@ -500,7 +500,7 @@ int GuiMain(int argc, char* argv[])
     // Gracefully exit if the user cancels
     if (!Intro::showIfNeeded(*node, did_show_intro, prune)) return EXIT_SUCCESS;
 
-    /// 6. Determine availability of data directory and parse verium.conf
+    /// 6. Determine availability of data directory and parse vericoin.conf
     /// - Do not call GetDataDir(true) before this step finishes
     if (!CheckDataDirOption()) {
         node->initError(strprintf("Specified data directory \"%s\" does not exist.\n", gArgs.GetArg("-datadir", "")));
@@ -552,7 +552,7 @@ int GuiMain(int argc, char* argv[])
         exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // verium: links repeatedly have their payment requests routed to this process:
+    // vericoin: links repeatedly have their payment requests routed to this process:
     if (WalletModel::isWalletEnabled()) {
         app.createPaymentServer();
     }

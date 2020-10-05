@@ -1,21 +1,21 @@
-Verium integration/staging tree
+Vericoin integration/staging tree
 =====================================
 
-[![Build Status](https://travis-ci.org/VeriumReserve/verium.svg?branch=master)](https://travis-ci.org/VeriumReserve/verium)
+[![Build Status](https://travis-ci.org/VericoinReserve/vericoin.svg?branch=master)](https://travis-ci.org/VericoinReserve/vericoin)
 
 https://www.vericonomy.com
 
-What is Verium?
+What is Vericoin?
 ----------------
 
-Verium is an experimental digital currency that enables instant payments to
-anyone, anywhere in the world. Verium uses peer-to-peer technology to operate
+Vericoin is an experimental digital currency that enables instant payments to
+anyone, anywhere in the world. Vericoin uses peer-to-peer technology to operate
 with no central authority: managing transactions and issuing money are carried
-out collectively by the network. Verium is the name of open source
+out collectively by the network. Vericoin is the name of open source
 software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Verium software, see https://www.vericonomy.com.
+the Vericoin software, see https://www.vericonomy.com.
 
 ChangeLog
 ----------
@@ -28,7 +28,7 @@ Documentation
 
 All the documentation can be found in the [Doc Directory](doc). \
 You will find information such as:
- - How to build Verium Vault
+ - How to build Vericoin Vault
  - Release Notes
  - Development Process
  - ...
@@ -36,17 +36,17 @@ You will find information such as:
 License
 -------
 
-Verium is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Vericoin is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/veriumreserve/verium/tags) are created
-regularly to indicate new official, stable release versions of Verium.
+completely stable. [Tags](https://github.com/vericoinreserve/vericoin/tags) are created
+regularly to indicate new official, stable release versions of Vericoin.
 
-Current official Verium release is on branch 1.3.2.
+Current official Vericoin release is on branch 1.3.2.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -54,7 +54,7 @@ The developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/
 should be used to discuss complicated or controversial changes before working
 on a patch set.
 
-Developer IRC can be found on Freenode at #verium-core-dev.
+Developer IRC can be found on Freenode at #vericoin-core-dev.
 
 Testing
 -------

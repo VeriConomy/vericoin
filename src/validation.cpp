@@ -54,7 +54,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Verium cannot be compiled without assertions."
+# error "Vericoin cannot be compiled without assertions."
 #endif
 
 #define MICRO 0.000001
@@ -990,7 +990,7 @@ bool MemPoolAccept::Finalize(ATMPArgs& args, Workspace& ws)
     // Remove conflicting transactions from the mempool
     for (CTxMemPool::txiter it : allConflicting)
     {
-        LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s VRM additional fees, %d delta bytes\n",
+        LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s VRC additional fees, %d delta bytes\n",
                 it->GetTx().GetHash().ToString(),
                 hash.ToString(),
                 FormatMoney(nModifiedFees - nConflictingFees),
@@ -1156,7 +1156,7 @@ bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::P
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
 
-    // Check the header || Verium: Assume local work has already been checked to save reindexing time
+    // Check the header || Vericoin: Assume local work has already been checked to save reindexing time
     //if (!CheckProofOfWork(block.GetWorkHash(), block.nBits, consensusParams))
     //    return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
@@ -3104,7 +3104,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, FlatFilePos &pos, un
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     /*
-     * Verium:
+     * Vericoin:
      *
      *   Header verification takes a long time due to having to compute scrypt hashes.
      * This is a lengthy process, and so for this reason we skip it. This is acceptable

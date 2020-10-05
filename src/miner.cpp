@@ -436,10 +436,10 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 }
 
 //////////////////////////////////////////////////////////////////////////////
-////////////////////////// Verium Miner /////////////////////////////////////
+////////////////////////// Vericoin Miner /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 double hashrate = 0.;
-bool fGenerateVerium = false;
+bool fGenerateVericoin = false;
 static int64_t timeElapsed = 30000;
 double dHashesPerMin = 0.0;
 int64_t nHPSTimerStart = 0;
@@ -565,7 +565,7 @@ void Miner(CWallet *pwallet)
 {
     LogPrintf("Miner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    util::ThreadRename("verium-miner");
+    util::ThreadRename("vericoin-miner");
 
     //Build buffer and check for memory availability
     bool memory = true;
@@ -586,7 +586,7 @@ void Miner(CWallet *pwallet)
     unsigned int nExtraNonce = 0;
     try
     {
-        while (fGenerateVerium && memory)
+        while (fGenerateVericoin && memory)
         {
             while (::ChainstateActive().IsInitialBlockDownload() || GetNumPeers() < 1 || ::ChainActive().Tip()->nHeight < GetNumBlocksOfPeers()){
                 LogPrintf("Mining inactive while chain is syncing...\n");
@@ -615,10 +615,10 @@ void Miner(CWallet *pwallet)
             // Search
             int64_t nStart = GetTime();
             uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
-            while (fGenerateVerium)
+            while (fGenerateVericoin)
             {
                 unsigned int nHashesDone = 0;
-                if (fGenerateVerium)
+                if (fGenerateVericoin)
                 {
                     // scrypt^2
                     int nHashes = 0;
@@ -660,7 +660,7 @@ void Miner(CWallet *pwallet)
 
                 // Check for stop or if block needs to be rebuilt
                 boost::this_thread::interruption_point();
-                if (!fGenerateVerium)
+                if (!fGenerateVericoin)
                     break;
                 if (ShutdownRequested())
                     return;
@@ -688,9 +688,9 @@ void Miner(CWallet *pwallet)
     }
 }
 
-void GenerateVerium(bool fGenerate, CWallet* pwallet, int nThreads)
+void GenerateVericoin(bool fGenerate, CWallet* pwallet, int nThreads)
 {
-    fGenerateVerium = fGenerate;
+    fGenerateVericoin = fGenerate;
     static boost::thread_group* minerThreads = NULL;
 
     if (nThreads < 0)

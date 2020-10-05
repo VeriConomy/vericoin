@@ -78,7 +78,7 @@ PlatformStyle::PlatformStyle(const QString &_name, bool _imagesOnButtons, bool _
 {
     // Determine icon highlighting color
     if (colorizeIcons) {
-        // Verium, might put that in a const
+        // Vericoin, might put that in a const
         const QColor colorHighlightBg(255, 255, 255);
         const QColor colorHighlightFg(255, 255, 255);
         const QColor colorText(QApplication::palette().color(QPalette::WindowText));

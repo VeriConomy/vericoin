@@ -1,7 +1,7 @@
-Contributing to Verium
+Contributing to Vericoin
 ============================
 
-The Verium project operates an open contributor model where anyone is
+The Vericoin project operates an open contributor model where anyone is
 welcome to contribute towards development in the form of peer review, testing
 and patches. This document explains the practical process and guidelines for
 contributing.
@@ -57,12 +57,12 @@ the pull request affects. Valid areas as:
 
   - *Consensus* for changes to consensus critical code
   - *Docs* for changes to the documentation
-  - *Qt* for changes to verium-qt
+  - *Qt* for changes to vericoin-qt
   - *Mining* for changes to the mining code
   - *Net* or *P2P* for changes to the peer-to-peer network code
   - *RPC/REST/ZMQ* for changes to the RPC, REST or ZMQ APIs
   - *Scripts and tools* for changes to the scripts and tools
-  - *Tests* for changes to the verium unit tests or QA tests
+  - *Tests* for changes to the vericoin unit tests or QA tests
   - *Trivial* should **only** be used for PRs that do not change generated
     executable code. Notably, refactors (change of function arguments and code
     reorganization) and changes in behavior should **not** be marked as trivial.
@@ -165,11 +165,11 @@ workload on reviewing.
 "Decision Making" Process
 -------------------------
 
-The following applies to code changes to the Verium project (and related
-projects such as libsecp256k1), and is not to be confused with overall Verium
+The following applies to code changes to the Vericoin project (and related
+projects such as libsecp256k1), and is not to be confused with overall Vericoin
 Network Protocol consensus changes.
 
-Whether a pull request is merged into Verium rests with the project merge
+Whether a pull request is merged into Vericoin rests with the project merge
 maintainers and ultimately the project lead.
 
 Maintainers will take into consideration if a patch is in line with the general
@@ -187,7 +187,7 @@ In general, all pull requests must:
   - Where bugs are fixed, where possible, there should be unit tests
     demonstrating the bug and also proving the fix. This helps prevent regression.
 
-Patches that change Verium consensus rules are considerably more involved than
+Patches that change Vericoin consensus rules are considerably more involved than
 normal because they affect the entire ecosystem and so must be preceded by
 extensive mailing list discussions and have a numbered BIP. While each case will
 be different, one should be prepared to expend more time and effort than for
@@ -228,7 +228,7 @@ higher in terms of discussion and peer review requirements, keeping in mind that
 mistakes could be very costly to the wider community. This includes refactoring
 of consensus critical code.
 
-Where a patch set proposes to change the Verium consensus, it must have been
+Where a patch set proposes to change the Vericoin consensus, it must have been
 discussed extensively on the mailing list and IRC, be accompanied by a widely
 discussed BIP and have a generally widely perceived technical consensus of being
 a worthwhile change based on the judgement of the maintainers.
@@ -268,12 +268,12 @@ about:
 Release Policy
 --------------
 
-The project leader is the release manager for each Verium release.
+The project leader is the release manager for each Vericoin release.
 
 Copyright
 ---------
 
-By contributing to this repository, you agree to license your work under the 
-MIT license unless specified otherwise in `contrib/debian/copyright` or at 
-the top of the file itself. Any work contributed where you are not the original 
+By contributing to this repository, you agree to license your work under the
+MIT license unless specified otherwise in `contrib/debian/copyright` or at
+the top of the file itself. Any work contributed where you are not the original
 author must contain its license header with the original author(s) and source.

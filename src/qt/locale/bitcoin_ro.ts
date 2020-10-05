@@ -66,8 +66,8 @@
         <translation>Adresa de primire</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Acestea sunt adresele tale Verium pentru efectuarea platilor. Intotdeauna verifica atent suma de plata si adresa beneficiarului inainte de a trimite monede.</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Acestea sunt adresele tale Vericoin pentru efectuarea platilor. Intotdeauna verifica atent suma de plata si adresa beneficiarului inainte de a trimite monede.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -160,8 +160,8 @@
         <translation>Confirmaţi criptarea portofelului</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
-        <translation>Atenţie: Dacă va criptati portofelul si ulterior pierdeti parola, &lt;b&gt;VEŢI PIERDE TOTI VRMII&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
+        <translation>Atenţie: Dacă va criptati portofelul si ulterior pierdeti parola, &lt;b&gt;VEŢI PIERDE TOTI VRCII&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -220,7 +220,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Semnează &amp;mesaj...</translation>
@@ -322,8 +322,8 @@
         <translation>Proxy este&lt;b&gt;activat&lt;/b&gt;:%1</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Trimite monede către o adresă Verium</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Trimite monede către o adresă Vericoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -366,12 +366,12 @@
         <translation>Criptează cheile private ale portofelului dvs.</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation>Semnaţi mesaje cu adresa dvs. Verium pentru a dovedi că vă aparţin</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation>Semnaţi mesaje cu adresa dvs. Vericoin pentru a dovedi că vă aparţin</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Verificaţi mesaje pentru a vă asigura că au fost semnate cu adresa Verium specificată</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Verificaţi mesaje pentru a vă asigura că au fost semnate cu adresa Vericoin specificată</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -390,8 +390,8 @@
         <translation>Bara de unelte</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>Cereţi plăţi (generează coduri QR şi verium-uri: URls)</translation>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>Cereţi plăţi (generează coduri QR şi vericoin-uri: URls)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -402,16 +402,16 @@
         <translation>Arată lista de adrese pentru primire şi etichetele</translation>
     </message>
     <message>
-        <source>Open a verium: URI or payment request</source>
-        <translation>Deschidere verium: o adresa URI sau o cerere de plată</translation>
+        <source>Open a vericoin: URI or payment request</source>
+        <translation>Deschidere vericoin: o adresa URI sau o cerere de plată</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>Opţiuni linie de &amp;comandă</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Verium network</source>
-        <translation><numerusform>%n conexiune activă către reţeaua Verium</numerusform><numerusform>%n conexiuni active către reţeaua Verium</numerusform><numerusform>%n de conexiuni active către reţeaua Verium</numerusform></translation>
+        <source>%n active connection(s) to Vericoin network</source>
+        <translation><numerusform>%n conexiune activă către reţeaua Vericoin</numerusform><numerusform>%n conexiuni active către reţeaua Vericoin</numerusform><numerusform>%n de conexiuni active către reţeaua Vericoin</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -454,8 +454,8 @@
         <translation>Actualizat</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Verium command-line options</source>
-        <translation>Arată mesajul de ajutor %1 pentru a obţine o listă cu opţiunile posibile de linii de comandă Verium</translation>
+        <source>Show the %1 help message to get a list with possible Vericoin command-line options</source>
+        <translation>Arată mesajul de ajutor %1 pentru a obţine o listă cu opţiunile posibile de linii de comandă Vericoin</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -546,8 +546,8 @@
         <translation>Portofelul este &lt;b&gt;criptat&lt;/b&gt; iar în momentul de faţă este &lt;b&gt;blocat&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>A fatal error occurred. Verium can no longer continue safely and will quit.</source>
-        <translation>A survenit o eroare fatală. Verium nu mai poate continua în siguranţă şi se va opri.</translation>
+        <source>A fatal error occurred. Vericoin can no longer continue safely and will quit.</source>
+        <translation>A survenit o eroare fatală. Vericoin nu mai poate continua în siguranţă şi se va opri.</translation>
     </message>
 </context>
 <context>
@@ -742,8 +742,8 @@
         <translation>Editează adresa de trimitere</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Verium address.</source>
-        <translation>Adresa introdusă "%1" nu este o adresă Verium validă.</translation>
+        <source>The entered address "%1" is not a valid Vericoin address.</source>
+        <translation>Adresa introdusă "%1" nu este o adresă Vericoin validă.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -839,8 +839,8 @@
         <translation>Foloseşte un dosar de date personalizat:</translation>
     </message>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>At least %1 GB of data will be stored in this directory, and it will grow over time.</source>
@@ -851,8 +851,8 @@
         <translation>Aproximativ %1 GB de date vor fi stocate in acest director.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Verium block chain.</source>
-        <translation>%1 va descarca si stoca o copie a blockchainului Verium</translation>
+        <source>%1 will download and store a copy of the Vericoin block chain.</source>
+        <translation>%1 va descarca si stoca o copie a blockchainului Vericoin</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -882,12 +882,12 @@
         <translation>Form</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the verium network, as detailed below.</source>
-        <translation>Tranzactiile recente pot sa nu fie inca vizibile, de aceea balanta portofelului poate fi incorecta. Aceasta informatie va fi corecta de indata ce portofelul va fi complet sincronizat cu reteaua Verium, asa cum este detaliat mai jos.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the vericoin network, as detailed below.</source>
+        <translation>Tranzactiile recente pot sa nu fie inca vizibile, de aceea balanta portofelului poate fi incorecta. Aceasta informatie va fi corecta de indata ce portofelul va fi complet sincronizat cu reteaua Vericoin, asa cum este detaliat mai jos.</translation>
     </message>
     <message>
-        <source>Attempting to spend veriums that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Incercarea de a cheltui veriumi care sunt afectati de tranzactii ce inca nu sunt afisate nu va fi acceptata de retea.</translation>
+        <source>Attempting to spend vericoins that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Incercarea de a cheltui vericoini care sunt afectati de tranzactii ce inca nu sunt afisate nu va fi acceptata de retea.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1067,8 +1067,8 @@
         <translation>Cheltuire rest neconfirmat</translation>
     </message>
     <message>
-        <source>Automatically open the Verium client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Deschide automat în router portul aferent clientului Verium. Funcţionează doar dacă routerul duportă UPnP şi e activat.</translation>
+        <source>Automatically open the Vericoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Deschide automat în router portul aferent clientului Vericoin. Funcţionează doar dacă routerul duportă UPnP şi e activat.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1083,8 +1083,8 @@
         <translation>Permite conexiuni de intrar&amp;e</translation>
     </message>
     <message>
-        <source>Connect to the Verium network through a SOCKS5 proxy.</source>
-        <translation>Conectare la reţeaua Verium printr-un proxy SOCKS.</translation>
+        <source>Connect to the Vericoin network through a SOCKS5 proxy.</source>
+        <translation>Conectare la reţeaua Vericoin printr-un proxy SOCKS.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1119,8 +1119,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Verium network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Conectare la reteaua Verium printr-un proxy SOCKS5 separat pentru serviciile TOR ascunse.</translation>
+        <source>Connect to the Vericoin network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Conectare la reteaua Vericoin printr-un proxy SOCKS5 separat pentru serviciile TOR ascunse.</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -1156,7 +1156,7 @@
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>Alegeţi subdiviziunea folosită la afişarea interfeţei şi la trimiterea de verium.</translation>
+        <translation>Alegeţi subdiviziunea folosită la afişarea interfeţei şi la trimiterea de vericoin.</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1216,7 +1216,7 @@
     </message>
     <message>
         <source>The supplied proxy address is invalid.</source>
-        <translation>Adresa verium pe care aţi specificat-o nu este validă.</translation>
+        <translation>Adresa vericoin pe care aţi specificat-o nu este validă.</translation>
     </message>
 </context>
 <context>
@@ -1226,8 +1226,8 @@
         <translation>Form</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Verium network after a connection is established, but this process has not completed yet.</source>
-        <translation>Informaţiile afişate pot fi neactualizate. Portofelul dvs. se sincronizează automat cu reţeaua Verium după ce o conexiune este stabilită, dar acest proces nu a fost finalizat încă.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Vericoin network after a connection is established, but this process has not completed yet.</source>
+        <translation>Informaţiile afişate pot fi neactualizate. Portofelul dvs. se sincronizează automat cu reţeaua Vericoin după ce o conexiune este stabilită, dar acest proces nu a fost finalizat încă.</translation>
     </message>
     <message>
         <source>(Watch-only)</source>
@@ -1305,16 +1305,16 @@
         <translation>Eroare la cererea de plată</translation>
     </message>
     <message>
-        <source>Cannot start verium: click-to-pay handler</source>
-        <translation>Verium nu poate porni: click-to-pay handler</translation>
+        <source>Cannot start vericoin: click-to-pay handler</source>
+        <translation>Vericoin nu poate porni: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Gestionare URI</translation>
     </message>
     <message>
-        <source>'verium://' is not a valid URI. Use 'verium:' instead.</source>
-        <translation>'verium://' nu este un URI valid. Folositi 'verium:' in loc.</translation>
+        <source>'vericoin://' is not a valid URI. Use 'vericoin:' instead.</source>
+        <translation>'vericoin://' nu este un URI valid. Folositi 'vericoin:' in loc.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -1325,8 +1325,8 @@
         <translation>Adresă pentru plată invalidă %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Verium address or malformed URI parameters.</source>
-        <translation>URI nu poate fi analizat! Acest lucru poate fi cauzat de o adresă Verium invalidă sau parametri URI deformaţi.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid Vericoin address or malformed URI parameters.</source>
+        <translation>URI nu poate fi analizat! Acest lucru poate fi cauzat de o adresă Vericoin invalidă sau parametri URI deformaţi.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1427,8 +1427,8 @@
         <translation>Cantitate</translation>
     </message>
     <message>
-        <source>Enter a Verium address (e.g. %1)</source>
-        <translation>Introduceţi o adresă Verium (de exemplu %1)</translation>
+        <source>Enter a Vericoin address (e.g. %1)</source>
+        <translation>Introduceţi o adresă Vericoin (de exemplu %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1872,8 +1872,8 @@
         <translation>&amp;Mesaj:</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Verium network.</source>
-        <translation>Un mesaj opţional de ataşat la cererea de plată, care va fi afişat cînd cererea este deschisă. Notă: Acest mesaj nu va fi trimis cu plata către reţeaua Verium.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Vericoin network.</source>
+        <translation>Un mesaj opţional de ataşat la cererea de plată, care va fi afişat cînd cererea este deschisă. Notă: Acest mesaj nu va fi trimis cu plata către reţeaua Vericoin.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -2277,8 +2277,8 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation><numerusform>Se estimeaza inceperea confirmarii in %n bloc.</numerusform><numerusform>Se estimeaza inceperea confirmarii in %n blocuri.</numerusform><numerusform>Se estimeaza inceperea confirmarii in %n blocuri.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Verium address</source>
-        <translation>Atenţie: Adresa verium nevalidă!</translation>
+        <source>Warning: Invalid Vericoin address</source>
+        <translation>Atenţie: Adresa vericoin nevalidă!</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -2320,8 +2320,8 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>Aceasta este o tranzacţie normală.</translation>
     </message>
     <message>
-        <source>The Verium address to send the payment to</source>
-        <translation>Adresa verium către care se face plata</translation>
+        <source>The Vericoin address to send the payment to</source>
+        <translation>Adresa vericoin către care se face plata</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -2340,8 +2340,8 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>Înlătură această intrare</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less veriums than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Taxa va fi scazuta in suma trimisa. Destinatarul va primi mai putini verium decat ati specificat in campul sumei trimise. Daca au fost selectati mai multi destinatari, taxa se va imparti in mod egal.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less vericoins than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Taxa va fi scazuta in suma trimisa. Destinatarul va primi mai putini vericoin decat ati specificat in campul sumei trimise. Daca au fost selectati mai multi destinatari, taxa se va imparti in mod egal.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -2368,8 +2368,8 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>Introduceţi eticheta pentru ca această adresa să fie introdusă în lista de adrese folosite</translation>
     </message>
     <message>
-        <source>A message that was attached to the verium: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Verium network.</source>
-        <translation>un mesaj a fost ataşat la verium: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua verium.</translation>
+        <source>A message that was attached to the vericoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Vericoin network.</source>
+        <translation>un mesaj a fost ataşat la vericoin: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua vericoin.</translation>
     </message>
     <message>
         <source>Pay To:</source>
@@ -2413,11 +2413,11 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>&amp;Semnează mesaj</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive veriums sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Puteţi semna mesaje/contracte cu adresele dvs. pentru a demostra ca puteti primi veriumi trimisi la ele. Aveţi grijă să nu semnaţi nimic vag sau aleator, deoarece atacurile de tip phishing vă pot păcăli să le transferaţi identitatea. Semnaţi numai declaraţiile detaliate cu care sînteti de acord.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive vericoins sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Puteţi semna mesaje/contracte cu adresele dvs. pentru a demostra ca puteti primi vericoini trimisi la ele. Aveţi grijă să nu semnaţi nimic vag sau aleator, deoarece atacurile de tip phishing vă pot păcăli să le transferaţi identitatea. Semnaţi numai declaraţiile detaliate cu care sînteti de acord.</translation>
     </message>
     <message>
-        <source>The Verium address to sign the message with</source>
+        <source>The Vericoin address to sign the message with</source>
         <translation>Adresa cu care semnaţi mesajul</translation>
     </message>
     <message>
@@ -2449,8 +2449,8 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>Copiază semnatura curentă în clipboard-ul sistemului</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Verium address</source>
-        <translation>Semnează mesajul pentru a dovedi ca deţineţi acestă adresă Verium</translation>
+        <source>Sign the message to prove you own this Vericoin address</source>
+        <translation>Semnează mesajul pentru a dovedi ca deţineţi acestă adresă Vericoin</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2473,12 +2473,12 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>Introduceţi adresa de semnatură, mesajul (asiguraţi-vă că aţi copiat spaţiile, taburile etc. exact) şi semnatura dedesubt pentru a verifica mesajul. Aveţi grijă să nu citiţi mai mult în semnatură decît mesajul în sine, pentru a evita să fiţi păcăliţi de un atac de tip man-in-the-middle. De notat ca aceasta dovedeste doar ca semnatarul primeste odata cu adresa, nu dovedesta insa trimiterea vreunei tranzactii.</translation>
     </message>
     <message>
-        <source>The Verium address the message was signed with</source>
-        <translation>Introduceţi o adresă Verium</translation>
+        <source>The Vericoin address the message was signed with</source>
+        <translation>Introduceţi o adresă Vericoin</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Verium address</source>
-        <translation>Verificaţi mesajul pentru a vă asigura că a fost semnat cu adresa Verium specificată</translation>
+        <source>Verify the message to ensure it was signed with the specified Vericoin address</source>
+        <translation>Verificaţi mesajul pentru a vă asigura că a fost semnat cu adresa Vericoin specificată</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3096,7 +3096,7 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
     </message>
 </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Distributed under the MIT software license, see the accompanying file %s or %s</source>
         <translation>Distribuit sub licenţa de programe MIT, vezi fişierul însoţitor %s sau %s</translation>

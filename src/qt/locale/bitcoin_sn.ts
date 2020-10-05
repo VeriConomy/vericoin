@@ -64,7 +64,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>E&amp;xit</source>
         <translation>Buda</translation>
@@ -155,8 +155,8 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     </context>
 <context>
@@ -187,8 +187,8 @@
         <translation>Marii</translation>
     </message>
     <message>
-        <source>Enter a Verium address (e.g. %1)</source>
-        <translation>Nyora kero ye Verium (sekuti %1)</translation>
+        <source>Enter a Vericoin address (e.g. %1)</source>
+        <translation>Nyora kero ye Vericoin (sekuti %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -344,6 +344,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     </context>
 </TS>
