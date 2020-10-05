@@ -42,11 +42,10 @@ reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equiv
 config file):
 
 	HiddenServiceDir /var/lib/tor/verium-service/
-	HiddenServicePort 8333 127.0.0.1:8333
-	HiddenServicePort 18333 127.0.0.1:18333
+	HiddenServicePort 36988 127.0.0.1:36988
 
 The directory can be different of course, but (both) port numbers should be equal to
-your veriumd's P2P listen port (8333 by default).
+your veriumd's P2P listen port (36988 by default).
 
 	-externalip=X   You can tell verium about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
@@ -81,7 +80,7 @@ as well, use `discover` instead:
 
 	./veriumd ... -discover
 
-and open port 8333 on your firewall (or use -upnp).
+and open port 36988 on your firewall (or use -upnp).
 
 If you only want to use Tor to reach onion addresses, but not use it as a proxy
 for normal IPv4/IPv6 communication, use:
@@ -96,7 +95,7 @@ API, to create and destroy 'ephemeral' hidden services programmatically.
 Verium has been updated to make use of this.
 
 This means that if Tor is running (and proper authentication has been configured),
-Verium automatically creates a hidden service to listen on. This will positively 
+Verium automatically creates a hidden service to listen on. This will positively
 affect the number of available .onion nodes.
 
 This new feature is enabled by default if Verium is listening (`-listen`), and
@@ -104,15 +103,15 @@ requires a Tor connection to work. It can be explicitly disabled with `-listenon
 and, if not disabled, configured using the `-torcontrol` and `-torpassword` settings.
 To show verbose debugging information, pass `-debug=tor`.
 
-Connecting to Tor's control socket API requires one of two authentication methods to be 
-configured. For cookie authentication the user running veriumd must have write access 
-to the `CookieAuthFile` specified in Tor configuration. In some cases this is 
-preconfigured and the creation of a hidden service is automatic. If permission problems 
-are seen with `-debug=tor` they can be resolved by adding both the user running tor and 
-the user running veriumd to the same group and setting permissions appropriately. On 
-Debian-based systems the user running veriumd can be added to the debian-tor group, 
-which has the appropriate permissions. An alternative authentication method is the use 
-of the `-torpassword` flag and a `hash-password` which can be enabled and specified in 
+Connecting to Tor's control socket API requires one of two authentication methods to be
+configured. For cookie authentication the user running veriumd must have write access
+to the `CookieAuthFile` specified in Tor configuration. In some cases this is
+preconfigured and the creation of a hidden service is automatic. If permission problems
+are seen with `-debug=tor` they can be resolved by adding both the user running tor and
+the user running veriumd to the same group and setting permissions appropriately. On
+Debian-based systems the user running veriumd can be added to the debian-tor group,
+which has the appropriate permissions. An alternative authentication method is the use
+of the `-torpassword` flag and a `hash-password` which can be enabled and specified in
 Tor configuration.
 
 4. Privacy recommendations
