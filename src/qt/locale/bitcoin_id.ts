@@ -769,8 +769,8 @@
         <translation>Label ini akan menjadi merah apabila penerima menerima jumlah yang lebih kecil daripada ambang habuk semasa.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Dapat bervariasi +/- %1 VRMtoshi per input.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Dapat bervariasi +/- %1 VRCtoshi per input.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2301,10 +2301,10 @@
     <message>
         <source>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</source>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</source>
         <translation>Tentukan biaya khusus per kB (1.000 byte) dari ukuran transaksi maya.
 
-Catatan: Karena biaya dihitung berdasarkan per byte, biaya "100 VRMi per kB" untuk ukuran transaksi 500 byte (setengah dari 1 kB) pada akhirnya akan menghasilkan biaya hanya 50 VRMi.</translation>
+Catatan: Karena biaya dihitung berdasarkan per byte, biaya "100 VRCi per kB" untuk ukuran transaksi 500 byte (setengah dari 1 kB) pada akhirnya akan menghasilkan biaya hanya 50 VRCi.</translation>
     </message>
     <message>
         <source>per kilobyte</source>

@@ -725,8 +725,8 @@
         <translation>Ši etiketė tampa raudona, jei bet kuris gavėjas gauna mažesnę sumą nei dabartinė dulkių slenkstis.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Gali svyruoti nuo +/-%1 VRMtoshi vienam įvedimui.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Gali svyruoti nuo +/-%1 VRCtoshi vienam įvedimui.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2175,10 +2175,10 @@
     <message>
         <source>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</source>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</source>
         <translation>Nurodykite individualų mokestį už kB (1000 baitų) nuo sandorio virtualaus dydžio.
 
-Pastaba: Kadangi mokestis apskaičiuojamas pagal baitą, mokestis už „100 VRMi per kB“ už 500 baitų (pusę 1 kB) sandorio dydžio galiausiai sudarytų tik 50 VRMi mokestį.</translation>
+Pastaba: Kadangi mokestis apskaičiuojamas pagal baitą, mokestis už „100 VRCi per kB“ už 500 baitų (pusę 1 kB) sandorio dydžio galiausiai sudarytų tik 50 VRCi mokestį.</translation>
     </message>
     <message>
         <source>per kilobyte</source>

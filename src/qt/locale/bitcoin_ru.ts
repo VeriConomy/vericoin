@@ -769,8 +769,8 @@
         <translation>Эта метка становится красной, если получатель получит меньшую сумму, чем текущий порог пыли.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Может меняться +/- %1 VRMtoshi за вход.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Может меняться +/- %1 VRCtoshi за вход.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2299,10 +2299,10 @@
     <message>
         <source>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</source>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</source>
         <translation>Укажите пользовательскую плату за килобайт (1000 байт) виртуального размера транзакции.
 
-Примечание: Так как комиссия рассчитывается на основе каждого байта, комиссия  "100 VRMi за КБ " для транзакции размером 500 байт (половина 1 КБ) в конечном счете, приведет к сбору только 50 VRMi.</translation>
+Примечание: Так как комиссия рассчитывается на основе каждого байта, комиссия  "100 VRCi за КБ " для транзакции размером 500 байт (половина 1 КБ) в конечном счете, приведет к сбору только 50 VRCi.</translation>
     </message>
     <message>
         <source>per kilobyte</source>

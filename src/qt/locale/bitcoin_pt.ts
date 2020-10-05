@@ -769,8 +769,8 @@
         <translation>Esta etiqueta fica vermelha se qualquer destinatário recebe um valor menor que o limite de dinheiro.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Pode variar +/- %1 VRMtoshi por input.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Pode variar +/- %1 VRCtoshi por input.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2304,10 +2304,10 @@
     <message>
         <source>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</source>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</source>
         <translation>Especifique uma taxa personalizada por kB (1.000 bytes) do tamanho virtual da transação.
 
-Nota: como a taxa é calculada por byte, uma taxa de "100 VRMi por kB" por uma transação de 500 bytes (metade de 1 kB) teria uma taxa final de apenas 50 VRMi.</translation>
+Nota: como a taxa é calculada por byte, uma taxa de "100 VRCi por kB" por uma transação de 500 bytes (metade de 1 kB) teria uma taxa final de apenas 50 VRCi.</translation>
     </message>
     <message>
         <source>per kilobyte</source>

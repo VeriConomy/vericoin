@@ -97,7 +97,7 @@ static UniValue getpeerinfo(const JSONRPCRequest& request)
             "    \"minping\": n,              (numeric) minimum observed ping time (if any at all)\n"
             "    \"pingwait\": n,             (numeric) ping wait (if non-zero)\n"
             "    \"version\": v,              (numeric) The peer version, such as 70001\n"
-            "    \"subver\": \"/Verium:0.8.5/\",  (string) The string version\n"
+            "    \"subver\": \"/Vericoin:0.8.5/\",  (string) The string version\n"
             "    \"inbound\": true|false,     (boolean) Inbound (true) or Outbound (false)\n"
             "    \"addnode\": true|false,     (boolean) Whether connection was due to addnode/-connect or if it was an automatic/inbound connection\n"
             "    \"startingheight\": n,       (numeric) The starting height (block) of the peer\n"
@@ -230,8 +230,8 @@ static UniValue addnode(const JSONRPCRequest& request)
                 },
                 RPCResults{},
                 RPCExamples{
-                    HelpExampleCli("addnode", "\"192.168.0.6:36988\" \"onetry\"")
-            + HelpExampleRpc("addnode", "\"192.168.0.6:36988\", \"onetry\"")
+                    HelpExampleCli("addnode", "\"192.168.0.6:58684\" \"onetry\"")
+            + HelpExampleRpc("addnode", "\"192.168.0.6:58684\", \"onetry\"")
                 },
             }.ToString());
 
@@ -273,9 +273,9 @@ static UniValue disconnectnode(const JSONRPCRequest& request)
                 },
                 RPCResults{},
                 RPCExamples{
-                    HelpExampleCli("disconnectnode", "\"192.168.0.6:36988\"")
+                    HelpExampleCli("disconnectnode", "\"192.168.0.6:58684\"")
             + HelpExampleCli("disconnectnode", "\"\" 1")
-            + HelpExampleRpc("disconnectnode", "\"192.168.0.6:36988\"")
+            + HelpExampleRpc("disconnectnode", "\"192.168.0.6:58684\"")
             + HelpExampleRpc("disconnectnode", "\"\", 1")
                 },
             }.Check(request);
@@ -448,7 +448,7 @@ static UniValue getnetworkinfo(const JSONRPCRequest& request)
                 RPCResult{
             "{\n"
             "  \"version\": xxxxx,                      (numeric) the server version\n"
-            "  \"subversion\": \"/Verium:x.x.x/\",     (string) the server subversion string\n"
+            "  \"subversion\": \"/Vericoin:x.x.x/\",     (string) the server subversion string\n"
             "  \"protocolversion\": xxxxx,              (numeric) the protocol version\n"
             "  \"localservices\": \"xxxxxxxxxxxxxxxx\", (string) the services we offer to the network\n"
             "  \"localservicesnames\": [                (array) the services we offer to the network, in human-readable form\n"

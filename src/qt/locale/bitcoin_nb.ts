@@ -729,8 +729,8 @@
         <translation>Denne merkelappen blir rød hvis en mottaker får mindre enn gjeldende støvterskel.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Kan variere +/- %1 VRMtoshi per input.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Kan variere +/- %1 VRCtoshi per input.</translation>
     </message>
     <message>
         <source>(no label)</source>

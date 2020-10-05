@@ -837,7 +837,7 @@
                    <property name="toolTip">
                     <string>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</string>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</string>
                    </property>
                    <property name="text">
                     <string>per kilobyte</string>

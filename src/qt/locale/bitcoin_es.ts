@@ -769,8 +769,8 @@
         <translation>Esta etiqueta se vuelve roja si algún receptor recibe una cantidad inferior al umbral actual establecido para el polvo.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Puede variar +/- %1 VRMtoshi por entrada.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Puede variar +/- %1 VRCtoshi por entrada.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2295,10 +2295,10 @@
     <message>
         <source>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</source>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</source>
         <translation>Especifique una comisión personalizada por kB (1,000 bytes) del tamaño virtual de la transacción.
 
-Nota: Dado que la comisión se calcula por byte, una comisión de "100 VRMi por kB" para un tamaño de transacción de 500 bytes (la mitad de 1 kB) finalmente generará una comisión de solo 50 VRMi.</translation>
+Nota: Dado que la comisión se calcula por byte, una comisión de "100 VRCi por kB" para un tamaño de transacción de 500 bytes (la mitad de 1 kB) finalmente generará una comisión de solo 50 VRCi.</translation>
     </message>
     <message>
         <source>per kilobyte</source>

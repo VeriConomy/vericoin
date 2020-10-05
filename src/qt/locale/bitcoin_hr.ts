@@ -768,8 +768,8 @@
         <translation>Oznaka postane crvene boje ako bilo koji primatelj dobije iznos manji od trenutnog praga "prašine" (sićušnog iznosa).</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 VRMtoshi per input.</source>
-        <translation>Može varirati +/- %1 VRMtoshi po inputu.</translation>
+        <source>Can vary +/- %1 VRCtoshi per input.</source>
+        <translation>Može varirati +/- %1 VRCtoshi po inputu.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2302,10 +2302,10 @@
     <message>
         <source>Specify a custom fee per kB (1,000 bytes) of the transaction's virtual size.
 
-Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRMi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRMi.</source>
+Note:  Since the fee is calculated on a per-byte basis, a fee of "100 VRCi per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 VRCi.</source>
         <translation>Zadajte prilagođeu naknadu po kB (1000 bajtova) virtualne veličine transakcije.
 
-Napomena: Budući da se naknada računa po bajtu, naknada od "100 VRMi po kB" za transakciju veličine 500 bajtova (polovica od 1 kB) rezultirala bi ultimativno naknadom od samo 50 VRMi.</translation>
+Napomena: Budući da se naknada računa po bajtu, naknada od "100 VRCi po kB" za transakciju veličine 500 bajtova (polovica od 1 kB) rezultirala bi ultimativno naknadom od samo 50 VRCi.</translation>
     </message>
     <message>
         <source>per kilobyte</source>
