@@ -258,7 +258,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
             }
             else
 #endif
-            if (!rcp.message.isEmpty()) // Message from normal verium:URI (verium:123...?message=example)
+            if (!rcp.message.isEmpty()) // Message from normal vericoin:URI (vericoin:123...?message=example)
                 vOrderForm.emplace_back("Message", rcp.message.toStdString());
         }
 

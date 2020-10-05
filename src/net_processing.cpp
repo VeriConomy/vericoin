@@ -33,7 +33,7 @@
 #include <typeinfo>
 
 #if defined(NDEBUG)
-# error "Verium cannot be compiled without assertions."
+# error "Vericoin cannot be compiled without assertions."
 #endif
 
 /** Expiration time for orphan transactions in seconds */

@@ -66,8 +66,8 @@
         <translation>Adresy ôdbiyraniŏ</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Tukej sōm adresy Verium na kere posyłŏsz płaty. Dycki wybaduj wielość i adresã ôdbiyrŏcza przed posłaniym mōnet.</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Tukej sōm adresy Vericoin na kere posyłŏsz płaty. Dycki wybaduj wielość i adresã ôdbiyrŏcza przed posłaniym mōnet.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -160,8 +160,8 @@
         <translation>Przituplikuj szyfrowanie portmanyja</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
-        <translation>Pozōr: jeźli zaszyfrujesz swōj portmanyj i stracisz hasło &lt;b&gt;STRACISZ WSZYJSKE SWOJE VRMY&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
+        <translation>Pozōr: jeźli zaszyfrujesz swōj portmanyj i stracisz hasło &lt;b&gt;STRACISZ WSZYJSKE SWOJE VRCY&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -220,7 +220,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Szkryftnij &amp;wiadōmość</translation>
@@ -322,8 +322,8 @@
         <translation>Proxy je &lt;b&gt;zapuszczone&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Poślij mōnety na adresã Verium</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Poślij mōnety na adresã Vericoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -366,12 +366,12 @@
         <translation>Szyfruj klucze prywatne, kere sōm we twojim portmanyju</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
         <translation>Podpisz wiadōmości swojōm adresōm coby dowiyść jejich posiadanie</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Zweryfikuj wiadōmość, coby wejzdrzeć sie, iże ôstała podpisanŏ podanōm adresōm Verium.</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Zweryfikuj wiadōmość, coby wejzdrzeć sie, iże ôstała podpisanŏ podanōm adresōm Vericoin.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -390,8 +390,8 @@
         <translation>Lajsta szkart</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>Żōndej płatu (gyneruje kod QR jak tyż URI verium:)</translation>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>Żōndej płatu (gyneruje kod QR jak tyż URI vericoin:)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -402,16 +402,16 @@
         <translation>Pokŏż wykŏz adres i etyket użytych do ôdbiyraniŏ</translation>
     </message>
     <message>
-        <source>Open a verium: URI or payment request</source>
-        <translation>Ôdewrzij URI verium: abo żōndanie płatu</translation>
+        <source>Open a vericoin: URI or payment request</source>
+        <translation>Ôdewrzij URI vericoin: abo żōndanie płatu</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>Ôp&amp;cyje piski nakŏzań</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Verium network</source>
-        <translation><numerusform>%n aktywne połōnczynie do necu Verium</numerusform><numerusform>%n aktywnych połōnczyń do necu Verium</numerusform><numerusform>%n aktywnych skuplowań do necu Verium</numerusform></translation>
+        <source>%n active connection(s) to Vericoin network</source>
+        <translation><numerusform>%n aktywne połōnczynie do necu Vericoin</numerusform><numerusform>%n aktywnych połōnczyń do necu Vericoin</numerusform><numerusform>%n aktywnych skuplowań do necu Vericoin</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -458,7 +458,7 @@
         <translation>&amp;Adresy posyłaniŏ</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Verium command-line options</source>
+        <source>Show the %1 help message to get a list with possible Vericoin command-line options</source>
         <translation>Pokŏż pōmoc %1 coby zobŏczyć wykŏz wszyjskich ôpcyji piski nakŏzań.</translation>
     </message>
     <message>
@@ -542,8 +542,8 @@
         <translation>Portmanyj je &lt;b&gt;zaszyfrowany&lt;/b&gt; i terŏźnie &lt;b&gt;zaszperowany&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>A fatal error occurred. Verium can no longer continue safely and will quit.</source>
-        <translation>Przitrefiōł sie krytyczny feler. Verium niy poradzi kōntynuować bezpiycznie i ôstanie zawrzity.</translation>
+        <source>A fatal error occurred. Vericoin can no longer continue safely and will quit.</source>
+        <translation>Przitrefiōł sie krytyczny feler. Vericoin niy poradzi kōntynuować bezpiycznie i ôstanie zawrzity.</translation>
     </message>
 </context>
 <context>
@@ -738,8 +738,8 @@
         <translation>Edytuj adresã posyłaniŏ</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Verium address.</source>
-        <translation>Wkludzōnŏ adresa "%1" niyma nŏleżnōm adresōm Verium.</translation>
+        <source>The entered address "%1" is not a valid Vericoin address.</source>
+        <translation>Wkludzōnŏ adresa "%1" niyma nŏleżnōm adresōm Vericoin.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -831,8 +831,8 @@
         <translation>Użyj ôbranego folderu datōw</translation>
     </message>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>At least %1 GB of data will be stored in this directory, and it will grow over time.</source>
@@ -843,8 +843,8 @@
         <translation>Kole %1 GB datōw ôstanie spamiyntane w tym katalogu.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Verium block chain.</source>
-        <translation>%1 sebiere i spamiyntŏ kopijõ kety blokōw Verium.</translation>
+        <source>%1 will download and store a copy of the Vericoin block chain.</source>
+        <translation>%1 sebiere i spamiyntŏ kopijõ kety blokōw Vericoin.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -874,12 +874,12 @@
         <translation>Formular</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the verium network, as detailed below.</source>
-        <translation>Świyże transakcyje mogōm niy być jeszcze widzialne, a tedyć saldo portmanyja może być niynŏleżne. Te detale bydōm nŏleżne, kej portmanyj zakōńczy synchrōnizacyjõ z necym verium, zgodnie z miyniōnym ôpisym.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the vericoin network, as detailed below.</source>
+        <translation>Świyże transakcyje mogōm niy być jeszcze widzialne, a tedyć saldo portmanyja może być niynŏleżne. Te detale bydōm nŏleżne, kej portmanyj zakōńczy synchrōnizacyjõ z necym vericoin, zgodnie z miyniōnym ôpisym.</translation>
     </message>
     <message>
-        <source>Attempting to spend veriums that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Prōba wydaniŏ veriumōw kere niy sōm jeszcze wyświytlōne za transakcyjŏ ôstanie ôdciepniyntŏ bez nec.</translation>
+        <source>Attempting to spend vericoins that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Prōba wydaniŏ vericoinōw kere niy sōm jeszcze wyświytlōne za transakcyjŏ ôstanie ôdciepniyntŏ bez nec.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1039,8 +1039,8 @@
         <translation>&amp;Wydej niyprzituplowanõ wydŏwkã</translation>
     </message>
     <message>
-        <source>Automatically open the Verium client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Autōmatycznie ôdewrzij port klijynta Verium na routerze. Ta ôpcyjŏ funguje ino jeźli twōj router podpiyrŏ UPnP i je ôno zapuszczone.</translation>
+        <source>Automatically open the Vericoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Autōmatycznie ôdewrzij port klijynta Vericoin na routerze. Ta ôpcyjŏ funguje ino jeźli twōj router podpiyrŏ UPnP i je ôno zapuszczone.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1055,8 +1055,8 @@
         <translation>Zwōl na skuplowania przichodzōnce</translation>
     </message>
     <message>
-        <source>Connect to the Verium network through a SOCKS5 proxy.</source>
-        <translation>Skupluj sie z necym Verium bez SOCKS5 proxy.</translation>
+        <source>Connect to the Vericoin network through a SOCKS5 proxy.</source>
+        <translation>Skupluj sie z necym Vericoin bez SOCKS5 proxy.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1087,8 +1087,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Verium network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Skupluj sie z necym Verium ze pōmocōm ôsobnego proxy SOCKS5 dlŏ necu TOR</translation>
+        <source>Connect to the Vericoin network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Skupluj sie z necym Vericoin ze pōmocōm ôsobnego proxy SOCKS5 dlŏ necu TOR</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -1134,8 +1134,8 @@
         <translation>Formular</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Verium network after a connection is established, but this process has not completed yet.</source>
-        <translation>Wyświytlanŏ informacyjŏ może być niyterŏźnŏ. Twōj portmanyj synchrōnizuje sie autōmatycznie z necym verium zarŏz po tym, jak zrychtowane je skuplowanie, ale proces tyn niy ôstoł jeszcze skōńczōny.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Vericoin network after a connection is established, but this process has not completed yet.</source>
+        <translation>Wyświytlanŏ informacyjŏ może być niyterŏźnŏ. Twōj portmanyj synchrōnizuje sie autōmatycznie z necym vericoin zarŏz po tym, jak zrychtowane je skuplowanie, ale proces tyn niy ôstoł jeszcze skōńczōny.</translation>
     </message>
     <message>
         <source>Available</source>
@@ -1169,8 +1169,8 @@
         <translation>Bedynōng URI</translation>
     </message>
     <message>
-        <source>'verium://' is not a valid URI. Use 'verium:' instead.</source>
-        <translation>'verium://' to niyma nŏleżne URI. Użyj 'verium:'.</translation>
+        <source>'vericoin://' is not a valid URI. Use 'vericoin:' instead.</source>
+        <translation>'vericoin://' to niyma nŏleżne URI. Użyj 'vericoin:'.</translation>
     </message>
     <message>
         <source>Payment request network doesn't match client network.</source>
@@ -1215,8 +1215,8 @@
         <translation>Kwota</translation>
     </message>
     <message>
-        <source>Enter a Verium address (e.g. %1)</source>
-        <translation>Wkludź adresã Verium (bp. %1)</translation>
+        <source>Enter a Vericoin address (e.g. %1)</source>
+        <translation>Wkludź adresã Vericoin (bp. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1432,8 +1432,8 @@
         <translation>&amp;Etyketa:</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Verium network.</source>
-        <translation>Ôpcyjōnalnŏ wiadōmość do prziwstōniŏ do żōndaniŏ płatu, kerŏ bydzie wyświytlanŏ, kej żōndanie ôstanie ôdewrzōne. Napōmniynie: wiadōmość ta niy ôstanie wysłanŏ z płatym w nec Verium.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Vericoin network.</source>
+        <translation>Ôpcyjōnalnŏ wiadōmość do prziwstōniŏ do żōndaniŏ płatu, kerŏ bydzie wyświytlanŏ, kej żōndanie ôstanie ôdewrzōne. Napōmniynie: wiadōmość ta niy ôstanie wysłanŏ z płatym w nec Vericoin.</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -1637,8 +1637,8 @@
         <translation>Utworzynie transakcyje niy podarziło sie!</translation>
     </message>
     <message>
-        <source>Warning: Invalid Verium address</source>
-        <translation>Pozōr: niynŏleżnŏ adresa Verium</translation>
+        <source>Warning: Invalid Vericoin address</source>
+        <translation>Pozōr: niynŏleżnŏ adresa Vericoin</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -1660,8 +1660,8 @@
         <translation>To je normalny płat.</translation>
     </message>
     <message>
-        <source>The Verium address to send the payment to</source>
-        <translation>Adresa Verium, na kerõ chcesz posłać płat</translation>
+        <source>The Vericoin address to send the payment to</source>
+        <translation>Adresa Vericoin, na kerõ chcesz posłać płat</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -1680,8 +1680,8 @@
         <translation>Wiadōmość:</translation>
     </message>
     <message>
-        <source>A message that was attached to the verium: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Verium network.</source>
-        <translation>Wiadōmość, kerŏ ôstała prziwstōnŏ do URI verium:, kerŏ bydzie przechowowanŏ z transakcyjōm w cylach informacyjnych. Napōmniynie: Ta wiadōmość niy bydzie rozszyrzowanŏ w necu Verium.</translation>
+        <source>A message that was attached to the vericoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Vericoin network.</source>
+        <translation>Wiadōmość, kerŏ ôstała prziwstōnŏ do URI vericoin:, kerŏ bydzie przechowowanŏ z transakcyjōm w cylach informacyjnych. Napōmniynie: Ta wiadōmość niy bydzie rozszyrzowanŏ w necu Vericoin.</translation>
     </message>
     </context>
 <context>
@@ -1944,7 +1944,7 @@
     </message>
 </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>The %s developers</source>
         <translation>Twōrcy %s</translation>

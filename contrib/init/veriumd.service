@@ -1,52 +1,52 @@
 # It is not recommended to modify this file in-place, because it will
 # be overwritten during package upgrades. If you want to add further
 # options or overwrite existing ones then use
-# $ systemctl edit veriumd.service
+# $ systemctl edit vericoind.service
 # See "man systemd.service" for details.
 
 # Note that almost all daemon options could be specified in
-# /etc/verium/verium.conf, but keep in mind those explicitly
+# /etc/vericoin/vericoin.conf, but keep in mind those explicitly
 # specified as arguments in ExecStart= will override those in the
 # config file.
 
 [Unit]
-Description=Verium Vault daemon
+Description=Vericoin Vault daemon
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/veriumd -daemon \
-                            -pid=/run/veriumd/veriumd.pid \
-                            -conf=/etc/verium/verium.conf \
-                            -datadir=/var/lib/veriumd
+ExecStart=/usr/bin/vericoind -daemon \
+                            -pid=/run/vericoind/vericoind.pid \
+                            -conf=/etc/vericoin/vericoin.conf \
+                            -datadir=/var/lib/vericoind
 
 # Make sure the config directory is readable by the service user
 PermissionsStartOnly=true
-ExecStartPre=/bin/chgrp verium /etc/verium
+ExecStartPre=/bin/chgrp vericoin /etc/vericoin
 
 # Process management
 ####################
 
 Type=forking
-PIDFile=/run/veriumd/veriumd.pid
+PIDFile=/run/vericoind/vericoind.pid
 Restart=on-failure
 
 # Directory creation and permissions
 ####################################
 
-# Run as verium:verium
-User=verium
-Group=verium
+# Run as vericoin:vericoin
+User=vericoin
+Group=vericoin
 
-# /run/veriumd
-RuntimeDirectory=veriumd
+# /run/vericoind
+RuntimeDirectory=vericoind
 RuntimeDirectoryMode=0710
 
-# /etc/verium
-ConfigurationDirectory=verium
+# /etc/vericoin
+ConfigurationDirectory=vericoin
 ConfigurationDirectoryMode=0710
 
-# /var/lib/veriumd
-StateDirectory=veriumd
+# /var/lib/vericoind
+StateDirectory=vericoind
 StateDirectoryMode=0710
 
 # Hardening measures

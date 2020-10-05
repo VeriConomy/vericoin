@@ -39,7 +39,7 @@ public:
     void setWalletModel(WalletModel *walletModel);
     void showOutOfSyncWarning(bool fShow);
 
-    // Verium Mining
+    // Vericoin Mining
     bool miningState;
     int maxThread;
     void manageMiningState(bool state, int procs = 1);

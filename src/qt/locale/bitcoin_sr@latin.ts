@@ -62,8 +62,8 @@
         <translation>Adresa na koju se prima</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Ovo su Vaše Verium adrese na koju se vrše uplate. Uvek proverite iznos i prijemnu adresu pre slanja novčića.</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Ovo su Vaše Vericoin adrese na koju se vrše uplate. Uvek proverite iznos i prijemnu adresu pre slanja novčića.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -156,7 +156,7 @@
         <translation>Potvrdite šifrovanje novčanika</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
         <translation>Upozorenje: Ako šifrujete svoj novčanik, i potom izgubite svoju pristupnu frazu &lt;b&gt;IZGUBIĆETE SVE SVOJE BITKOINE&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -216,7 +216,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Potpišite &amp;poruka...</translation>
@@ -310,8 +310,8 @@
         <translation>Ponovo obeležavam blokove na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Pošalji novčiće na Verium adresu</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Pošalji novčiće na Vericoin adresu</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -354,12 +354,12 @@
         <translation>Enkriptuj privatne ključeve novčanika</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation>Potpišite poruke sa svojim Verium adresama da biste dokazali njihovo vlasništvo</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation>Potpišite poruke sa svojim Vericoin adresama da biste dokazali njihovo vlasništvo</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Proverite poruke da biste utvrdili sa kojim Verium adresama su potpisane</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Proverite poruke da biste utvrdili sa kojim Vericoin adresama su potpisane</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -378,8 +378,8 @@
         <translation>Alatke za tabove</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>Zatražite plaćanje (generiše QR kodove i verium: URI-e)</translation>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>Zatražite plaćanje (generiše QR kodove i vericoin: URI-e)</translation>
     </message>
     <message>
         <source>Error</source>
@@ -489,8 +489,8 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>Error</source>
@@ -702,7 +702,7 @@
     </message>
     </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>Nedovoljno sredstava</translation>

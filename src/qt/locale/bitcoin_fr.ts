@@ -66,12 +66,12 @@
         <translation>Adresses de réception</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Ce sont vos adresses Verium pour envoyer des paiements. Vérifiez toujours le montant et l’adresse du destinataire avant d’envoyer des pièces.</translation>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Ce sont vos adresses Vericoin pour envoyer des paiements. Vérifiez toujours le montant et l’adresse du destinataire avant d’envoyer des pièces.</translation>
     </message>
     <message>
-        <source>These are your Verium addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Ce sont vos adresses Verium pour recevoir des paiements. Utilisez le bouton 'Créer une nouvelle adresse de réception' dans l’onglet Recevoir afin de créer de nouvelles adresses.</translation>
+        <source>These are your Vericoin addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Ce sont vos adresses Vericoin pour recevoir des paiements. Utilisez le bouton 'Créer une nouvelle adresse de réception' dans l’onglet Recevoir afin de créer de nouvelles adresses.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -168,8 +168,8 @@
         <translation>Confirmer le chiffrement du porte-monnaie</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRMS&lt;/b&gt;!</source>
-        <translation>Avertissement : Si vous chiffrez votre porte-monnaie et perdez votre phrase de passe, vous &lt;b&gt;PERDREZ TOUS VOS VRMS&lt;/b&gt; !</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VRCS&lt;/b&gt;!</source>
+        <translation>Avertissement : Si vous chiffrez votre porte-monnaie et perdez votre phrase de passe, vous &lt;b&gt;PERDREZ TOUS VOS VRCS&lt;/b&gt; !</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -188,8 +188,8 @@
         <translation>Saisir l’ancienne puis la nouvelle phrase de passe du porte-monnaie.</translation>
     </message>
     <message>
-        <source>Remember that encrypting your wallet cannot fully protect your veriums from being stolen by malware infecting your computer.</source>
-        <translation>N’oubliez pas que le chiffrement de votre porte-monnaie ne peut pas protéger entièrement vos veriums contre le vol par des programmes malveillants qui infecteraient votre ordinateur.</translation>
+        <source>Remember that encrypting your wallet cannot fully protect your vericoins from being stolen by malware infecting your computer.</source>
+        <translation>N’oubliez pas que le chiffrement de votre porte-monnaie ne peut pas protéger entièrement vos vericoins contre le vol par des programmes malveillants qui infecteraient votre ordinateur.</translation>
     </message>
     <message>
         <source>Wallet to be encrypted</source>
@@ -252,7 +252,7 @@
     </message>
 </context>
 <context>
-    <name>VeriumGUI</name>
+    <name>VericoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Signer un &amp;message…</translation>
@@ -362,8 +362,8 @@
         <translation>Le serveur mandataire est &lt;b&gt;activé&lt;/b&gt; : %1</translation>
     </message>
     <message>
-        <source>Send coins to a Verium address</source>
-        <translation>Envoyer des pièces à une adresse Verium</translation>
+        <source>Send coins to a Vericoin address</source>
+        <translation>Envoyer des pièces à une adresse Vericoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -406,12 +406,12 @@
         <translation>Chiffrer les clés privées qui appartiennent à votre porte-monnaie</translation>
     </message>
     <message>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation>Signer les messages avec vos adresses Verium pour prouver que vous les détenez</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation>Signer les messages avec vos adresses Vericoin pour prouver que vous les détenez</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation>Vérifier les messages pour s’assurer qu’ils ont été signés avec les adresses Verium indiquées</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation>Vérifier les messages pour s’assurer qu’ils ont été signés avec les adresses Vericoin indiquées</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -430,8 +430,8 @@
         <translation>Barre d’outils des onglets</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
-        <translation>Demander des paiements (génère des codes QR et des URI verium:)</translation>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
+        <translation>Demander des paiements (génère des codes QR et des URI vericoin:)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -442,16 +442,16 @@
         <translation>Afficher la liste d’adresses de réception et d’étiquettes utilisées</translation>
     </message>
     <message>
-        <source>Open a verium: URI or payment request</source>
-        <translation>Ouvrir une URI verium: ou une demande de paiement</translation>
+        <source>Open a vericoin: URI or payment request</source>
+        <translation>Ouvrir une URI vericoin: ou une demande de paiement</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>Options de ligne de &amp;commande</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Verium network</source>
-        <translation><numerusform>%n connexion active avec le réseau Verium</numerusform><numerusform>%n connexions actives avec le réseau Verium</numerusform></translation>
+        <source>%n active connection(s) to Vericoin network</source>
+        <translation><numerusform>%n connexion active avec le réseau Vericoin</numerusform><numerusform>%n connexions actives avec le réseau Vericoin</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -518,8 +518,8 @@
         <translation>Fermer le porte-monnaie</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Verium command-line options</source>
-        <translation>Afficher le message d’aide de %1 pour obtenir la liste des options de ligne de commande Verium possibles.</translation>
+        <source>Show the %1 help message to get a list with possible Vericoin command-line options</source>
+        <translation>Afficher le message d’aide de %1 pour obtenir la liste des options de ligne de commande Vericoin possibles.</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -630,8 +630,8 @@
         <translation>Le porte-monnaie est &lt;b&gt;chiffré&lt;/b&gt; et actuellement &lt;b&gt;verrouillé&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>A fatal error occurred. Verium can no longer continue safely and will quit.</source>
-        <translation>Une erreur fatale est survenue. Verium ne peut plus continuer en toute sécurité et va s’arrêter.</translation>
+        <source>A fatal error occurred. Vericoin can no longer continue safely and will quit.</source>
+        <translation>Une erreur fatale est survenue. Vericoin ne peut plus continuer en toute sécurité et va s’arrêter.</translation>
     </message>
 </context>
 <context>
@@ -874,8 +874,8 @@
         <translation>Modifier l’adresse d’envoi</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Verium address.</source>
-        <translation>L’adresse saisie « %1 » n’est pas une adresse Verium valide.</translation>
+        <source>The entered address "%1" is not a valid Vericoin address.</source>
+        <translation>L’adresse saisie « %1 » n’est pas une adresse Vericoin valide.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -975,8 +975,8 @@
         <translation>Utiliser un répertoire de données personnalisé :</translation>
     </message>
     <message>
-        <source>Verium</source>
-        <translation>Verium</translation>
+        <source>Vericoin</source>
+        <translation>Vericoin</translation>
     </message>
     <message>
         <source>Discard blocks after verification, except most recent %1 GB (prune)</source>
@@ -991,8 +991,8 @@
         <translation>Approximativement %1 Go de données seront stockés dans ce répertoire.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Verium block chain.</source>
-        <translation>%1 téléchargera et stockera une copie de la chaîne de blocs Verium.</translation>
+        <source>%1 will download and store a copy of the Vericoin block chain.</source>
+        <translation>%1 téléchargera et stockera une copie de la chaîne de blocs Vericoin.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1026,12 +1026,12 @@
         <translation>Formulaire</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the verium network, as detailed below.</source>
-        <translation>Les transactions récentes ne sont peut-être pas encore visibles et par conséquent le solde de votre porte-monnaie est peut-être erroné. Ces informations seront justes quand votre porte-monnaie aura fini de se synchroniser avec le réseau Verium, comme décrit ci-dessous.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the vericoin network, as detailed below.</source>
+        <translation>Les transactions récentes ne sont peut-être pas encore visibles et par conséquent le solde de votre porte-monnaie est peut-être erroné. Ces informations seront justes quand votre porte-monnaie aura fini de se synchroniser avec le réseau Vericoin, comme décrit ci-dessous.</translation>
     </message>
     <message>
-        <source>Attempting to spend veriums that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Toute tentative de dépense de veriums affectés par des transactions qui ne sont pas encore affichées ne sera pas acceptée par le réseau.</translation>
+        <source>Attempting to spend vericoins that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Toute tentative de dépense de vericoins affectés par des transactions qui ne sont pas encore affichées ne sera pas acceptée par le réseau.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1231,8 +1231,8 @@
         <translation>&amp;Dépenser la monnaie non confirmée</translation>
     </message>
     <message>
-        <source>Automatically open the Verium client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Ouvrir automatiquement le port du client Verium sur le routeur. Cela ne fonctionne que si votre routeur prend en charge l’UPnP et si la fonction est activée.</translation>
+        <source>Automatically open the Vericoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Ouvrir automatiquement le port du client Vericoin sur le routeur. Cela ne fonctionne que si votre routeur prend en charge l’UPnP et si la fonction est activée.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1247,8 +1247,8 @@
         <translation>Permettre les connexions e&amp;ntrantes</translation>
     </message>
     <message>
-        <source>Connect to the Verium network through a SOCKS5 proxy.</source>
-        <translation>Se connecter au réseau Verium par un mandataire SOCKS5.</translation>
+        <source>Connect to the Vericoin network through a SOCKS5 proxy.</source>
+        <translation>Se connecter au réseau Vericoin par un mandataire SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1283,8 +1283,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Verium network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Se connecter au réseau Verium au travers d’un mandataire SOCKS5 séparé pour les services cachés de Tor.</translation>
+        <source>Connect to the Vericoin network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Se connecter au réseau Vericoin au travers d’un mandataire SOCKS5 séparé pour les services cachés de Tor.</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -1394,8 +1394,8 @@
         <translation>Formulaire</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Verium network after a connection is established, but this process has not completed yet.</source>
-        <translation>Les informations affichées peuvent être obsolètes. Votre porte-monnaie se synchronise automatiquement avec le réseau Verium dès qu’une connexion est établie, mais ce processus n’est pas encore achevé.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Vericoin network after a connection is established, but this process has not completed yet.</source>
+        <translation>Les informations affichées peuvent être obsolètes. Votre porte-monnaie se synchronise automatiquement avec le réseau Vericoin dès qu’une connexion est établie, mais ce processus n’est pas encore achevé.</translation>
     </message>
     <message>
         <source>(Watch-only)</source>
@@ -1473,16 +1473,16 @@
         <translation>Erreur de demande de paiement</translation>
     </message>
     <message>
-        <source>Cannot start verium: click-to-pay handler</source>
-        <translation>Impossible de démarrer le gestionnaire de cliquer-pour-payer verium:</translation>
+        <source>Cannot start vericoin: click-to-pay handler</source>
+        <translation>Impossible de démarrer le gestionnaire de cliquer-pour-payer vericoin:</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Gestion des URI</translation>
     </message>
     <message>
-        <source>'verium://' is not a valid URI. Use 'verium:' instead.</source>
-        <translation>'verium://' n’est pas une URI valide. Utilisez plutôt 'verium:'.</translation>
+        <source>'vericoin://' is not a valid URI. Use 'vericoin:' instead.</source>
+        <translation>'vericoin://' n’est pas une URI valide. Utilisez plutôt 'vericoin:'.</translation>
     </message>
     <message>
         <source>You are using a BIP70 URL which will be unsupported in the future.</source>
@@ -1509,8 +1509,8 @@
         <translation>Adresse de paiement invalide %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Verium address or malformed URI parameters.</source>
-        <translation>L’URI ne peut pas être analysée ! Cela peut être causé par une adresse Verium invalide ou par des paramètres d’URI mal formés.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid Vericoin address or malformed URI parameters.</source>
+        <translation>L’URI ne peut pas être analysée ! Cela peut être causé par une adresse Vericoin invalide ou par des paramètres d’URI mal formés.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1611,8 +1611,8 @@
         <translation>Montant</translation>
     </message>
     <message>
-        <source>Enter a Verium address (e.g. %1)</source>
-        <translation>Saisir une adresse Verium (p. ex. %1)</translation>
+        <source>Enter a Vericoin address (e.g. %1)</source>
+        <translation>Saisir une adresse Vericoin (p. ex. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2072,8 +2072,8 @@
         <translation>M&amp;essage :</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Verium network.</source>
-        <translation>Un message facultatif à joindre à la demande de paiement et qui sera affiché à l’ouverture de celle-ci. Note : Le message ne sera pas envoyé avec le paiement par le réseau Verium.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Vericoin network.</source>
+        <translation>Un message facultatif à joindre à la demande de paiement et qui sera affiché à l’ouverture de celle-ci. Note : Le message ne sera pas envoyé avec le paiement par le réseau Vericoin.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -2345,8 +2345,8 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>Poussière :</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for verium transactions than the network can process.</source>
-        <translation>Quand le volume des transactions est inférieur à l’espace dans les blocs, les mineurs et les nœuds de relais peuvent imposer des frais minimaux. Il est correct de payer ces frais minimaux, mais soyez conscient que cette transaction pourrait n’être jamais confirmée si la demande en transactions de veriums dépassait la capacité de traitement du réseau.</translation>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for vericoin transactions than the network can process.</source>
+        <translation>Quand le volume des transactions est inférieur à l’espace dans les blocs, les mineurs et les nœuds de relais peuvent imposer des frais minimaux. Il est correct de payer ces frais minimaux, mais soyez conscient que cette transaction pourrait n’être jamais confirmée si la demande en transactions de vericoins dépassait la capacité de traitement du réseau.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -2501,8 +2501,8 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation><numerusform>Il est estimé que la confirmation commencera dans %n bloc.</numerusform><numerusform>Il est estimé que la confirmation commencera dans %n blocs.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Verium address</source>
-        <translation>Avertissement : L’adresse Verium est invalide</translation>
+        <source>Warning: Invalid Vericoin address</source>
+        <translation>Avertissement : L’adresse Vericoin est invalide</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -2544,8 +2544,8 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>Ceci est un paiement normal.</translation>
     </message>
     <message>
-        <source>The Verium address to send the payment to</source>
-        <translation>L’adresse Verium à laquelle envoyer le paiement</translation>
+        <source>The Vericoin address to send the payment to</source>
+        <translation>L’adresse Vericoin à laquelle envoyer le paiement</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -2564,8 +2564,8 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>Retirer cette entrée</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less veriums than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Les frais seront déduits du montant envoyé. Le destinataire recevra moins de veriums que le montant saisi dans le champ de montant. Si plusieurs destinataires sont sélectionnés, les frais seront partagés également..</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less vericoins than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Les frais seront déduits du montant envoyé. Le destinataire recevra moins de vericoins que le montant saisi dans le champ de montant. Si plusieurs destinataires sont sélectionnés, les frais seront partagés également..</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -2592,8 +2592,8 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>Saisir une étiquette pour cette adresse afin de l’ajouter à la liste d’adresses utilisées</translation>
     </message>
     <message>
-        <source>A message that was attached to the verium: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Verium network.</source>
-        <translation>Un message qui était joint à l’URI verium: et qui sera stocké avec la transaction pour référence. Note : Ce message ne sera pas envoyé par le réseau Verium.</translation>
+        <source>A message that was attached to the vericoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Vericoin network.</source>
+        <translation>Un message qui était joint à l’URI vericoin: et qui sera stocké avec la transaction pour référence. Note : Ce message ne sera pas envoyé par le réseau Vericoin.</translation>
     </message>
     <message>
         <source>Pay To:</source>
@@ -2637,12 +2637,12 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>&amp;Signer un message</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive veriums sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Vous pouvez signer des messages ou des accords avec vos adresses pour prouver que vous pouvez recevoir des veriums à ces dernières. Faites attention de ne rien signer de vague ou au hasard, car des attaques d’hameçonnage pourraient essayer de vous faire signer avec votre identité afin de l’usurper. Ne signez que des déclarations entièrement détaillées et avec lesquelles vous êtes d’accord.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive vericoins sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Vous pouvez signer des messages ou des accords avec vos adresses pour prouver que vous pouvez recevoir des vericoins à ces dernières. Faites attention de ne rien signer de vague ou au hasard, car des attaques d’hameçonnage pourraient essayer de vous faire signer avec votre identité afin de l’usurper. Ne signez que des déclarations entièrement détaillées et avec lesquelles vous êtes d’accord.</translation>
     </message>
     <message>
-        <source>The Verium address to sign the message with</source>
-        <translation>L’adresse Verium avec laquelle signer le message</translation>
+        <source>The Vericoin address to sign the message with</source>
+        <translation>L’adresse Vericoin avec laquelle signer le message</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2673,8 +2673,8 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>Copier la signature actuelle dans le presse-papiers</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Verium address</source>
-        <translation>Signer le message afin de prouver que vous détenez cette adresse Verium</translation>
+        <source>Sign the message to prove you own this Vericoin address</source>
+        <translation>Signer le message afin de prouver que vous détenez cette adresse Vericoin</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2697,12 +2697,12 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
         <translation>Saisir ci-dessous l’adresse du destinataire, le message (s’assurer de copier fidèlement les retours à la ligne, les espaces, les tabulations, etc.) et la signature pour vérifier le message. Faire attention à ne pas déduire davantage de la signature que ce qui est contenu dans le message signé même, pour éviter d’être trompé par une attaque d’homme du milieu. Prendre en compte que cela ne fait que prouver que le signataire reçoit l’adresse et ne peut pas prouver la provenance d’une transaction !</translation>
     </message>
     <message>
-        <source>The Verium address the message was signed with</source>
-        <translation>L’adresse Verium avec laquelle le message a été signé</translation>
+        <source>The Vericoin address the message was signed with</source>
+        <translation>L’adresse Vericoin avec laquelle le message a été signé</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Verium address</source>
-        <translation>Vérifier le message pour s’assurer qu’il a été signé avec l’adresse Verium indiquée</translation>
+        <source>Verify the message to ensure it was signed with the specified Vericoin address</source>
+        <translation>Vérifier le message pour s’assurer qu’il a été signé avec l’adresse Vericoin indiquée</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3336,7 +3336,7 @@ Note : Les frais étant calculés par octet, des frais de « 100 VRMi par Ko�
     </message>
 </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <source>Distributed under the MIT software license, see the accompanying file %s or %s</source>
         <translation>Distribué sous la licence MIT d’utilisation d’un logiciel. Consulter le fichier joint %s ou %s</translation>

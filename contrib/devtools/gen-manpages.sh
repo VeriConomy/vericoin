@@ -7,24 +7,24 @@ BUILDDIR=${BUILDDIR:-$TOPDIR}
 BINDIR=${BINDIR:-$BUILDDIR/src}
 MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
-VERIUMD=${VERIUMD:-$BINDIR/veriumd}
-VERIUMCLI=${VERIUMCLI:-$BINDIR/verium-cli}
-VERIUMTX=${VERIUMTX:-$BINDIR/verium-tx}
-WALLET_TOOL=${WALLET_TOOL:-$BINDIR/verium-wallet}
-VERIUMQT=${VERIUMQT:-$BINDIR/qt/verium-qt}
+VERICOIND=${VERICOIND:-$BINDIR/vericoind}
+VERICOINCLI=${VERICOINCLI:-$BINDIR/vericoin-cli}
+VERICOINTX=${VERICOINTX:-$BINDIR/vericoin-tx}
+WALLET_TOOL=${WALLET_TOOL:-$BINDIR/vericoin-wallet}
+VERICOINQT=${VERICOINQT:-$BINDIR/qt/vericoin-qt}
 
-[ ! -x $VERIUMD ] && echo "$VERIUMD not found or not executable." && exit 1
+[ ! -x $VERICOIND ] && echo "$VERICOIND not found or not executable." && exit 1
 
 # The autodetected version git tag can screw up manpage output a little bit
-read -r -a BTCVER <<< "$($VERIUMCLI --version | head -n1 | awk -F'[ -]' '{ print $5, $6 }')"
+read -r -a BTCVER <<< "$($VERICOINCLI --version | head -n1 | awk -F'[ -]' '{ print $5, $6 }')"
 
 # Create a footer file with copyright content.
-# This gets autodetected fine for veriumd if --version-string is not set,
-# but has different outcomes for verium-qt and verium-cli.
+# This gets autodetected fine for vericoind if --version-string is not set,
+# but has different outcomes for vericoin-qt and vericoin-cli.
 echo "[COPYRIGHT]" > footer.h2m
-$VERIUMD --version | sed -n '1!p' >> footer.h2m
+$VERICOIND --version | sed -n '1!p' >> footer.h2m
 
-for cmd in $VERIUMD $VERIUMCLI $VERIUMTX $WALLET_TOOL $VERIUMQT; do
+for cmd in $VERICOIND $VERICOINCLI $VERICOINTX $WALLET_TOOL $VERICOINQT; do
   cmdname="${cmd##*/}"
   help2man -N --version-string=${BTCVER[0]} --include=footer.h2m -o ${MANDIR}/${cmdname}.1 ${cmd}
 

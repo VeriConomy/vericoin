@@ -69,7 +69,7 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-const char * const BITCOIN_CONF_FILENAME = "verium.conf";
+const char * const BITCOIN_CONF_FILENAME = "vericoin.conf";
 
 ArgsManager gArgs;
 
@@ -219,7 +219,7 @@ public:
         std::pair<bool,std::string> found_result(false, std::string());
 
         // We pass "true" to GetArgHelper in order to return the last
-        // argument value seen from the command line (so "veriumd -foo=bar
+        // argument value seen from the command line (so "vericoind -foo=bar
         // -foo=baz" gives GetArg(am,"foo")=={true,"baz"}
         found_result = GetArgHelper(am.m_override_args, arg, true);
         if (found_result.first) {
@@ -390,7 +390,7 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
         if (key.substr(0, 5) == "-psn_") continue;
 #endif
 
-        if (key == "-") break; //verium-tx using stdin
+        if (key == "-") break; //vericoin-tx using stdin
         std::string val;
         size_t is_index = key.find('=');
         if (is_index != std::string::npos) {
@@ -676,7 +676,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(nullptr, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "verium";
+    const char* pszModule = "vericoin";
 #endif
     if (pex)
         return strprintf(
@@ -695,13 +695,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Verium
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Verium
-    // Mac: ~/Library/Application Support/Verium
-    // Unix: ~/.verium
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Vericoin
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Vericoin
+    // Mac: ~/Library/Application Support/Vericoin
+    // Unix: ~/.vericoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Verium";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "Vericoin";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -711,10 +711,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Verium";
+    return pathRet / "Library/Application Support/Vericoin";
 #else
     // Unix
-    return pathRet / ".verium";
+    return pathRet / ".vericoin";
 #endif
 #endif
 }
@@ -1211,9 +1211,9 @@ std::string CopyrightHolders(const std::string& strPrefix)
     const auto copyright_devs = strprintf(_(COPYRIGHT_HOLDERS).translated, COPYRIGHT_HOLDERS_SUBSTITUTION);
     std::string strCopyrightHolders = strPrefix + copyright_devs;
 
-    // Make sure Verium copyright is not removed by accident
-    if (copyright_devs.find("Verium") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + "The Verium developers";
+    // Make sure Vericoin copyright is not removed by accident
+    if (copyright_devs.find("Vericoin") == std::string::npos) {
+        strCopyrightHolders += "\n" + strPrefix + "The Vericoin developers";
     }
     return strCopyrightHolders;
 }

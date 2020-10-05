@@ -53,7 +53,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     // 48 hour normal target timespan with more stable difficulty equilibrium
     else{targetTimespan = Params().GetConsensus().nPowTargetTimespan;}
 
-    // ppcoin: retarget with exponential moving toward target spacing (variable in Verium)
+    // ppcoin: retarget with exponential moving toward target spacing (variable in Vericoin)
     CBigNum bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
     int64_t nInterval = targetTimespan / nTargetSpacing;
@@ -89,7 +89,7 @@ CAmount calculateMinerReward(const CBlockIndex* pindex)
     int height = pindex->nHeight+1;
     if (height == 1)
     {
-        nReward = 564705 * COIN; // Verium purchased in presale ICO
+        nReward = 564705 * COIN; // Vericoin purchased in presale ICO
     }
     else if ((pindex->nMoneySupply/COIN) > 2899999)
     {

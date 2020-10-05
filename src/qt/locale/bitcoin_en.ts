@@ -85,12 +85,12 @@
     </message>
     <message>
         <location line="+7"/>
-        <source>These are your Verium addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your Vericoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>These are your Verium addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</source>
+        <source>These are your Vericoin addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -227,12 +227,12 @@
     </message>
     <message>
         <location line="+50"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;Lose all of your Verium&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;Lose all of your Vericoin&lt;/b&gt;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Remember that encrypting your wallet cannot fully protect your veriums from being stolen by malware infecting your computer.</source>
+        <source>Remember that encrypting your wallet cannot fully protect your vericoins from being stolen by malware infecting your computer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -321,7 +321,7 @@
     <name>BitcoinGUI</name>
     <message>
         <location filename="../bitcoin.cpp" line="+390"/>
-        <source>A fatal error occurred. Verium can no longer continue safely and will quit.</source>
+        <source>A fatal error occurred. Vericoin can no longer continue safely and will quit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -351,7 +351,7 @@
     </message>
     <message>
         <location line="+1"/>
-        <source>Request payments (generates QR codes and verium: URIs)</source>
+        <source>Request payments (generates QR codes and vericoin: URIs)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -461,8 +461,8 @@
     </message>
     <message>
         <location line="+1"/>
-        <source>Sign messages with your Verium addresses to prove you own them</source>
-        <translation type="unfinished">Sign messages with your Verium addresses to prove you own them</translation>
+        <source>Sign messages with your Vericoin addresses to prove you own them</source>
+        <translation type="unfinished">Sign messages with your Vericoin addresses to prove you own them</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -471,8 +471,8 @@
     </message>
     <message>
         <location line="+1"/>
-        <source>Verify messages to ensure they were signed with specified Verium addresses</source>
-        <translation type="unfinished">Verify messages to ensure they were signed with specified Verium addresses</translation>
+        <source>Verify messages to ensure they were signed with specified Vericoin addresses</source>
+        <translation type="unfinished">Verify messages to ensure they were signed with specified Vericoin addresses</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -511,7 +511,7 @@
     </message>
     <message>
         <location line="+1"/>
-        <source>Open a verium: URI or payment request</source>
+        <source>Open a vericoin: URI or payment request</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -551,7 +551,7 @@
     </message>
     <message>
         <location line="+2"/>
-        <source>Show the %1 help message to get a list with possible Verium command-line options</source>
+        <source>Show the %1 help message to get a list with possible Vericoin command-line options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -621,10 +621,10 @@
     </message>
     <message numerus="yes">
         <location line="+186"/>
-        <source>%n active connection(s) to Verium network</source>
+        <source>%n active connection(s) to Vericoin network</source>
         <translation type="unfinished">
-            <numerusform>%n active connection to Verium network</numerusform>
-            <numerusform>%n active connections to Verium network</numerusform>
+            <numerusform>%n active connection to Vericoin network</numerusform>
+            <numerusform>%n active connections to Vericoin network</numerusform>
         </translation>
     </message>
     <message>
@@ -831,7 +831,7 @@
     </message>
     <message>
         <location line="+13"/>
-        <source>install new configuration file verium.conf</source>
+        <source>install new configuration file vericoin.conf</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1323,8 +1323,8 @@
     </message>
     <message>
         <location filename="../intro.cpp" line="+22"/>
-        <source>Verium</source>
-        <translation type="unfinished">Verium</translation>
+        <source>Vericoin</source>
+        <translation type="unfinished">Vericoin</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1343,7 +1343,7 @@
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 will download and store a copy of the Verium block chain.</source>
+        <source>%1 will download and store a copy of the Vericoin block chain.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1403,12 +1403,12 @@
     </message>
     <message>
         <location line="+116"/>
-        <source>Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the verium network, as detailed below.</source>
+        <source>Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the vericoin network, as detailed below.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+19"/>
-        <source>Attempting to spend veriums that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend vericoins that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1664,8 +1664,8 @@
     </message>
     <message>
         <location line="+30"/>
-        <source>Automatically open the Verium client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automatically open the Verium client port on the router. This only works when your router supports UPnP and it is enabled.</translation>
+        <source>Automatically open the Vericoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Automatically open the Vericoin client port on the router. This only works when your router supports UPnP and it is enabled.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1684,7 +1684,7 @@
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Verium network through a SOCKS5 proxy.</source>
+        <source>Connect to the Vericoin network through a SOCKS5 proxy.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1732,7 +1732,7 @@
     </message>
     <message>
         <location line="+25"/>
-        <source>Connect to the Verium network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <source>Connect to the Vericoin network through a separate SOCKS5 proxy for Tor hidden services.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2001,7 +2001,7 @@
     </message>
     <message>
         <location line="-531"/>
-        <source>Cannot start verium: click-to-pay handler</source>
+        <source>Cannot start vericoin: click-to-pay handler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2016,7 +2016,7 @@
     </message>
     <message>
         <location line="-55"/>
-        <source>&apos;verium://&apos; is not a valid URI. Use &apos;verium:&apos; instead.</source>
+        <source>&apos;vericoin://&apos; is not a valid URI. Use &apos;vericoin:&apos; instead.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2054,7 +2054,7 @@
     </message>
     <message>
         <location line="+8"/>
-        <source>URI cannot be parsed! This can be caused by an invalid Verium address or malformed URI parameters.</source>
+        <source>URI cannot be parsed! This can be caused by an invalid Vericoin address or malformed URI parameters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2187,7 +2187,7 @@
     </message>
     <message>
         <location filename="../guiutil.cpp" line="+108"/>
-        <source>Enter a Verium address (e.g. %1)</source>
+        <source>Enter a Vericoin address (e.g. %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2826,7 +2826,7 @@
     <message>
         <location line="-84"/>
         <location line="+81"/>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Verium network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Vericoin network.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3280,7 +3280,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="+196"/>
-        <source>Warning: Invalid Verium address</source>
+        <source>Warning: Invalid Vericoin address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3335,7 +3335,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="+39"/>
-        <source>The Verium address to send the payment to</source>
+        <source>The Vericoin address to send the payment to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3362,7 +3362,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="-1021"/>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less veriums than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less vericoins than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3397,7 +3397,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="+54"/>
-        <source>A message that was attached to the verium: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Verium network.</source>
+        <source>A message that was attached to the vericoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Vericoin network.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3454,12 +3454,12 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="+6"/>
-        <source>You can sign messages/agreements with your addresses to prove you can receive veriums sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive vericoins sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The Verium address to sign the message with</source>
+        <source>The Vericoin address to sign the message with</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3501,8 +3501,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Verium address</source>
-        <translation>Sign the message to prove you own this Verium address</translation>
+        <source>Sign the message to prove you own this Vericoin address</source>
+        <translation>Sign the message to prove you own this Vericoin address</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3532,13 +3532,13 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
     <message>
         <location line="+21"/>
-        <source>The Verium address the message was signed with</source>
+        <source>The Vericoin address the message was signed with</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+37"/>
-        <source>Verify the message to ensure it was signed with the specified Verium address</source>
-        <translation>Verify the message to ensure it was signed with the specified Verium address</translation>
+        <source>Verify the message to ensure it was signed with the specified Vericoin address</source>
+        <translation>Verify the message to ensure it was signed with the specified Vericoin address</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4407,7 +4407,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 VRMi 
     </message>
 </context>
 <context>
-    <name>verium-core</name>
+    <name>vericoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+28"/>
         <source>Distributed under the MIT software license, see the accompanying file %s or %s</source>

@@ -44,13 +44,13 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "Verium"
+#define QAPP_ORG_NAME "Vericoin"
 #define QAPP_ORG_DOMAIN "vericonomy.com"
-#define QAPP_APP_NAME_DEFAULT "Verium-Qt"
-#define QAPP_APP_NAME_TESTNET "Verium-Qt-testnet"
-#define QAPP_APP_NAME_REGTEST "Verium-Qt-regtest"
+#define QAPP_APP_NAME_DEFAULT "Vericoin-Qt"
+#define QAPP_APP_NAME_TESTNET "Vericoin-Qt-testnet"
+#define QAPP_APP_NAME_REGTEST "Vericoin-Qt-regtest"
 
-#define COMMUNITY_EXPLORER_URL "https://chainz.cryptoid.info/vrm/"
+#define COMMUNITY_EXPLORER_URL "https://chainz.cryptoid.info/vrc/"
 #define COMMUNITY_TWITTER_URL "https://twitter.com/vericonomy"
 #define COMMUNITY_CHAT_URL "https://slack.vericoin.info"
 #define COMMUNITY_WEBSITE_URL "https://vericonomy.com"
