@@ -6,7 +6,6 @@
 #include <miner.h>
 
 #include <amount.h>
-#include <bignum.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
@@ -152,13 +151,13 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vout[0].nValue = GetProofOfWorkReward(nFees, pindexPrev);
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
 
-    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
     coinbaseTx.nTime = pblock->nTime;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vTxFees[0] = -nFees;
 
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
+    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
     pblock->nBits          = GetNextTargetRequired(pindexPrev);
     pblock->nNonce         = 0;
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
@@ -510,7 +509,7 @@ void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash
 bool CheckWork(CBlock* pblock)
 {
     arith_uint256 hashBlock = UintToArith256(pblock->GetWorkHash());
-    arith_uint256 hashTarget = UintToArith256( CBigNum().SetCompact(pblock->nBits).getuint256() );
+    arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
     CBlockIndex* pindexPrev = ::ChainActive().Tip();
 
     if (hashBlock > hashTarget){
@@ -597,7 +596,16 @@ void Miner(CWallet *pwallet)
             unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
             CBlockIndex* pindexPrev = ::ChainActive().Tip();
 
-            std::unique_ptr<CBlockTemplate> pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptChange);
+            std::unique_ptr<CBlockTemplate> pblocktemplate;
+            try
+            {
+                pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptChange);
+            }
+            catch(std::runtime_error& e)
+            {
+                continue;
+            }
+
             if (!pblocktemplate.get())
                 return;
 

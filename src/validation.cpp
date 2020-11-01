@@ -3175,7 +3175,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     for (const auto& tx : block.vtx) {
         // Required for POS
         // XXX: To remove for future version
-        if( block.GetBlockTime() < tx->nTime )
+        if( block.GetBlockTime() < (int64_t)tx->nTime )
             return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-tx-timestamp", "block timestamp earlier than transaction timestamp");
 
         if (!CheckTransaction(*tx, state, true))
