@@ -1225,6 +1225,24 @@ static UniValue verifychain(const JSONRPCRequest& request)
         Params(), &::ChainstateActive().CoinsTip(), nCheckLevel, nCheckDepth);
 }
 
+UniValue getnetworkweight(const JSONRPCRequest& request)
+{
+    UniValue obj(UniValue::VOBJ);
+    return obj;
+}
+
+UniValue getinflationrate(const JSONRPCRequest& request)
+{
+    UniValue obj(UniValue::VOBJ);
+    return obj;
+}
+
+UniValue getinterestrate(const JSONRPCRequest& request)
+{
+    UniValue obj(UniValue::VOBJ);
+    return obj;
+}
+
 UniValue getblockchaininfo(const JSONRPCRequest& request)
 {
             RPCHelpMan{"getblockchaininfo",
@@ -2245,6 +2263,10 @@ static const CRPCCommand commands[] =
     { "blockchain",         "pruneblockchain",        &pruneblockchain,        {"height"} },
     { "blockchain",         "savemempool",            &savemempool,            {} },
     { "blockchain",         "verifychain",            &verifychain,            {"checklevel","nblocks"} },
+
+    { "blockchain",         "getnetworkweight",       &getnetworkweight,       {} },
+    { "blockchain",         "getinflationrate",       &getinflationrate,       {} },
+    { "blockchain",         "getinterestrate",        &getinterestrate,        {} },
 
     { "blockchain",         "preciousblock",          &preciousblock,          {"blockhash"} },
     { "blockchain",         "scantxoutset",           &scantxoutset,           {"action", "scanobjects"} },
