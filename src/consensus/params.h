@@ -18,6 +18,9 @@ namespace Consensus {
  */
 struct Params {
     uint256 hashGenesisBlock;
+
+    /** Proof of stake parameters */
+
     /** Proof of work parameters */
     bool fPowNoRetargeting;
     int64_t nPowTargetTimespan;
@@ -26,8 +29,9 @@ struct Params {
     uint256 defaultAssumeValid;
 
     /** VIP */
-    int VIP1Height;
+    int PoSTProtocolHeight;
 };
+
 } // namespace Consensus
 
 #endif // BITCOIN_CONSENSUS_PARAMS_H
