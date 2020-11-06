@@ -41,12 +41,15 @@ enum class ValidationInvalidReason {
     RECENT_CONSENSUS_CHANGE,
     // Only blocks (or headers):
     CACHED_INVALID,          //!< this object was cached as being invalid, but we don't know why
-    BLOCK_INVALID_HEADER,    //!< invalid proof of work or time too old
+    BLOCK_INVALID_HEADER,    //!< invalid proof of work, proof of stake or time too old
     BLOCK_MUTATED,           //!< the block's data didn't match the data committed to by the PoW
     BLOCK_MISSING_PREV,      //!< We don't have the previous block the checked one is built on
     BLOCK_INVALID_PREV,      //!< A block this one builds on is invalid
     BLOCK_TIME_FUTURE,          //!< block timestamp was > 2 hours in the future (or our clock is bad)
     BLOCK_CHECKPOINT,        //!< the block failed to meet one of our checkpoints
+    BLOCK_HEADER_SPAM,       //!< reject block header from the spam filter
+    BLOCK_HEADER_REJECT,     //!< reject only the block header, but not ban the node
+    BLOCK_HEADER_SYNC,       //!< reject the block header due to synchronization problems, used to punish the node less
     // Only loose txn:
     TX_NOT_STANDARD,          //!< didn't meet our local policy rules
     TX_MISSING_INPUTS,        //!< a transaction was missing some of its inputs
@@ -91,7 +94,10 @@ inline bool IsBlockReason(ValidationInvalidReason r)
            r == ValidationInvalidReason::BLOCK_MISSING_PREV ||
            r == ValidationInvalidReason::BLOCK_INVALID_PREV ||
            r == ValidationInvalidReason::BLOCK_TIME_FUTURE ||
-           r == ValidationInvalidReason::BLOCK_CHECKPOINT;
+           r == ValidationInvalidReason::BLOCK_CHECKPOINT ||
+           r == ValidationInvalidReason::BLOCK_HEADER_SPAM ||
+           r == ValidationInvalidReason::BLOCK_HEADER_REJECT ||
+           r == ValidationInvalidReason::BLOCK_HEADER_SYNC;
 }
 
 /** Capture information about block/transaction validation */
