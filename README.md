@@ -1,13 +1,13 @@
-Veribase integration/staging tree
+Vericoin integration/staging tree
 =====================================
 
 https://vericonomy.com
 
-What is Veribase?
+What is Vericoin?
 ----------------
 
-VeriCoin is a Proof-of-Stake-Time cryptocurrency.
-VeriCoin uses peer-to-peer technology to operate
+Vericoin is a Proof-of-Stake-Time cryptocurrency.
+Vericoin uses peer-to-peer technology to operate
 with no central authority: managing transactions and issuing money are carried
 out collectively by the network.
 
@@ -17,15 +17,15 @@ the Vericoin software, see https://vericonomy.com/
 License
 -------
 
-Veribase is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Vericoin is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/VeriConomy/veribase/tags) are created
-regularly to indicate new official, stable release versions of Veribase.
+completely stable. [Tags](https://github.com/VeriConomy/vericoin/tags) are created
+regularly to indicate new official, stable release versions of Vericoin.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)
 and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
