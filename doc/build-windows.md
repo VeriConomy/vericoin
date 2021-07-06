@@ -130,5 +130,5 @@ Footnotes
 compiler options to allow a choice between either posix or win32 threads. The default option is win32 threads which is the more
 efficient since it will result in binary code that links directly with the Windows kernel32.lib. Unfortunately, the headers
 required to support win32 threads conflict with some of the classes in the C++11 standard library, in particular std::mutex.
-It's not possible to build Veribase code using the win32 version of the Mingw-w64 cross compilers (at least not without
-modifying headers in the Veribase source code).
+It's not possible to build Vericoin code using the win32 version of the Mingw-w64 cross compilers (at least not without
+modifying headers in the Vericoin source code).
